@@ -1,0 +1,84 @@
+name: north_star
+description: a personal fitness app
+
+publish_to: 'none'
+version: 9.0.0+1
+
+environment:
+  sdk: ">=2.15.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_lints: ^2.0.1
+  cupertino_icons: ^1.0.4
+  get: ^4.6.5
+  intl: ^0.18.0
+  uuid: ^3.0.6
+  http: ^0.13.4
+  shared_preferences: ^2.0.15
+  cached_network_image: ^3.2.1
+  flutter_markdown: ^0.6.10+2
+  #flutter_zoom_sdk: ^1.1.0+4
+  syncfusion_flutter_charts: ^20.2.38
+  syncfusion_flutter_gauges: ^20.2.38
+  syncfusion_flutter_datepicker: ^20.2.38
+  syncfusion_flutter_calendar: ^20.2.46
+  table_calendar: ^3.0.6
+  url_launcher: ^6.1.4
+  permission_handler: ^10.0.0
+
+  string_similarity: ^2.0.0
+  flutter_typeahead: ^4.0.0
+  flutter_datetime_picker_bdaya: ^3.0.1
+  firebase_core: ^2.8.0
+  cloud_firestore: ^4.4.5
+  dio: ^5.0.3
+
+  image_picker: ^0.8.5+3
+  mobile_scanner: ^3.1.1
+  onesignal_flutter: ^3.3.2
+  lottie: ^2.3.0
+  agora_rtc_engine: ^6.1.0
+  flutter_ringtone_player: ^3.2.0
+  step_progress_indicator: ^1.0.2
+  intl_phone_field: ^3.1.0
+  carousel_slider: ^4.1.1
+  flutter_rating_bar: ^4.0.1
+  flutter_staggered_grid_view: ^0.6.2
+  country_currency_pickers: ^2.0.0
+  simple_speed_dial: ^0.1.7
+  photo_view: ^0.14.0
+  marquee: ^2.2.3
+  health: ^4.1.1
+  im_animations: ^0.1.2
+  flutter_html: ^3.0.0-alpha.6
+  file_picker: ^5.2.3
+  firebase_storage: ^11.0.16
+  firebase_crashlytics: ^3.0.17
+  flutter_local_notifications: ^13.0.0
+  #fl_chart: ^0.55.1
+
+  provider: ^6.0.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_native_splash: ^2.1.6
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/
+    - assets/fonts/
+    - assets/cliparts/
+    - assets/images/
+    - assets/icons/
+    - assets/home/
+    - assets/lotties/
+    - assets/appicons/
+    - assets/proItems/
+  fonts:
+    - family: IcoMoon
+      fonts:
+        - asset: assets/fonts/icons.ttf

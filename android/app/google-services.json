@@ -1,0 +1,91 @@
+{
+  "project_info": {
+    "project_number": "579973402915",
+    "firebase_url": "https://nsdev01-default-rtdb.firebaseio.com",
+    "project_id": "nsdev01",
+    "storage_bucket": "nsdev01.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:579973402915:android:5c67051ef1cae3bf943c96",
+        "android_client_info": {
+          "package_name": "com.northstar.codezilla.north_star"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "579973402915-a62s6krf8sjkae2tntbbv6egnjh87b4t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHHxZpKGgxNw_IfkSFXQB7FO6snpDpKcY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "579973402915-a62s6krf8sjkae2tntbbv6egnjh87b4t.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "579973402915-nou1dn1rron56h5h5a1531d3fabojl1h.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.northstar.fitness"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:579973402915:android:235fe0b56f5cf4e7943c96",
+        "android_client_info": {
+          "package_name": "com.northstar.fitness"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "579973402915-0ghhg512rcje4pi6u9mv66fkfonjf3ll.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.northstar.fitness",
+            "certificate_hash": "2cf2814a77fbf93c3d98d670cc067963c9b44b42"
+          }
+        },
+        {
+          "client_id": "579973402915-a62s6krf8sjkae2tntbbv6egnjh87b4t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHHxZpKGgxNw_IfkSFXQB7FO6snpDpKcY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "579973402915-a62s6krf8sjkae2tntbbv6egnjh87b4t.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "579973402915-nou1dn1rron56h5h5a1531d3fabojl1h.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.northstar.fitness"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
