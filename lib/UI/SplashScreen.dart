@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:north_star/UI/Layout.dart';
-import 'package:north_star/UI/WelcomeScreens/welcome_one.dart';
+import 'package:north_star/UI/WelcomeScreens/welcome_v2.dart';
 
 class SplashScreen extends StatefulWidget {
 

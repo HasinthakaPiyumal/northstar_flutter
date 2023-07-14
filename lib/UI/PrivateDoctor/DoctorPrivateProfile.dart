@@ -12,9 +12,11 @@ import 'package:north_star/UI/PrivateDoctor/DoctorSettings.dart';
 import 'package:north_star/UI/SharedWidgets/QualificationsAddEdit.dart';
 import 'package:north_star/Utils/PopUps.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
+import '../../main.dart';
 import '../SharedWidgets/UploadAvatar.dart';
 
 class DoctorPrivateProfile extends StatelessWidget {
@@ -25,6 +27,8 @@ class DoctorPrivateProfile extends StatelessWidget {
     RxMap doctor = {}.obs;
     RxBool ready = false.obs;
     RxBool isDarkMode = Get.isDarkMode.obs;
+
+    final themeProvider = Provider.of<ThemeProvider>(context);
 
     void getProfile() async{
       ready.value = false;
@@ -203,15 +207,19 @@ class DoctorPrivateProfile extends StatelessWidget {
                         Text('Dark Mode'),
                         CupertinoSwitch(
                           value: isDarkMode.value,
-                          onChanged: (value){
-                            SharedPreferences.getInstance().then((prefs){
-                              prefs.setBool('darkMode', value);
-                            });
-                            print(value);
+                          onChanged: (value) {
+                            themeProvider.toggleTheme();
                             isDarkMode.value = value;
-                            //Get.changeTheme(value ? ThemeData.dark() : ThemeData.light());
-                            showSnack('Theme Changed!', 'Please Reopen the App');
                           },
+                          // onChanged: (value){
+                          //   SharedPreferences.getInstance().then((prefs){
+                          //     prefs.setBool('darkMode', value);
+                          //   });
+                          //   print(value);
+                          //   isDarkMode.value = value;
+                          //   //Get.changeTheme(value ? ThemeData.dark() : ThemeData.light());
+                          //   showSnack('Theme Changed!', 'Please Reopen the App');
+                          // },
                         ),
                       ],
                     ),

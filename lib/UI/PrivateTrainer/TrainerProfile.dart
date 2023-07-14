@@ -16,7 +16,10 @@ import 'package:north_star/UI/SharedWidgets/ReviewWidget.dart';
 import 'package:north_star/UI/SharedWidgets/UploadAvatar.dart';
 import 'package:north_star/Utils/PopUps.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../main.dart';
 
 
 class TrainerProfile extends StatelessWidget {
@@ -26,6 +29,8 @@ class TrainerProfile extends StatelessWidget {
   Widget build(BuildContext context) {
     RxBool ready = false.obs;
     RxBool isDarkMode = Get.isDarkMode.obs;
+
+    final themeProvider = Provider.of<ThemeProvider>(context);
 
     TextEditingController aboutController = TextEditingController();
 
@@ -372,15 +377,19 @@ class TrainerProfile extends StatelessWidget {
                           Text('Dark Mode'),
                           CupertinoSwitch(
                             value: isDarkMode.value,
-                            onChanged: (value){
-                              SharedPreferences.getInstance().then((prefs){
-                                prefs.setBool('darkMode', value);
-                              });
-                              print(value);
+                            onChanged: (value) {
+                              themeProvider.toggleTheme();
                               isDarkMode.value = value;
-                              //Get.changeTheme(value ? ThemeData.dark() : ThemeData.light());
-                              showSnack('Theme Changed!', 'Please Reopen the App');
                             },
+                            // onChanged: (value){
+                            //   SharedPreferences.getInstance().then((prefs){
+                            //     prefs.setBool('darkMode', value);
+                            //   });
+                            //   print(value);
+                            //   isDarkMode.value = value;
+                            //   //Get.changeTheme(value ? ThemeData.dark() : ThemeData.light());
+                            //   showSnack('Theme Changed!', 'Please Reopen the App');
+                            // },
                           ),
                         ],
                       ),

@@ -3,19 +3,39 @@ import 'package:get/get.dart';
 import 'package:north_star/Auth/CommonAuthUtils.dart';
 import 'package:north_star/UI/SharedWidgets/CommonConfirmDialog.dart';
 
-
 void showSnack(String title, String message) {
-  Get.snackbar(title, message,
-      margin: const EdgeInsets.all(16),
-      backgroundColor: Get.isDarkMode ? Colors.white : Colors.black,
-      colorText: Get.isDarkMode ? Colors.black : Colors.white,
+  Get.snackbar(
+    title,
+    message,
+    margin: const EdgeInsets.all(16),
+    backgroundColor: Get.isDarkMode ? Colors.white : Colors.black,
+    colorText: Get.isDarkMode ? Colors.black : Colors.white,
   );
 }
 
-void showSignOutDialog(){
-  CommonConfirmDialog.confirm('Logout').then((value) async{
-    if(value) {
+void showSnackResponse(String title, dynamic data) {
+  data = data["data"];
+  String firstErrorMessage = "";
+  if (data != null) {
+    data.forEach((key, value) {
+      if (value is List && value.isNotEmpty) {
+        firstErrorMessage = value.first;
+        print(firstErrorMessage);
+        Get.snackbar(
+          title,
+          firstErrorMessage,
+          margin: const EdgeInsets.all(16),
+          backgroundColor: Get.isDarkMode ? Colors.white : Colors.black,
+          colorText: Get.isDarkMode ? Colors.black : Colors.white,
+        );
+      }
+    });
+  }
+}
 
+void showSignOutDialog() {
+  CommonConfirmDialog.confirm('Logout').then((value) async {
+    if (value) {
       await CommonAuthUtils.signOut();
       /*SharedPreferences.getInstance().then((prefs) async {
         await prefs.clear();

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:get/get.dart';
@@ -26,23 +25,27 @@ class AgoraCallController {
   static const String token = '983f2eee1a9a4d2f90c04e17b9694fea';
   static const String appId = '0e76a00a008e418bb9074ccad44724de';
 
-  static RxString callStatus = 'Calling...'.obs; // Calling, Connected, Disconnected
-  static String callConnectionStatus = 'Not Connected'; // Not Connected, Connected
+  static RxString callStatus =
+      'Calling...'.obs; // Calling, Connected, Disconnected
+  static String callConnectionStatus =
+      'Not Connected'; // Not Connected, Connected
 
   static RxBool speakerPhone = false.obs;
   static RxBool mute = false.obs;
 
-  static Future<bool> init(Map<String,dynamic> userData) async {
+  static Future<bool> init(Map<String, dynamic> userData) async {
     user = userData;
 
     agoraEngine = createAgoraRtcEngine();
     await agoraEngine.initialize(const RtcEngineContext(
-        appId: appId,
+      appId: appId,
     ));
 
     await agoraEngine.disableVideo();
 
     channelName = Uuid().v4();
+
+    print("Agora calling");
 
     agoraEngine.registerEventHandler(
       RtcEngineEventHandler(
@@ -61,24 +64,23 @@ class AgoraCallController {
             duration.value = DateTime.now().difference(startTime);
           });
         },
-
-        onUserOffline: (RtcConnection connection, int remoteUid, UserOfflineReasonType reason) {
+        onUserOffline: (RtcConnection connection, int remoteUid,
+            UserOfflineReasonType reason) {
           print("Remote user uid left the channel");
           callStatus.value = 'Disconnected';
           remoteUID = 0;
           endTime = DateTime.now();
         },
-
       ),
     );
 
-      await httpClient.invokeCall({
-        'from': authUser.id,
-        'to': user['id'],
-        'channel': channelName,
-      });
+    await httpClient.invokeCall({
+      'from': authUser.id,
+      'to': user['id'],
+      'channel': channelName,
+    });
 
-      print(channelName);
+    print(channelName);
 
     await joinCall();
     ready.value = true;
@@ -86,7 +88,7 @@ class AgoraCallController {
     return true;
   }
 
-  static Future<bool> initIncoming(Map<String,dynamic> data) async {
+  static Future<bool> initIncoming(Map<String, dynamic> data) async {
     user = data['from'];
     channelName = data['channel'];
     print(channelName);
@@ -96,8 +98,6 @@ class AgoraCallController {
     ));
 
     await agoraEngine.disableVideo();
-
-
 
     agoraEngine.registerEventHandler(
       RtcEngineEventHandler(
@@ -116,14 +116,13 @@ class AgoraCallController {
             duration.value = DateTime.now().difference(startTime);
           });
         },
-
-        onUserOffline: (RtcConnection connection, int remoteUid, UserOfflineReasonType reason) {
+        onUserOffline: (RtcConnection connection, int remoteUid,
+            UserOfflineReasonType reason) {
           print("Remote user uid left the channel");
           callStatus.value = 'Disconnected';
           remoteUID = 0;
           endTime = DateTime.now();
         },
-
       ),
     );
 
@@ -153,7 +152,7 @@ class AgoraCallController {
   static rejectCall() async {
     try {
       timer.cancel();
-    } catch(e) {
+    } catch (e) {
       print(e);
     }
     accepted.value = false;
@@ -161,7 +160,7 @@ class AgoraCallController {
   }
 
   static void switchSpeaker() async {
-    if(speakerPhone.value) {
+    if (speakerPhone.value) {
       await agoraEngine.setEnableSpeakerphone(false);
       speakerPhone.value = false;
       return;
@@ -173,7 +172,7 @@ class AgoraCallController {
   }
 
   static void switchMute() async {
-    if(mute.value) {
+    if (mute.value) {
       await agoraEngine.muteLocalAudioStream(false);
       mute.value = false;
       return;
@@ -188,7 +187,7 @@ class AgoraCallController {
     await agoraEngine.leaveChannel();
     try {
       timer.cancel();
-    } catch(e) {
+    } catch (e) {
       print(e);
     }
     accepted.value = false;

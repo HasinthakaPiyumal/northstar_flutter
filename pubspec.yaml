@@ -28,6 +28,8 @@ dependencies:
   url_launcher: ^6.1.4
   permission_handler: ^10.0.0
 
+  flutter_cupertino_date_picker_fork: ^1.0.7
+
   string_similarity: ^2.0.0
   flutter_typeahead: ^4.0.0
   flutter_datetime_picker_bdaya: ^3.0.1
@@ -73,6 +75,8 @@ flutter:
     - assets/fonts/
     - assets/cliparts/
     - assets/images/
+    - assets/images/backgrounds/
+    - assets/images/item_backgrounds/
     - assets/icons/
     - assets/home/
     - assets/lotties/
@@ -82,3 +86,9 @@ flutter:
     - family: IcoMoon
       fonts:
         - asset: assets/fonts/icons.ttf
+    - family: Bebas Neue
+      fonts:
+        - asset: assets/fonts/BebasNeue-Regular.ttf
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins-Regular.ttf
