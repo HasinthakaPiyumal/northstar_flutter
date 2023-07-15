@@ -1,5 +1,4 @@
 workflows:
-  version: 2
   build-and-package:
     name: Build APK and IPA
     environment:
