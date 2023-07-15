@@ -13,8 +13,3 @@ workflows:
 
       - name: Build Debug IPA
         script: flutter build ios --debug --no-codesign
-
-      - name: Archive artifacts
-        script: |
-          mv build/app/outputs/apk/debug/app-debug.apk $CM_ARTIFACTS_DIR/app-debug.apk
-          mv build/ios/archive/Runner.ipa $CM_ARTIFACTS_DIR/Runner.ipa
