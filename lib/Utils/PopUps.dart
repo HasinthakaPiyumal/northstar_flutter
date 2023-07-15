@@ -16,11 +16,21 @@ void showSnack(String title, String message) {
 void showSnackResponse(String title, dynamic data) {
   data = data["data"];
   String firstErrorMessage = "";
+
   if (data != null) {
     data.forEach((key, value) {
+      print(value);
       if (value is List && value.isNotEmpty) {
         firstErrorMessage = value.first;
-        print(firstErrorMessage);
+        Get.snackbar(
+          title,
+          firstErrorMessage,
+          margin: const EdgeInsets.all(16),
+          backgroundColor: Get.isDarkMode ? Colors.white : Colors.black,
+          colorText: Get.isDarkMode ? Colors.black : Colors.white,
+        );
+      } else if (value is String) {
+        firstErrorMessage = value;
         Get.snackbar(
           title,
           firstErrorMessage,

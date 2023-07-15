@@ -1,122 +1,249 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:north_star/Auth/SignIn.dart';
-import 'package:north_star/Auth/SteppingSignUp/SignUpStart.dart';
-import 'package:north_star/Styles/Themes.dart';
+import 'package:north_star/Auth/SignIn_v2.dart';
+
+import 'SteppingSignUp_v2/SignUpUserType.dart';
 
 class AuthHome extends StatelessWidget {
   const AuthHome({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    RxBool ready = true.obs;
+    bool shouldPop = false;
 
     return Scaffold(
       body: Stack(
         children: [
           Container(
-            width: Get.width,
-            height: Get.height,
-            child: Image.asset(
-              'assets/images/front.png',
-              fit: BoxFit.fitHeight,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/images/backgrounds/login_home.png"),
+                fit: BoxFit.fitWidth,
+              ),
             ),
           ),
-          Positioned(
-            bottom: 0,
-            top: 0,
-            left: 0,
-            right: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: Get.width * 0.75,
-                  child: Image.asset(
-                    'assets/allwhite.png',
-                    fit: BoxFit.fitHeight,
-                  ),
-                )
-              ],
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment(0.00, -1.00),
+                end: Alignment(0, 1),
+                colors: [
+                  Colors.black.withOpacity(0.5399999856948853),
+                  Colors.black
+                ],
+              ),
             ),
           ),
-
-          Obx(()=> !ready.value ? Positioned(
-            left: 0,
-            right: 0,
-            bottom: 72,
-            child: Center(
-              child: CircularProgressIndicator(),
+          Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Stack(
+              children: [],
             ),
-          ): Container()),
-
-          Obx(()=> ready.value ? Positioned(
-            left: 0,
-            right: 0,
-            bottom: 72,
-            child: Container(
+            bottomNavigationBar: Container(
+              color: Theme.of(context).primaryColor.withOpacity(0.1),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    width: Get.width * 0.8,
-                    height: 58,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.all(0),
-                        shape: Themes().roundedBorder(12),
+                    width: 64,
+                    height: 64,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image:
+                        AssetImage("assets/appicons/logo_black_white.png"),
+                        fit: BoxFit.fill,
                       ),
-                      child: Ink(
-                        decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Color(0xFFFFC987),
-                                  Color(0xFFF1AB56),
-                                ]),
-                            borderRadius: BorderRadius.circular(12)),
-                        child: Container(
-                          alignment: Alignment.center,
-                          width: Get.width * 0.8,
-                          height: 58,
-                          child: Text(
-                            'Create an Account',
-                            style: TextStyle(
-
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    width: 121,
+                    height: 53,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(
+                            "assets/appicons/mini_logo_text_white.png"),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: Get.height / 100 * 10,
+                  ),
+                  // SizedBox(height: Get.height / 100 * 7),
+                  Text.rich(
+                    TextSpan(
+                      text: 'Start Now!\n',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 40,
+                        fontFamily: 'Bebas Neue',
+                        fontWeight: FontWeight.w400,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: 'Unlock Your Fitness Potential',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 48,
+                            fontFamily: 'Bebas Neue',
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: Get.height / 100 * 2),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 0, horizontal: 40.0),
+                    child: Container(
+                      width: double.infinity,
+                      child: Text(
+                        'Elevate your fitness with Northstar: Personalized workouts, expert guidance, and a vibrant community to support your goals.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: Get.height / 100 * 4),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 264,
+                        height: 64,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SignUpUserType(),
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: Color(0xFFFFB700),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                'create an account'.toUpperCase(),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Color(0xFF1B1F24),
+                                  fontSize: 22,
+                                  fontFamily: 'Bebas Neue',
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                      onPressed: () {
-                        Get.to(() => SignUpStart());
-                      },
-                    ),
-                  )
+                    ],
+                  ),
+
+                  SizedBox(
+                    height: Get.height / 100 * 1,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Already Have An Account? ',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          // Add your login button onTap logic here
+                        },
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SignIn(),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'Login',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w600,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                          style: ButtonStyle(
+                            overlayColor: MaterialStateColor.resolveWith(
+                                    (states) => Colors.transparent),
+                            visualDensity: VisualDensity.compact,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                  // Text.rich(
+                  //   TextSpan(
+                  //     children: [
+                  //       TextSpan(
+                  //         text: 'Already Have An Account? ',
+                  //         style: TextStyle(
+                  //           color: Colors.white,
+                  //           fontSize: 16,
+                  //           fontFamily: 'Poppins',
+                  //           fontWeight: FontWeight.w400,
+                  //         ),
+                  //       ),
+                  //       TextSpan(
+                  //         text: 'Login',
+                  //         style: TextStyle(
+                  //           color: Colors.white,
+                  //           fontSize: 16,
+                  //           fontFamily: 'Poppins',
+                  //           fontWeight: FontWeight.w600,
+                  //
+                  //           // textDecoration: TextDecoration.underline,
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  //   textAlign: TextAlign.center,
+                  // ),
+                  SizedBox(
+                    height: Get.height / 100 * 4,
+                  ),
                 ],
               ),
             ),
-          ): Container()),
-          Obx(()=> ready.value ? Positioned(
-            left: 0,
-            right: 0,
-            bottom: 16,
-            child: Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Already have an account?',
-                      style: TextStyle(color: Colors.white)),
-                  TextButton(
-                    child: Text('Sign In',
-                        style: TextStyle(color: Color(0xFFF3AF5D))),
-                    onPressed: () {
-                      Get.to(() => SignIn());
-                    },
-                  )
-                ],
-              ),
-            ),
-          ): Container())
+          ),
         ],
       ),
     );

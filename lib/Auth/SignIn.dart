@@ -1,195 +1,364 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Auth/CommonAuthUtils.dart';
-import 'package:north_star/Auth/ForgotPassword.dart';
 import 'package:north_star/Auth/SteppingSignUp/SignUpStart.dart';
+import 'package:north_star/Auth/SteppingSignUp_v2/SignUpUserType.dart';
 import 'package:north_star/Models/HttpClient.dart';
-import 'package:north_star/Styles/Themes.dart';
-import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/Utils/PopUps.dart';
 
-class SignIn extends StatelessWidget {
+class SignIn extends StatefulWidget {
   const SignIn({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  _SignInState createState() => _SignInState();
+}
 
-    RxBool loading = false.obs;
-    RxBool passVisibility = true.obs;
-    void toggle() => loading.value = !loading.value;
+class _SignInState extends State<SignIn> {
+  RxBool loading = false.obs;
+  RxBool passVisibility = true.obs;
+  RxBool rememberMe = false.obs;
 
-    TextEditingController userName = new TextEditingController();
-    TextEditingController password = new TextEditingController();
+  void toggle() {
+    passVisibility.value = !passVisibility.value;
+  }
 
-    void signIn() async{
-      if(!userName.text.isEmail){
-        showSnack('Incorrect Email', 'Please use the correct email address');
-      } else if (password.text.isEmpty){
-        showSnack('Incorrect Password', 'Please use the correct password');
+  TextEditingController userName = TextEditingController();
+  TextEditingController password = TextEditingController();
+
+  void signIn() async {
+    if (!userName.text.isEmail) {
+      showSnack('Incorrect Email', 'Please use the correct email address');
+    } else if (password.text.isEmpty) {
+      showSnack('Incorrect Password', 'Please use the correct password');
+    } else {
+      toggle();
+      Map res = await httpClient.signIn({
+        'email': userName.text,
+        'password': password.text,
+      });
+
+      if (res['code'] == 200) {
+        CommonAuthUtils.signIn(res);
       } else {
+        showSnack(
+          'Incorrect Email and/or Password',
+          'Please use the correct password and email',
+        );
         toggle();
-        Map res = await httpClient.signIn({
-          'email': userName.text,
-          'password': password.text
-        });
-
-        if (res['code'] == 200) {
-          CommonAuthUtils.signIn(res);
-        } else {
-          showSnack('Incorrect Email and/or Password', 'Please use the correct password and email');
-          toggle();
-        }
       }
     }
+  }
 
-    return Scaffold(
-        body: Container(
-      height: Get.height,
-      child: Stack(
-        children: [
-          Container(
-            width: Get.width,
-            child: Image.asset(
-              'assets/images/bg_login.png',
-              fit: BoxFit.fitWidth,
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        body: Stack(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("assets/images/backgrounds/login.png"),
+                  fit: BoxFit.fitWidth,
+                ),
+              ),
             ),
-          ),
-
-          Positioned(
-            left: 16,
-            right: 16,
-            bottom: 72,
-            child: Container(
-              child: Card(
-                shape: Themes().roundedBorder(16),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: SingleChildScrollView(
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment(0.00, -1.00),
+                  end: Alignment(0, 1),
+                  colors: [
+                    Colors.black.withOpacity(0.5399999856948853),
+                    Colors.black
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Scaffold(
+                backgroundColor: Colors.transparent,
+                body: Stack(
+                  children: [],
+                ),
+                bottomNavigationBar: SingleChildScrollView(
+                  child: Container(
+                    color: Theme.of(context).primaryColor.withOpacity(0.1),
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Row(
                           children: [
                             Container(
-                              height: 50,
-                              child: Image.asset(
-                                Get.isDarkMode ? 'assets/allwhite.png' : 'assets/allblack.png',
-                                fit: BoxFit.contain,
+                              width: 36,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage(
+                                      "assets/appicons/logo_black_white.png"),
+                                  fit: BoxFit.fill,
+                                ),
                               ),
-                            )
+                            ),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            Container(
+                              width: 66,
+                              height: 29,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage(
+                                      "assets/appicons/mini_logo_text_white.png"),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
                           ],
                         ),
-                        SizedBox(height: 32),
-                        Row(
-                          children: [
-                            Text('Login', style: TypographyStyles.title(28)),
-                          ],
+                        SizedBox(
+                          height: 20,
                         ),
-                        SizedBox(height: 16),
+                        Text.rich(
+                          TextSpan(
+                            text: 'login\n'.toUpperCase(),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontFamily: 'Bebas Neue',
+                              fontWeight: FontWeight.w400,
+                            ),
+                            children: [
+                              TextSpan(
+                                text: 'Empower Your Fitness Journey',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 32,
+                                  fontFamily: 'Bebas Neue',
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
+                          ),
+                          textAlign: TextAlign.start,
+                        ),
+                        SizedBox(height: Get.height / 100 * 4),
                         TextField(
                           controller: userName,
-                          style: TextStyle(fontSize: 18),
                           decoration: InputDecoration(
-                              labelText: 'Email Address',
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12)
-                              )),
-                        ),
-                        SizedBox(height: 8),
-                        Obx(()=>Stack(
-                          children: [
-                            TextField(
-                              controller: password,
-                              style: TextStyle(fontSize: 18),
-                              obscureText: passVisibility.value,
-                              decoration: InputDecoration(
-                                  labelText: 'Password',
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12)
-                                  )),
+                            prefixIcon:
+                            Icon(Icons.email_outlined, color: Colors.white),
+                            hintText: 'Enter your email',
+                            hintStyle: TextStyle(color: Colors.white),
+                            border: InputBorder.none,
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white),
                             ),
-                            Positioned(
-                              right: 0,
-                              bottom: 0,
-                              top: 0,
-                              child: IconButton(
-                                  icon: Icon(passVisibility.value ? Icons.visibility : Icons.visibility_off),
-                                  onPressed: (){
-                                    passVisibility.value = !passVisibility.value;
-                                  }),
-                            )
-                          ],
-                        )),
-                        SizedBox(height: 4),
-                        Row(
-                          children: [
-                            TextButton(
-                              child: Text(
-                                'Forgot Password?',
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white),
+                            ),
+                            contentPadding: EdgeInsets.only(top: 15.0),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        TextField(
+                          controller: password,
+                          obscureText: passVisibility.value,
+                          decoration: InputDecoration(
+                            prefixIcon:
+                            Icon(Icons.lock_outline, color: Colors.white),
+                            hintText: 'Enter your password',
+                            hintStyle: TextStyle(color: Colors.white),
+                            border: InputBorder.none,
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white),
+                            ),
+                            contentPadding: EdgeInsets.only(top: 15.0),
+                            suffixIcon: IconButton(
+                              onPressed: () => setState(() {
+                                toggle();
+                              }),
+                              icon: Icon(
+                                passVisibility.value
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
+                                color: Colors.white,
                               ),
-                              onPressed: () {
-                                Get.to(ForgotPassword());
+                            ),
+                          ),
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 25.0),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Checkbox(
+                                    activeColor: Color(0xFFFFB700),
+                                    checkColor: Color(0xFF1B1F24),
+                                    value: rememberMe.value,
+                                    onChanged: (bool? value) {
+                                      setState(() {
+                                        rememberMe = (!(rememberMe.value)).obs;
+                                      });
+                                    },
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        rememberMe = (!(rememberMe.value)).obs;
+                                      });
+                                    },
+                                    child: Text(
+                                      'Remember Me',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                // Add your login button onTap logic here
                               },
+                              child: TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => SignUpStart(),
+                                    ),
+                                  );
+                                },
+                                child: Text(
+                                  'Forgot Password?',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontFamily: 'Poppins',
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                style: ButtonStyle(
+                                  overlayColor: MaterialStateColor.resolveWith(
+                                          (states) => Colors.transparent),
+                                  visualDensity: VisualDensity.compact,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Container(
+                              width: 264,
+                              height: 64,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  signIn();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  primary: Color(0xFFFFB700),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Login'.toUpperCase(),
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Color(0xFF1B1F24),
+                                        fontSize: 22,
+                                        fontFamily: 'Bebas Neue',
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: Get.height / 100 * 1),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Haven’t An Account? ',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                // Add your login button onTap logic here
+                              },
+                              child: TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => SignUpUserType(),
+                                    ),
+                                  );
+                                },
+                                child: Text(
+                                  'Sign Up',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontFamily: 'Poppins',
+                                    fontWeight: FontWeight.w600,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                ),
+                                style: ButtonStyle(
+                                  overlayColor: MaterialStateColor.resolveWith(
+                                          (states) => Colors.transparent),
+                                  visualDensity: VisualDensity.compact,
+                                ),
+                              ),
                             )
                           ],
                         ),
-                        SizedBox(height: 8),
-                        Container(
-                          width: Get.width,
-                          height: 58,
-                          child: Obx((){
-                            return ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  shape: Themes().roundedBorder(12),
-                                  backgroundColor: Color(0xFF1C1C1C)),
-                              child: loading.value ? Center(
-                                child: CircularProgressIndicator(),
-                              ):Text(
-                                'LOGIN',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18),
-                              ),
-                              onPressed: () {
-                                //devFastSignIn();
-                                signIn();
-                              },
-                            );
-                          }),
-                        )
+                        SizedBox(height: Get.height / 100 * 1),
                       ],
                     ),
                   ),
                 ),
-              )
-            ),
-          ),
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 16,
-            child: Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Don\'t have an account?'),
-                  TextButton(
-                    child: Text(
-                      'Sign Up',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18),
-                    ),
-                    onPressed: () {
-                      Get.to(() => SignUpStart());
-                    },
-                  )
-                ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ));
+    );
   }
 }

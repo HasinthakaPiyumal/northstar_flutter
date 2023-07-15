@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:north_star/Auth/SteppingSignUp_v2/MedicalPro/MedicalProRegister_01.dart';
+import 'package:north_star/Auth/SteppingSignUp_v2/Trainer/TrainerRegister_01.dart';
 import 'package:north_star/Utils/PopUps.dart';
 
 import '../SteppingSignUp/SignUpData.dart';
@@ -355,10 +357,12 @@ class _SignUpUserTypeState extends State<SignUpUserType> {
                                   Get.to(() => ClientRegisterFirst());
                                   break;
                                 case 2:
-                                  // Get.to(() => ClientRegisterFirst());
+                                  signUpData.userType = 'trainer';
+                                  Get.to(() => TrainerRegisterFirst());
                                   break;
                                 case 3:
-                                  // Get.to(() => ClientRegisterFirst());
+                                  signUpData.userType = 'doctor';
+                                  Get.to(() => MedicalProRegisterFirst());
                                   break;
                               }
                             } else {
