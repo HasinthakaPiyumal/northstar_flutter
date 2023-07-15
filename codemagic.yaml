@@ -1,0 +1,21 @@
+workflows:
+  version: 2
+  build-and-package:
+    name: Build APK and IPA
+    environment:
+      vars:
+        FLUTTER_CHANNEL: stable
+    scripts:
+      - name: Install dependencies
+        script: flutter pub get
+
+      - name: Build APK
+        script: flutter build apk --release
+
+      - name: Build IPA
+        script: flutter build ios --release --no-codesign
+
+      - name: Archive artifacts
+        script: |
+          mv build/app/outputs/apk/release/app-release.apk $CM_ARTIFACTS_DIR/app-release.apk
+          mv build/ios/archive/Runner.ipa $CM_ARTIFACTS_DIR/Runner.ipa
