@@ -1,15 +1,45 @@
+# codemagic.yaml
+
 workflows:
-  build-and-package:
-    name: Build Debug APK and IPA
+  main:
+    name: Build and Upload to TestFlight
     environment:
       vars:
-        FLUTTER_CHANNEL: stable
+      # Add your environment variables for signing, provisioning profiles, etc.
+      # For example:
+      # - IOS_CERTIFICATE: Encrypted(...) # Your encrypted iOS certificate
+      # - IOS_CERTIFICATE_PASSWORD: Encrypted(...) # Your encrypted certificate password
+      # - IOS_PROVISIONING_PROFILE: Encrypted(...) # Your encrypted provisioning profile
+      # - APP_STORE_CONNECT_TEAM_ID: Encrypted(...) # Your encrypted App Store Connect Team ID
+      # - APP_BUNDLE_ID: com.example.app # Your iOS app bundle ID
     scripts:
-      - name: Install dependencies
-        script: flutter pub get
+      # Fetch dependencies and run tests (if needed)
+      - name: Flutter tests
+        script: flutter test
 
-      - name: Build Debug APK
-        script: flutter build apk --debug
+      # Build the iOS app
+      - name: Build iOS app
+        script: flutter build ios --release
 
-      - name: Build Debug IPA
-        script: flutter build ios --debug --no-codesign
+      # iOS code signing and export
+      - name: iOS code signing and export
+        script: |
+          echo "$IOS_CERTIFICATE" | base64 --decode > certificate.p12
+          security import certificate.p12 -k ~/Library/Keychains/login.keychain -P "$IOS_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+          rm -f certificate.p12
+
+          echo "$IOS_PROVISIONING_PROFILE" | base64 --decode > mobileprovision.mobileprovision
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp mobileprovision.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+
+          flutter build ios --release --flavor=development
+
+      # Upload to TestFlight
+      - name: Upload to TestFlight
+        script: |
+          cd ios
+          fastlane pilot upload --ipa "build/ios/ipa/Runner.ipa" --team_id "$APP_STORE_CONNECT_TEAM_ID" --username "your_apple_id@domain.com" --app_identifier "$APP_BUNDLE_ID"
+
+      # Clean up
+      - name: Clean up
+        script: flutter clean
