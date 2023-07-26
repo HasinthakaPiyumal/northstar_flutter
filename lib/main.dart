@@ -139,7 +139,7 @@ class ThemeAll {
   final darkTheme = ThemeData(
     brightness: Brightness.dark,
     primarySwatch: Themes.mainThemeColor,
-    scaffoldBackgroundColor: Color(0xFF232323),
+    scaffoldBackgroundColor: Color(0xFF1B1F24),
     appBarTheme: AppBarTheme(
       elevation: 0,
       backgroundColor: Color(0xFF232323),
@@ -151,6 +151,34 @@ class ThemeAll {
     ),
   );
 }
+// class ThemeAll {
+//   final lightTheme = ThemeData(
+//     inputDecorationTheme: InputDecorationTheme(
+//       border: OutlineInputBorder(),
+//     ),
+//     brightness: Brightness.light,
+//     primarySwatch: Themes.mainThemeColor,
+//     scaffoldBackgroundColor: Color(0xFFF2F2F2),
+//     appBarTheme: AppBarTheme(
+//       elevation: 0,
+//       backgroundColor: Color(0xFFF2F2F2),
+//     ),
+//   );
+//   final darkTheme = ThemeData(
+//     brightness: Brightness.dark,
+//     primarySwatch: Themes.mainThemeColor,
+//     scaffoldBackgroundColor: Color(0xFF232323),
+//     appBarTheme: AppBarTheme(
+//       elevation: 0,
+//       backgroundColor: Color(0xFF232323),
+//     ),
+//     inputDecorationTheme: InputDecorationTheme(
+//       border: OutlineInputBorder(
+//         borderRadius: BorderRadius.circular(8),
+//       ),
+//     ),
+//   );
+// }
 
 class ThemeProvider with ChangeNotifier {
 

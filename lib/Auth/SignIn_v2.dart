@@ -51,6 +51,7 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
     return SafeArea(
       child: Scaffold(
         body: Stack(
@@ -70,7 +71,7 @@ class _SignInState extends State<SignIn> {
                   end: Alignment(0, 1),
                   colors: [
                     Colors.black.withOpacity(0.5399999856948853),
-                    Colors.black
+                    isDark ? Colors.black : Colors.white
                   ],
                 ),
               ),
@@ -84,7 +85,7 @@ class _SignInState extends State<SignIn> {
                 ),
                 bottomNavigationBar: SingleChildScrollView(
                   child: Container(
-                    color: Theme.of(context).primaryColor.withOpacity(0.1),
+                    color: Theme.of(context).primaryColor.withOpacity(0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -126,7 +127,7 @@ class _SignInState extends State<SignIn> {
                           TextSpan(
                             text: 'login\n'.toUpperCase(),
                             style: TextStyle(
-                              color: Colors.white,
+                              color: isDark ? Colors.white : Colors.black,
                               fontSize: 24,
                               fontFamily: 'Bebas Neue',
                               fontWeight: FontWeight.w400,
@@ -135,7 +136,7 @@ class _SignInState extends State<SignIn> {
                               TextSpan(
                                 text: 'Empower Your Fitness Journey',
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: isDark ? Colors.white : Colors.black,
                                   fontSize: 32,
                                   fontFamily: 'Bebas Neue',
                                   fontWeight: FontWeight.w400,
@@ -149,16 +150,24 @@ class _SignInState extends State<SignIn> {
                         TextField(
                           controller: userName,
                           decoration: InputDecoration(
-                            prefixIcon:
-                                Icon(Icons.email_outlined, color: Colors.white),
+                            prefixIcon: Icon(
+                              Icons.email_outlined,
+                              color: isDark ? Colors.white : Colors.black,
+                            ),
                             hintText: 'Enter your email',
-                            hintStyle: TextStyle(color: Colors.white),
+                            hintStyle: TextStyle(
+                              color: isDark ? Colors.white : Colors.black,
+                            ),
                             border: InputBorder.none,
                             enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white),
+                              borderSide: BorderSide(
+                                color: isDark ? Colors.white : Colors.black,
+                              ),
                             ),
                             focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white),
+                              borderSide: BorderSide(
+                                color: isDark ? Colors.white : Colors.black,
+                              ),
                             ),
                             contentPadding: EdgeInsets.only(top: 15.0),
                           ),
@@ -168,16 +177,22 @@ class _SignInState extends State<SignIn> {
                           controller: password,
                           obscureText: passVisibility.value,
                           decoration: InputDecoration(
-                            prefixIcon:
-                                Icon(Icons.lock_outline, color: Colors.white),
+                            prefixIcon: Icon(
+                              Icons.lock_outline,
+                              color: isDark ? Colors.white : Colors.black,
+                            ),
                             hintText: 'Enter your password',
-                            hintStyle: TextStyle(color: Colors.white),
+                            hintStyle: TextStyle(
+                              color: isDark ? Colors.white : Colors.black,
+                            ),
                             border: InputBorder.none,
                             enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white),
+                              borderSide: BorderSide(
+                                color: isDark ? Colors.white : Colors.black,
+                              ),
                             ),
                             focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white),
+                              borderSide: BorderSide(color: isDark ? Colors.white : Colors.black,),
                             ),
                             contentPadding: EdgeInsets.only(top: 15.0),
                             suffixIcon: IconButton(
@@ -188,7 +203,7 @@ class _SignInState extends State<SignIn> {
                                 passVisibility.value
                                     ? Icons.visibility_off
                                     : Icons.visibility,
-                                color: Colors.white,
+                                color: isDark ? Colors.white : Colors.black,
                               ),
                             ),
                           ),
@@ -221,7 +236,7 @@ class _SignInState extends State<SignIn> {
                                     child: Text(
                                       'Remember Me',
                                       style: TextStyle(
-                                        color: Colors.white,
+                                        color: isDark ? Colors.white : Colors.black,
                                         fontSize: 16,
                                         fontFamily: 'Poppins',
                                         fontWeight: FontWeight.w500,
@@ -247,7 +262,7 @@ class _SignInState extends State<SignIn> {
                                 child: Text(
                                   'Forgot Password?',
                                   style: TextStyle(
-                                    color: Colors.white,
+                                    color: isDark ? Colors.white : Colors.black,
                                     fontSize: 14,
                                     fontFamily: 'Poppins',
                                     fontWeight: FontWeight.w400,
@@ -311,7 +326,7 @@ class _SignInState extends State<SignIn> {
                             Text(
                               'Haven’t An Account? ',
                               style: TextStyle(
-                                color: Colors.white,
+                                color: isDark ? Colors.white : Colors.black,
                                 fontSize: 16,
                                 fontFamily: 'Poppins',
                                 fontWeight: FontWeight.w400,
@@ -333,7 +348,7 @@ class _SignInState extends State<SignIn> {
                                 child: Text(
                                   'Sign Up',
                                   style: TextStyle(
-                                    color: Colors.white,
+                                    color: isDark ? Colors.white : Colors.black,
                                     fontSize: 16,
                                     fontFamily: 'Poppins',
                                     fontWeight: FontWeight.w600,

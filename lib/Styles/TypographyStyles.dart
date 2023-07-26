@@ -14,6 +14,7 @@ class TypographyStyles {
     return TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: size.toDouble(),
+      fontFamily: 'Poppins',
       color: color,
     );
   }

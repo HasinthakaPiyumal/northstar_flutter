@@ -3,171 +3,172 @@ import 'package:get/get.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 
-class ButtonStyles{
-
-  static ButtonStyle superRound(){
+class ButtonStyles {
+  static ButtonStyle superRound() {
     return ElevatedButton.styleFrom(
-        foregroundColor: Colors.white, backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.black,
         elevation: 0,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(64)
-        )
-    );
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(64)));
   }
 
-  static ButtonStyle homeBtn(){
+  static ButtonStyle homeBtn() {
     return ElevatedButton.styleFrom(
-        foregroundColor: Themes.mainThemeColor,
-        backgroundColor: Get.isDarkMode ?  Color(0xff1C1C1C):Colors.white,
-        shadowColor: Colors.black.withOpacity(0.6),
-        elevation: 6,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(27)
-        )
+      foregroundColor: Themes.mainThemeColor,
+      backgroundColor: Get.isDarkMode ? Color(0xff1E2630) : Colors.white,
+      shadowColor: Colors.black.withOpacity(0.6),
+      elevation: 6,
+      shape: RoundedRectangleBorder(
+        side: BorderSide(width: 0.50, color: Colors.white),
+        borderRadius: BorderRadius.circular(10),
+      ),
     );
   }
 
-  static ButtonStyle flatButton(){
+  static ButtonStyle flatButton() {
     return ElevatedButton.styleFrom(
         foregroundColor: Colors.black,
         backgroundColor: Color(0xFFF3F4F6),
         elevation: 0,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16)
-        )
-    );
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)));
   }
 
-  static ButtonStyle healthServiceButton(Color color){
+  static ButtonStyle healthServiceButton(Color color) {
     return ElevatedButton.styleFrom(
         foregroundColor: Colors.black,
         backgroundColor: color,
         elevation: 0,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16)
-        )
-    );
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)));
   }
 
-  static ButtonStyle bigBlackButton(){
+  static ButtonStyle bigBlackButton() {
     return ElevatedButton.styleFrom(
         foregroundColor: Colors.white,
         backgroundColor: Colors.black,
         elevation: 6,
         padding: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12)
-        )
-    );
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)));
   }
 
-  static ButtonStyle bigGreyButton(){
+  static ButtonStyle bigGreyButton() {
     return ElevatedButton.styleFrom(
         foregroundColor: Colors.black,
         backgroundColor: Colors.grey.shade200,
         elevation: 0,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12)
-        )
-    );
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)));
   }
 
-  static ButtonStyle bigWhiteButton(){
+  static ButtonStyle bigWhiteButton() {
     return ElevatedButton.styleFrom(
-        foregroundColor: Colors.black, backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        backgroundColor: Colors.white,
         elevation: 6,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12)
-        )
-    );
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)));
   }
 
-  static ButtonStyle bigFlatBlackButton(){
+  static ButtonStyle bigFlatBlackButton() {
     return ElevatedButton.styleFrom(
-        foregroundColor: Colors.white, backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.black,
         elevation: 0,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8)
-        )
-    );
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)));
   }
 
-  static ButtonStyle bigFlatGreyButton(){
+  static ButtonStyle bigFlatGreyButton() {
     return ElevatedButton.styleFrom(
-        foregroundColor: Colors.black, backgroundColor: Color(0xffE2E2E2),
+        foregroundColor: Colors.black,
+        backgroundColor: Color(0xffE2E2E2),
         elevation: 0,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8)
-        )
-    );
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)));
   }
 
-  static ButtonStyle bigFlatSearchBlackButton(){
+  static ButtonStyle bigFlatSearchBlackButton() {
     return ElevatedButton.styleFrom(
-        foregroundColor: Colors.white, backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.black,
         elevation: 0,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(0),
                 topRight: Radius.circular(12),
                 bottomLeft: Radius.circular(0),
-                bottomRight: Radius.circular(12)
-            )
-        )
-    );
+                bottomRight: Radius.circular(12))));
   }
 
-  static ButtonStyle bigFlatFilterBlackButton(){
+  static ButtonStyle bigFlatFilterBlackButton() {
     return ElevatedButton.styleFrom(
-        foregroundColor: Colors.white, backgroundColor: Color(0xffF3AF5D),
+        foregroundColor: Colors.white,
+        backgroundColor: Color(0xffF3AF5D),
         elevation: 0,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(12),
                 topRight: Radius.circular(12),
                 bottomLeft: Radius.circular(12),
-                bottomRight: Radius.circular(12)
-            )
-        )
-    );
+                bottomRight: Radius.circular(12))));
   }
 
-  static ButtonStyle flatFilterButton(){
+  static ButtonStyle flatFilterButton() {
     return OutlinedButton.styleFrom(
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12)
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     );
   }
 
-  static ButtonStyle matButton(Color color, double? elevation){
+  static ButtonStyle matButton(Color color, double? elevation) {
     return ElevatedButton.styleFrom(
-        foregroundColor: Get.isDarkMode ? Colors.white : Colors.black, backgroundColor: color,
+        foregroundColor: Get.isDarkMode ? Colors.white : Colors.black,
+        backgroundColor: color,
+        elevation: elevation,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)));
+  }
+
+  static ButtonStyle matRadButton(
+      Color color, double? elevation, double radius) {
+    return ElevatedButton.styleFrom(
+        foregroundColor: Get.isDarkMode ? Colors.white : Colors.black,
+        backgroundColor: color,
         elevation: elevation,
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12)
-        )
-    );
+            borderRadius: BorderRadius.circular(radius)));
   }
 
-  static ButtonStyle matRadButton(Color color, double? elevation, double radius){
+  static ButtonStyle notSelectedBookingButton(double bRadius) {
     return ElevatedButton.styleFrom(
-        foregroundColor: Get.isDarkMode ? Colors.white : Colors.black, backgroundColor: color,
-        elevation: elevation,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(radius)
-        )
-    );
-  }
-
-  static ButtonStyle notSelectedBookingButton(double bRadius){
-    return ElevatedButton.styleFrom(
-      foregroundColor: Get.isDarkMode ? Colors.white: Colors.black,
-      backgroundColor: colors.Colors().lightBlack(1), elevation: 0,
+      foregroundColor: Get.isDarkMode ? Colors.white : Colors.black,
+      backgroundColor: colors.Colors().lightBlack(1),
+      elevation: 0,
       disabledForegroundColor: Colors.black.withOpacity(0.38),
       disabledBackgroundColor: Colors.black.withOpacity(0.12),
+      shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(bRadius)),
+      textStyle: TextStyle(
+        fontSize: 20,
+      ),
+    );
+  }
+
+  static ButtonStyle notSelectedBookingButtonLightTheme(double bRadius) {
+    return ElevatedButton.styleFrom(
+      foregroundColor: Colors.black,
+      backgroundColor: colors.Colors().selectedCardBG,
+      elevation: 0,
+      disabledForegroundColor: Colors.grey[700]?.withOpacity(0.38),
+      disabledBackgroundColor: Colors.grey[700]?.withOpacity(0.12),
+      shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(bRadius)),
+      textStyle: TextStyle(
+        fontSize: 20,
+      ),
+    );
+  }
+
+  static ButtonStyle selectedBookingButton(double bRadius) {
+    return ElevatedButton.styleFrom(
+      foregroundColor: Themes.mainThemeColorAccent.shade100,
+      backgroundColor: Themes.mainThemeColor.shade500,
+      elevation: 0,
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(bRadius)
+        borderRadius: BorderRadius.circular(bRadius),
       ),
       textStyle: TextStyle(
         fontSize: 20,
@@ -175,33 +176,13 @@ class ButtonStyles{
     );
   }
 
-  static ButtonStyle notSelectedBookingButtonLightTheme(double bRadius){
+  static ButtonStyle selectedButton() {
     return ElevatedButton.styleFrom(
-      foregroundColor: Colors.black, backgroundColor: colors.Colors().selectedCardBG, elevation: 0, disabledForegroundColor: Colors.grey[700]?.withOpacity(0.38), disabledBackgroundColor: Colors.grey[700]?.withOpacity(0.12),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(bRadius)
-      ),
-      textStyle: TextStyle(
-        fontSize: 20,
-      ),
-    );
-  }
-
-  static ButtonStyle selectedBookingButton(double bRadius){
-    return ElevatedButton.styleFrom(
-      foregroundColor: Themes.mainThemeColorAccent.shade100, backgroundColor: Themes.mainThemeColor.shade500, elevation: 0,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(bRadius),
-      ),
-      textStyle: TextStyle(
-        fontSize: 20,
-      ),
-    );
-  }
-
-  static ButtonStyle selectedButton(){
-    return ElevatedButton.styleFrom(
-      foregroundColor: Get.isDarkMode ? Colors.white: Colors.black, backgroundColor: Get.isDarkMode ? colors.Colors().deepGrey(1) : colors.Colors().selectedCardBG, padding: const EdgeInsets.symmetric(vertical: 20),
+      foregroundColor: Get.isDarkMode ? Colors.white : Colors.black,
+      backgroundColor: Get.isDarkMode
+          ? colors.Colors().deepGrey(1)
+          : colors.Colors().selectedCardBG,
+      padding: const EdgeInsets.symmetric(vertical: 20),
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
@@ -210,15 +191,21 @@ class ButtonStyles{
         fontSize: 20,
       ),
       side: BorderSide(
-        color: Get.isDarkMode ? Themes.mainThemeColor.shade600 : colors.Colors().lightBlack(1),
+        color: Get.isDarkMode
+            ? Themes.mainThemeColor.shade600
+            : colors.Colors().lightBlack(1),
         width: 1.5,
       ),
     );
   }
 
-  static ButtonStyle selectedButtonNoPadding(){
+  static ButtonStyle selectedButtonNoPadding() {
     return ElevatedButton.styleFrom(
-      foregroundColor: Get.isDarkMode ? Colors.white: Colors.black, backgroundColor: Get.isDarkMode ? colors.Colors().deepGrey(1) : colors.Colors().selectedCardBG, elevation: 0,
+      foregroundColor: Get.isDarkMode ? Colors.white : Colors.black,
+      backgroundColor: Get.isDarkMode
+          ? colors.Colors().deepGrey(1)
+          : colors.Colors().selectedCardBG,
+      elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
       ),
@@ -232,9 +219,13 @@ class ButtonStyles{
     );
   }
 
-  static ButtonStyle notSelectedButton(){
+  static ButtonStyle notSelectedButton() {
     return ElevatedButton.styleFrom(
-      foregroundColor: Get.isDarkMode ? Colors.white: Colors.black, backgroundColor: Get.isDarkMode ? colors.Colors().deepGrey(1) : colors.Colors().lightCardBG, padding: const EdgeInsets.symmetric(vertical: 20),
+      foregroundColor: Get.isDarkMode ? Colors.white : Colors.black,
+      backgroundColor: Get.isDarkMode
+          ? colors.Colors().deepGrey(1)
+          : colors.Colors().lightCardBG,
+      padding: const EdgeInsets.symmetric(vertical: 20),
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
@@ -245,9 +236,13 @@ class ButtonStyles{
     );
   }
 
-  static ButtonStyle notSelectedButtonNoPadding(){
+  static ButtonStyle notSelectedButtonNoPadding() {
     return ElevatedButton.styleFrom(
-      foregroundColor: Get.isDarkMode ? Colors.white: Colors.black, backgroundColor: Get.isDarkMode ? colors.Colors().deepGrey(1) : colors.Colors().lightCardBG, elevation: 0,
+      foregroundColor: Get.isDarkMode ? Colors.white : Colors.black,
+      backgroundColor: Get.isDarkMode
+          ? colors.Colors().deepGrey(1)
+          : colors.Colors().lightCardBG,
+      elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
       ),

@@ -47,8 +47,9 @@ class _TrainerRegisterThreeState extends State<TrainerRegisterThree> {
   @override
   Widget build(BuildContext context) {
     double contentHeight = 25.0;
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: Color(0xFF1B1F24),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
@@ -79,8 +80,9 @@ class _TrainerRegisterThreeState extends State<TrainerRegisterThree> {
                       height: 29,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage(
-                              "assets/appicons/mini_logo_text_white.png"),
+                          image: AssetImage(isDark
+                              ? "assets/appicons/mini_logo_text_white.png"
+                              : "assets/appicons/mini_logo_text_black.png"),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -93,7 +95,7 @@ class _TrainerRegisterThreeState extends State<TrainerRegisterThree> {
                   height: 50,
                   padding: const EdgeInsets.all(3.0),
                   decoration: ShapeDecoration(
-                    color: Colors.white,
+                    color: isDark ? Colors.white : Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -155,7 +157,7 @@ class _TrainerRegisterThreeState extends State<TrainerRegisterThree> {
                 Text(
                   'Are You Insured Trainer',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: isDark ? Colors.white : Colors.black,
                     fontSize: 20,
                     fontFamily: 'Poppins',
                     fontWeight: FontWeight.w600,
@@ -198,7 +200,7 @@ class _TrainerRegisterThreeState extends State<TrainerRegisterThree> {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: isInsured
-                                    ? Colors.white70
+                                    ? isDark?Colors.white70:Colors.black54
                                     : Color(0xFF1B1F24),
                                 fontSize: 24,
                                 fontFamily: 'Bebas Neue',
@@ -246,7 +248,7 @@ class _TrainerRegisterThreeState extends State<TrainerRegisterThree> {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: !isInsured
-                                    ? Colors.white70
+                                    ? isDark?Colors.white70:Colors.black54
                                     : Color(0xFF1B1F24),
                                 fontSize: 24,
                                 fontFamily: 'Bebas Neue',
@@ -269,14 +271,14 @@ class _TrainerRegisterThreeState extends State<TrainerRegisterThree> {
                     ),
                     labelText: 'About',
                     labelStyle: TextStyle(
-                      color: Colors.white70,
+                      color: isDark ? Colors.white70 : Colors.black54,
                       fontWeight: FontWeight.w500,
                       fontFamily: 'Poppins',
                       fontSize: 16,
                     ),
                     contentPadding: EdgeInsets.all(10),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: isDark? Colors.white:Colors.black),
                 ),
                 SizedBox(height: contentHeight),
                 Center(

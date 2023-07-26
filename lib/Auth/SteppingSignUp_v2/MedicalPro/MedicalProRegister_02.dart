@@ -79,8 +79,9 @@ class _MedicalProRegisterSecondState extends State<MedicalProRegisterSecond> {
   @override
   Widget build(BuildContext context) {
     double contentHeight = 25.0;
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: Color(0xFF1B1F24),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
@@ -111,8 +112,9 @@ class _MedicalProRegisterSecondState extends State<MedicalProRegisterSecond> {
                       height: 29,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage(
-                              "assets/appicons/mini_logo_text_white.png"),
+                          image: AssetImage(isDark
+                              ? "assets/appicons/mini_logo_text_white.png"
+                              : "assets/appicons/mini_logo_text_black.png"),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -125,7 +127,7 @@ class _MedicalProRegisterSecondState extends State<MedicalProRegisterSecond> {
                   height: 50,
                   padding: const EdgeInsets.all(3.0),
                   decoration: ShapeDecoration(
-                    color: Colors.white,
+                    color: isDark?Colors.white:Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -189,26 +191,27 @@ class _MedicalProRegisterSecondState extends State<MedicalProRegisterSecond> {
                   readOnly: true,
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.home_outlined,
-                        color: Colors.white, size: 18),
+                        color: isDark?Colors.white:Colors.black, size: 18),
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
                     ),
                     labelText: 'Country Of Residence',
                     labelStyle: TextStyle(
-                      color: Colors.white70,
+                      color: isDark?Colors.white70:Colors.black54,
                       fontWeight: FontWeight.w500,
                       fontFamily: 'Poppins',
                       fontSize: 16,
                     ),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: isDark?Colors.white:Colors.black),
                   onTap: () {
                     showDialog(
                       context: context,
                       builder: (context) => Theme(
                         data: Theme.of(context).copyWith(
-                          dialogBackgroundColor: Color(0xFF1B1F24),
+                          dialogBackgroundColor:
+                          isDark ? Color(0xFF1B1F24) : Colors.white,
                           primaryColor: Color(0xFFFFB700),
                         ),
                         child: CountryPickerDialog(
@@ -228,7 +231,7 @@ class _MedicalProRegisterSecondState extends State<MedicalProRegisterSecond> {
                             signUpData.currency =
                                 country.currencyCode.toString();
                             _countryController.text =
-                                "${country.name} (${country.currencyCode})";
+                            "${country.name} (${country.currencyCode})";
                           },
                           itemBuilder: _buildDropdownItem,
                         ),
@@ -242,60 +245,60 @@ class _MedicalProRegisterSecondState extends State<MedicalProRegisterSecond> {
                   maxLines: 3,
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.location_on_outlined,
-                        color: Colors.white, size: 18),
+                        color: isDark?Colors.white:Colors.black, size: 18),
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
                     ),
                     labelText: 'Shipping Address',
                     labelStyle: TextStyle(
-                      color: Colors.white70,
+                      color: isDark?Colors.white70:Colors.black54,
                       fontWeight: FontWeight.w500,
                       fontFamily: 'Poppins',
                       fontSize: 16,
                     ),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: isDark?Colors.white:Colors.black),
                 ),
                 SizedBox(height: contentHeight),
                 TextFormField(
                   controller: _contactPersonController,
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.call_outlined,
-                        color: Colors.white, size: 18),
+                        color: isDark?Colors.white:Colors.black, size: 18),
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
                     ),
                     labelText: 'Contact Person',
                     labelStyle: TextStyle(
-                      color: Colors.white70,
+                      color: isDark?Colors.white70:Colors.black54,
                       fontWeight: FontWeight.w500,
                       fontFamily: 'Poppins',
                       fontSize: 16,
                     ),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: isDark?Colors.white:Colors.black),
                 ),
                 SizedBox(height: contentHeight),
                 IntlPhoneField(
                   controller: _emergencyContactController,
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.call_outlined,
-                        color: Colors.white, size: 18),
+                        color: isDark?Colors.white:Colors.black, size: 18),
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
                     ),
                     labelText: 'Emergency Contact',
                     labelStyle: TextStyle(
-                      color: Colors.white70,
+                      color: isDark?Colors.white70:Colors.black54,
                       fontWeight: FontWeight.w500,
                       fontFamily: 'Poppins',
                       fontSize: 16,
                     ),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: isDark?Colors.white:Colors.black),
                   initialCountryCode: 'MV',
                   onChanged: (phone) {
                     setState(() {
@@ -307,20 +310,20 @@ class _MedicalProRegisterSecondState extends State<MedicalProRegisterSecond> {
                 //   controller: _emergencyContactController,
                 //   decoration: InputDecoration(
                 //     prefixIcon: Icon(Icons.call_outlined,
-                //         color: Colors.white, size: 18),
+                //         color: isDark?Colors.white:Colors.black, size: 18),
                 //     border: UnderlineInputBorder(
                 //       borderSide: BorderSide(color: Colors.white),
                 //     ),
                 //     labelText: 'Emergency Contact',
                 //     labelStyle: TextStyle(
-                //       color: Colors.white70,
+                //       color: isDark?Colors.white70:Colors.black54,
                 //       fontWeight: FontWeight.w500,
                 //       fontFamily: 'Poppins',
                 //       fontSize: 16,
                 //     ),
                 //     contentPadding: EdgeInsets.only(bottom: 0),
                 //   ),
-                //   style: TextStyle(color: Colors.white),
+                //   style: TextStyle(color: isDark?Colors.white:Colors.black),
                 // ),
                 SizedBox(height: contentHeight),
                 TextFormField(
@@ -329,13 +332,13 @@ class _MedicalProRegisterSecondState extends State<MedicalProRegisterSecond> {
                   decoration: InputDecoration(
                     prefixIcon: Icon(
                       Icons.lock_outline,
-                      color: Colors.white,
+                      color: isDark?Colors.white:Colors.black,
                       size: 18,
                     ),
                     suffixIcon: IconButton(
                       icon: Icon(
                         showPass1 ? Icons.visibility : Icons.visibility_off,
-                        color: Colors.white,
+                        color: isDark?Colors.white:Colors.black,
                       ),
                       onPressed: () {
                         setState(() {
@@ -348,14 +351,14 @@ class _MedicalProRegisterSecondState extends State<MedicalProRegisterSecond> {
                     ),
                     labelText: 'Password',
                     labelStyle: TextStyle(
-                      color: Colors.white70,
+                      color: isDark?Colors.white70:Colors.black54,
                       fontWeight: FontWeight.w500,
                       fontFamily: 'Poppins',
                       fontSize: 16,
                     ),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: isDark?Colors.white:Colors.black),
                 ),
                 SizedBox(height: contentHeight),
                 TextFormField(
@@ -364,13 +367,13 @@ class _MedicalProRegisterSecondState extends State<MedicalProRegisterSecond> {
                   decoration: InputDecoration(
                     prefixIcon: Icon(
                       Icons.lock_outline,
-                      color: Colors.white,
+                      color: isDark?Colors.white:Colors.black,
                       size: 18,
                     ),
                     suffixIcon: IconButton(
                       icon: Icon(
                         showPass2 ? Icons.visibility : Icons.visibility_off,
-                        color: Colors.white,
+                        color: isDark?Colors.white:Colors.black,
                       ),
                       onPressed: () {
                         setState(() {
@@ -383,14 +386,14 @@ class _MedicalProRegisterSecondState extends State<MedicalProRegisterSecond> {
                     ),
                     labelText: 'Confirm Password',
                     labelStyle: TextStyle(
-                      color: Colors.white70,
+                      color: isDark?Colors.white70:Colors.black54,
                       fontWeight: FontWeight.w500,
                       fontFamily: 'Poppins',
                       fontSize: 16,
                     ),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: isDark?Colors.white:Colors.black),
                 ),
                 SizedBox(height: contentHeight),
                 Center(

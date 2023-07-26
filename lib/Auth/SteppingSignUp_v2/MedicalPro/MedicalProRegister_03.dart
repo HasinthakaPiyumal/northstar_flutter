@@ -38,13 +38,15 @@ class _MedicalProRegisterThreeState extends State<MedicalProRegisterThree> {
       signUpData.hourlyRate = _hourlyRatetyController.text;
 
       Map res = await httpClient.signUp(signUpData.toDoctorJson());
-print(res);
+      print(res);
       if (res['code'] == 200) {
         CommonAuthUtils.signIn(res);
-        showSnack('Welcome to NorthStar!', 'Your personal fitness Application!');
+        showSnack(
+            'Welcome to NorthStar!', 'Your personal fitness Application!');
         Get.defaultDialog(
           title: 'Notice!',
-          middleText: 'You must be verified by an admin before you can use the app. Please wait for an email from us.',
+          middleText:
+              'You must be verified by an admin before you can use the app. Please wait for an email from us.',
           barrierDismissible: false,
           confirm: ElevatedButton(
             style: ButtonStyles.flatButton(),
@@ -63,8 +65,9 @@ print(res);
   @override
   Widget build(BuildContext context) {
     double contentHeight = 18.0;
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: Color(0xFF1B1F24),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
@@ -95,8 +98,9 @@ print(res);
                       height: 29,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage(
-                              "assets/appicons/mini_logo_text_white.png"),
+                          image: AssetImage(isDark
+                              ? "assets/appicons/mini_logo_text_white.png"
+                              : "assets/appicons/mini_logo_text_black.png"),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -109,7 +113,7 @@ print(res);
                   height: 50,
                   padding: const EdgeInsets.all(3.0),
                   decoration: ShapeDecoration(
-                    color: Colors.white,
+                    color: isDark ? Colors.white : Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -173,44 +177,46 @@ print(res);
                   maxLines: 4,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
+                      borderSide: BorderSide(
+                          color: isDark ? Colors.white : Colors.black),
                     ),
                     labelText: 'specialty',
                     labelStyle: TextStyle(
-                      color: Colors.white70,
+                      color: isDark ? Colors.white70 : Colors.black54,
                       fontWeight: FontWeight.w500,
                       fontFamily: 'Poppins',
                       fontSize: 16,
                     ),
                     contentPadding: EdgeInsets.all(10),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: isDark ? Colors.white : Colors.black),
                 ),
                 SizedBox(height: contentHeight),
                 TextFormField(
                   controller: _hourlyRatetyController,
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.attach_money_rounded,
-                        color: Colors.white, size: 18),
+                        color: isDark ? Colors.white : Colors.black, size: 18),
                     border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
+                      borderSide: BorderSide(
+                          color: isDark ? Colors.white : Colors.black),
                     ),
                     labelText: 'Hourly Rate (${signUpData.currency})',
                     labelStyle: TextStyle(
-                      color: Colors.white70,
+                      color: isDark ? Colors.white70 : Colors.black54,
                       fontWeight: FontWeight.w500,
                       fontFamily: 'Poppins',
                       fontSize: 16,
                     ),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: isDark ? Colors.white : Colors.black),
                 ),
                 SizedBox(height: 30),
                 Text(
                   'Are You Authorized To Prescribe?',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: isDark ? Colors.white : Colors.black,
                     fontSize: 20,
                     fontFamily: 'Poppins',
                     fontWeight: FontWeight.w600,
@@ -253,7 +259,7 @@ print(res);
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: canPrescribe
-                                    ? Colors.white70
+                                    ? (isDark ? Colors.white70 : Colors.black54)
                                     : Color(0xFF1B1F24),
                                 fontSize: 24,
                                 fontFamily: 'Bebas Neue',
@@ -301,7 +307,7 @@ print(res);
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: !canPrescribe
-                                    ? Colors.white70
+                                    ? (isDark ? Colors.white70 : Colors.black54)
                                     : Color(0xFF1B1F24),
                                 fontSize: 24,
                                 fontFamily: 'Bebas Neue',
@@ -318,7 +324,7 @@ print(res);
                 Text(
                   'Title',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: isDark ? Colors.white : Colors.black,
                     fontSize: 20,
                     fontFamily: 'Poppins',
                     fontWeight: FontWeight.w600,
@@ -362,7 +368,9 @@ print(res);
                               style: TextStyle(
                                 color: title == 'Dr'
                                     ? Color(0xFF1B1F24)
-                                    : Colors.white70,
+                                    : isDark
+                                        ? Colors.white70
+                                        : Colors.black54,
                                 fontSize: 24,
                                 fontFamily: 'Bebas Neue',
                                 fontWeight: FontWeight.w400,
@@ -410,7 +418,9 @@ print(res);
                               style: TextStyle(
                                 color: title == 'Mr'
                                     ? Color(0xFF1B1F24)
-                                    : Colors.white70,
+                                    : isDark
+                                        ? Colors.white70
+                                        : Colors.black54,
                                 fontSize: 24,
                                 fontFamily: 'Bebas Neue',
                                 fontWeight: FontWeight.w400,
@@ -458,7 +468,9 @@ print(res);
                               style: TextStyle(
                                 color: title == 'Ms'
                                     ? Color(0xFF1B1F24)
-                                    : Colors.white70,
+                                    : isDark
+                                        ? Colors.white70
+                                        : Colors.black54,
                                 fontSize: 24,
                                 fontFamily: 'Bebas Neue',
                                 fontWeight: FontWeight.w400,
@@ -506,7 +518,9 @@ print(res);
                               style: TextStyle(
                                 color: title == 'Mrs'
                                     ? Color(0xFF1B1F24)
-                                    : Colors.white70,
+                                    : isDark
+                                        ? Colors.white70
+                                        : Colors.black54,
                                 fontSize: 24,
                                 fontFamily: 'Bebas Neue',
                                 fontWeight: FontWeight.w400,

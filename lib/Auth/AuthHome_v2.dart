@@ -10,6 +10,7 @@ class AuthHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool shouldPop = false;
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       body: Stack(
@@ -25,11 +26,11 @@ class AuthHome extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                begin: Alignment(0.00, -1.00),
+                begin: Alignment(0.0, -1.0),
                 end: Alignment(0, 1),
                 colors: [
                   Colors.black.withOpacity(0.5399999856948853),
-                  Colors.black
+                  isDark ? Colors.black : Colors.white
                 ],
               ),
             ),
@@ -40,7 +41,7 @@ class AuthHome extends StatelessWidget {
               children: [],
             ),
             bottomNavigationBar: Container(
-              color: Theme.of(context).primaryColor.withOpacity(0.1),
+              color: Theme.of(context).primaryColor.withOpacity(0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
@@ -78,7 +79,7 @@ class AuthHome extends StatelessWidget {
                     TextSpan(
                       text: 'Start Now!\n',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: isDark ? Colors.white : Colors.black,
                         fontSize: 40,
                         fontFamily: 'Bebas Neue',
                         fontWeight: FontWeight.w400,
@@ -87,7 +88,7 @@ class AuthHome extends StatelessWidget {
                         TextSpan(
                           text: 'Unlock Your Fitness Potential',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: isDark ? Colors.white : Colors.black,
                             fontSize: 48,
                             fontFamily: 'Bebas Neue',
                             fontWeight: FontWeight.w400,
@@ -107,7 +108,7 @@ class AuthHome extends StatelessWidget {
                         'Elevate your fitness with Northstar: Personalized workouts, expert guidance, and a vibrant community to support your goals.',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Colors.white,
+                          color: isDark ? Colors.white : Colors.black,
                           fontSize: 16,
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.w400,
@@ -172,7 +173,7 @@ class AuthHome extends StatelessWidget {
                       Text(
                         'Already Have An Account? ',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: isDark ? Colors.white : Colors.black,
                           fontSize: 16,
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.w400,
@@ -194,7 +195,7 @@ class AuthHome extends StatelessWidget {
                           child: Text(
                             'Login',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: isDark ? Colors.white : Colors.black,
                               fontSize: 16,
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w600,

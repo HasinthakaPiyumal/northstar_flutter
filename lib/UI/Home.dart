@@ -38,6 +38,7 @@ import 'SharedWidgets/WatchDataWidget.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
+  static const carouselHeight = 180.0;
 
   @override
   Widget build(BuildContext context) {
@@ -46,28 +47,33 @@ class Home extends StatelessWidget {
     RxMap homeDataTrainer = {}.obs;
     RxInt currentCarouselIndex = 0.obs;
 
+
+
     RxList<Widget> carouselItems = <Widget>[].obs;
 
     void getCarouselItems() async{
       Map res = await httpClient.getCarouselItems();
       if(res['code'] == 200){
         res['data'].forEach((item){
+          print(item);
           carouselItems.add(
             InkWell(
                       onTap: () {
                         final Uri meeting = Uri.parse(item['link']);
                         launchUrl(meeting);
                       },
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(0),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                        padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                        // color: Colors.red,
+                        height: 10,
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
+                          // borderRadius: BorderRadius.circular(16),
                           child: CachedNetworkImage(
                             imageUrl: HttpClient.s3ResourcesBaseUrl + item['image'],
-                            fit: BoxFit.cover,
+                            fit: BoxFit.fitWidth,
                             width: Get.width,
-                            height: 220,
+                            height: 200,
                             placeholder: (context, url) => Center(
                               child: CircularProgressIndicator(),
                             ),
@@ -171,13 +177,13 @@ class Home extends StatelessWidget {
 
 
               Container(
-                height: 220,
-                width: (Get.width - 10),
+                height: carouselHeight,
+                width: (Get.width),
                 child: Obx(()=>CarouselSlider(
                   options: CarouselOptions(
                     autoPlay: true,
                     autoPlayInterval: Duration(seconds: 3),
-                    height: 220,
+                    height: carouselHeight,
                     viewportFraction: 1.0,
                     onPageChanged: (index, reason) {
                       currentCarouselIndex.value = index;

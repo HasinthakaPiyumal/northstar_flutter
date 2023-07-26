@@ -100,8 +100,9 @@ class _ClientRegisterFirstState extends State<ClientRegisterFirst> {
   @override
   Widget build(BuildContext context) {
     double contentHeight = 25.0;
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: Color(0xFF1B1F24),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
@@ -132,8 +133,9 @@ class _ClientRegisterFirstState extends State<ClientRegisterFirst> {
                       height: 29,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage(
-                              "assets/appicons/mini_logo_text_white.png"),
+                          image: AssetImage(isDark
+                              ? "assets/appicons/mini_logo_text_white.png"
+                              : "assets/appicons/mini_logo_text_black.png"),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -212,20 +214,21 @@ class _ClientRegisterFirstState extends State<ClientRegisterFirst> {
                         controller: _firstNameController,
                         decoration: InputDecoration(
                           prefixIcon: Icon(Icons.person_2_outlined,
-                              color: Colors.white, size: 18),
+                              color: isDark ? Colors.white : Colors.black,
+                              size: 18),
                           border: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.white),
                           ),
                           labelText: 'First Name',
                           labelStyle: TextStyle(
-                            color: Colors.white70,
+                            color: isDark ? Colors.white70 : Colors.black54,
                             fontWeight: FontWeight.w500,
                             fontFamily: 'Poppins',
                             fontSize: 16,
                           ),
                           contentPadding: EdgeInsets.only(bottom: 0),
                         ),
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: isDark?Colors.white:Colors.black),
                       ),
                     ),
                     SizedBox(width: 16),
@@ -235,7 +238,7 @@ class _ClientRegisterFirstState extends State<ClientRegisterFirst> {
                         decoration: InputDecoration(
                           prefixIcon: Icon(
                             Icons.person_2_outlined,
-                            color: Colors.white,
+                            color: isDark ? Colors.white : Colors.black,
                             size: 20,
                           ),
                           border: UnderlineInputBorder(
@@ -243,7 +246,7 @@ class _ClientRegisterFirstState extends State<ClientRegisterFirst> {
                           ),
                           labelText: 'Last Name',
                           labelStyle: TextStyle(
-                            color: Colors.white70,
+                            color: isDark ? Colors.white70 : Colors.black54,
                             fontWeight: FontWeight.w500,
                             fontFamily: 'Poppins',
                             fontSize: 16,
@@ -251,7 +254,7 @@ class _ClientRegisterFirstState extends State<ClientRegisterFirst> {
                           contentPadding: EdgeInsets.only(bottom: 0),
                         ),
                         style: TextStyle(
-                          color: Colors.white,
+                          color: isDark ? Colors.white : Colors.black,
                           fontSize: 16,
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.w500,
@@ -265,60 +268,60 @@ class _ClientRegisterFirstState extends State<ClientRegisterFirst> {
                   controller: _emailController,
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.email_outlined,
-                        color: Colors.white, size: 18),
+                        color: isDark ? Colors.white : Colors.black, size: 18),
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
                     ),
                     labelText: 'Email',
                     labelStyle: TextStyle(
-                      color: Colors.white70,
+                      color: isDark ? Colors.white70 : Colors.black54,
                       fontWeight: FontWeight.w500,
                       fontFamily: 'Poppins',
                       fontSize: 16,
                     ),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: isDark?Colors.white:Colors.black),
                 ),
                 SizedBox(height: contentHeight),
                 TextFormField(
                   controller: _nicController,
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.credit_card_outlined,
-                        color: Colors.white, size: 18),
+                        color: isDark ? Colors.white : Colors.black, size: 18),
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
                     ),
                     labelText: 'Nic Or Passport',
                     labelStyle: TextStyle(
-                      color: Colors.white70,
+                      color: isDark ? Colors.white70 : Colors.black54,
                       fontWeight: FontWeight.w500,
                       fontFamily: 'Poppins',
                       fontSize: 16,
                     ),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: isDark?Colors.white:Colors.black),
                 ),
                 SizedBox(height: contentHeight),
                 IntlPhoneField(
                   controller: _phoneNumberController,
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.call_outlined,
-                        color: Colors.white, size: 18),
+                        color: isDark ? Colors.white : Colors.black, size: 18),
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
                     ),
                     labelText: 'Phone',
                     labelStyle: TextStyle(
-                      color: Colors.white70,
+                      color: isDark ? Colors.white70 : Colors.black54,
                       fontWeight: FontWeight.w500,
                       fontFamily: 'Poppins',
                       fontSize: 16,
                     ),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: isDark?Colors.white:Colors.black),
                   initialCountryCode: 'MV',
                   onChanged: (phone) {
                     setState(() {
@@ -330,20 +333,20 @@ class _ClientRegisterFirstState extends State<ClientRegisterFirst> {
                 //   controller: _phoneNumberController,
                 //   decoration: InputDecoration(
                 //     prefixIcon: Icon(Icons.call_outlined,
-                //         color: Colors.white, size: 18),
+                //         color: isDark ? Colors.white : Colors.black, size: 18),
                 //     border: UnderlineInputBorder(
                 //       borderSide: BorderSide(color: Colors.white),
                 //     ),
                 //     labelText: 'Phone',
                 //     labelStyle: TextStyle(
-                //       color: Colors.white70,
+                //       color: isDark? Colors.white70:Colors.black54,
                 //       fontWeight: FontWeight.w500,
                 //       fontFamily: 'Poppins',
                 //       fontSize: 16,
                 //     ),
                 //     contentPadding: EdgeInsets.only(bottom: 0),
                 //   ),
-                //   style: TextStyle(color: Colors.white),
+                //   style: TextStyle(color: isDark?Colors.white:Colors.black),
                 // ),
                 SizedBox(height: contentHeight),
                 TextFormField(
@@ -357,13 +360,21 @@ class _ClientRegisterFirstState extends State<ClientRegisterFirst> {
                       lastDate: DateTime.now(),
                       builder: (BuildContext context, Widget? child) {
                         return Theme(
-                          data: ThemeData.dark().copyWith(
-                            primaryColor: Colors.white,
-                            colorScheme: ColorScheme.dark(
-                                primary: Color(0xFFFFB700),
-                                onSecondary: Color(0xFFFFB700)),
-                            dialogBackgroundColor: Color(0xFF1B1F24),
-                          ),
+                          data: isDark
+                              ? ThemeData.dark().copyWith(
+                                  primaryColor:
+                                      isDark ? Colors.white : Colors.black,
+                                  colorScheme: ColorScheme.dark(
+                                      primary: Color(0xFFFFB700),
+                                      onSecondary: Color(0xFFFFB700)),
+                                  dialogBackgroundColor: Color(0xFF1B1F24),
+                                )
+                              : ThemeData.light().copyWith(
+                                  primaryColor:
+                                      isDark ? Colors.white : Colors.black,
+                                  colorScheme: ColorScheme.light(
+                                      primary: Color(0xFFFFB700)),
+                                ),
                           child: child!,
                         );
                       },
@@ -379,20 +390,20 @@ class _ClientRegisterFirstState extends State<ClientRegisterFirst> {
                   },
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.calendar_today_outlined,
-                        color: Colors.white, size: 18),
+                        color: isDark ? Colors.white : Colors.black, size: 18),
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
                     ),
                     labelText: 'Birthday',
                     labelStyle: TextStyle(
-                      color: Colors.white70,
+                      color: isDark ? Colors.white70 : Colors.black54,
                       fontWeight: FontWeight.w500,
                       fontFamily: 'Poppins',
                       fontSize: 16,
                     ),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: isDark?Colors.white:Colors.black),
                 ),
                 SizedBox(height: contentHeight),
                 Row(

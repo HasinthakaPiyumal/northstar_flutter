@@ -57,8 +57,7 @@ class Layout extends StatelessWidget {
         },
         child: Container(
           decoration: BoxDecoration(
-            // color: Get.isDarkMode ? Color(0xff1C1C1C) : Colors.white,
-            color: Theme.of(context).scaffoldBackgroundColor,
+            color: Get.isDarkMode ? Color(0xff1C1C1C) : Colors.white,
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.1),
@@ -72,7 +71,8 @@ class Layout extends StatelessWidget {
             return BottomNavigationBar(
                 type: BottomNavigationBarType.fixed,
                 elevation: 0,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                backgroundColor:
+                    Get.isDarkMode ? Color(0xff1C1C1C) : Colors.white,
                 selectedItemColor: Get.isDarkMode ? Colors.white : Colors.black,
                 currentIndex: currentPage.value,
                 onTap: (int index) {
@@ -159,10 +159,9 @@ class Layout extends StatelessWidget {
         child: Scaffold(
           bottomNavigationBar: bNavBar(),
           appBar: AppBar(
-            toolbarHeight: 50,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            toolbarHeight: 74,
             title: Container(
-              height: 21,
+              height: 35,
               child: Image.asset(
                   Get.isDarkMode
                       ? 'assets/allwhite.png'
@@ -171,7 +170,6 @@ class Layout extends StatelessWidget {
             ),
             actions: [
               Obx(() => IconButton(
-                    splashRadius: 20,
                     onPressed: () {
                       Get.to(() => HomeWidgetNotifications());
                     },
@@ -182,7 +180,7 @@ class Layout extends StatelessWidget {
                                 alignment: Alignment.center,
                                 children: [
                                   Icon(Icons.notifications,
-                                      size: 24, color: Colors.red),
+                                      size: 28, color: Colors.red),
                                   Positioned(
                                     child: Text(
                                         NotificationsController
@@ -193,7 +191,7 @@ class Layout extends StatelessWidget {
                                   )
                                 ],
                               )
-                            : Icon(Icons.notifications, size: 24),
+                            : Icon(Icons.notifications, size: 28),
                   )),
               IconButton(
                 onPressed: authUser.user['subscription'] != null
@@ -203,17 +201,14 @@ class Layout extends StatelessWidget {
                     : () {
                         Get.to(() => HomeWidgetPro());
                       },
-                splashRadius: 20,
                 icon: Icon(
-                  Icons.message_rounded,
-                  size: 22,
+                  IcoMoon.messages,
                   color: authUser.user['subscription'] == null
                       ? Colors.grey[600]
                       : null,
                 ),
               ),
               IconButton(
-                splashRadius: 20,
                 onPressed: authUser.user['subscription'] != null
                     ? () {
                         Get.to(() => HomeWidgetCalls());
@@ -222,8 +217,7 @@ class Layout extends StatelessWidget {
                         Get.to(() => HomeWidgetPro());
                       },
                 icon: Icon(
-                  Icons.phone_rounded,
-                  size: 22,
+                  Icons.phone,
                   color: authUser.user['subscription'] == null
                       ? Colors.grey[600]
                       : null,

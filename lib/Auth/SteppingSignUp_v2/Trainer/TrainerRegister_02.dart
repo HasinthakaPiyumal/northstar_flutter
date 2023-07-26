@@ -80,8 +80,9 @@ class _TrainerRegisterSecondState extends State<TrainerRegisterSecond> {
   @override
   Widget build(BuildContext context) {
     double contentHeight = 25.0;
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: Color(0xFF1B1F24),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
@@ -112,8 +113,9 @@ class _TrainerRegisterSecondState extends State<TrainerRegisterSecond> {
                       height: 29,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage(
-                              "assets/appicons/mini_logo_text_white.png"),
+                          image: AssetImage(isDark
+                              ? "assets/appicons/mini_logo_text_white.png"
+                              : "assets/appicons/mini_logo_text_black.png"),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -190,26 +192,27 @@ class _TrainerRegisterSecondState extends State<TrainerRegisterSecond> {
                   readOnly: true,
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.home_outlined,
-                        color: Colors.white, size: 18),
+                        color: isDark ? Colors.white : Colors.black, size: 18),
                     border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
+                      borderSide: BorderSide(color: isDark ? Colors.white : Colors.black),
                     ),
                     labelText: 'Country Of Residence',
                     labelStyle: TextStyle(
-                      color: Colors.white70,
+                      color: isDark ? Colors.white70 : Colors.black54,
                       fontWeight: FontWeight.w500,
                       fontFamily: 'Poppins',
                       fontSize: 16,
                     ),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: isDark ? Colors.white : Colors.black),
                   onTap: () {
                     showDialog(
                       context: context,
                       builder: (context) => Theme(
                         data: Theme.of(context).copyWith(
-                          dialogBackgroundColor: Color(0xFF1B1F24),
+                          dialogBackgroundColor:
+                          isDark ? Color(0xFF1B1F24) : Colors.white,
                           primaryColor: Color(0xFFFFB700),
                         ),
                         child: CountryPickerDialog(
@@ -229,7 +232,7 @@ class _TrainerRegisterSecondState extends State<TrainerRegisterSecond> {
                             signUpData.currency =
                                 country.currencyCode.toString();
                             _countryController.text =
-                                "${country.name} (${country.currencyCode})";
+                            "${country.name} (${country.currencyCode})";
                           },
                           itemBuilder: _buildDropdownItem,
                         ),
@@ -243,60 +246,60 @@ class _TrainerRegisterSecondState extends State<TrainerRegisterSecond> {
                   maxLines: 3,
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.location_on_outlined,
-                        color: Colors.white, size: 18),
+                        color: isDark ? Colors.white : Colors.black, size: 18),
                     border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
+                      borderSide: BorderSide(color: isDark ? Colors.white : Colors.black),
                     ),
                     labelText: 'Shipping Address',
                     labelStyle: TextStyle(
-                      color: Colors.white70,
+                      color: isDark ? Colors.white70 : Colors.black54,
                       fontWeight: FontWeight.w500,
                       fontFamily: 'Poppins',
                       fontSize: 16,
                     ),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: isDark ? Colors.white : Colors.black),
                 ),
                 SizedBox(height: contentHeight),
                 TextFormField(
                   controller: _contactPersonController,
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.call_outlined,
-                        color: Colors.white, size: 18),
+                        color: isDark ? Colors.white : Colors.black, size: 18),
                     border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
+                      borderSide: BorderSide(color: isDark ? Colors.white : Colors.black),
                     ),
                     labelText: 'Contact Person',
                     labelStyle: TextStyle(
-                      color: Colors.white70,
+                      color: isDark ? Colors.white70 : Colors.black54,
                       fontWeight: FontWeight.w500,
                       fontFamily: 'Poppins',
                       fontSize: 16,
                     ),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: isDark ? Colors.white : Colors.black),
                 ),
                 SizedBox(height: contentHeight),
                 IntlPhoneField(
                   controller: _emergencyContactController,
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.call_outlined,
-                        color: Colors.white, size: 18),
+                        color: isDark ? Colors.white : Colors.black, size: 18),
                     border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
+                      borderSide: BorderSide(color: isDark ? Colors.white : Colors.black),
                     ),
                     labelText: 'Emergency Contact',
                     labelStyle: TextStyle(
-                      color: Colors.white70,
+                      color: isDark ? Colors.white70 : Colors.black54,
                       fontWeight: FontWeight.w500,
                       fontFamily: 'Poppins',
                       fontSize: 16,
                     ),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: isDark ? Colors.white : Colors.black),
                   initialCountryCode: 'MV',
                   onChanged: (phone) {
                     setState(() {
@@ -308,20 +311,20 @@ class _TrainerRegisterSecondState extends State<TrainerRegisterSecond> {
                 //   controller: _emergencyContactController,
                 //   decoration: InputDecoration(
                 //     prefixIcon: Icon(Icons.call_outlined,
-                //         color: Colors.white, size: 18),
+                //         color: isDark ? Colors.white : Colors.black, size: 18),
                 //     border: UnderlineInputBorder(
-                //       borderSide: BorderSide(color: Colors.white),
+                //       borderSide: BorderSide(color: isDark ? Colors.white : Colors.black),
                 //     ),
                 //     labelText: 'Emergency Contact',
                 //     labelStyle: TextStyle(
-                //       color: Colors.white70,
+                //       color: isDark ? Colors.white70 : Colors.black54,
                 //       fontWeight: FontWeight.w500,
                 //       fontFamily: 'Poppins',
                 //       fontSize: 16,
                 //     ),
                 //     contentPadding: EdgeInsets.only(bottom: 0),
                 //   ),
-                //   style: TextStyle(color: Colors.white),
+                //   style: TextStyle(color: isDark ? Colors.white : Colors.black),
                 // ),
                 SizedBox(height: contentHeight),
                 TextFormField(
@@ -330,13 +333,13 @@ class _TrainerRegisterSecondState extends State<TrainerRegisterSecond> {
                   decoration: InputDecoration(
                     prefixIcon: Icon(
                       Icons.lock_outline,
-                      color: Colors.white,
+                      color: isDark ? Colors.white : Colors.black,
                       size: 18,
                     ),
                     suffixIcon: IconButton(
                       icon: Icon(
                         showPass1 ? Icons.visibility : Icons.visibility_off,
-                        color: Colors.white,
+                        color: isDark ? Colors.white : Colors.black,
                       ),
                       onPressed: () {
                         setState(() {
@@ -345,18 +348,18 @@ class _TrainerRegisterSecondState extends State<TrainerRegisterSecond> {
                       },
                     ),
                     border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
+                      borderSide: BorderSide(color: isDark ? Colors.white : Colors.black),
                     ),
                     labelText: 'Password',
                     labelStyle: TextStyle(
-                      color: Colors.white70,
+                      color: isDark ? Colors.white70 : Colors.black54,
                       fontWeight: FontWeight.w500,
                       fontFamily: 'Poppins',
                       fontSize: 16,
                     ),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: isDark ? Colors.white : Colors.black),
                 ),
                 SizedBox(height: contentHeight),
                 TextFormField(
@@ -365,13 +368,13 @@ class _TrainerRegisterSecondState extends State<TrainerRegisterSecond> {
                   decoration: InputDecoration(
                     prefixIcon: Icon(
                       Icons.lock_outline,
-                      color: Colors.white,
+                      color: isDark ? Colors.white : Colors.black,
                       size: 18,
                     ),
                     suffixIcon: IconButton(
                       icon: Icon(
                         showPass2 ? Icons.visibility : Icons.visibility_off,
-                        color: Colors.white,
+                        color: isDark ? Colors.white : Colors.black,
                       ),
                       onPressed: () {
                         setState(() {
@@ -380,18 +383,18 @@ class _TrainerRegisterSecondState extends State<TrainerRegisterSecond> {
                       },
                     ),
                     border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
+                      borderSide: BorderSide(color: isDark ? Colors.white : Colors.black),
                     ),
                     labelText: 'Confirm Password',
                     labelStyle: TextStyle(
-                      color: Colors.white70,
+                      color: isDark ? Colors.white70 : Colors.black54,
                       fontWeight: FontWeight.w500,
                       fontFamily: 'Poppins',
                       fontSize: 16,
                     ),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: isDark ? Colors.white : Colors.black),
                 ),
                 SizedBox(height: contentHeight),
                 Center(
