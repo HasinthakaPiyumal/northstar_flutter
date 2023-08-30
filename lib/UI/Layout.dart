@@ -19,6 +19,7 @@ import 'package:north_star/UI/PrivateUser/ClientProfile.dart';
 import 'package:north_star/UI/SharedWidgets/ExitWidget.dart';
 import 'package:north_star/UI/Wallet.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:north_star/Styles/AppColors.dart';
 
 class Layout extends StatelessWidget {
   const Layout({Key? key}) : super(key: key);
@@ -67,13 +68,13 @@ class Layout extends StatelessWidget {
               ),
             ],
           ),
-          padding: EdgeInsets.symmetric(vertical: 10),
+          // padding: EdgeInsets.symmetric(vertical: 10),
           child: Obx(() {
             return BottomNavigationBar(
                 type: BottomNavigationBarType.fixed,
                 elevation: 0,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                selectedItemColor: Get.isDarkMode ? Colors.white : Colors.black,
+                backgroundColor: Get.isDarkMode?AppColors.primary2Color:Colors.white,
+                selectedItemColor: AppColors.accentColor,
                 currentIndex: currentPage.value,
                 onTap: (int index) {
                   currentPage.value = index;
@@ -120,14 +121,14 @@ class Layout extends StatelessWidget {
                           label: 'Profile',
                           icon: Padding(
                             padding: EdgeInsets.only(bottom: 5),
-                            child: Icon(Icons.supervised_user_circle),
+                            child: Icon(Icons.account_circle_outlined),
                           ),
                         )
                       : BottomNavigationBarItem(
                           label: 'Profile',
                           icon: Padding(
                             padding: EdgeInsets.only(bottom: 5),
-                            child: Icon(Icons.supervised_user_circle),
+                            child: Icon(Icons.account_circle_outlined),
                           ),
                         ),
                 ]);
@@ -161,6 +162,7 @@ class Layout extends StatelessWidget {
           appBar: AppBar(
             toolbarHeight: 50,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            centerTitle: false,
             title: Container(
               height: 21,
               child: Image.asset(

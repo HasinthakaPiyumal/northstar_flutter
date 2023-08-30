@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
+import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/ButtonStyles.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
@@ -22,48 +23,46 @@ class HomeWidgetGym extends StatelessWidget {
     RxList myBookings = [].obs;
     DateFormat tmFormat = DateFormat('hh:mm a');
 
-    void showInfo(Map data){
-      
+    void showInfo(Map data) {
       Get.defaultDialog(
-        title: '${data['client_ids'].length} Member(s) Have Access',
-        titlePadding: EdgeInsets.only(top: 20),
-        radius: 8,
-        content: Padding(
-          padding: EdgeInsets.all(8),
-          child: Column(
-            children: [
-              Container(
-                height: 256,
-                width: Get.width,
-                child: ListView.builder(
-                  itemCount: data['clients'].length,
-                  itemBuilder: (context,index){
-                    return ListTile(
-                      leading: CircleAvatar(
-                        backgroundImage: CachedNetworkImageProvider(
-                            HttpClient.s3BaseUrl + data['clients'][index]['user']['avatar_url']
+          title: '${data['client_ids'].length} Member(s) Have Access',
+          titlePadding: EdgeInsets.only(top: 20),
+          radius: 8,
+          content: Padding(
+            padding: EdgeInsets.all(8),
+            child: Column(
+              children: [
+                Container(
+                  height: 256,
+                  width: Get.width,
+                  child: ListView.builder(
+                    itemCount: data['clients'].length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        leading: CircleAvatar(
+                          backgroundImage: CachedNetworkImageProvider(
+                              HttpClient.s3BaseUrl +
+                                  data['clients'][index]['user']['avatar_url']),
                         ),
-                      ),
-                      title: Text(data['clients'][index]['user']['name']),
-                      subtitle: Text(data['clients'][index]['user']['email']),
-                    );
-                  },
+                        title: Text(data['clients'][index]['user']['name']),
+                        subtitle: Text(data['clients'][index]['user']['email']),
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        actions: [
-          TextButton(onPressed: ()=>Get.back(), child: Text('Close'))
-        ]
-      );
+          actions: [
+            TextButton(onPressed: () => Get.back(), child: Text('Close'))
+          ]);
     }
 
     void getMyComGymBookings() async {
       Map res = await httpClient.getComGymSchedules();
       if (res['code'] == 200) {
         myBookings.addAll(res['data']);
-      } 
+      }
     }
 
     void getMyGymBookings() async {
@@ -76,14 +75,15 @@ class HomeWidgetGym extends StatelessWidget {
 
     getMyGymBookings();
 
-
-
     return Scaffold(
-      appBar: AppBar(title: Text('Facilities')),
+      appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          title: Text('Facilities', style: TypographyStyles.title(20))),
       body: Obx(() => Padding(
             padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Column(
@@ -92,21 +92,25 @@ class HomeWidgetGym extends StatelessWidget {
                       child: Container(
                         height: 80,
                         child: ElevatedButton(
-                          style: Get.isDarkMode ? ButtonStyles.bigBlackButton() : ButtonStyles.matButton(colors.Colors().selectedCardBG, 1),
+                          style: ButtonStyles.matButton(
+                              Get.isDarkMode
+                                  ? AppColors.primary2Color
+                                  : Colors.white,
+                              1),
                           onPressed: () {
                             Get.to(() => ExclusiveGyms());
                           },
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Icon(Icons.hotel_class,
-                                color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),
+                              SizedBox(
+                                height: 64,
+                                child: Image.asset("assets/icons/gym_bank.png"),
                               ),
-                              SizedBox(width: 8),
-                              Text('Exclusive Gyms',
-                                style: TextStyle(
-                                  color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),
-                                ),
+                              SizedBox(width: 25),
+                              Text(
+                                'Exclusive Gyms',
+                                style: TypographyStyles.text(20),
                               ),
                             ],
                           ),
@@ -118,21 +122,25 @@ class HomeWidgetGym extends StatelessWidget {
                     Container(
                       height: 80,
                       child: ElevatedButton(
-                        style: Get.isDarkMode ? ButtonStyles.bigBlackButton() : ButtonStyles.matButton(colors.Colors().selectedCardBG, 1),
+                        style: ButtonStyles.matButton(
+                            Get.isDarkMode
+                                ? AppColors.primary2Color
+                                : Colors.white,
+                            1),
                         onPressed: () {
                           Get.to(() => CommercialGyms());
                         },
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Icon(Icons.business,
-                              color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),
+                            SizedBox(
+                              height: 64,
+                              child: Image.asset("assets/icons/gym_bank.png"),
                             ),
-                            SizedBox(width: 8),
-                            Text('Commercial Gyms',
-                              style: TextStyle(
-                                color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),
-                              ),
+                            SizedBox(width: 25),
+                            Text(
+                              'Commercial Gyms',
+                              style: TypographyStyles.text(20),
                             ),
                           ],
                         ),
@@ -140,95 +148,146 @@ class HomeWidgetGym extends StatelessWidget {
                     )
                   ],
                 ),
-                SizedBox(height: 8),
-                Divider(
-                  thickness: 1,
-                ),
-                SizedBox(height: 8),
-                Text('My Bookings', style: TypographyStyles.title(20)),
-                SizedBox(height: 8),
+                SizedBox(height: 20),
+                Text('My Bookings',
+                    textAlign: TextAlign.left,
+                    style: TypographyStyles.title(20)),
+                SizedBox(height: 30),
                 Expanded(
-                  child: myBookings.length > 0 ? ListView.builder(
+                  child: myBookings.length > 0
+                      ? ListView.builder(
                           itemCount: myBookings.length,
                           itemBuilder: (_, index) {
                             if (myBookings[index]['type'] != null) {
                               DateTime selectedDateForEquation;
 
-                              int daysDif = DateTime.parse(myBookings[index]['start_date']).difference(DateTime.now()).inDays;
+                              int daysDif = DateTime.parse(
+                                      myBookings[index]['start_date'])
+                                  .difference(DateTime.now())
+                                  .inDays;
 
                               if (daysDif > 0) {
-                                selectedDateForEquation = DateTime.parse(myBookings[index]['start_date']);
+                                selectedDateForEquation = DateTime.parse(
+                                    myBookings[index]['start_date']);
                               } else {
                                 selectedDateForEquation = DateTime.now();
                               }
 
                               return Card(
                                 margin: EdgeInsets.only(bottom: 15),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5)),
                                 child: Container(
                                     padding: EdgeInsets.all(15),
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      color: Get.isDarkMode ? colors.Colors().deepGrey(1) : colors.Colors().selectedCardBG,
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: Get.isDarkMode
+                                          ? AppColors.primary2Color
+                                          : Colors.white,
                                     ),
                                     child: Row(
                                       children: [
                                         Expanded(
                                           child: InkWell(
                                             child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 Row(
-                                                  mainAxisSize: MainAxisSize.min,
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
                                                   children: [
                                                     CircleAvatar(
-                                                      radius: 26,
+                                                      radius: 18,
                                                       backgroundImage:
-                                                          CachedNetworkImageProvider(HttpClient.s3BaseUrl + myBookings[index]['gym']['avatar_url']),
+                                                          CachedNetworkImageProvider(
+                                                              HttpClient
+                                                                      .s3BaseUrl +
+                                                                  myBookings[index]
+                                                                          [
+                                                                          'gym']
+                                                                      [
+                                                                      'avatar_url']),
                                                     ),
                                                     SizedBox(
-                                                      width: 10,
+                                                      width: 20,
                                                     ),
                                                     Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
                                                       children: [
                                                         Text(
-                                                          myBookings[index]['gym_data']['gym_name'],
-                                                          style: TypographyStyles.boldText(20, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
+                                                          myBookings[index]
+                                                                  ['gym_data']
+                                                              ['gym_name'],
+                                                          style:
+                                                              TypographyStyles
+                                                                  .title(20),
                                                         ),
                                                         Text(
                                                           "${CountryPickerUtils.getCountryByIsoCode(myBookings[index]['gym_data']['gym_country']).name}",
-                                                          style: TypographyStyles.normalText(14, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
+                                                          style:
+                                                              TypographyStyles
+                                                                  .text(16),
                                                         ),
                                                       ],
                                                     ),
                                                   ],
                                                 ),
                                                 SizedBox(
-                                                  height: 10,
+                                                  height: 5,
                                                 ),
                                                 Divider(
-                                                  thickness: 1,
-                                                  color: Colors.grey[700],
+                                                  thickness: 0.5,
+                                                  color: Colors.white
+                                                      .withOpacity(
+                                                          0.23999999463558197),
+                                                ),
+                                                SizedBox(
+                                                  height: 5,
                                                 ),
                                                 Row(
                                                   children: [
                                                     Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
                                                       children: [
                                                         Text(
                                                           "${DateTime.parse(myBookings[index]['end_date']).difference(selectedDateForEquation).inDays} Day(s) Remaining",
-                                                          style: TypographyStyles.boldText(15, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
+                                                          style: TypographyStyles
+                                                              .textWithWeight(
+                                                                  16,
+                                                                  FontWeight
+                                                                      .w400),
                                                         ),
                                                         SizedBox(
                                                           height: 5,
                                                         ),
                                                         Text(
-                                                          DateFormat("MMM dd,yyyy").format(DateTime.parse(myBookings[index]['start_date'])) +
+                                                          DateFormat("MMM dd,yyyy").format(
+                                                                  DateTime.parse(
+                                                                      myBookings[
+                                                                              index]
+                                                                          [
+                                                                          'start_date'])) +
                                                               ' - ' +
-                                                              DateFormat("MMM dd,yyyy").format(DateTime.parse(myBookings[index]['end_date'])),
-                                                          style: TypographyStyles.normalText(13, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
+                                                              DateFormat(
+                                                                      "MMM dd,yyyy")
+                                                                  .format(DateTime.parse(
+                                                                      myBookings[
+                                                                              index]
+                                                                          [
+                                                                          'end_date'])),
+                                                          style: TypographyStyles
+                                                              .textWithWeight(
+                                                                  14,
+                                                                  FontWeight
+                                                                      .w300),
                                                         ),
                                                       ],
                                                     ),
@@ -238,9 +297,10 @@ class HomeWidgetGym extends StatelessWidget {
                                             ),
                                             onTap: () {
                                               Get.to(() => GymView(
-                                                gymObj: myBookings[index]['gym_data'],
-                                                viewOnly: true,
-                                              ));
+                                                    gymObj: myBookings[index]
+                                                        ['gym_data'],
+                                                    viewOnly: true,
+                                                  ));
                                             },
                                           ),
                                         ),
@@ -249,28 +309,86 @@ class HomeWidgetGym extends StatelessWidget {
                                         ),
                                         Column(
                                           children: [
-                                            Container(
-                                              height: 90,
-                                              child: ElevatedButton(
-                                                style: ButtonStyles.bigFlatBlackButton(),
-                                                onPressed: () {
-                                                  //unlockGym(myBookings[index]['gym_id']);
-                                                  Get.to(() => UnlockDoorQR(gymID: myBookings[index]['gym_id']));
-                                                },
-                                                child: Image.asset(
-                                                  "assets/images/unlock.png",
-                                                  height: 60,
-                                                  fit: BoxFit.fitHeight,
-                                                ),
-                                              ),
+                                            // Container(
+                                            //   height: 90,
+                                            //   child: ElevatedButton(
+                                            //     style: ElevatedButton.styleFrom(
+                                            //         foregroundColor:
+                                            //             Colors.white,
+                                            //         backgroundColor:
+                                            //             Colors.transparent,
+                                            //         elevation: 0,
+                                            //         shape:
+                                            //             RoundedRectangleBorder(
+                                            //                 borderRadius:
+                                            //                     BorderRadius
+                                            //                         .circular(
+                                            //                             8))),
+                                            //     onPressed: () {
+                                            //       //unlockGym(myBookings[index]['gym_id']);
+                                            //       Get.to(() => UnlockDoorQR(
+                                            //           gymID: myBookings[index]
+                                            //               ['gym_id']));
+                                            //     },
+                                            //     child: Image.asset(
+                                            //       "assets/images/unlock_v2.png",
+                                            //       height: 90,
+                                            //       fit: BoxFit.fitHeight,
+                                            //     ),
+                                            //   ),
+                                            // ),
+                                            InkWell(
+                                              onTap: () {
+                                                //unlockGym(myBookings[index]['gym_id']);
+                                                Get.to(() => UnlockDoorQR(
+                                                    gymID: myBookings[index]
+                                                        ['gym_id']));
+                                              },
+                                              child: Container(
+                                                  width: 102,
+                                                  height: 108,
+                                                  padding:EdgeInsets.only(top:10),
+                                                  decoration: BoxDecoration(
+                                                    color: Theme.of(context)
+                                                        .scaffoldBackgroundColor,
+                                                    borderRadius: BorderRadius.circular(10)
+                                                  ),
+                                                  child: Center(
+                                                    child: Column(
+                                                      children: [
+                                                        Image.asset(
+                                                          "assets/images/qr.png",
+                                                          fit: BoxFit.fitHeight,
+                                                          width: 36,
+                                                          height: 36,
+                                                        ),
+                                                        SizedBox(height:10),
+                                                        Text(
+                                                          'Unlock \nDoor',
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: TypographyStyles
+                                                              .textWithWeight(
+                                                                  14,
+                                                                  FontWeight
+                                                                      .w300),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  )),
                                             ),
                                             Visibility(
-                                              visible: authUser.role == 'trainer' && myBookings[index]['gym_data']['gym_type'] != 'normal',
+                                              visible: authUser.role ==
+                                                      'trainer' &&
+                                                  myBookings[index]['gym_data']
+                                                          ['gym_type'] !=
+                                                      'normal',
                                               child: Container(
                                                 child: ElevatedButton(
-                                                  style: ButtonStyles.bigFlatBlackButton(),
+                                                  style: ButtonStyles
+                                                      .bigFlatBlackButton(),
                                                   child: Text('Info'),
-                                                  onPressed: (){
+                                                  onPressed: () {
                                                     showInfo(myBookings[index]);
                                                   },
                                                 ),
@@ -284,42 +402,76 @@ class HomeWidgetGym extends StatelessWidget {
                             } else {
                               return Card(
                                 margin: EdgeInsets.only(bottom: 15),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8)),
                                 child: Container(
                                     padding: EdgeInsets.all(15),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(8),
-                                      color: Get.isDarkMode ? colors.Colors().deepGrey(1) : colors.Colors().selectedCardBG,
+                                      color: Get.isDarkMode
+                                          ? colors.Colors().deepGrey(1)
+                                          : colors.Colors().selectedCardBG,
                                     ),
                                     child: Row(
                                       children: [
                                         Expanded(
                                           child: InkWell(
                                             child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 Row(
-                                                  mainAxisSize: MainAxisSize.min,
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
                                                   children: [
                                                     CircleAvatar(
                                                       radius: 26,
                                                       backgroundImage:
-                                                          CachedNetworkImageProvider(HttpClient.s3BaseUrl + myBookings[index]['gym']['avatar_url']),
+                                                          CachedNetworkImageProvider(
+                                                              HttpClient
+                                                                      .s3BaseUrl +
+                                                                  myBookings[index]
+                                                                          [
+                                                                          'gym']
+                                                                      [
+                                                                      'avatar_url']),
                                                     ),
                                                     SizedBox(
                                                       width: 10,
                                                     ),
                                                     Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
                                                       children: [
                                                         Text(
-                                                          myBookings[index]['gym_data']['gym_name'],
-                                                          style: TypographyStyles.boldText(20, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
+                                                          myBookings[index]
+                                                                  ['gym_data']
+                                                              ['gym_name'],
+                                                          style: TypographyStyles.boldText(
+                                                              20,
+                                                              Get.isDarkMode
+                                                                  ? Themes
+                                                                      .mainThemeColorAccent
+                                                                      .shade100
+                                                                  : colors.Colors()
+                                                                      .lightBlack(
+                                                                          1)),
                                                         ),
                                                         Text(
                                                           "${CountryPickerUtils.getCountryByIsoCode(myBookings[index]['gym_data']['gym_country']).name}",
-                                                          style: TypographyStyles.normalText(14, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
+                                                          style: TypographyStyles.normalText(
+                                                              14,
+                                                              Get.isDarkMode
+                                                                  ? Themes
+                                                                      .mainThemeColorAccent
+                                                                      .shade100
+                                                                  : colors.Colors()
+                                                                      .lightBlack(
+                                                                          1)),
                                                         ),
                                                       ],
                                                     ),
@@ -330,27 +482,61 @@ class HomeWidgetGym extends StatelessWidget {
                                                 ),
                                                 Divider(
                                                   thickness: 1,
-                                                  color: Get.isDarkMode ? Colors.grey[700] : Colors.grey[400],
+                                                  color: Get.isDarkMode
+                                                      ? Colors.grey[700]
+                                                      : Colors.grey[400],
                                                 ),
                                                 Row(
                                                   children: [
                                                     Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
                                                       children: [
                                                         Text(
-                                                          DateFormat("EEEE, MMM dd,yyyy")
-                                                              .format(DateTime.parse(myBookings[index]['start_time']))
+                                                          DateFormat(
+                                                                  "EEEE, MMM dd,yyyy")
+                                                              .format(DateTime
+                                                                  .parse(myBookings[
+                                                                          index]
+                                                                      [
+                                                                      'start_time']))
                                                               .toString(),
-                                                          style: TypographyStyles.boldText(15, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
+                                                          style: TypographyStyles.boldText(
+                                                              15,
+                                                              Get.isDarkMode
+                                                                  ? Themes
+                                                                      .mainThemeColorAccent
+                                                                      .shade100
+                                                                  : colors.Colors()
+                                                                      .lightBlack(
+                                                                          1)),
                                                         ),
                                                         SizedBox(
                                                           height: 5,
                                                         ),
                                                         Text(
-                                                          tmFormat.format(DateTime.parse(myBookings[index]['start_time'])) +
+                                                          tmFormat.format(DateTime
+                                                                  .parse(myBookings[
+                                                                          index]
+                                                                      [
+                                                                      'start_time'])) +
                                                               ' - ' +
-                                                              tmFormat.format(DateTime.parse(myBookings[index]['end_time'])),
-                                                          style: TypographyStyles.normalText(13, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
+                                                              tmFormat.format(
+                                                                  DateTime.parse(
+                                                                      myBookings[
+                                                                              index]
+                                                                          [
+                                                                          'end_time'])),
+                                                          style: TypographyStyles.normalText(
+                                                              13,
+                                                              Get.isDarkMode
+                                                                  ? Themes
+                                                                      .mainThemeColorAccent
+                                                                      .shade100
+                                                                  : colors.Colors()
+                                                                      .lightBlack(
+                                                                          1)),
                                                         ),
                                                       ],
                                                     ),
@@ -358,10 +544,12 @@ class HomeWidgetGym extends StatelessWidget {
                                                 ),
                                               ],
                                             ),
-                                            borderRadius: BorderRadius.circular(8),
+                                            borderRadius:
+                                                BorderRadius.circular(8),
                                             onTap: () {
                                               Get.to(() => GymView(
-                                                    gymObj: myBookings[index]['gym_data'],
+                                                    gymObj: myBookings[index]
+                                                        ['gym_data'],
                                                     viewOnly: true,
                                                   ));
                                             },
@@ -375,10 +563,13 @@ class HomeWidgetGym extends StatelessWidget {
                                             Container(
                                               height: 90,
                                               child: ElevatedButton(
-                                                style: ButtonStyles.bigFlatBlackButton(),
+                                                style: ButtonStyles
+                                                    .bigFlatBlackButton(),
                                                 onPressed: () {
                                                   //unlockGym(myBookings[index]['gym_id']);
-                                                  Get.to(() => UnlockDoorQR(gymID: myBookings[index]['gym_id']));
+                                                  Get.to(() => UnlockDoorQR(
+                                                      gymID: myBookings[index]
+                                                          ['gym_id']));
                                                 },
                                                 child: Image.asset(
                                                   "assets/images/unlock.png",
@@ -388,12 +579,14 @@ class HomeWidgetGym extends StatelessWidget {
                                               ),
                                             ),
                                             Visibility(
-                                              visible: authUser.role == 'trainer',
+                                              visible:
+                                                  authUser.role == 'trainer',
                                               child: Container(
                                                 child: ElevatedButton(
-                                                  style: ButtonStyles.bigFlatBlackButton(),
+                                                  style: ButtonStyles
+                                                      .bigFlatBlackButton(),
                                                   child: Text('Info'),
-                                                  onPressed: (){
+                                                  onPressed: () {
                                                     showInfo(myBookings[index]);
                                                   },
                                                 ),
@@ -410,7 +603,8 @@ class HomeWidgetGym extends StatelessWidget {
                       : Center(
                           child: Text(
                           'No Bookings Yet.',
-                          style: TypographyStyles.normalText(15, Themes.mainThemeColorAccent.shade300),
+                          style: TypographyStyles.normalText(
+                              15, Themes.mainThemeColorAccent.shade300),
                         )),
                 )
               ],

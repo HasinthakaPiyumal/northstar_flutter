@@ -143,7 +143,7 @@ class AddNewClientToChat extends StatelessWidget {
                     title: Text(chatData['clients'][index]['user']['name']),
                     subtitle: Text(chatData['clients'][index]['user']['email']),
                     leading: CircleAvatar(
-                      backgroundImage: NetworkImage(HttpClient.s3BaseUrl + chatData['clients'][index]['user']['avatar_url']),
+                      backgroundImage: CachedNetworkImageProvider(HttpClient.s3BaseUrl + chatData['clients'][index]['user']['avatar_url']),
                     ),
                     trailing: IconButton(
                       icon: Icon(Icons.group_remove, color: Colors.red),

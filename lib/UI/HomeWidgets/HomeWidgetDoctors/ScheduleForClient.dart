@@ -17,6 +17,9 @@ import 'package:north_star/Utils/CustomColors.dart' as colors;
 
 import 'package:north_star/UI/Layout.dart';
 
+import '../../../Styles/AppColors.dart';
+import '../../../Styles/ThemeBdayaStyles.dart';
+
 class ScheduleForClient extends StatelessWidget {
   const ScheduleForClient({Key? key, this.doctor}) : super(key: key);
 
@@ -50,23 +53,28 @@ class ScheduleForClient extends StatelessWidget {
           title: '',
           titlePadding: EdgeInsets.zero,
           contentPadding: EdgeInsets.symmetric(horizontal: 20,),
+          backgroundColor:
+          Get.isDarkMode ? AppColors.primary2Color : Colors.white,
           content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text("BOOKING SUMMARY",
-                style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
+              Text(
+                "BOOKING SUMMARY",
+                textAlign: TextAlign.center,
+                style: TypographyStyles.title(20),
               ),
               SizedBox(height: 30),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Doctor',
-                    style: TypographyStyles.normalText(16, Themes.mainThemeColorAccent.shade300),
+                    'DOCTOR',
+                    style: TypographyStyles.normalText(
+                        16, Themes.mainThemeColorAccent.shade300),
                   ),
                   Text(
                     '${doctor['name']}',
-                    style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
+                    style: TypographyStyles.textWithWeight(16, FontWeight.w500),
                   ),
                 ],
               ),
@@ -81,11 +89,12 @@ class ScheduleForClient extends StatelessWidget {
                 children: [
                   Text(
                     'Date:',
-                    style: TypographyStyles.normalText(16, Themes.mainThemeColorAccent.shade300),
+                    style: TypographyStyles.normalText(
+                        16, Themes.mainThemeColorAccent.shade300),
                   ),
                   Text(
                     '${DateFormat("MMM dd,yyyy").format(dateTimeOfBooking).toString()}',
-                    style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
+                    style: TypographyStyles.textWithWeight(16, FontWeight.w500),
                   ),
                 ],
               ),
@@ -99,11 +108,12 @@ class ScheduleForClient extends StatelessWidget {
                 children: [
                   Text(
                     'Time:',
-                    style: TypographyStyles.normalText(16, Themes.mainThemeColorAccent.shade300),
+                    style: TypographyStyles.normalText(
+                        16, Themes.mainThemeColorAccent.shade300),
                   ),
                   Text(
                     '${DateFormat("hh:mm a").format(dateTimeOfBooking)}',
-                    style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
+                    style: TypographyStyles.textWithWeight(16, FontWeight.w500),
                   ),
                 ],
               ),
@@ -111,17 +121,24 @@ class ScheduleForClient extends StatelessWidget {
                 thickness: 1,
                 color: Themes.mainThemeColorAccent.shade300.withOpacity(0.2),
               ),
-              SizedBox(height: 7,),
+              SizedBox(
+                height: 7,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     'Approx. Payment',
-                    style: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().darkGrey(1),),
+                    style: TypographyStyles.normalText(
+                      16,
+                      Get.isDarkMode
+                          ? Themes.mainThemeColorAccent.shade100
+                          : colors.Colors().lightBlack(1),
+                    ),
                   ),
                   Text(
                     'N\$ ${total.toStringAsFixed(2)}',
-                    style: TypographyStyles.boldText(20, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
+                    style: TypographyStyles.textWithWeight(16, FontWeight.w500),
                   ),
                 ],
               ),
@@ -155,28 +172,48 @@ class ScheduleForClient extends StatelessWidget {
                   }
                 },
                 style: ButtonStyles.matButton(Themes.mainThemeColor.shade500, 0),
-                child: Obx(() => ready.value ? Padding(
+                child: Obx(() => ready.value
+                    ? Padding(
                   padding: EdgeInsets.symmetric(vertical: 12),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('Pay with eWallet',
-                        style: TypographyStyles.boldText(16, Colors.black),
+                      Text(
+                        'Pay with eWallet',
+                        style: TypographyStyles.boldText(
+                            14, AppColors.textOnAccentColor),
                       ),
-                      SizedBox(height: 3,),
-                      Text('(eWallet Balance - ${walletData['balance'].toStringAsFixed(2)})',
-                        style: TypographyStyles.normalText(13, Colors.black),
+                      SizedBox(
+                        height: 3,
+                      ),
+                      Text(
+                        '(eWallet Balance: ${walletData['balance'].toStringAsFixed(2)})',
+                        style: TypographyStyles.normalText(
+                            12, AppColors.textOnAccentColor),
                       ),
                     ],
                   ),
-                ) : LoadingAndEmptyWidgets.loadingWidget()),
+                )
+                    : LoadingAndEmptyWidgets.loadingWidget()),
               ),
             ),
             Container(
               height: 48,
               width: Get.width,
-              child: TextButton(onPressed: ()=>Get.back(), child: Text('Cancel', style: TypographyStyles.boldText(14, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),)),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: AppColors.accentColor,
+                  width: 1.25,
+                ),
+              ),
+              child: TextButton(
+                  onPressed: () => Get.back(),
+                  child: Text(
+                    'Cancel',
+                    style: TypographyStyles.title(20),
+                  )),
             ),
             SizedBox(height: 5,),
           ]
@@ -202,7 +239,9 @@ class ScheduleForClient extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Schedule for a Client'),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: Text('Schedule for a Client',style: TypographyStyles.title(20),),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -210,60 +249,76 @@ class ScheduleForClient extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 16),
+              SizedBox(
+                height: 20,
+              ),
               Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Get.isDarkMode ? colors.Colors().deepGrey(1) : colors.Colors().lightCardBG,
+                  borderRadius: BorderRadius.circular(5),
+                  color:
+                  Get.isDarkMode ? AppColors.primary2Color : Colors.white,
                 ),
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  child: Row(
                     children: [
-                      Row(
-                        children: [
-                          CircleAvatar(radius: 26,
-                            backgroundImage: CachedNetworkImageProvider(HttpClient.s3BaseUrl + doctor['avatar_url']),
-                          ),
-                          SizedBox(width: 10,),
-                          Expanded(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Dr. ' + doctor['name'],
-                                  overflow: TextOverflow.clip,
-                                  maxLines: 1,
-                                  style: TypographyStyles.boldText(18, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
-                                ),
-                                SizedBox(height: 5,),
-                                Text(doctor['doctor']['speciality'],
-                                  style: TypographyStyles.normalText(14, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100.withOpacity(0.5) : colors.Colors().darkGrey(1),),
-                                ),
-                              ],
+                      CircleAvatar(
+                        radius: 32,
+                        backgroundImage: CachedNetworkImageProvider(
+                            HttpClient.s3BaseUrl + doctor['avatar_url']),
+                      ),
+                      SizedBox(
+                        width: 26,
+                      ),
+                      Expanded(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(doctor['doctor']['speciality'],
+                                style: TextStyle(
+                                  color: Color(0xFFFFB700),
+                                  fontSize: 16,
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w700,
+                                )),
+                            SizedBox(height: 5),
+                            Text(
+                              'Dr. ' + doctor['name'],
+                              overflow: TextOverflow.clip,
+                              maxLines: 1,
+                              style: TypographyStyles.title(20),
                             ),
-                          )
-                        ],
-                      ),
-                      SizedBox(height: 6,),
-                      Divider(thickness: 1, color: colors.Colors().darkGrey(0.8),),
-                      SizedBox(height: 6,),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('Rate ', style: TypographyStyles.normalText(14, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),)),
-                          Text(getChargingMethod(), style: TypographyStyles.normalText(14, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),)),
-                          Spacer(),
-                          Text('N\$ ' + doctor['doctor']['hourly_rate'].toStringAsFixed(2), style: TypographyStyles.boldText(20, Get.isDarkMode ? Themes.mainThemeColorAccent.shade500 : colors.Colors().lightBlack(1),)),
-                        ],
-                      ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('Rate ',
+                                    style: TypographyStyles.textWithWeight(
+                                        16, FontWeight.w400)),
+                                Text(getChargingMethod(),
+                                    style: TypographyStyles.textWithWeight(
+                                        16, FontWeight.w400)),
+                                Spacer(),
+                                Text(
+                                    'N\$ ' +
+                                        doctor['doctor']['hourly_rate']
+                                            .toStringAsFixed(2),
+                                    style: TextStyle(
+                                      color: Color(0xFFFFB700),
+                                      fontSize: 20,
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w600,
+                                    )),
+                              ],
+                            )
+                          ],
+                        ),
+                      )
                     ],
                   ),
                 ),
               ),
-              Divider(),
+              SizedBox(height: 25),
               Text('Appointment for Client', style: TypographyStyles.title(18)),
               SizedBox(height: 16),
               Obx(() => Visibility(
@@ -276,9 +331,9 @@ class ScheduleForClient extends StatelessWidget {
                           decoration: InputDecoration(
                             prefixIcon: Icon(Icons.search),
                             labelText: 'Search Clients...',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8.0)),
-                          )),
+                            border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                      ))),
                       suggestionsCallback: (pattern) async {
                         print(pattern);
                         return await searchClient(pattern);
@@ -328,18 +383,15 @@ class ScheduleForClient extends StatelessWidget {
                 readOnly: true,
                 decoration: InputDecoration(
                   labelText: 'Approximate Meeting Start Time',
-                  suffixIcon: Icon(Icons.calendar_today),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
+                  prefixIcon: Icon(Icons.calendar_today),
+                  border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
                   ),
                 ),
                 onTap: () {
                   DatePickerBdaya.showDateTimePicker(
                     context,
-                    theme: DatePickerThemeBdaya(
-                      backgroundColor: Color(0xffF1F1F1),
-                      containerHeight: Get.height/3,
-                    ),
+                    theme: ThemeBdayaStyles.main(),
                     showTitleActions: true,
                     minTime: DateTime.now(),
                     currentTime: DateTime.now(),
@@ -357,11 +409,13 @@ class ScheduleForClient extends StatelessWidget {
               SizedBox(height: 16),
               TextField(
                 controller: titleController,
+                maxLength: 250,
                 decoration: InputDecoration(labelText: 'Title'),
               ),
               SizedBox(height: 16),
               TextField(
                 controller: descriptionController,
+                maxLength: 250,
                 decoration: InputDecoration(labelText: 'Description'),
               ),
             ],
@@ -372,30 +426,38 @@ class ScheduleForClient extends StatelessWidget {
         padding: EdgeInsets.fromLTRB(16, 5, 16, 15),
         child: Container(
           width: Get.width,
-          height: 56,
-          child: Obx(()=>ElevatedButton(
-            style: ButtonStyles.bigBlackButton(),
-            child: ready.value ? Row(
+          height: 44,
+          child: Obx(() => ElevatedButton(
+            style: ButtonStyles.bigFlatYellowButton(),
+            child: ready.value
+                ? Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.video_call),
+                Icon(Icons.video_call_outlined),
                 SizedBox(width: 8),
-                Text('Schedule Meeting',
-                  style: TypographyStyles.boldText(16, Themes.mainThemeColorAccent.shade100),
+                Text(
+                  'Schedule Meeting',
+                  style: TextStyle(
+                    color: Color(0xFF1B1F24),
+                    fontSize: 20,
+                    fontFamily: 'Bebas Neue',
+                    fontWeight: FontWeight.w400,
+                  ),
                 )
               ],
-            ): Center(
+            )
+                : Center(
               child: CircularProgressIndicator(),
             ),
-            onPressed: (){
-              if (descriptionController.text.isNotEmpty &&
-                  titleController.text.isNotEmpty &&
-                  dateTime.text.isNotEmpty &&
-                  selectedClient['id'] != null) {
-                confirmAndPay(selectedDateTime, double.parse(doctor['doctor']['hourly_rate'].toString()));
+            onPressed: () {
+              if (descriptionController.text.isNotEmpty) {
+                confirmAndPay(
+                    selectedDateTime,
+                    double.parse(
+                        doctor['doctor']['hourly_rate'].toString()));
               } else {
-                showSnack('Fill All the Fields!',
-                    'please fill all the fields and select your client');
+                showSnack('Description is empty!',
+                    'please add a description about the meeting');
               }
             },
           )),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Models/HttpClient.dart';
+import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/Members/User_DietFoodsView.dart';
@@ -58,11 +59,11 @@ class UserViewDiet extends StatelessWidget {
                     padding: EdgeInsets.only(bottom: 15),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Get.isDarkMode ? colors.Colors().darkGrey(1) : colors.Colors().lightCardBG,
+                        color: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Material(
-                        color: Get.isDarkMode ? colors.Colors().darkGrey(1) : colors.Colors().selectedCardBG,
+                        color: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
                         borderRadius: BorderRadius.circular(12),
                         child: InkWell(
                           borderRadius: BorderRadius.circular(12),

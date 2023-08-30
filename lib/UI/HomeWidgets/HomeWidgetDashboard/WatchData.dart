@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Models/HealthDataModels.dart';
+import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/Controllers/WatchDataController.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -22,7 +23,6 @@ class WatchData extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-
               controller.init();
             },
             icon: Icon(Icons.refresh),
@@ -31,6 +31,7 @@ class WatchData extends StatelessWidget {
       ),
       body: Obx(()=> controller.ready.value ? Container(
         padding: const EdgeInsets.symmetric(horizontal: 16),
+
         child: controller.enabled ? SingleChildScrollView(
           child: Column(
             children: [
@@ -43,7 +44,7 @@ class WatchData extends StatelessWidget {
                   Expanded(
                     child: Card(
                       elevation: 6,
-                      color: Get.isDarkMode ? Color(0xff1C1C1C) : Colors.white,
+                      color: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12.0),
                       ),

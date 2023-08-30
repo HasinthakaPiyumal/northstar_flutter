@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 
@@ -47,7 +48,14 @@ class ButtonStyles {
         backgroundColor: Colors.black,
         elevation: 6,
         padding: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)));
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)));
+  }
+  static ButtonStyle bigPrimaryButton() {
+    return ElevatedButton.styleFrom(
+        backgroundColor: Get.isDarkMode ? AppColors.primary2Color:Colors.white,
+        elevation: 0,
+        padding: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)));
   }
 
   static ButtonStyle bigGreyButton() {
@@ -55,7 +63,7 @@ class ButtonStyles {
         foregroundColor: Colors.black,
         backgroundColor: Colors.grey.shade200,
         elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)));
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)));
   }
 
   static ButtonStyle bigWhiteButton() {
@@ -63,7 +71,7 @@ class ButtonStyles {
         foregroundColor: Colors.black,
         backgroundColor: Colors.white,
         elevation: 6,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)));
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)));
   }
 
   static ButtonStyle bigFlatBlackButton() {
@@ -80,6 +88,13 @@ class ButtonStyles {
         backgroundColor: Color(0xffE2E2E2),
         elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)));
+  }
+  static ButtonStyle bigFlatYellowButton() {
+    return ElevatedButton.styleFrom(
+        foregroundColor: Colors.black,
+        backgroundColor: AppColors.accentColor,
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)));
   }
 
   static ButtonStyle bigFlatSearchBlackButton() {
@@ -119,7 +134,7 @@ class ButtonStyles {
         foregroundColor: Get.isDarkMode ? Colors.white : Colors.black,
         backgroundColor: color,
         elevation: elevation,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)));
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)));
   }
 
   static ButtonStyle matRadButton(

@@ -65,7 +65,7 @@ class BookNow extends StatelessWidget {
             SizedBox(height: 32),
             Row(
               children: [
-                Text('ADD MEMBERS', style: TypographyStyles.boldText(14, colors.Colors().darkGrey(1))),
+                Text('ADD MEMBERS', style: TypographyStyles.title(14)),
               ],
             ),
             SizedBox(height: 16),

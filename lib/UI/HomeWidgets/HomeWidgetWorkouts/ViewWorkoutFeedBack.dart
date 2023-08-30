@@ -78,7 +78,9 @@ class ViewWorkoutFeedback extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Workout Feedback'),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: Text('Workout Feedback',style: TypographyStyles.title(20)),
       ),
       body: SingleChildScrollView(
         child: Padding(

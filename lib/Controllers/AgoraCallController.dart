@@ -38,14 +38,14 @@ class AgoraCallController {
 
     agoraEngine = createAgoraRtcEngine();
     await agoraEngine.initialize(const RtcEngineContext(
-      appId: appId,
-    ));
+        appId: appId, logConfig: LogConfig(level: LogLevel.logLevelError)));
 
     await agoraEngine.disableVideo();
 
     channelName = Uuid().v4();
 
-    print("Agora calling");
+    print("agora Engine");
+    print(channelName);
 
     agoraEngine.registerEventHandler(
       RtcEngineEventHandler(
@@ -96,6 +96,7 @@ class AgoraCallController {
     await agoraEngine.initialize(const RtcEngineContext(
       appId: appId,
     ));
+    callStatus.value = 'Incoming...';
 
     await agoraEngine.disableVideo();
 
@@ -151,6 +152,11 @@ class AgoraCallController {
 
   static rejectCall() async {
     try {
+      await httpClient.invokeCall({
+        'from': authUser.id,
+        'to': user['id'],
+        'channel': channelName,
+      });
       timer.cancel();
     } catch (e) {
       print(e);
@@ -160,11 +166,14 @@ class AgoraCallController {
   }
 
   static void switchSpeaker() async {
+    print('speaker change');
     if (speakerPhone.value) {
+      print('called false');
       await agoraEngine.setEnableSpeakerphone(false);
       speakerPhone.value = false;
       return;
     } else {
+      print('called true');
       await agoraEngine.setEnableSpeakerphone(true);
       speakerPhone.value = true;
       return;
@@ -183,15 +192,27 @@ class AgoraCallController {
     }
   }
 
+  // static void leaveCall() async {
+  //   await agoraEngine.leaveChannel();
+  //   try {
+  //     timer.cancel();
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  //   accepted.value = false;
+  //   isJoined = false;
+  //   Get.back();
+  // }
   static void leaveCall() async {
     await agoraEngine.leaveChannel();
+    accepted.value = false;
+    isJoined = false;
     try {
       timer.cancel();
     } catch (e) {
       print(e);
     }
-    accepted.value = false;
-    isJoined = false;
-    Get.back();
+    print("calling end");
+    Get.back(closeOverlays: true, canPop: false);
   }
 }

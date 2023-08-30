@@ -71,7 +71,7 @@ class ViewResourceDoc extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       image: DecorationImage(
-                        image: NetworkImage(HttpClient.s3ResourcesBaseUrl + image),
+                        image: CachedNetworkImageProvider(HttpClient.s3ResourcesBaseUrl + image),
                         fit: BoxFit.cover
                       ),
                     ),

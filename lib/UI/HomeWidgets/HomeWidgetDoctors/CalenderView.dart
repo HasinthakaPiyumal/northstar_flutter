@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -26,16 +27,21 @@ class CalenderView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Calender'),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: Text('Calender',style: TypographyStyles.title(20),),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
             SizedBox(height: 16),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+            Container(
+
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(5),color: Get.isDarkMode?AppColors.primary2Color:Colors.white,),
+              margin: const EdgeInsets.symmetric(horizontal: 16),
               child: Obx(() => ready.value ? TableCalendar(
                 onFormatChanged: (val) {},
+
                 startingDayOfWeek: StartingDayOfWeek.monday,
                 firstDay: DateTime.utc(2021, 1, 1),
                 lastDay: DateTime.utc(2025, 12, 31),
@@ -51,7 +57,7 @@ class CalenderView extends StatelessWidget {
                           radius: 10,
                           backgroundColor: Themes.mainThemeColor.shade500,
                           child: Text("${events.length}",
-                            style: TypographyStyles.boldText(13, Colors.black),
+                            style: TypographyStyles.boldText(11, Colors.black),
                           ),
                         ),
                       ) : SizedBox(),
@@ -59,9 +65,10 @@ class CalenderView extends StatelessWidget {
                   }
                 ),
                 calendarStyle: CalendarStyle(
+                  // rowDecoration: BoxDecoration(color: AppColors.primary2Color),
                   todayDecoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.black,
+                    color: AppColors.accentColor,
                   ),
 
                 ),

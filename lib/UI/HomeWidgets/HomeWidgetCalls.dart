@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Plugins/Utils.dart';
 import 'package:north_star/Styles/Themes.dart';
+import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetCalls/CallHistory.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetCalls/Dialer.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
-
+import 'package:north_star/Styles/AppColors.dart';
 class HomeWidgetCalls extends StatefulWidget {
   const HomeWidgetCalls({Key? key}) : super(key: key);
 
@@ -33,22 +34,24 @@ class _HomeWidgetCallsState extends State<HomeWidgetCalls> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: _currentIndex == 0 ? Text('Contacts') : Text('Recent Calls'),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: Text(_currentIndex == 0 ? 'Contacts': 'Recent Calls',style: TypographyStyles.title(20),),
       ),
       body: _lastSelected,
       bottomNavigationBar: SizedBox(
         height: 70,
         child: BottomNavigationBar(
-          selectedItemColor: colors.Colors().deepYellow(1),
-          backgroundColor: Utils.isDarkMode() ? Theme.of(context).focusColor : Colors.white,
+          selectedItemColor: AppColors.accentColor,
+          backgroundColor: Utils.isDarkMode() ? AppColors.primary2Color : Colors.white,
           elevation: 0,
           type: BottomNavigationBarType.fixed,
-          unselectedItemColor: Get.isDarkMode ? Themes.mainThemeColorAccent.shade100.withOpacity(0.6) : colors.Colors().lightBlack(0.5),
+          unselectedItemColor: Get.isDarkMode ? AppColors.textColorDark :AppColors.textColorLight,
           currentIndex: _currentIndex,
           onTap: _change,
           items: [
             BottomNavigationBarItem(
-              icon: Icon(Icons.people_alt,),
+              icon: Icon(Icons.perm_contact_calendar_outlined,),
               label: "Contacts",
             ),
             BottomNavigationBarItem(

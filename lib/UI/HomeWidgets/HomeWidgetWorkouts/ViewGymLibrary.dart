@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/Models/HttpClient.dart';
 
@@ -37,11 +38,12 @@ class ViewGymLibrary extends StatelessWidget {
               SizedBox(height: 16),
               Text(
                 workout['title'],
-                style: TypographyStyles.title(24),
+                style: TypographyStyles.title(20),
               ),
               SizedBox(height: 16),
               Text(
                 workout['description'],
+                style: TypographyStyles.text(16),
               ),
               SizedBox(height: 16),
               SizedBox(
@@ -53,7 +55,7 @@ class ViewGymLibrary extends StatelessWidget {
                 itemBuilder: ((context, index) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 2),
-                    child: Chip(label: Text(workout['categories'][index])),
+                    child: Chip(backgroundColor: Get.isDarkMode?AppColors.primary2Color:Colors.white,label: Text(workout['categories'][index],style: TypographyStyles.textWithWeight(13, FontWeight.w300),)),
                   );
                 }),
               ),

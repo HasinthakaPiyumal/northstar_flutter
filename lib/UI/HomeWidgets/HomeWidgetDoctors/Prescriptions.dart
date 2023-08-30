@@ -49,7 +49,9 @@ class Prescriptions extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Prescriptions'),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: Text('Prescriptions',style: TypographyStyles.title(20),),
       ),
       body: Obx(()=> ready.value ? prescriptions.length > 0 ? ListView.builder(
         itemCount: prescriptions.length,

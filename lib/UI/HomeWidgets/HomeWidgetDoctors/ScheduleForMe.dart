@@ -6,12 +6,15 @@ import 'package:intl/intl.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Styles/ButtonStyles.dart';
+import 'package:north_star/Styles/ThemeBdayaStyles.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/Layout.dart';
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/Utils/PopUps.dart';
+
+import '../../../Styles/AppColors.dart';
 
 class ScheduleForMe extends StatelessWidget {
   const ScheduleForMe({Key? key, this.doctor}) : super(key: key);
@@ -42,41 +45,34 @@ class ScheduleForMe extends StatelessWidget {
       }
 
       Get.defaultDialog(
-          radius: 8,
+          radius: 5,
           title: '',
           titlePadding: EdgeInsets.zero,
+          backgroundColor:
+              Get.isDarkMode ? AppColors.primary2Color : Colors.white,
           contentPadding: EdgeInsets.symmetric(
             horizontal: 20,
           ),
           content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 "BOOKING SUMMARY",
-                style: TypographyStyles.boldText(
-                  16,
-                  Get.isDarkMode
-                      ? Themes.mainThemeColorAccent.shade100
-                      : colors.Colors().lightBlack(1),
-                ),
+                textAlign: TextAlign.center,
+                style: TypographyStyles.title(20),
               ),
               SizedBox(height: 30),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Doctor',
+                    'DOCTOR',
                     style: TypographyStyles.normalText(
                         16, Themes.mainThemeColorAccent.shade300),
                   ),
                   Text(
                     '${doctor['name']}',
-                    style: TypographyStyles.boldText(
-                      16,
-                      Get.isDarkMode
-                          ? Themes.mainThemeColorAccent.shade100
-                          : colors.Colors().lightBlack(1),
-                    ),
+                    style: TypographyStyles.textWithWeight(16, FontWeight.w500),
                   ),
                 ],
               ),
@@ -96,12 +92,7 @@ class ScheduleForMe extends StatelessWidget {
                   ),
                   Text(
                     '${DateFormat("MMM dd,yyyy").format(dateTimeOfBooking).toString()}',
-                    style: TypographyStyles.boldText(
-                      16,
-                      Get.isDarkMode
-                          ? Themes.mainThemeColorAccent.shade100
-                          : colors.Colors().lightBlack(1),
-                    ),
+                    style: TypographyStyles.textWithWeight(16, FontWeight.w500),
                   ),
                 ],
               ),
@@ -120,12 +111,7 @@ class ScheduleForMe extends StatelessWidget {
                   ),
                   Text(
                     '${DateFormat("hh:mm a").format(dateTimeOfBooking)}',
-                    style: TypographyStyles.boldText(
-                      16,
-                      Get.isDarkMode
-                          ? Themes.mainThemeColorAccent.shade100
-                          : colors.Colors().lightBlack(1),
-                    ),
+                    style: TypographyStyles.textWithWeight(16, FontWeight.w500),
                   ),
                 ],
               ),
@@ -150,12 +136,7 @@ class ScheduleForMe extends StatelessWidget {
                   ),
                   Text(
                     'N\$ ${total.toStringAsFixed(2)}',
-                    style: TypographyStyles.boldText(
-                      20,
-                      Get.isDarkMode
-                          ? Themes.mainThemeColorAccent.shade100
-                          : colors.Colors().lightBlack(1),
-                    ),
+                    style: TypographyStyles.textWithWeight(16, FontWeight.w500),
                   ),
                 ],
               ),
@@ -203,16 +184,16 @@ class ScheduleForMe extends StatelessWidget {
                           children: [
                             Text(
                               'Pay with eWallet',
-                              style:
-                                  TypographyStyles.boldText(16, Colors.black),
+                              style: TypographyStyles.boldText(
+                                  14, AppColors.textOnAccentColor),
                             ),
                             SizedBox(
                               height: 3,
                             ),
                             Text(
                               '(eWallet Balance: ${walletData['balance'].toStringAsFixed(2)})',
-                              style:
-                                  TypographyStyles.normalText(13, Colors.black),
+                              style: TypographyStyles.normalText(
+                                  12, AppColors.textOnAccentColor),
                             ),
                           ],
                         ),
@@ -223,16 +204,18 @@ class ScheduleForMe extends StatelessWidget {
             Container(
               height: 48,
               width: Get.width,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: AppColors.accentColor,
+                  width: 1.25,
+                ),
+              ),
               child: TextButton(
                   onPressed: () => Get.back(),
                   child: Text(
                     'Cancel',
-                    style: TypographyStyles.boldText(
-                      14,
-                      Get.isDarkMode
-                          ? Themes.mainThemeColorAccent.shade100
-                          : colors.Colors().lightBlack(1),
-                    ),
+                    style: TypographyStyles.title(20),
                   )),
             ),
             SizedBox(
@@ -249,7 +232,12 @@ class ScheduleForMe extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Channel for Me'),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: Text(
+          'Channel for Me',
+          style: TypographyStyles.title(20),
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -262,99 +250,66 @@ class ScheduleForMe extends StatelessWidget {
               ),
               Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Get.isDarkMode
-                      ? colors.Colors().deepGrey(1)
-                      : colors.Colors().lightCardBG,
+                  borderRadius: BorderRadius.circular(5),
+                  color:
+                      Get.isDarkMode ? AppColors.primary2Color : Colors.white,
                 ),
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  child: Row(
                     children: [
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 26,
-                            backgroundImage: CachedNetworkImageProvider(
-                                HttpClient.s3BaseUrl + doctor['avatar_url']),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Expanded(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Dr. ' + doctor['name'],
-                                  overflow: TextOverflow.clip,
-                                  maxLines: 1,
-                                  style: TypographyStyles.boldText(
-                                    18,
-                                    Get.isDarkMode
-                                        ? Themes.mainThemeColorAccent.shade100
-                                        : colors.Colors().lightBlack(1),
-                                  ),
-                                ),
-                                SizedBox(height: 5),
-                                Text(
-                                  doctor['doctor']['speciality'],
-                                  style: TypographyStyles.normalText(
-                                    14,
-                                    Get.isDarkMode
-                                        ? Themes.mainThemeColorAccent.shade100
-                                            .withOpacity(0.5)
-                                        : colors.Colors().darkGrey(1),
-                                  ),
-                                ),
-                              ],
+                      CircleAvatar(
+                        radius: 32,
+                        backgroundImage: CachedNetworkImageProvider(
+                            HttpClient.s3BaseUrl + doctor['avatar_url']),
+                      ),
+                      SizedBox(
+                        width: 26,
+                      ),
+                      Expanded(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(doctor['doctor']['speciality'],
+                                style: TextStyle(
+                                  color: Color(0xFFFFB700),
+                                  fontSize: 16,
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w700,
+                                )),
+                            SizedBox(height: 5),
+                            Text(
+                              'Dr. ' + doctor['name'],
+                              overflow: TextOverflow.clip,
+                              maxLines: 1,
+                              style: TypographyStyles.title(20),
                             ),
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        height: 6,
-                      ),
-                      Divider(
-                        thickness: 1,
-                        color: colors.Colors().darkGrey(0.8),
-                      ),
-                      SizedBox(
-                        height: 6,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('Rate ',
-                              style: TypographyStyles.normalText(
-                                14,
-                                Get.isDarkMode
-                                    ? Themes.mainThemeColorAccent.shade100
-                                    : colors.Colors().darkGrey(1),
-                              )),
-                          Text(getChargingMethod(),
-                              style: TypographyStyles.normalText(
-                                14,
-                                Get.isDarkMode
-                                    ? Themes.mainThemeColorAccent.shade100
-                                    : colors.Colors().darkGrey(1),
-                              )),
-                          Spacer(),
-                          Text(
-                              'N\$ ' +
-                                  doctor['doctor']['hourly_rate']
-                                      .toStringAsFixed(2),
-                              style: TypographyStyles.boldText(
-                                20,
-                                Get.isDarkMode
-                                    ? Themes.mainThemeColorAccent.shade500
-                                    : colors.Colors().lightBlack(1),
-                              )),
-                        ],
-                      ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('Rate ',
+                                    style: TypographyStyles.textWithWeight(
+                                        16, FontWeight.w400)),
+                                Text(getChargingMethod(),
+                                    style: TypographyStyles.textWithWeight(
+                                        16, FontWeight.w400)),
+                                Spacer(),
+                                Text(
+                                    'N\$ ' +
+                                        doctor['doctor']['hourly_rate']
+                                            .toStringAsFixed(2),
+                                    style: TextStyle(
+                                      color: Color(0xFFFFB700),
+                                      fontSize: 20,
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w600,
+                                    )),
+                              ],
+                            )
+                          ],
+                        ),
+                      )
                     ],
                   ),
                 ),
@@ -367,18 +322,15 @@ class ScheduleForMe extends StatelessWidget {
                 readOnly: true,
                 decoration: InputDecoration(
                   labelText: 'Approximate Meeting Start Time',
-                  suffixIcon: Icon(Icons.calendar_today),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
+                  prefixIcon: Icon(Icons.calendar_today),
+                  border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
                   ),
                 ),
                 onTap: () {
                   DatePickerBdaya.showDateTimePicker(
                     context,
-                    theme: DatePickerThemeBdaya(
-                      backgroundColor: Color(0xffF1F1F1),
-                      containerHeight: Get.height / 3,
-                    ),
+                    theme: ThemeBdayaStyles.main(),
                     showTitleActions: true,
                     minTime: DateTime.now(),
                     currentTime: DateTime.now(),
@@ -399,34 +351,50 @@ class ScheduleForMe extends StatelessWidget {
               SizedBox(height: 16),
               TextField(
                 controller: titleController,
-                decoration: InputDecoration(labelText: 'Reason'),
+                maxLength: 250,
+                decoration: InputDecoration(
+                  labelText: 'Reason',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                ),
               ),
               SizedBox(height: 16),
               TextField(
                 controller: descriptionController,
-                decoration: InputDecoration(labelText: 'Additional details'),
+                maxLength: 250,
+                decoration: InputDecoration(
+                  labelText: 'Additional details',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                ),
               ),
             ],
           ),
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: EdgeInsets.fromLTRB(16, 5, 16, 15),
+        padding: EdgeInsets.fromLTRB(36, 5, 36, 15),
         child: Container(
           width: Get.width,
-          height: 56,
+          height: 44,
           child: Obx(() => ElevatedButton(
-                style: ButtonStyles.bigBlackButton(),
+                style: ButtonStyles.bigFlatYellowButton(),
                 child: ready.value
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.video_call),
+                          Icon(Icons.video_call_outlined),
                           SizedBox(width: 8),
                           Text(
                             'Schedule Meeting',
-                            style: TypographyStyles.boldText(
-                                16, Themes.mainThemeColorAccent.shade100),
+                            style: TextStyle(
+                              color: Color(0xFF1B1F24),
+                              fontSize: 20,
+                              fontFamily: 'Bebas Neue',
+                              fontWeight: FontWeight.w400,
+                            ),
                           )
                         ],
                       )

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
+import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 
@@ -58,15 +59,62 @@ class ViewWorkout extends StatelessWidget {
 
     return Obx(()=> ready.value ? Scaffold(
       appBar: AppBar(
-        title: Text(workout['title']),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: Text(workout['title'],style: TypographyStyles.title(20)),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: Center(
-              child: Text((pageIndex.value+1).toString()+'/' + workout['steps'].toString(),
-                  style: TypographyStyles.title(18)),
+          Container(
+            width: 91,
+            height: 40,
+            margin: const EdgeInsets.only(top:10,right: 10),
+            decoration: ShapeDecoration(
+              color: AppColors.primary2Color,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             ),
-          )
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Container(
+                        width: 36,
+                        height: 36,
+                        decoration: ShapeDecoration(
+                          color: Color(0xFFFFB700),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                        ),
+                        child: Center(
+                          child: Text(
+                            '0'+(pageIndex.value+1).toString(),
+                            style: TextStyle(
+                              color: Color(0xFF1B1F24),
+                              fontSize: 20,
+                              fontFamily: 'Bebas Neue',
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        '/ 0'+ workout['steps'].toString(),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontFamily: 'Bebas Neue',
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
       body: SingleChildScrollView(

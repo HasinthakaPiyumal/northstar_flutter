@@ -15,6 +15,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Plugins/HttpClient.dart';
+import 'Styles/AppColors.dart';
 
 bool isLoggedIn = false;
 bool isDarkMode = true;
@@ -51,17 +52,20 @@ void main() async {
   });
 
   OneSignal.shared.setNotificationWillShowInForegroundHandler(
-          (OSNotificationReceivedEvent event) {
-        if (event.notification.body == 'Incoming Call!') {
-          Get.to(() =>
-              IncomingVoiceCallUI(callData: event.notification.additionalData));
-        } else {
-          print('Incoming Call! Else');
-          event.complete(event.notification);
-        }
-      });
+      (OSNotificationReceivedEvent event) {
+    if (event.notification.body == 'Incoming Call!') {
+      print("======= Incoming call ==========");
+      print(event.notification.additionalData);
+      Get.to(() =>
+          IncomingVoiceCallUI(callData: event.notification.additionalData));
+    } else {
+      print('Incoming Call! Else');
+      event.complete(event.notification);
+    }
+  });
 
-  final currentTheme = isDarkMode?ThemeAll().darkTheme:ThemeAll().lightTheme;
+  final currentTheme =
+      isDarkMode ? ThemeAll().darkTheme : ThemeAll().lightTheme;
 
   runApp(
     ChangeNotifierProvider(
@@ -88,7 +92,7 @@ Future checkAuth() async {
       Map<String, dynamic> userData = res['data']['user'];
       if (res['data']['user']['subscription'] != null) {
         DateTime expDate =
-        DateTime.parse(res['data']['user']['subscription']['valid_till']);
+            DateTime.parse(res['data']['user']['subscription']['valid_till']);
         if (expDate.isBefore(DateTime.now())) {
           print('Subscription is expired');
           userData.remove('subscription');
@@ -125,31 +129,47 @@ class NorthStar extends StatelessWidget {
 
 class ThemeAll {
   final lightTheme = ThemeData(
-    inputDecorationTheme: InputDecorationTheme(
-      border: OutlineInputBorder(),
-    ),
-    brightness: Brightness.light,
-    primarySwatch: Themes.mainThemeColor,
-    scaffoldBackgroundColor: Color(0xFFF2F2F2),
-    appBarTheme: AppBarTheme(
-      elevation: 0,
-      backgroundColor: Color(0xFFF2F2F2),
-    ),
-  );
-  final darkTheme = ThemeData(
-    brightness: Brightness.dark,
-    primarySwatch: Themes.mainThemeColor,
-    scaffoldBackgroundColor: Color(0xFF1B1F24),
-    appBarTheme: AppBarTheme(
-      elevation: 0,
-      backgroundColor: Color(0xFF232323),
-    ),
-    inputDecorationTheme: InputDecorationTheme(
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
+      inputDecorationTheme: InputDecorationTheme(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(1),
+          borderSide: BorderSide(color: Colors.black),
+        ),
+        hintStyle: TextStyle(color: Colors.black),
+        labelStyle: TextStyle(color: Colors.black),
       ),
-    ),
-  );
+      brightness: Brightness.light,
+      primarySwatch: Themes.mainThemeColor,
+      scaffoldBackgroundColor: Color(0xFFF2F2F2),
+      appBarTheme: AppBarTheme(
+        elevation: 0,
+        centerTitle: true,
+        backgroundColor: Color(0xFFF2F2F2),
+      ),
+      dialogBackgroundColor: Colors.white,
+      cardColor: Colors.white,
+      primaryColor: AppColors.accentColor);
+
+  final darkTheme = ThemeData(
+      brightness: Brightness.dark,
+      primarySwatch: Themes.mainThemeColor,
+      scaffoldBackgroundColor: AppColors.primary1Color,
+      appBarTheme: AppBarTheme(
+        elevation: 0,
+        centerTitle: true,
+        backgroundColor: AppColors.primary1Color,
+        iconTheme: IconThemeData(size: 30),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(1),
+          borderSide: BorderSide(color: Colors.white),
+        ),
+        hintStyle: TextStyle(color: Colors.white),
+        labelStyle: TextStyle(color: Colors.white),
+      ),
+      dialogBackgroundColor: AppColors.primary2Color,
+      cardColor: AppColors.primary2Color,
+      primaryColor: AppColors.accentColor);
 }
 // class ThemeAll {
 //   final lightTheme = ThemeData(
@@ -181,10 +201,10 @@ class ThemeAll {
 // }
 
 class ThemeProvider with ChangeNotifier {
-
   ThemeData _themeData;
 
   ThemeProvider(this._themeData);
+
   ThemeData getTheme() => _themeData;
 
   void toggleTheme() async {

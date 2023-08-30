@@ -96,7 +96,9 @@ class AddWorkouts extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text('Share Workout'),
+          centerTitle: true,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          title: Text('Share Workout', style: TypographyStyles.title(20),),
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),

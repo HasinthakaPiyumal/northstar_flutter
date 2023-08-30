@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:north_star/Controllers/WatchDataController.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
+import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/ButtonStyles.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
@@ -17,7 +18,6 @@ import 'package:north_star/UI/SharedWidgets/UploadAvatar.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/Utils/PopUps.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../main.dart';
 import '../HomeWidgets/ContactUsPage.dart';
@@ -396,86 +396,290 @@ class ClientProfile extends StatelessWidget {
               Obx(() => ready.value
                   ? Column(
                       children: [
-                        ListTile(
-                          contentPadding: EdgeInsets.all(0),
-                          leading: CircleAvatar(
-                            radius: 32,
-                            backgroundImage: CachedNetworkImageProvider(
-                                HttpClient.s3BaseUrl +
-                                    data['user']['avatar_url']),
-                          ),
-                          title: Text(data['user']['name'],
-                              style: TypographyStyles.title(24)),
-                          trailing: IconButton(
-                            onPressed: () {
-                              Get.to(() => UploadAvatar())?.then((value) {
-                                getProfile();
-                              });
-                            },
-                            icon: Icon(
-                              Icons.edit,
-                              color: Get.isDarkMode
-                                  ? Themes.mainThemeColor
-                                  : colors.Colors().lightBlack(1),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 25),
-                        ElevatedButton(
-                          style: Get.isDarkMode
-                              ? ButtonStyles.matRadButton(Colors.black, 0, 12)
-                              : ButtonStyles.matRadButton(
-                                  colors.Colors().selectedCardBG, 0, 12),
-                          onPressed: () {
-                            Get.to(() => ClientAccountInfo());
-                          },
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 22, horizontal: 15),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        ClipOval(
+                          child: Container(
+                            width: 124,
+                            height: 124,
+                            child: Stack(
                               children: [
-                                Text(
-                                  "Account Information",
-                                  style: TypographyStyles.text(15),
+                                Positioned(
+                                  left: 0,
+                                  top: 0,
+                                  child: Container(
+                                    width: 124,
+                                    height: 124,
+                                    decoration: ShapeDecoration(
+                                      image: DecorationImage(
+                                        image: CachedNetworkImageProvider(
+                                            HttpClient.s3BaseUrl +
+                                                data['user']['avatar_url']),
+                                        fit: BoxFit.cover,
+                                      ),
+                                      shape: OvalBorder(),
+                                    ),
+                                  ),
                                 ),
-                                Icon(
-                                  Icons.arrow_forward_ios,
-                                  size: 15,
-                                )
+                                Positioned(
+                                  left: 0,
+                                  top: 76.69,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Get.to(() => UploadAvatar())
+                                          ?.then((value) {
+                                        getProfile();
+                                      });
+                                    },
+                                    child: Container(
+                                      width: 124,
+                                      height: 70,
+                                      decoration: BoxDecoration(
+                                        color: Color(0x88000000),
+                                      ),
+                                      child: Stack(
+                                        children: [
+                                          Positioned(
+                                            left: 36.75,
+                                            top: 0,
+                                            child: Container(
+                                              width: 46,
+                                              height: 46.50,
+                                              // clipBehavior: Clip.antiAlias,
+                                              child: Icon(
+                                                Icons.camera_alt_rounded,
+                                                color: Themes
+                                                    .mainThemeColor.shade500,
+                                              ),
+                                              // decoration: BoxDecoration(
+                                              // ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                           ),
                         ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        ElevatedButton(
-                          style: Get.isDarkMode
-                              ? ButtonStyles.matRadButton(Colors.black, 0, 12)
-                              : ButtonStyles.matRadButton(
-                                  colors.Colors().selectedCardBG, 0, 12),
-                          onPressed: () {
-                            Get.to(() => CompleteUserProfile());
+                        const SizedBox(height: 10),
+                        Text(data['user']['name'],
+                            style: TypographyStyles.title(24)),
+                        const SizedBox(height: 10),
+                        GestureDetector(
+                          onTap: () {
+                            themeProvider.toggleTheme();
+                            // isDarkMode.value = value;
                           },
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 22, horizontal: 15),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Health Information",
-                                  style: TypographyStyles.text(15),
-                                ),
-                                Icon(
-                                  Icons.arrow_forward_ios,
-                                  size: 15,
-                                )
-                              ],
+                          child: Container(
+                            alignment: Alignment.bottomRight,
+                            padding: EdgeInsets.only(right: 16),
+                            child: Container(
+                              width: 96,
+                              height: 44,
+                              child: Stack(
+                                children: [
+                                  Positioned(
+                                    left: 0,
+                                    top: 0,
+                                    child: Container(
+                                      width: 96,
+                                      height: 44,
+                                      decoration: ShapeDecoration(
+                                        color: Color(0xFF1E2630),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(30),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    left: Get.isDarkMode ? 56 : 4,
+                                    top: 4,
+                                    child: Container(
+                                      width: 36,
+                                      height: 36,
+                                      child: Stack(
+                                        children: [
+                                          Positioned(
+                                            left: 0,
+                                            top: 0,
+                                            child: Container(
+                                              width: 36,
+                                              height: 36,
+                                              decoration: ShapeDecoration(
+                                                color: Color(0xFFFFB700),
+                                                shape: OvalBorder(),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    left: 4,
+                                    top: 4,
+                                    child: Container(
+                                      width: 36,
+                                      height: 36,
+                                      child: Stack(
+                                        children: [
+                                          Positioned(
+                                            left: 0,
+                                            top: 0,
+                                            child: Container(
+                                              width: 36,
+                                              height: 36,
+                                              child: Icon(
+                                                  Icons.light_mode_rounded,
+                                                  color: Get.isDarkMode
+                                                      ? Color(0xFFFFFFFF)
+                                                      : Color(0xFF1B1F24)),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    left: 56,
+                                    top: 4,
+                                    child: Container(
+                                      width: 36,
+                                      height: 36,
+                                      child: Stack(
+                                        children: [
+                                          Positioned(
+                                            left: 0,
+                                            top: 0,
+                                            child: Container(
+                                              width: 36,
+                                              height: 36,
+                                              child: Icon(Icons.dark_mode,
+                                                  color: !Get.isDarkMode
+                                                      ? Color(0xFFFFFFFF)
+                                                      : Color(0xFF1B1F24)),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
+                        const SizedBox(height: 20),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: InkWell(
+                                onTap: () {
+                                  Get.to(() => ClientAccountInfo());
+                                },
+                                child: Container(
+                                  // width: 189,
+                                  height: 126,
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: ShapeDecoration(
+                                    color: Get.isDarkMode?AppColors.primary2Color:Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      side: BorderSide(
+                                        width: 1,
+                                        strokeAlign:
+                                            BorderSide.strokeAlignOutside,
+                                        color: Colors.white,
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        width: 48,
+                                        height: 48,
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: AssetImage(
+                                                "assets/images/paste.png"),
+                                            fit: BoxFit.fill,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 10),
+                                      SizedBox(
+                                        width: 146,
+                                        child: Text(
+                                          'Account Information',
+                                          textAlign: TextAlign.center,
+                                          style: TypographyStyles.textWithWeight(16, FontWeight.w400),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 16,),
+                            Expanded(
+                              child: InkWell(
+                                onTap: () {
+                                  Get.to(() => CompleteUserProfile());
+                                },
+                                child: Container(
+                                // width: 189,
+                                height: 126,
+                                padding: const EdgeInsets.all(10),
+                                decoration: ShapeDecoration(
+                                  color: Get.isDarkMode?AppColors.primary2Color:Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1,
+                                      strokeAlign: BorderSide.strokeAlignOutside,
+                                      color: Colors.white,
+                                    ),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      width: 48,
+                                      height: 48,
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          image: AssetImage(
+                                              "assets/images/firstaidbox.png"),
+                                          fit: BoxFit.fill,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    SizedBox(
+                                      width: 146,
+                                      child: Text(
+                                        'Health Information',
+                                        textAlign: TextAlign.center,
+                                        style: TypographyStyles.textWithWeight(16, FontWeight.w400),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              ),
+                            )
+                          ],
+                        ),
+
                         SizedBox(height: 16),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

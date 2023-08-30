@@ -5,6 +5,8 @@ import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Utils/PopUps.dart';
 
+import '../../../Styles/TypographyStyles.dart';
+
 class UnlockDoorQR extends StatelessWidget {
   const UnlockDoorQR({Key? key, this.gymID}) : super(key: key);
   final gymID;
@@ -34,8 +36,9 @@ class UnlockDoorQR extends StatelessWidget {
 
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Unlock Door QR'),
+      appBar: AppBar(  centerTitle: true,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: Text('Unlock Door QR',style: TypographyStyles.title(20)),
       ),
       body: Column(
         children: <Widget>[
@@ -60,7 +63,8 @@ class UnlockDoorQR extends StatelessWidget {
             padding: const EdgeInsets.all(32.0),
             child: Text('Scan the QR Code on the door to unlock it.',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 32)),
+                style: TypographyStyles.text(16),
+            )
           )
         ],
       ),

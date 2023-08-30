@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:north_star/Styles/TypographyStyles.dart';
 
 class LoadingAndEmptyWidgets {
-
-  static Widget emptyWidget(){
+  static Widget emptyWidget() {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -12,31 +13,30 @@ class LoadingAndEmptyWidgets {
           Stack(
             children: [
               Container(
-                height: Get.width / 1.5,
+                height: Get.width / 1.8,
                 child: Lottie.asset(
-                  Get.isDarkMode ? 'assets/lotties/empty_dark.json' : 'assets/lotties/empty_white.json',
+                  Get.isDarkMode
+                      ? 'assets/lotties/empty_v2.json'
+                      : 'assets/lotties/empty_v2.json',
                 ),
               ),
+
               Positioned(
-                bottom: 32,
+                bottom: 2,
                 left: 0,
                 right: 0,
-                child: Text('Nothing here Yet!',
+                child: Text('Empty for now',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                    color: Color(0xFF9B9B9B),
-                    fontSize: 18
-                )),
+                    style: TypographyStyles.title(20)),
               )
             ],
           ),
-
         ],
       ),
     );
   }
 
-  static Widget loadingWidget(){
+  static Widget loadingWidget() {
     return Center(
       child: Container(
         height: 96,

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
+import 'package:url_launcher/url_launcher.dart';
 
 class UserViewBio extends StatelessWidget {
   const UserViewBio({Key? key, required this.data}) : super(key: key);
@@ -12,24 +13,29 @@ class UserViewBio extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     print(data);
 
     return Scaffold(
       body: SingleChildScrollView(
+          child: Padding(
+        padding: const EdgeInsets.all(10.0),
         child: Column(
           children: [
-            SizedBox(height: 16,),
-            Padding(
+            SizedBox(
+              height: 16,
+            ),
+            Container(
               padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                color: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     'Phone',
-                    style: TextStyle(
-                      color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade500 : colors.Colors().darkGrey(1),
-                    ),
+                    style: TypographyStyles.title(14),
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -37,38 +43,48 @@ class UserViewBio extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       TextButton(
-                          onPressed: () async{
-                            launchUrl(Uri.parse('tel:'+ data['phone']));
-                          },
-                          style: TextButton.styleFrom(
-                            padding: EdgeInsets.zero,
-                            minimumSize: Size(50, 25),
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          child: Text(
-                            'Direct Call: '+ data['phone'].toString(),
-                            style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
-                          ),
+                        onPressed: () async {
+                          launchUrl(Uri.parse('tel:' + data['phone']));
+                        },
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          minimumSize: Size(50, 25),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        child: Text(
+                          'Direct Call: ' + data['phone'].toString(),
+                          style: TypographyStyles.boldText(
+                              16,
+                              Get.isDarkMode
+                                  ? Themes.mainThemeColorAccent.shade100
+                                  : colors.Colors().lightBlack(1)),
+                        ),
                       ),
-                      Text('*Standard calling rates apply', style: TextStyle(
-                        color: Colors.grey[700],
-                      ),),
+                      Text(
+                        '*Standard calling rates apply',
+                        style: TypographyStyles.textWithWeight(
+                            12, FontWeight.w300),
+                      ),
                     ],
                   ),
-
                 ],
               ),
             ),
-            Padding(
+            SizedBox(
+              height: 10,
+            ),
+            Container(
               padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                color: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     'Birthday',
-                    style: TextStyle(
-                      color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade500 : colors.Colors().darkGrey(1),
-                    ),
+                      style: TypographyStyles.title(14),
                   ),
                   Text(
                     data['birthday'],
@@ -80,43 +96,54 @@ class UserViewBio extends StatelessWidget {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(16),
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+              padding: const EdgeInsets.all(16), decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              color: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
+            ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     'Email',
-                    style: TextStyle(
-                      color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade500 : colors.Colors().darkGrey(1),
-                    ),
+                    style: TypographyStyles.title(14),
                   ),
                   TextButton(
-                      onPressed: () async{
-                        if (!await launchUrl(Uri.parse('mailto:'+ data['email']))) throw 'Could not Open Call';
+                      onPressed: () async {
+                        if (!await launchUrl(
+                            Uri.parse('mailto:' + data['email'])))
+                          throw 'Could not Open Call';
                       },
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero
-                      ),
+                      style: TextButton.styleFrom(padding: EdgeInsets.zero),
                       child: Text(
                         data['email'],
-                        style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
-                      )
-                  ),
-
+                        style: TypographyStyles.boldText(
+                            16,
+                            Get.isDarkMode
+                                ? Themes.mainThemeColorAccent.shade100
+                                : colors.Colors().lightBlack(1)),
+                      )),
                 ],
               ),
             ),
-            Padding(
+            SizedBox(
+              height: 10,
+            ),
+            Container(
               padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                color: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     'Gender',
-                    style: TextStyle(
-                      color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade500 : colors.Colors().darkGrey(1),
-                    ),
+                    style: TypographyStyles.title(14),
                   ),
                   Text(
                     "${data['gender'].toString().capitalize}",
@@ -128,16 +155,20 @@ class UserViewBio extends StatelessWidget {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(16),
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+              padding: const EdgeInsets.all(16), decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              color: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
+            ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     'NIC',
-                    style: TextStyle(
-                      color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade500 : colors.Colors().darkGrey(1),
-                    ),
+                    style: TypographyStyles.title(14),
                   ),
                   Text(
                     data['nic'],
@@ -149,19 +180,24 @@ class UserViewBio extends StatelessWidget {
                 ],
               ),
             ),
-            Padding(
+            SizedBox(
+              height: 10,
+            ),
+            Container(
               padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                color: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     'Country',
-                    style: TextStyle(
-                      color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade500 : colors.Colors().darkGrey(1),
-                    ),
+                    style: TypographyStyles.title(14),
                   ),
                   Text(
-                      data['country_code'],
+                    data['country_code'],
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
@@ -170,89 +206,109 @@ class UserViewBio extends StatelessWidget {
                 ],
               ),
             ),
-            Divider(thickness: 1),
-            Padding(
+            Divider(thickness: 1,height: 20,),
+            Container(
               padding: const EdgeInsets.all(16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     'Emergency Contact',
-                    style: TextStyle(
-                      color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade500 : colors.Colors().darkGrey(1),
-                    ),
+                    style: TypographyStyles.title(20),
                   )
                 ],
               ),
             ),
-            data['role'] == 'client' ? Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            data['role'] == 'client'
+                ? Column(
                     children: [
-                      Text(
-                        data['client']['emergency_contact_name'],
-                        style: TextStyle(
-                          color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade500 : colors.Colors().darkGrey(1),
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
                         ),
-                      ),
-                      Text(
-                        data['client']['emergency_contact_phone'],
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                data['client']['health_conditions'] != null ?
-                Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('Health Conditions',
-                            style: TextStyle(
-                              color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade500 : colors.Colors().darkGrey(1),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              data['client']['emergency_contact_name'],
+                              style: TypographyStyles.title(14),
                             ),
-                          ),
-                          Text('(${data['client']['health_conditions'].length})')
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: data['client']['health_conditions'].length,
-                        itemBuilder: (_,index){
-                          return Container(
-                            margin: EdgeInsets.only(bottom: 8),
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                            child: Text(
-                              '⏺  ' + data['client']['health_conditions'][index],
+                            Text(
+                              data['client']['emergency_contact_phone'],
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
                               ),
-                            ),
-                          );
-                        },
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ):Container(),
-              ],
-            ) : Container(),
+          SizedBox(
+            height: 10,
+          ),
+                      data['client']['health_conditions'] != null
+                          ? Column(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Health Conditions',
+                                        style: TypographyStyles.title(14),
+                                      ),
+                                      Text(
+                                          '(${data['client']['health_conditions'].length})')
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top:16),
+                                  child: ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemCount: data['client']
+                                            ['health_conditions']
+                                        .length,
+                                    itemBuilder: (_, index) {
+                                      return Container(
+                                        margin: EdgeInsets.only(bottom: 8),
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 16),
+                                        child: Row(
+                                          children: [
+                                            Container(margin:EdgeInsets.only(right: 10), width:10,height: 10,decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: AppColors.accentColor),),
+                                            Text(                                             
+                                                  data['client']
+                                                      ['health_conditions'][index],
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            )
+                          : Container(),
+                    ],
+                  )
+                : Container(),
           ],
-        )
-      ),
+        ),
+      )),
     );
   }
 }

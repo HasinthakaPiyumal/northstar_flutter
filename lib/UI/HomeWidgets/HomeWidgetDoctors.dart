@@ -5,24 +5,19 @@ import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetDoctors/DoctorMeetings.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetDoctors/Doctors_List.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetDoctors/Prescriptions.dart';
-import 'package:north_star/Utils/CustomColors.dart' as colors;
 
 class Doctors extends StatelessWidget {
   const Doctors({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
-
-
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: Text(
           'Medical Professionals',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TypographyStyles.title(20),
         ),
       ),
       body: Column(
@@ -31,66 +26,89 @@ class Doctors extends StatelessWidget {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Image.asset('assets/images/undraw_medicine_b1ol.png'),
+              child: Image.asset(
+                'assets/images/medical_professional_widget_home.png',
+              ),
             ),
           ),
-          SizedBox(height: 40),
+          SizedBox(height: 10),
           Column(
             children: [
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Text('Channel a medical professional just in few taps!', style: TypographyStyles.title(24), textAlign: TextAlign.center,),
+                child: Text(
+                  'Channel a medical professional just in few taps!',
+                  style: TypographyStyles.smallBoldTitle(26),
+                  textAlign: TextAlign.center,
+                ),
               ),
               SizedBox(height: 20),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Text('Skip the traffic, crowded hospital waiting rooms and exposure to germs and channel a doctor from the comfort of your home.',
-                  style: TextStyle(
-                    height: 1.5,
-                  ),
+                child: Text(
+                  'Skip the traffic, crowded hospital waiting rooms and exposure to germs and channel a doctor from the comfort of your home.'
+                      .toUpperCase(),
+                  style: TypographyStyles.textWithWeight(16, FontWeight.w400),
                   textAlign: TextAlign.center,
                 ),
               ),
               SizedBox(height: 20),
               Container(
-                width: Get.width*0.9,
-                height: 56,
+                width: Get.width * 0.9,
+                height: 44,
                 child: ElevatedButton(
-                  style: Get.isDarkMode ? ButtonStyles.bigBlackButton() : ButtonStyles.matButton(colors.Colors().selectedCardBG, 0),
-                  child: Text('Appointments'),
-                  onPressed: (){
-                    Get.to(()=>DoctorMeetings());
+                  style: ButtonStyles.bigFlatYellowButton(),
+                  child: Text(
+                    'Appointments',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontFamily: 'Bebas Neue',
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  onPressed: () {
+                    Get.to(() => DoctorMeetings());
                   },
                 ),
               ),
               SizedBox(height: 16),
               Container(
-                width: Get.width*0.9,
-                height: 56,
+                width: Get.width * 0.9,
+                height: 44,
                 child: ElevatedButton(
-                  style: Get.isDarkMode ? ButtonStyles.bigBlackButton() : ButtonStyles.matButton(colors.Colors().selectedCardBG, 0),
-                  child: Text('Prescriptions'),
-                  onPressed: (){
-                    Get.to(()=>Prescriptions());
+                  style: ButtonStyles.bigFlatYellowButton(),
+                  child: Text('Prescriptions',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'Bebas Neue',
+                        fontWeight: FontWeight.w400,
+                      )),
+                  onPressed: () {
+                    Get.to(() => Prescriptions());
                   },
                 ),
               ),
               SizedBox(height: 16),
               Container(
-                width: Get.width*0.9,
-                height: 56,
+                width: Get.width * 0.9,
+                height: 44,
                 child: ElevatedButton(
-                  style: Get.isDarkMode ? ButtonStyles.bigGreyButton() : ButtonStyles.bigBlackButton(),
+                  style: ButtonStyles.bigFlatYellowButton(),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.video_call),
+                      Icon(Icons.video_call_outlined),
                       SizedBox(width: 8),
-                      Text('CONNECT')
+                      Text('ADD ITEM',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: 'Bebas Neue',
+                            fontWeight: FontWeight.w400,
+                          ))
                     ],
                   ),
-                  onPressed: (){
-                    Get.to(()=>DoctorsList());
+                  onPressed: () {
+                    Get.to(() => DoctorsList());
                   },
                 ),
               ),

@@ -7,7 +7,9 @@ import 'package:north_star/Styles/ButtonStyles.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetWorkouts/ViewGymLibrary.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../../Styles/AppColors.dart';
 class GymWorkouts extends StatelessWidget {
   const GymWorkouts({Key? key}) : super(key: key);
 
@@ -83,6 +85,7 @@ class GymWorkouts extends StatelessWidget {
     void showFilter(){
       Get.bottomSheet(
         Card(
+          color: Get.isDarkMode?AppColors.primary2Color:Colors.white,
         child: Column(
           children: [
             SizedBox(height: 16),
@@ -138,7 +141,9 @@ class GymWorkouts extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Gym Bank'),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: Text('Gym Bank',style: TypographyStyles.title(20),),
       ),
       body: Column(
         children: [
@@ -162,7 +167,7 @@ class GymWorkouts extends StatelessWidget {
                         decoration: InputDecoration(
                           prefixIcon: Icon(Icons.search),
                           labelText: 'Search Workouts...',
-                          border: OutlineInputBorder(
+                          border: UnderlineInputBorder(
                               borderRadius: BorderRadius.circular(8.0)),
                         )),
                     suggestionsCallback: (pattern) async {
@@ -176,12 +181,12 @@ class GymWorkouts extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(
-                height: 58,
-                child: ElevatedButton(
-                  style: ButtonStyles.bigFlatFilterBlackButton(),
-                  child: Icon(Icons.filter_alt_outlined),
-                  onPressed: () {
+              Container(
+                height: 26,
+                width: 26,
+                child: InkWell(
+                  child: SvgPicture.asset('assets/svgs/filter.svg'),
+                  onTap: () {
                     showFilter();
                   },
                 ),
@@ -207,7 +212,9 @@ class GymWorkouts extends StatelessWidget {
                       itemBuilder: (context, index) {
                         return Card(
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8)),
+                              borderRadius: BorderRadius.circular(8),
+                          ),
+                          color: Get.isDarkMode?AppColors.primary2Color:Colors.white,
                           child: InkWell(
                             onTap: () {
                               Get.to(() =>
@@ -233,11 +240,14 @@ class GymWorkouts extends StatelessWidget {
                                 ),
                                 Padding(
                                     padding:
-                                        const EdgeInsets.fromLTRB(8, 14, 8, 8),
-                                    child: Text(
-                                          workouts[index]['title'],
-                                          style: TypographyStyles.title(16),
-                                        ))
+                                        const EdgeInsets.fromLTRB(8, 10, 8, 8),
+                                    child: Center(
+                                      child: Text(
+                                            workouts[index]['title'],
+                                            textAlign: TextAlign.center,
+                                            style: TypographyStyles.title(14),
+                                          ),
+                                    ))
                               ],
                             ),
                           ),

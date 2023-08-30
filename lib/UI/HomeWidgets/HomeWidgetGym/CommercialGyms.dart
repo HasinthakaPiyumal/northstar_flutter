@@ -11,6 +11,8 @@ import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetGym/GymView.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 
+import '../../../Styles/AppColors.dart';
+
 class CommercialGyms extends StatelessWidget {
   const CommercialGyms({Key? key}) : super(key: key);
 
@@ -130,7 +132,7 @@ class CommercialGyms extends StatelessWidget {
                         height: 60,
                         child: ElevatedButton(
                           style: ButtonStyles.matRadButton(
-                            Get.isDarkMode ? colors.Colors().darkGrey(1) : colors.Colors().selectedCardBG,
+                            AppColors.accentColor,
                             0,
                             12,
                           ),
@@ -184,9 +186,9 @@ class CommercialGyms extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 2),
                   child: Card(
                     shadowColor: Colors.black.withOpacity(0.5),
-                    elevation: 8,
+                    elevation: 0,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16)
+                        borderRadius: BorderRadius.circular(10)
                     ),
                     child: InkWell(
                         onTap: (){

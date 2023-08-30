@@ -4,6 +4,9 @@ import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Styles/ButtonStyles.dart';
 import 'package:north_star/Utils/PopUps.dart';
+
+import '../../Styles/TypographyStyles.dart';
+
 class QualificationsAddEdit extends StatelessWidget {
   const QualificationsAddEdit({Key? key, this.qData}) : super(key: key);
 
@@ -16,11 +19,11 @@ class QualificationsAddEdit extends StatelessWidget {
     TextEditingController title = new TextEditingController();
     TextEditingController description = new TextEditingController();
 
-    void saveOrEditQualifications() async{
+    void saveOrEditQualifications() async {
       ready.value = false;
       Map data;
-      if(qData != null){
-        data ={
+      if (qData != null) {
+        data = {
           "id": qData["id"],
           "user_id": authUser.id,
           "title": title.text,
@@ -47,8 +50,8 @@ class QualificationsAddEdit extends StatelessWidget {
       }
     }
 
-    void fillFields(){
-      if(qData != null){
+    void fillFields() {
+      if (qData != null) {
         title.text = qData["title"];
         description.text = qData["description"];
       }
@@ -58,7 +61,9 @@ class QualificationsAddEdit extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Qualifications'),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: Text('Qualifications', style: TypographyStyles.title(20)),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -67,34 +72,49 @@ class QualificationsAddEdit extends StatelessWidget {
             children: [
               Column(
                 children: [
+                  SizedBox(height: 20),
                   TextField(
                     controller: title,
                     decoration: InputDecoration(
-                      hintText: 'Title',
-                    ),
+                      prefixIcon: Icon(Icons.star_border),
+                        hintText: 'Title',
+                        border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                        )),
                   ),
                   SizedBox(height: 8),
                   TextField(
                     controller: description,
                     decoration: InputDecoration(
-                      hintText: 'Description',
-                    ),
+                        prefixIcon: Icon(Icons.description),
+                        hintText: 'Description',
+                        border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                        )),
                   ),
-                  SizedBox(height: 16),
+                  SizedBox(height: 26),
                   Container(
-                    height: 56,
-                    width: Get.width,
-                    child: Obx(()=>ElevatedButton(
-                      style: ButtonStyles.bigBlackButton(),
-                      child: ready.value ? Text('Save'): CircularProgressIndicator(),
-                      onPressed: (){
-                        if( title.text.isEmpty || description.text.isEmpty){
-                          showSnack('Error', 'Please fill all fields');
-                        } else {
-                          saveOrEditQualifications();
-                        }
-                      },
-                    )),
+                    height: 44,
+                    width: Get.width-60,
+                    child: Obx(() => ElevatedButton(
+                          style: ButtonStyles.bigFlatYellowButton(),
+                          child: ready.value
+                              ? Text('Save',style: TextStyle(
+                            color: Color(0xFF1B1F24),
+                            fontSize: 20,
+                            fontFamily: 'Bebas Neue',
+                            fontWeight: FontWeight.w400,
+                          ),)
+                              : CircularProgressIndicator(),
+                          onPressed: () {
+                            if (title.text.isEmpty ||
+                                description.text.isEmpty) {
+                              showSnack('Error', 'Please fill all fields');
+                            } else {
+                              saveOrEditQualifications();
+                            }
+                          },
+                        )),
                   ),
                 ],
               )

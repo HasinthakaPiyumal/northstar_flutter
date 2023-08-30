@@ -38,33 +38,41 @@ class UserView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
-        toolbarHeight: 70,
-        title: Obx(()=> ready.value ? Row(
+        toolbarHeight: 150,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        centerTitle: true,
+        leading: Container(
+          alignment: Alignment.topCenter,
+          margin: EdgeInsets.only(top: 10), // Adjust the margin as needed
+          child: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Get.back();
+            },
+          ),
+        ),
+        title: Obx(()=> ready.value ? Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            SizedBox(height: 10,),
             CircleAvatar(
-              radius: 22,
+              radius: 24,
               backgroundImage: CachedNetworkImageProvider(
                 HttpClient.s3BaseUrl + data['user']['avatar_url'],
               ),
             ),
-            SizedBox(width: 10,),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  data['user']['name'],
-                  style: TypographyStyles.boldText(18, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
-                ),
-                SizedBox(height: 4),
-                Text(data['user']['email'].toString(),
-                  style: TypographyStyles.normalText(14, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
-                ),
-                data['user']['client']['health_conditions'] != null ? Text(
-                  'Has '+ data['user']['client']['health_conditions'].length.toString() + ' Health Conditions',
-                  style: TypographyStyles.normalText(14, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
-                ):Container(),
-              ],
+            SizedBox(height: 10,),
+            Text(
+              data['user']['name'],
+              style: TypographyStyles.title(20),
             ),
+            Text(data['user']['email'].toString(),
+              style: TypographyStyles.textWithWeight(13, FontWeight.w300),
+            ),
+            data['user']['client']['health_conditions'] != null ? Text(
+              'Has '+ data['user']['client']['health_conditions'].length.toString() + ' Health Conditions',
+              style: TypographyStyles.text(14),
+            ):Container(),
           ],
         ) : SizedBox(),),
       ),

@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Styles/ButtonStyles.dart';
+import 'package:north_star/Styles/ThemeBdayaStyles.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/Utils/PopUps.dart';
@@ -55,7 +56,9 @@ class AddToDos extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add a ToDo'),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: Text('Add a ToDo',style: TypographyStyles.title(20)),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -64,17 +67,25 @@ class AddToDos extends StatelessWidget {
             children: [
               TextField(
                 controller: todo,
+
                 decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.content_paste),
                   labelText: 'ToDo',
+                  border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  )
                 ),
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 36),
               Obx(()=>TextField(
                 controller: notes,
+
                 onChanged: (val){
                   noteCounter.value = val.length;
                 },
+
                 decoration: InputDecoration(
+                  contentPadding: EdgeInsets.symmetric(vertical: 40,horizontal: 20),
                   labelText: 'Notes',
                   counter: Text(noteCounter.toString() + '/512'),
                 ),
@@ -86,10 +97,7 @@ class AddToDos extends StatelessWidget {
 
                   DatePickerBdaya.showDateTimePicker(
                     context,
-                    theme: DatePickerThemeBdaya(
-                      backgroundColor: Color(0xffF1F1F1),
-                      containerHeight: Get.height / 3,
-                    ),
+                    theme: ThemeBdayaStyles.main(),
                     showTitleActions: true,
                     minTime: DateTime.now().add(Duration(hours: 1)),
                     onChanged: (date) {
@@ -104,22 +112,28 @@ class AddToDos extends StatelessWidget {
                 readOnly: true,
                 decoration: InputDecoration(
                   labelText: "End Date",
-                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.calendar_today_rounded),
+                  border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
                 ),
               ),
 
               SizedBox(height: 16),
               Container(
-                height: 56,
+                height: 44,
                 width: Get.width,
                 child: ElevatedButton(
-                  style: ButtonStyles.bigBlackButton(),
+                  style: ButtonStyles.bigFlatYellowButton(),
                   onPressed: () {
                     addTodo();
                   },
-                  child: Obx(() => ready.value ? Text('Add TODO',
+                  child: Obx(() => ready.value ? Text('SAVE',
                     style: TextStyle(
-                      color: Themes.mainThemeColorAccent.shade100,
+                      color: Color(0xFF1B1F24),
+                      fontSize: 20,
+                      fontFamily: 'Bebas Neue',
+                      fontWeight: FontWeight.w400,
                     ),
                   ) : Center(
                     child: CircularProgressIndicator(),

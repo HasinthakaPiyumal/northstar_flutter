@@ -7,15 +7,17 @@ import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Styles/ButtonStyles.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
-import 'package:north_star/UI/HomeWidgets/HomeWidgetGym/BookNow.dart';
-import 'package:north_star/UI/HomeWidgets/HomeWidgetGym/PurchaseGymSubscription.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class GymView extends StatelessWidget {
+import '../../../Styles/AppColors.dart';
+import '../../../components/Buttons.dart';
+import 'BookNow.dart';
+import 'PurchaseGymSubscription.dart';
 
+class GymView extends StatelessWidget {
   GymView({Key? key, this.gymObj, this.viewOnly = false}) : super(key: key);
 
   final gymObj;
@@ -23,7 +25,6 @@ class GymView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     RxBool showMoreFacilities = false.obs;
 
     void open(BuildContext context, final int index) {
@@ -43,98 +44,138 @@ class GymView extends StatelessWidget {
       );
     }
 
-    void testValues(){
+    void testValues() {
       print(jsonDecode(gymObj['gym_gallery']));
     }
 
     testValues();
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Padding(
+          padding: EdgeInsets.symmetric(vertical: 0),
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 20,
+                backgroundImage: CachedNetworkImageProvider(
+                  HttpClient.s3BaseUrl + 'default.jpg',
+                ),
+              ),
+              SizedBox(
+                width: 16,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(gymObj['gym_name'], style: TypographyStyles.title(20)),
+                  SizedBox(
+                    height: 2,
+                  ),
+                  Text(
+                    "${gymObj['gym_city']}, ${gymObj['gym_country']}",
+                    style: TypographyStyles.textWithWeight(13, FontWeight.w300),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
             children: [
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 15),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                    radius: 35,
-                      backgroundImage: CachedNetworkImageProvider(
-                        HttpClient.s3BaseUrl + 'default.jpg',
-                      ),
-                    ),
-                    SizedBox(width: 16,),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(gymObj['gym_name'], style: TypographyStyles.title(22)),
-                        SizedBox(height: 5,),
-                        Text("${gymObj['gym_city']}, ${gymObj['gym_country']}",
-                            style: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
               SizedBox(height: 20),
               Row(
                 children: [
-                  Text('CONTACT', style: TypographyStyles.boldText(14, colors.Colors().darkGrey(1))),
+                  Text('CONTACT', style: TypographyStyles.title(14)),
                 ],
               ),
               SizedBox(height: 12),
               ElevatedButton(
-                style: Get.isDarkMode ? ButtonStyles.matButton(colors.Colors().deepGrey(1), 0) : ButtonStyles.matButton(colors.Colors().lightCardBG, 1),
+                style: Get.isDarkMode
+                    ? ButtonStyles.matButton(AppColors.primary2Color, 0)
+                    : ButtonStyles.matButton(Colors.white, 1),
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 15),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Icon(Icons.location_on_outlined, size: 30, color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
+                      Icon(
+                        Icons.location_on_outlined,
+                        size: 30,
+                        color: Get.isDarkMode
+                            ? Themes.mainThemeColorAccent.shade100
+                            : colors.Colors().lightBlack(1),
+                      ),
                       SizedBox(width: 13),
                       Flexible(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(gymObj['gym_address'] ,style: TypographyStyles.title(16).copyWith(color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),)),
-                            SizedBox(height: 5,),
-                            Text('SHOW IN MAP',
-                              style: TypographyStyles.normalText(12, Get.isDarkMode ? Themes.mainThemeColor.shade500 : colors.Colors().darkGrey(1)),
+                            Text(gymObj['gym_address'],
+                                style: TypographyStyles.title(16).copyWith(
+                                  color: Get.isDarkMode
+                                      ? Themes.mainThemeColorAccent.shade100
+                                      : colors.Colors().lightBlack(1),
+                                )),
+                            SizedBox(
+                              height: 5,
                             ),
+                            // Text('SHOW IN MAP',
+                            //   style: TypographyStyles.normalText(12, AppColors.accentColor),
+                            // ),
                           ],
                         ),
                       ),
                     ],
                   ),
                 ),
-                onPressed: () {
-
-                },
+                onPressed: () {},
               ),
 
-              SizedBox(height: 10,),
+              SizedBox(
+                height: 10,
+              ),
 
               ElevatedButton(
-                style: Get.isDarkMode ? ButtonStyles.matButton(colors.Colors().deepGrey(1), 0) : ButtonStyles.matButton(colors.Colors().lightCardBG, 1),
+                style: Get.isDarkMode
+                    ? ButtonStyles.matButton(AppColors.primary2Color, 0)
+                    : ButtonStyles.matButton(Colors.white, 1),
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 15),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      SizedBox(width: 4,),
-                      Icon(Icons.phone, size: 25, color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
+                      SizedBox(
+                        width: 4,
+                      ),
+                      Icon(
+                        Icons.phone,
+                        size: 25,
+                        color: Get.isDarkMode
+                            ? Themes.mainThemeColorAccent.shade100
+                            : colors.Colors().lightBlack(1),
+                      ),
                       SizedBox(width: 13),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(gymObj['gym_phone'] ,style: TypographyStyles.title(16).copyWith(color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),)),
-                          SizedBox(height: 5,),
-                          Text('TAP TO CALL',
-                            style: TypographyStyles.normalText(12, Get.isDarkMode ? Themes.mainThemeColor.shade500 : colors.Colors().darkGrey(1)),
+                          Text(gymObj['gym_phone'],
+                              style: TypographyStyles.title(16).copyWith(
+                                color: Get.isDarkMode
+                                    ? Themes.mainThemeColorAccent.shade100
+                                    : colors.Colors().lightBlack(1),
+                              )),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            'TAP TO CALL',
+                            style: TypographyStyles.normalText(
+                                12, AppColors.accentColor),
                           ),
                         ],
                       ),
@@ -154,46 +195,95 @@ class GymView extends StatelessWidget {
 
               Row(
                 children: [
-                  Text('FACILITIES', style: TypographyStyles.boldText(14, colors.Colors().darkGrey(1))),
+                  Text('FACILITIES', style: TypographyStyles.title(14)),
                 ],
               ),
               SizedBox(height: 20),
 
-              Obx(()=>ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: showMoreFacilities.value ? gymObj['gym_facilities'].length : 0,
-                itemBuilder: (_,index){
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                        child: Text(gymObj['gym_facilities'][index]),
-                      ),
-                      Divider(
-                        thickness: 1,
-                      ),
-                    ],
-                  );
-                },
-              )),
+              Obx(() => ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: showMoreFacilities.value
+                        ? gymObj['gym_facilities'].length
+                        : 0,
+                    itemBuilder: (_, index) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 5),
+                            child: Text(gymObj['gym_facilities'][index]),
+                          ),
+                          Divider(
+                            thickness: 1,
+                          ),
+                        ],
+                      );
+                    },
+                  )),
 
-              Obx(()=>TextButton.icon(
-                onPressed: (){
-                  showMoreFacilities.value = !showMoreFacilities.value;
-                },
-                icon: Icon(
-                  showMoreFacilities.value ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
-                  color: Themes.mainThemeColorAccent.shade300,
-                ),
-                label: Text(
-                  showMoreFacilities.value ? "Show Less" : "Show More",
-                  style: TextStyle(
-                      color: Themes.mainThemeColorAccent.shade300
-                  ),
-                ),
-              )),
+              // Obx(()=>TextButton.icon(
+              //   onPressed: (){
+              //     showMoreFacilities.value = !showMoreFacilities.value;
+              //   },
+              //   icon: Icon(
+              //     showMoreFacilities.value ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+              //     color: Themes.mainThemeColorAccent.shade300,
+              //   ),
+              //   label: Text(
+              //     showMoreFacilities.value ? "Show Less" : "Show More",
+              //     style: TextStyle(
+              //         color: Themes.mainThemeColorAccent.shade300
+              //     ),
+              //   ),
+              // )),
+              Obx(() => InkWell(
+                    onTap: () {
+                      showMoreFacilities.value = !showMoreFacilities.value;
+                    },
+                    child: Container(
+                      width: 398,
+                      height: 44,
+                      padding: const EdgeInsets.all(10),
+                      decoration: ShapeDecoration(
+                        color: Get.isDarkMode
+                            ? AppColors.primary2Color
+                            : Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(
+                            showMoreFacilities.value
+                                ? Icons.keyboard_arrow_up_rounded
+                                : Icons.keyboard_arrow_down_rounded,
+                            color: Themes.mainThemeColorAccent.shade300,
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            showMoreFacilities.value
+                                ? "Show Less"
+                                : "Show More",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )),
 
               Visibility(
                 visible: gymObj['gym_facilities'].length == 0,
@@ -202,12 +292,13 @@ class GymView extends StatelessWidget {
               Visibility(
                 visible: gymObj['gym_facilities'].length == 0,
                 child: Text('No Facilities Added',
-                    style: TypographyStyles.normalText(16, Colors.grey.shade500)),
+                    style:
+                        TypographyStyles.normalText(16, Colors.grey.shade500)),
               ),
               SizedBox(height: 30),
               Row(
                 children: [
-                  Text('GALLERY', style: TypographyStyles.boldText(14, colors.Colors().darkGrey(1))),
+                  Text('GALLERY', style: TypographyStyles.title(14)),
                 ],
               ),
 
@@ -228,25 +319,121 @@ class GymView extends StatelessWidget {
                   ),
                   itemBuilder: (context, index) {
                     return InkWell(
-                      onTap: (){
+                      onTap: () {
                         open(context, index);
                       },
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
-                        child:  Image.network(HttpClient.s3GymGalleriesBaseUrl + jsonDecode(gymObj['gym_gallery'])[index],
-                          fit: BoxFit.cover,
+                        child: Container(
+                          color: Get.isDarkMode
+                              ? AppColors.primary2Color
+                              : Colors.white,
+                          child: Image.network(
+                            HttpClient.s3GymGalleriesBaseUrl +
+                                jsonDecode(gymObj['gym_gallery'])[index],
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     );
                   },
                 ),
               ),
-              SizedBox(height: 180),
+              SizedBox(height: 20),
+              Container(
+               decoration:BoxDecoration(borderRadius: BorderRadius.circular(10), color: Get.isDarkMode ? AppColors.primary2Color : Colors.white,),
+                width: Get.width,
+                height: 178,
+                padding: EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          gymObj['gym_type'] == "exclusive"
+                              ? Expanded(
+                                  child: Column(
+                                    children: [
+                                      RichText(
+                                        text: TextSpan(
+                                          text: 'MVR',
+                                          style: TypographyStyles.title(20),
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                              text: ' ${gymObj['hourly_rate']}',
+                                              style: TypographyStyles.boldText(
+                                                  22,
+                                                  Get.isDarkMode
+                                                      ? Themes
+                                                          .mainThemeColorAccent
+                                                          .shade100
+                                                      : colors.Colors()
+                                                          .lightBlack(1)),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        "HOURLY RATE",
+                                        style: TypographyStyles.textWithWeight(16,FontWeight.w400),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : SizedBox(),
+                          gymObj['gym_type'] == "exclusive"
+                              ? Container(
+                                  width: 2,
+                                  height: 100,
+                                  color: Themes.mainThemeColorAccent.shade300
+                                      .withOpacity(0.2),
+                                )
+                              : SizedBox(),
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Text(
+                                  "${gymObj['capacity']}",
+                                  style: TypographyStyles.title(20),
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  "CAPACITY",
+                                  style:  TypographyStyles.textWithWeight(16,FontWeight.w400),
+                                  )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Buttons.yellowFlatButton(
+                        onPressed: () { if (gymObj['gym_type'] == 'exclusive'){
+                          Get.to(() => BookNow(gymObj: gymObj));
+                        } else {
+                          Get.to(()=> PurchaseGymSubscription(gymObj: gymObj));
+                        }}, label: "BOOK NOW", width: Get.width)
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              )
             ],
           ),
         ),
       ),
-      bottomSheet: Container(
+      /*bottomSheet: Container(
         color: Theme.of(context).scaffoldBackgroundColor,
         child: Container(
           width: Get.width,
@@ -340,7 +527,7 @@ class GymView extends StatelessWidget {
             ),
           ),
         ),
-      ),
+      ),*/
     );
   }
 }

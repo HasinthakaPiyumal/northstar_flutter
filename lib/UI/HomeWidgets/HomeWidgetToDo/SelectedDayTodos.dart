@@ -67,16 +67,22 @@ class SelectedDayTodos extends StatelessWidget {
     getSelectedDayTodos();
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: Text(DateFormat("EEEE, MMMM dd, yyyy").format(selectedDate),
+          style: TypographyStyles.title(20)
+        ),
+      ),
       body: Obx(() => ready.value ? Padding(
         padding: EdgeInsets.symmetric(horizontal: 16),
         child: ListView(
           // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 12,),
-            Text(DateFormat("EEEE, MMMM dd, yyyy").format(selectedDate),
-              style: TypographyStyles.boldText(25, Get.isDarkMode ? Colors.white : Colors.black ),
-            ),
+            // Text(DateFormat("EEEE, MMMM dd, yyyy").format(selectedDate),
+            //   style: TypographyStyles.boldText(25, Get.isDarkMode ? Colors.white : Colors.black ),
+            // ),
             SizedBox(height: 24,),
             Visibility(
               visible: selectedDayPendingToDos.isNotEmpty,

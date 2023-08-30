@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:north_star/Models/HttpClient.dart';
+import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -154,7 +155,7 @@ class UserViewProgress extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
-                  color: Get.isDarkMode ? colors.Colors().deepGrey(1) : colors.Colors().lightCardBG,
+                  color: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
                 ),
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(5, 15, 5, 10),
@@ -211,7 +212,7 @@ class UserViewProgress extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
-                  color: Get.isDarkMode ? colors.Colors().deepGrey(1) : colors.Colors().lightCardBG,
+                  color: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
                 ),
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(5, 15, 5, 10),
@@ -268,7 +269,7 @@ class UserViewProgress extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
-                  color: Get.isDarkMode ? colors.Colors().deepGrey(1) : colors.Colors().lightCardBG,
+                  color: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
                 ),
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(5, 15, 5, 10),
@@ -318,7 +319,7 @@ class UserViewProgress extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
-                  color: Get.isDarkMode ? colors.Colors().deepGrey(1) : colors.Colors().lightCardBG,
+                  color: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
                 ),
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(5, 15, 5, 10),
@@ -383,7 +384,7 @@ class UserViewProgress extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
-                  color: Get.isDarkMode ? colors.Colors().deepGrey(1) : colors.Colors().lightCardBG,
+                  color: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
                 ),
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(5, 15, 5, 10),

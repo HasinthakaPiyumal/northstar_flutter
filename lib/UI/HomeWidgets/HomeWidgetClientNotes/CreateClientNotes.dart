@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
@@ -158,7 +159,7 @@ class CreateClientNotes extends StatelessWidget {
                 ),
                 tileColor: Get.isDarkMode ? Color(0xff101010) : Color(0xffF1F1F1),
                 leading: CircleAvatar(
-                  backgroundImage: NetworkImage(
+                  backgroundImage: CachedNetworkImageProvider(
                     HttpClient.s3BaseUrl + selectedClient['user']['avatar_url'],
                   ),
                 ),

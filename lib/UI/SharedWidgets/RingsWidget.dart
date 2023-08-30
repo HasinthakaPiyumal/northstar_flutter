@@ -140,7 +140,7 @@ Widget ringsChartCalories(Map macrosData){
           useSeriesColor: true,
           trackOpacity: 0.175,
           maximumValue: 100,
-          radius: "70",
+          radius: "63",
           innerRadius: "15",
           gap: "3",
           cornerStyle: CornerStyle.bothCurve,

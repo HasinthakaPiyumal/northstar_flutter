@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:north_star/Styles/AppColors.dart';
 
 class Themes {
 
@@ -23,7 +24,7 @@ class Themes {
     900: Color(0xFFE7802B),
   });
 
-  static const int _mainThemeColorPrimaryValue = 0xFFF1AB56;
+  static const int _mainThemeColorPrimaryValue = 0xFFFFB700;
 
   static const MaterialColor mainThemeColorAccent = MaterialColor(_mainThemeColorAccentValue, <int, Color>{
     100: Color(0xFFFFFFFF),
