@@ -111,7 +111,7 @@ class AddToDos extends StatelessWidget {
                 },
                 readOnly: true,
                 decoration: InputDecoration(
-                  labelText: "End Date",
+                  labelText: "Date & Time",
                   prefixIcon: Icon(Icons.calendar_today_rounded),
                   border: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.white),

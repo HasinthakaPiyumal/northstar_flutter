@@ -29,6 +29,7 @@ import 'package:north_star/UI/Wallet.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'HomeWidgets/HomeWidgetDoctors.dart';
+import 'HomeWidgets/HomeWidgetTherapy.dart';
 import 'package:north_star/UI/PrivateUser/ClientCalories.dart';
 
 import 'HomeWidgets/HomeWidgetProActive.dart';
@@ -262,7 +263,7 @@ class Home extends StatelessWidget {
                       },'calorie','Calories'),
                       homeWidgetButton((){
                         Get.to(()=>HomeWidgetClientNotes());
-                      },'notes','Client Notes'),
+                      },'notes','Income & Expense'),
                     ],
                   )
               ): SizedBox(),
@@ -270,15 +271,17 @@ class Home extends StatelessWidget {
               authUser.role == 'trainer' ? Container(
                   padding: const EdgeInsets.all(8),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       homeWidgetButton((){
                         Get.to(()=>HomeWidgetLabReports());
                       },'labReports','Lab Reports'),
-                      SizedBox(width: 5,),
                       homeWidgetButton((){
                         Get.to(()=>HomeWidgetFinance());
                       },'ewallet','Finance'),
+                      homeWidgetButton((){
+                        Get.to(()=>Therapy());
+                      },'therapy','Physiotherapy'),
                     ],
                   )
               ): SizedBox(),
