@@ -22,8 +22,11 @@ class AgoraCallController {
   static String channelName = 'defaultChannel';
   static late Timer timer;
 
-  static const String token = '983f2eee1a9a4d2f90c04e17b9694fea';
-  static const String appId = '0e76a00a008e418bb9074ccad44724de';
+  // static const String token = '983f2eee1a9a4d2f90c04e17b9694fea';
+  static const String token =
+      '007eJxTYNhouCButkT3v5+rX32akKBl+jV3hdWhGXNzPz53f6YboVqlwJCaYm6ZnJhoaGhilGiSaG5oYWJmaG6ekpRmbmyeamSZKnv/X0pDICNDvI8cAyMUgvh8DCmpaYmlOSXOGYl5eak5DAwAbiUlPw==';
+  // static const String appId = '0e76a00a008e418bb9074ccad44724de';
+  static const String appId = 'ed79caa1142a4a71846177dbf737e29e';
 
   static RxString callStatus =
       'Calling...'.obs; // Calling, Connected, Disconnected
@@ -38,11 +41,11 @@ class AgoraCallController {
 
     agoraEngine = createAgoraRtcEngine();
     await agoraEngine.initialize(const RtcEngineContext(
-        appId: appId, logConfig: LogConfig(level: LogLevel.logLevelError)));
+        appId: appId, logConfig: LogConfig(level: LogLevel.logLevelApiCall)));
 
     await agoraEngine.disableVideo();
 
-    channelName = Uuid().v4();
+    // channelName = Uuid().v4();
 
     print("agora Engine");
     print(channelName);
@@ -70,9 +73,16 @@ class AgoraCallController {
           callStatus.value = 'Disconnected';
           remoteUID = 0;
           endTime = DateTime.now();
+          timer.cancel();
+          duration = Duration(seconds: 0).obs;
+          Get.back(closeOverlays: true, canPop: false);
+          agoraEngine.leaveChannel();
         },
       ),
     );
+
+    await agoraEngine.enableAudio();
+    await agoraEngine.enableLocalAudio(true);
 
     await httpClient.invokeCall({
       'from': authUser.id,
@@ -99,6 +109,9 @@ class AgoraCallController {
     callStatus.value = 'Incoming...';
 
     await agoraEngine.disableVideo();
+    await agoraEngine.enableAudio();
+    await agoraEngine.enableLocalAudio(true);
+    print("Incoming call...");
 
     agoraEngine.registerEventHandler(
       RtcEngineEventHandler(
@@ -123,6 +136,10 @@ class AgoraCallController {
           callStatus.value = 'Disconnected';
           remoteUID = 0;
           endTime = DateTime.now();
+          timer.cancel();
+          duration = Duration(seconds: 0).obs;
+          Get.back(closeOverlays: true, canPop: false);
+          agoraEngine.leaveChannel();
         },
       ),
     );
@@ -135,17 +152,24 @@ class AgoraCallController {
   static Future<bool> joinCall() async {
     accepted.value = true;
     isJoined = true;
+    print("Joining call...");
     ChannelMediaOptions options = const ChannelMediaOptions(
       clientRoleType: ClientRoleType.clientRoleBroadcaster,
       channelProfile: ChannelProfileType.channelProfileCommunication,
     );
 
-    await agoraEngine.joinChannel(
-      token: token,
-      channelId: channelName,
-      options: options,
-      uid: authUser.id,
-    );
+    try {
+      await agoraEngine.joinChannel(
+        token: token,
+        channelId: channelName,
+        options: options,
+        uid: authUser.id,
+      );
+      print("Joined call...");
+    } catch (e) {
+      print("Error joining channel: $e");
+      return false;
+    }
 
     return true;
   }
@@ -162,18 +186,17 @@ class AgoraCallController {
       print(e);
     }
     accepted.value = false;
+    await agoraEngine.leaveChannel();
     Get.back();
   }
 
   static void switchSpeaker() async {
     print('speaker change');
     if (speakerPhone.value) {
-      print('called false');
       await agoraEngine.setEnableSpeakerphone(false);
       speakerPhone.value = false;
       return;
     } else {
-      print('called true');
       await agoraEngine.setEnableSpeakerphone(true);
       speakerPhone.value = true;
       return;

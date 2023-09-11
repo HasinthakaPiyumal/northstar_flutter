@@ -53,8 +53,7 @@ void main() async {
 
   OneSignal.shared.setNotificationWillShowInForegroundHandler(
       (OSNotificationReceivedEvent event) {
-    if (event.notification.body == 'Incoming Call!') {
-      print("======= Incoming call ==========");
+    if (event.notification.body == 'Incoming Call!' && isLoggedIn) {
       print(event.notification.additionalData);
       Get.to(() =>
           IncomingVoiceCallUI(callData: event.notification.additionalData));

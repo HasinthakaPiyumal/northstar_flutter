@@ -46,7 +46,6 @@ class WelcomeOne extends StatelessWidget {
               children: [],
             ),
             bottomNavigationBar: Container(
-              color: Theme.of(context).primaryColor.withOpacity(0.1),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
