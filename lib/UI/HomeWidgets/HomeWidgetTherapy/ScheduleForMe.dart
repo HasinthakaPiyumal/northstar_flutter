@@ -14,6 +14,7 @@ import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/Utils/PopUps.dart';
 
+import 'package:north_star/UI/Payments/CardPayment.dart';
 import '../../../Styles/AppColors.dart';
 
 class ScheduleForMe extends StatelessWidget {
@@ -28,11 +29,14 @@ class ScheduleForMe extends StatelessWidget {
     RxBool ready = true.obs;
     RxMap walletData = {}.obs;
 
-    TextEditingController dateTime = new TextEditingController();
+    TextEditingController selectedDate = new TextEditingController();
+    TextEditingController startTime = new TextEditingController();
+    TextEditingController endTime = new TextEditingController();
     TextEditingController descriptionController = new TextEditingController();
     TextEditingController titleController = new TextEditingController();
 
     late DateTime selectedDateTime;
+
 
     void confirmAndPay(DateTime dateTimeOfBooking, double total) async {
       Map res = await httpClient.getWallet();
@@ -62,26 +66,6 @@ class ScheduleForMe extends StatelessWidget {
                 style: TypographyStyles.title(20),
               ),
               SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'DOCTOR',
-                    style: TypographyStyles.normalText(
-                        16, Themes.mainThemeColorAccent.shade300),
-                  ),
-                  Text(
-                    '${doctor['name']}',
-                    style: TypographyStyles.textWithWeight(16, FontWeight.w500),
-                  ),
-                ],
-              ),
-              SizedBox(height: 4),
-              Divider(
-                thickness: 1,
-                color: Themes.mainThemeColorAccent.shade300.withOpacity(0.2),
-              ),
-              SizedBox(height: 4),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -126,7 +110,48 @@ class ScheduleForMe extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Approx. Payment',
+                    'Physiotherapist',
+                    style: TypographyStyles.normalText(
+                        16, Themes.mainThemeColorAccent.shade300),
+                  ),
+                  Text(
+                    '${doctor['name']}',
+                    style: TypographyStyles.textWithWeight(16, FontWeight.w500),
+                  ),
+                ],
+              ),
+              Divider(
+                thickness: 1,
+                color: Themes.mainThemeColorAccent.shade300.withOpacity(0.2),
+              ),
+              SizedBox(
+                height: 7,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Location',
+                    style: TypographyStyles.normalText(
+                        16, Themes.mainThemeColorAccent.shade300),
+                  ),
+                  Text(
+                    'Hulhumale maldives',
+                    style: TypographyStyles.textWithWeight(16, FontWeight.w500),
+                  ),
+                ],
+              ),
+              SizedBox(height: 4),
+              Divider(
+                thickness: 1,
+                color: Themes.mainThemeColorAccent.shade300.withOpacity(0.2),
+              ),
+              SizedBox(height: 4),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Amount',
                     style: TypographyStyles.normalText(
                       16,
                       Get.isDarkMode
@@ -135,7 +160,7 @@ class ScheduleForMe extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'N\$ ${total.toStringAsFixed(2)}',
+                    'MVR ${total.toStringAsFixed(2)}',
                     style: TypographyStyles.textWithWeight(16, FontWeight.w500),
                   ),
                 ],
@@ -202,10 +227,40 @@ class ScheduleForMe extends StatelessWidget {
               ),
             ),
             Container(
+              width: Get.width,
+              child: ElevatedButton(
+                onPressed: () {
+                  Get.to(()=>CardPayment(total));
+                },
+                style:
+                    ButtonStyles.matButton(Themes.mainThemeColor.shade500, 0),
+                child: Obx(() => ready.value
+                    ? Padding(
+                        padding: EdgeInsets.symmetric(vertical: 12),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Image.asset("assets/icons/creditCard.png"),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              'PAY WITH CARD',
+                              style: TypographyStyles.boldText(
+                                  14, AppColors.textOnAccentColor),
+                            ),
+                          ],
+                        ),
+                      )
+                    : LoadingAndEmptyWidgets.loadingWidget()),
+              ),
+            ),
+            Container(
               height: 48,
               width: Get.width,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(5),
                 border: Border.all(
                   color: AppColors.accentColor,
                   width: 1.25,
@@ -235,7 +290,7 @@ class ScheduleForMe extends StatelessWidget {
         centerTitle: true,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: Text(
-          'Channel for Me',
+          'Make A Appointment',
           style: TypographyStyles.title(20),
         ),
       ),
@@ -296,7 +351,7 @@ class ScheduleForMe extends StatelessWidget {
                                         16, FontWeight.w400)),
                                 Spacer(),
                                 Text(
-                                    'N\$ ' +
+                                    'MVR ' +
                                         doctor['doctor']['hourly_rate']
                                             .toStringAsFixed(2),
                                     style: TextStyle(
@@ -318,17 +373,17 @@ class ScheduleForMe extends StatelessWidget {
               Text('Appointment for you', style: TypographyStyles.title(18)),
               SizedBox(height: 25),
               TextField(
-                controller: dateTime,
+                controller: selectedDate,
                 readOnly: true,
                 decoration: InputDecoration(
-                  labelText: 'Approximate Meeting Start Time',
+                  labelText: 'Approximate Date',
                   prefixIcon: Icon(Icons.calendar_today),
                   border: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.white),
                   ),
                 ),
                 onTap: () {
-                  DatePickerBdaya.showDateTimePicker(
+                  DatePickerBdaya.showDatePicker(
                     context,
                     theme: ThemeBdayaStyles.main(),
                     showTitleActions: true,
@@ -340,25 +395,94 @@ class ScheduleForMe extends StatelessWidget {
                     onConfirm: (date) {
                       print('confirm $date');
                       selectedDateTime = date;
-                      dateTime.text =
-                          DateFormat("MMM dd,yyyy").format(date).toString() +
-                              " at " +
-                              DateFormat('HH:mm').format(date);
+                      selectedDate.text = DateFormat("MMM dd,yyyy")
+                          .format(date)
+                          .toString(); //+" at " +DateFormat('HH:mm').format(date);
                     },
                   );
                 },
               ),
               SizedBox(height: 16),
-              TextField(
-                controller: titleController,
-                maxLength: 250,
-                decoration: InputDecoration(
-                  labelText: 'Reason',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: ((Get.width - 32) / 2) - 8,
+                    child: TextField(
+                      controller: startTime,
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        labelText: 'Start Time',
+                        prefixIcon: Icon(Icons.access_time_rounded),
+                        border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                      ),
+                      onTap: () {
+                        DatePickerBdaya.showTimePicker(
+                          context,
+                          theme: ThemeBdayaStyles.main(),
+                          showTitleActions: true,
+                          showSecondsColumn: false,
+                          // minTime: DateTime.now(),
+                          currentTime: DateTime.now(),
+                          onChanged: (date) {
+                            print('change $date');
+                          },
+                          onConfirm: (date) {
+                            print('confirm $date');
+                            selectedDateTime = date;
+                            startTime.text = DateFormat('HH:mm').format(date);
+                          },
+                        );
+                      },
+                    ),
                   ),
-                ),
+                  Container(
+                    width: ((Get.width - 32) / 2) - 8,
+                    child: TextField(
+                      controller: endTime,
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        labelText: 'End Time',
+                        prefixIcon: Icon(Icons.access_time_rounded),
+                        border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                      ),
+                      onTap: () {
+                        DatePickerBdaya.showTimePicker(
+                          context,
+                          theme: ThemeBdayaStyles.main(),
+                          showTitleActions: true,
+                          showSecondsColumn: false,
+                          // minTime: DateTime.now(),
+                          currentTime: DateTime.now(),
+                          onChanged: (date) {
+                            print('change $date');
+                          },
+                          onConfirm: (date) {
+                            print('confirm $date');
+                            selectedDateTime = date;
+                            endTime.text = DateFormat('HH:mm').format(date);
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
+              SizedBox(height: 16),
+              // TextField(
+              //   controller: titleController,
+              //   maxLength: 250,
+              //   decoration: InputDecoration(
+              //     labelText: 'Reason',
+              //     border: OutlineInputBorder(
+              //       borderRadius: BorderRadius.circular(5.0),
+              //     ),
+              //   ),
+              // ),
               SizedBox(height: 16),
               TextField(
                 controller: descriptionController,
@@ -369,6 +493,24 @@ class ScheduleForMe extends StatelessWidget {
                     borderRadius: BorderRadius.circular(5.0),
                   ),
                 ),
+              ),
+              SizedBox(
+                height: 16,
+              ),
+              Container(
+                width: 398,
+                height: 124,
+                decoration: ShapeDecoration(
+                  color: Color(0xFF1E2630),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: Icon(Icons.add_photo_alternate_outlined,
+                    color: AppColors.accentColor),
+              ),
+              SizedBox(
+                height: 16,
               ),
             ],
           ),
@@ -388,7 +530,7 @@ class ScheduleForMe extends StatelessWidget {
                           Icon(Icons.video_call_outlined),
                           SizedBox(width: 8),
                           Text(
-                            'Schedule Meeting',
+                            'Channel',
                             style: TextStyle(
                               color: Color(0xFF1B1F24),
                               fontSize: 20,
@@ -402,6 +544,8 @@ class ScheduleForMe extends StatelessWidget {
                         child: CircularProgressIndicator(),
                       ),
                 onPressed: () {
+                  descriptionController.text = "something";
+                  selectedDateTime = DateTime.now();
                   if (descriptionController.text.isNotEmpty) {
                     confirmAndPay(
                         selectedDateTime,

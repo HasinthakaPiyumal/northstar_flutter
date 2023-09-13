@@ -29,7 +29,7 @@ class Therapy extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Image.asset(
-                'assets/images/medical_professional_widget_home.png',
+                'assets/images/therapy_widget_home.png',
               ),
             ),
           ),
@@ -101,7 +101,7 @@ class Therapy extends StatelessWidget {
                     children: [
                       Icon(Icons.video_call_outlined),
                       SizedBox(width: 8),
-                      Text('make an appointment',
+                      Text('channel',
                           style: TextStyle(
                             fontSize: 20,
                             fontFamily: 'Bebas Neue',

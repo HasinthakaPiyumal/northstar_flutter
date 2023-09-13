@@ -134,6 +134,7 @@ class ButtonStyles {
         foregroundColor: Get.isDarkMode ? Colors.white : Colors.black,
         backgroundColor: color,
         elevation: elevation,
+        maximumSize: Get.size,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)));
   }
 

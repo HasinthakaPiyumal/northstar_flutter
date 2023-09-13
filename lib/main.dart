@@ -118,8 +118,8 @@ class NorthStar extends StatelessWidget {
 
     return GetMaterialApp(
         title: 'North Star',
-        defaultTransition: Transition.fade,
-        transitionDuration: Duration(milliseconds: 512),
+        defaultTransition: Transition.rightToLeftWithFade,
+        transitionDuration: Duration(milliseconds: 200),
         debugShowCheckedModeBanner: false,
         theme: themeData,
         home: SplashScreen(isLoggedIn: isLoggedIn));
@@ -128,6 +128,10 @@ class NorthStar extends StatelessWidget {
 
 class ThemeAll {
   final lightTheme = ThemeData(
+      checkboxTheme: CheckboxThemeData(
+        fillColor: MaterialStateProperty.all(Colors.white),
+        checkColor: MaterialStateProperty.all(Colors.black), /// Change to your desired color
+      ),
       inputDecorationTheme: InputDecorationTheme(
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(1),
@@ -149,6 +153,10 @@ class ThemeAll {
       primaryColor: AppColors.accentColor);
 
   final darkTheme = ThemeData(
+      checkboxTheme: CheckboxThemeData(
+        fillColor: MaterialStateProperty.all(Colors.white), // Change to your desired color
+        checkColor: MaterialStateProperty.all(Colors.black), // Change to your desired color
+      ),
       brightness: Brightness.dark,
       primarySwatch: Themes.mainThemeColor,
       scaffoldBackgroundColor: AppColors.primary1Color,

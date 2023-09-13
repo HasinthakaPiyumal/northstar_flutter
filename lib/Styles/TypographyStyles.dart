@@ -9,12 +9,22 @@ class TypographyStyles {
       color: !color.isNull?color:Get.isDarkMode?Colors.white:Color(0xFF1B1F24),
       fontFamily: 'Poppins',
     );
-  }static TextStyle textWithWeight(int size, FontWeight weight) {
+  }
+  static TextStyle textWithWeight(int size, FontWeight weight) {
     return TextStyle(
       fontWeight: weight,
       fontSize: size.toDouble(),
       color:Get.isDarkMode?Colors.white:Color(0xFF1B1F24),
       fontFamily: 'Poppins',
+    );
+  }
+  static TextStyle textWithWeightUnderLine(int size, FontWeight weight) {
+    return TextStyle(
+      fontWeight: weight,
+      fontSize: size.toDouble(),
+      color:Get.isDarkMode?Colors.white:Color(0xFF1B1F24),
+      fontFamily: 'Poppins',
+      decoration: TextDecoration.underline
     );
   }
 

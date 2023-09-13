@@ -445,7 +445,7 @@ class TherapyMeetings extends StatelessWidget {
                 children: [
                   Icon(Icons.video_call_outlined),
                   SizedBox(width: 8),
-                  Text('make an appointment',
+                  Text('channel',
                       style: TextStyle(
                         fontSize: 20,
                         fontFamily: 'Bebas Neue',

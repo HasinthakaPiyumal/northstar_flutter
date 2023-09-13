@@ -135,7 +135,7 @@ class ScheduleForMe extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'N\$ ${total.toStringAsFixed(2)}',
+                    'MVR ${total.toStringAsFixed(2)}',
                     style: TypographyStyles.textWithWeight(16, FontWeight.w500),
                   ),
                 ],
@@ -296,7 +296,7 @@ class ScheduleForMe extends StatelessWidget {
                                         16, FontWeight.w400)),
                                 Spacer(),
                                 Text(
-                                    'N\$ ' +
+                                    'MVR ' +
                                         doctor['doctor']['hourly_rate']
                                             .toStringAsFixed(2),
                                     style: TextStyle(

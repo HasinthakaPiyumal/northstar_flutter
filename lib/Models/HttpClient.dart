@@ -8,6 +8,7 @@ class HttpClient {
   Dio dio = Dio();
 
   static String baseURL = 'https://api.northstar.mv/api';
+  // static String baseURL =  'http://192.168.43.182:8081/api';
 
   static String buildInfo = '9.0.0 Build 1';
 
@@ -46,8 +47,10 @@ class HttpClient {
 
   Future post(String url, Map data) async {
     try {
+
       return await dio.post(url, data: data);
     } on DioError catch (e) {
+      print(e);
       return e.response;
     }
   }

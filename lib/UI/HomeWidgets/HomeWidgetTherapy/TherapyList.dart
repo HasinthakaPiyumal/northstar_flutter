@@ -92,7 +92,9 @@ class TherapyList extends StatelessWidget {
                                     // height: 131,
                                     padding: const EdgeInsets.all(10),
                                     decoration: ShapeDecoration(
-                                      color: Get.isDarkMode?AppColors.primary2Color:Colors.white,
+                                      color: Get.isDarkMode
+                                          ? AppColors.primary2Color
+                                          : Colors.white,
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(5)),
@@ -157,7 +159,7 @@ class TherapyList extends StatelessWidget {
                                               children: [
                                                 Container(
                                                   width: double.infinity,
-                                                  height: 78,
+                                                  // height: 78,
                                                   child: Column(
                                                     mainAxisSize:
                                                         MainAxisSize.min,
@@ -171,10 +173,9 @@ class TherapyList extends StatelessWidget {
                                                         width: double.infinity,
                                                         padding:
                                                             const EdgeInsets
-                                                                    .only(
-                                                                left: 10,
-                                                                top: 10,
-                                                                bottom: 4),
+                                                                .only(
+                                                          left: 10,
+                                                        ),
                                                         child: Row(
                                                           mainAxisSize:
                                                               MainAxisSize.min,
@@ -204,54 +205,42 @@ class TherapyList extends StatelessWidget {
                                                           ],
                                                         ),
                                                       ),
-                                                      Expanded(
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 10),
-                                                          child: Text(
-                                                            "Dr. ${doctors[index]['name'].toString().capitalize}",
-                                                            style:
-                                                                TypographyStyles
-                                                                    .title(20),
-                                                          ),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                left: 10),
+                                                        child: Text(
+                                                          "Dr. ${doctors[index]['name'].toString().capitalize}",
+                                                          style:
+                                                              TypographyStyles
+                                                                  .title(20),
                                                         ),
                                                       ),
+                                                      Container(
+                                                          width: double.infinity,
+                                                          padding: EdgeInsets.only(
+                                                              left: 10),
+                                                          child: Text(
+                                                            "Location - Hulhumale Maldives",
+                                                            style: TypographyStyles
+                                                                .textWithWeight(14,
+                                                                FontWeight.w300),
+                                                          )),
+                                                      Container(
+                                                          width: double.infinity,
+                                                          padding: EdgeInsets.only(
+                                                              left: 10),
+                                                          child: Text(
+                                                            "Mo | Tu | We | Th | Fr | Sa | Su",
+                                                            style: TypographyStyles
+                                                                .textWithWeight(16,
+                                                                FontWeight.w500),
+                                                          ))
                                                     ],
                                                   ),
                                                 ),
-                                                SizedBox(
-                                                  height: 4,
-                                                ),
-                                                Container(
-                                                  width: double.infinity,
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 10),
-                                                  child: SizedBox(
-                                                    child: doctors[index][
-                                                                    'qualifications']
-                                                                .length !=
-                                                            0
-                                                        ? Text(
-                                                            "${doctors[index]['qualifications'][0]['title'].toString().capitalize} - ${doctors[index]['qualifications'][0]['description'].toString().capitalize}",
-                                                            style: TypographyStyles
-                                                                .textWithWeight(
-                                                                    14,
-                                                                    FontWeight
-                                                                        .w300),
-                                                          )
-                                                        : Text(
-                                                            "No Qualifications",
-                                                            style: TypographyStyles
-                                                                .textWithWeight(
-                                                                    14,
-                                                                    FontWeight
-                                                                        .w300),
-                                                          ),
-                                                  ),
-                                                ),
+
                                               ],
                                             ),
                                           ),

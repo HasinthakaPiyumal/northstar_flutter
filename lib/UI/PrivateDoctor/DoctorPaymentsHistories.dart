@@ -64,7 +64,7 @@ class DoctorPaymentHistories extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Text('N\$ ${payments[index]['amount'].toStringAsFixed(2)}',
+                    Text('MVR ${payments[index]['amount'].toStringAsFixed(2)}',
                       style: TypographyStyles.boldText(16, Colors.green),
                     ),
                   ],
