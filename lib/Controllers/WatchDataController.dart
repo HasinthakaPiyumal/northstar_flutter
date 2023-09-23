@@ -40,7 +40,12 @@ class WatchDataController {
     HealthDataType.BODY_TEMPERATURE,
     HealthDataType.ACTIVE_ENERGY_BURNED,
   ];
-
+  static var permissions = [
+    HealthDataAccess.READ,
+    HealthDataAccess.READ,
+    HealthDataAccess.READ,
+    HealthDataAccess.READ,
+  ];
   emptyAll(){
     heartData.clear();
     tempData.clear();
@@ -306,6 +311,8 @@ class WatchDataController {
   }
 
   static Future<bool> requestPermission() async {
-    return await HealthFactory().requestAuthorization(types);
+     var state = await HealthFactory().requestAuthorization(types,permissions: permissions);
+     print('Printing health data state ---> $state');
+     return state;
   }
 }

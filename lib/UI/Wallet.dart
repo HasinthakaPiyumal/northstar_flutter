@@ -7,6 +7,7 @@ import 'package:north_star/Controllers/ClientNotesController.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Plugins/Utils.dart';
+import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/ButtonStyles.dart';
 import 'package:north_star/Styles/SignUpStyles.dart';
 import 'package:north_star/Styles/Themes.dart';
@@ -97,9 +98,9 @@ class Wallet extends StatelessWidget {
                   width: Get.width,
                   margin: const EdgeInsets.all(0),
                   child: Card(
-                    elevation: 8,
+                    // elevation: 8,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                     child: Padding(
                       padding: EdgeInsets.all(15),
@@ -114,12 +115,12 @@ class Wallet extends StatelessWidget {
                             children: [
                               RichText(
                                 text: TextSpan(
-                                  text: "Rf ",
-                                  style: TypographyStyles.normalText(22, Get.isDarkMode ? Colors.white : Colors.black),
+                                  text: "MVR ",
+                                  style: TypographyStyles.normalText(18, Get.isDarkMode ? Colors.white : Colors.black),
                                   children: [
                                     TextSpan(
                                       text: Utils.currencyFmt.format(data['balance']/100),
-                                      style: TypographyStyles.title(48),
+                                      style: TypographyStyles.title(35),
                                     ),
                                   ]
                                 ),
@@ -138,7 +139,7 @@ class Wallet extends StatelessWidget {
                               children: [
                                 Expanded(
                                   child: Container(
-                                    height: 56,
+                                    height: 44,
                                     child: ElevatedButton(
                                       onPressed: (){
                                         Get.defaultDialog(
@@ -224,28 +225,34 @@ class Wallet extends StatelessWidget {
                                         );
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.black,
-                                        foregroundColor: Colors.white,
-                                        shape: Themes().roundedBorder(16),
+                                        backgroundColor: AppColors.accentColor,
+                                        foregroundColor: AppColors.textOnAccentColor,
+                                        shape: Themes().roundedBorder(5),
                                       ),
-                                      child: Text('TOPUP CREDITS'),
+                                      child: Text('TOPUP CREDITS',style: TextStyle(
+                                        fontSize: 20,
+                                        fontFamily: 'Bebas Neue',
+                                        fontWeight: FontWeight.w400,
+                                      ),),
                                     ),
                                   ),
                                 ),
                                 SizedBox(width: 10,),
                                 Container(
-                                  height: 56,
-                                  width: 56,
+                                  height: 44,
+                                  width: 44,
                                   child: ElevatedButton(
                                     onPressed: (){
                                       getWallet();
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.black,
-                                      foregroundColor: Colors.white,
-                                      shape: Themes().roundedBorder(16),
+                                        backgroundColor: AppColors.accentColor,
+                                        foregroundColor: AppColors.textOnAccentColor,
+                                      shape: Themes().roundedBorder(5),
+                                      padding: EdgeInsets.all(0)
                                     ),
-                                    child: Icon(Icons.refresh),
+                                    
+                                    child: Center(child: Icon(Icons.refresh)),
                                   ),
                                 ),
                               ],

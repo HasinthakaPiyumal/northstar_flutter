@@ -119,7 +119,7 @@ class NewFood extends StatelessWidget {
               ),
               SizedBox(height: 16),
               Container(
-                height: 56,
+                height: 44,
                 child: ElevatedButton(
                   style: ButtonStyles.bigBlackButton(),
                   child:  Obx(()=>ready.value ? Row(

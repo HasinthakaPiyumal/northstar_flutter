@@ -15,6 +15,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../Styles/AppColors.dart';
 import '../../../components/Buttons.dart';
 import 'BookNow.dart';
+import 'BookNowServices.dart';
 import 'PurchaseGymSubscription.dart';
 
 class GymView extends StatelessWidget {
@@ -420,7 +421,10 @@ class GymView extends StatelessWidget {
                     Buttons.yellowFlatButton(
                         onPressed: () { if (gymObj['gym_type'] == 'exclusive'){
                           Get.to(() => BookNow(gymObj: gymObj));
-                        } else {
+                        }else if(gymObj['gym_type'] == 'services'){
+                          Get.to(() => BookNowServices(gymObj: gymObj));
+                        }
+                        else {
                           Get.to(()=> PurchaseGymSubscription(gymObj: gymObj));
                         }}, label: "BOOK NOW", width: Get.width)
                   ],

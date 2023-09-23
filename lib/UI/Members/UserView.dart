@@ -23,6 +23,7 @@ class UserView extends StatelessWidget {
 
     void getData() async {
       Map res = await httpClient.getOneUser(userID.toString());
+      print(res);
       if (res['code'] == 200) {
         data = res['data'];
         print(data);
@@ -127,7 +128,7 @@ class UserView extends StatelessWidget {
               tabs: [
                 Tab(
                   child: Text(
-                    "Health",
+                    "Health"
                   ),
                 ),
                 Tab(

@@ -15,6 +15,8 @@ import 'package:north_star/UI/HomeWidgets/HomeWidgetGym/GymView.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetGym/UnlockDoorQR.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 
+import 'HomeWidgetGym/Services.dart';
+
 class HomeWidgetGym extends StatelessWidget {
   const HomeWidgetGym({Key? key}) : super(key: key);
 
@@ -118,7 +120,8 @@ class HomeWidgetGym extends StatelessWidget {
                       ),
                       visible: authUser.role != 'client',
                     ),
-                    SizedBox(height: 15),
+
+                    SizedBox(height: 16),
                     Container(
                       height: 80,
                       child: ElevatedButton(
@@ -145,7 +148,38 @@ class HomeWidgetGym extends StatelessWidget {
                           ],
                         ),
                       ),
-                    )
+                    ),
+        SizedBox(height: 16,),
+                    Visibility(
+                      child: Container(
+                        height: 80,
+                        child: ElevatedButton(
+                          style: ButtonStyles.matButton(
+                              Get.isDarkMode
+                                  ? AppColors.primary2Color
+                                  : Colors.white,
+                              1),
+                          onPressed: () {
+                            Get.to(() => Services());
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: 64,
+                                child: Image.asset("assets/icons/gym_bank.png"),
+                              ),
+                              SizedBox(width: 25),
+                              Text(
+                                'Services',
+                                style: TypographyStyles.text(20),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      visible: authUser.role != 'client',
+                    ),
                   ],
                 ),
                 SizedBox(height: 20),
@@ -226,13 +260,13 @@ class HomeWidgetGym extends StatelessWidget {
                                                               ['gym_name'],
                                                           style:
                                                               TypographyStyles
-                                                                  .title(20),
+                                                                  .title(16),
                                                         ),
                                                         Text(
                                                           "${CountryPickerUtils.getCountryByIsoCode(myBookings[index]['gym_data']['gym_country']).name}",
                                                           style:
                                                               TypographyStyles
-                                                                  .text(16),
+                                                                  .text(14),
                                                         ),
                                                       ],
                                                     ),

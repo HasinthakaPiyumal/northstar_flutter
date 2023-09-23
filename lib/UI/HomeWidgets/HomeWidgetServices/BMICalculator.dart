@@ -11,6 +11,8 @@ import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/Utils/PopUps.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 
+import '../../../components/Buttons.dart';
+
 class BMICalculator extends StatelessWidget {
 
   const BMICalculator({Key? key}) : super(key: key);
@@ -159,18 +161,8 @@ class BMICalculator extends StatelessWidget {
               ),),
               SizedBox(height: 50),
               Container(
-                height: 58,
-                width: Get.width,
-                child: ElevatedButton(
-                  style: ButtonStyles.bigBlackButton(),
-                  child: Text('CALCULATE',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
-                  onPressed: () {
+                  width: Get.width,
+                  child: Buttons.yellowFlatButton(onPressed: () {
                     print(isMetric);
                     if(weightController.text != "" && heightController.text != ""){
                       if(isMetric.isTrue){
@@ -181,9 +173,7 @@ class BMICalculator extends StatelessWidget {
                     }else{
                       showSnack("No Inputs Found", "Please enter your weight and height");
                     }
-                  },
-                ),
-              ),
+                  },label: "calculate")),
               SizedBox(height: 20),
               Obx(()=>result['success'] != null
                   ? Column(

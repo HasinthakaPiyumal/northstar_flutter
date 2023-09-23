@@ -7,11 +7,15 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
+import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/ButtonStyles.dart';
+import 'package:north_star/Styles/DatePickerThemes.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/Utils/PopUps.dart';
 import 'package:intl/intl.dart';
+
+import '../../../components/Buttons.dart';
 
 class CreateVideoSession extends StatelessWidget {
   const CreateVideoSession({Key? key}) : super(key: key);
@@ -82,11 +86,12 @@ class CreateVideoSession extends StatelessWidget {
                   ),
                   SizedBox(height: 16),
                   TypeAheadField(
+                    suggestionsBoxDecoration: SuggestionsBoxDecoration(color: Get.isDarkMode?AppColors.primary2Color:Colors.white),
                     textFieldConfiguration: TextFieldConfiguration(
                         decoration: InputDecoration(
                           prefixIcon: Icon(Icons.search),
                           labelText: 'Search Members...',
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
+                          border: UnderlineInputBorder(),
                         )
                     ),
                     suggestionsCallback: (pattern) async {
@@ -101,6 +106,7 @@ class CreateVideoSession extends StatelessWidget {
                         subtitle: Text(jsonObj['user']['email']),
                       );
                     },
+
                     onSuggestionSelected: (suggestion) {
                       var jsonObj = jsonDecode(jsonEncode(suggestion));
 
@@ -120,17 +126,12 @@ class CreateVideoSession extends StatelessWidget {
                     decoration: InputDecoration(
                       labelText: 'Meeting Start Time',
                       suffixIcon: Icon(Icons.calendar_today),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
+                      border: UnderlineInputBorder(),
                     ),
                     onTap: () {
                       DatePickerBdaya.showDateTimePicker(
                           context,
-                          theme: DatePickerThemeBdaya(
-                            backgroundColor: Color(0xffF1F1F1),
-                            containerHeight: Get.height/3,
-                          ),
+                          theme: DatePickerThemes.mainTheme(),
                           showTitleActions: true,
                           minTime: DateTime.now(),
                           currentTime: DateTime.now(),
@@ -149,18 +150,17 @@ class CreateVideoSession extends StatelessWidget {
                     controller: title,
                     decoration: InputDecoration(
                       labelText: 'Title',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
+                      border: UnderlineInputBorder(),
                     ),
                   ),
                   SizedBox(height: 16),
                   TextField(
+                    maxLines: 3,
                     controller: description,
                     decoration: InputDecoration(
                       labelText: 'Description',
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.0),
+                        borderRadius: BorderRadius.circular(5.0),
                       ),
                     ),
                   ),
@@ -182,9 +182,9 @@ class CreateVideoSession extends StatelessWidget {
                     margin: EdgeInsets.symmetric(vertical: 4),
                     child: ListTile(
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
+                        borderRadius: BorderRadius.circular(5.0),
                       ),
-                      tileColor: Get.isDarkMode ? Color(0xff101010) : Color(0xffF1F1F1),
+                      tileColor: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
                       leading: ClipOval(
                         child: CachedNetworkImage(
                           imageUrl: HttpClient.s3BaseUrl + selectedMembers[index]['user']['avatar_url'],
@@ -210,25 +210,10 @@ class CreateVideoSession extends StatelessWidget {
       bottomNavigationBar: Padding(
         padding: EdgeInsets.symmetric(vertical: 10,horizontal: 16),
         child: Container(
-          height: 56,
-          child: ElevatedButton(
-            style: ButtonStyles.bigBlackButton(),
-            child:  Obx(()=>ready.value ? Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.video_call),
-                SizedBox(width: 8),
-                Text('Create Session',
-                  style: TypographyStyles.boldText(16, Themes.mainThemeColorAccent.shade100),
-                )
-              ],
-            ) : Center(
-              child: CircularProgressIndicator(),
-            )),
-            onPressed: (){
-              saveMeeting();
-            },
-          ),
+          height: 44,
+          child: Buttons.yellowTextIconButton(onPressed: (){
+            saveMeeting();
+          }, icon: Icons.video_call_outlined,label: 'create session')
         ),
       ),
     );

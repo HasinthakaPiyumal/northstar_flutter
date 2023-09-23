@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
+import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/ButtonStyles.dart';
 import 'package:north_star/Styles/SignUpStyles.dart';
 import 'package:north_star/Styles/Themes.dart';
@@ -14,6 +15,8 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../../components/Buttons.dart';
 
 class SelectedPlan extends StatelessWidget {
 
@@ -306,8 +309,8 @@ class SelectedPlan extends StatelessWidget {
 
               Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Get.isDarkMode ? colors.Colors().deepGrey(1) : colors.Colors().lightCardBG,
+                  borderRadius: BorderRadius.circular(10),
+                  color: Get.isDarkMode ? AppColors.primary2Color : colors.Colors().lightCardBG,
                 ),
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
@@ -327,7 +330,7 @@ class SelectedPlan extends StatelessWidget {
                                 style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
                               ),
                               Text("  +  GST",
-                                style: TypographyStyles.normalText(12, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().darkGrey(1),),
+                                style: TypographyStyles.normalText(12, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : AppColors.primary2Color,),
                               ),
                             ],
                           )
@@ -340,12 +343,17 @@ class SelectedPlan extends StatelessWidget {
                           Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(50),
-                              color: Themes.mainThemeColor.shade500,
+                              color: AppColors.accentColor,
                             ),
                             child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 3, horizontal: 5,),
-                              child: Text("SAVE MVR 120.00",
-                                style: TypographyStyles.boldText(11, Themes.mainThemeColorAccent.shade100),
+                              padding: EdgeInsets.symmetric(
+                                vertical: 10,
+                                horizontal: 20,
+                              ),
+                              child: Text(
+                                "SAVE MVR 120.00",
+                                style: TypographyStyles.boldText(
+                                    12, AppColors.textOnAccentColor),
                               ),
                             ),
                           ),
@@ -371,9 +379,9 @@ class SelectedPlan extends StatelessWidget {
                 child: DropdownButtonFormField(
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.0),
+                      borderRadius: BorderRadius.circular(10.0),
                       borderSide: BorderSide(
-                        color: Get.isDarkMode ? colors.Colors().darkGrey(1) : colors.Colors().lightCardBG,
+                        color: Get.isDarkMode ? AppColors.primary2Color : colors.Colors().lightCardBG,
                       ),
                     ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 17, horizontal: 20),
@@ -384,7 +392,7 @@ class SelectedPlan extends StatelessWidget {
                   ),
                   iconSize: 30,
                   iconEnabledColor: Themes.mainThemeColorAccent.shade100,
-                  dropdownColor: Get.isDarkMode ? colors.Colors().deepGrey(1) : colors.Colors().lightCardBG,
+                  dropdownColor: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
                   value: selectedAmount.value.toString(),
                   validator: (value) => value == null || value == 'select' ? "Select no. of Months" : null,
                   items: menuItemsMonths,
@@ -402,9 +410,9 @@ class SelectedPlan extends StatelessWidget {
                 child: DropdownButtonFormField(
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.0),
+                      borderRadius: BorderRadius.circular(10.0),
                       borderSide: BorderSide(
-                        color: colors.Colors().darkGrey(1),
+                        color: AppColors.primary2Color,
                       ),
                     ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 17, horizontal: 20),
@@ -413,7 +421,7 @@ class SelectedPlan extends StatelessWidget {
                   icon: const Icon(Icons.keyboard_arrow_down_rounded,),
                   iconSize: 30,
                   iconEnabledColor: Get.isDarkMode ? Themes.mainThemeColorAccent.shade500 : colors.Colors().lightBlack(1),
-                  dropdownColor: Get.isDarkMode ? colors.Colors().deepGrey(1) : colors.Colors().lightCardBG,
+                  dropdownColor: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
                   value: selectedAmount.value.toString(),
                   validator: (value) => value == null || value == 'select' ? "Select no. of Weeks" : null,
                   items: menuItemsWeeks,
@@ -516,8 +524,8 @@ class SelectedPlan extends StatelessWidget {
                             end.value = DateFormat("MMM dd, yyyy").format(date).toString();
                           },
                           monthCellStyle: DateRangePickerMonthCellStyle(
-                              textStyle: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().darkGrey(1),),
-                              disabledDatesTextStyle: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100.withOpacity(0.5) : colors.Colors().darkGrey(1),),
+                              textStyle: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : AppColors.primary2Color,),
+                              disabledDatesTextStyle: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100.withOpacity(0.5) : AppColors.primary2Color,),
                               todayTextStyle: TypographyStyles.normalText(16, Themes.mainThemeColor.shade500)
                           ),
                           selectionMode: DateRangePickerSelectionMode.single,
@@ -579,7 +587,7 @@ class SelectedPlan extends StatelessWidget {
                   labelStyle: TextStyle(
                     color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),
                   ),
-                  suffixIcon: Icon(Icons.calendar_today_outlined, color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade500.withOpacity(0.3) : colors.Colors().darkGrey(1),),
+                  suffixIcon: Icon(Icons.calendar_today_outlined, color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade500.withOpacity(0.3) : AppColors.primary2Color,),
                 ),
               ),
             ],
@@ -593,8 +601,8 @@ class SelectedPlan extends StatelessWidget {
           children: [
             Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: Get.isDarkMode ? colors.Colors().darkGrey(1) : colors.Colors().lightCardBG,
+                borderRadius: BorderRadius.circular(10),
+                color: Get.isDarkMode ? AppColors.primary2Color : colors.Colors().lightCardBG,
               ),
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
@@ -608,8 +616,8 @@ class SelectedPlan extends StatelessWidget {
                     SizedBox(height: 15,),
                     Container(
                       decoration: BoxDecoration(
-                        color: Get.isDarkMode ? colors.Colors().deepGrey(1) : colors.Colors().selectedCardBG,
-                        borderRadius: BorderRadius.circular(12),
+                        // color: Get.isDarkMode ? colors.Colors().deepGrey(1) : colors.Colors().selectedCardBG,
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
@@ -620,7 +628,7 @@ class SelectedPlan extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text("Start Date",
-                                    style: TypographyStyles.normalText(12, Get.isDarkMode ? Themes.mainThemeColorAccent.shade500.withOpacity(0.5) : colors.Colors().darkGrey(1),),
+                                    style: TypographyStyles.title(20),
                                   ),
                                   SizedBox(height: 5,),
                                     Text(start.value != "" ? "${start.value}" : "-",
@@ -638,7 +646,7 @@ class SelectedPlan extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text("End Date",
-                                    style: TypographyStyles.normalText(12, Get.isDarkMode ? Themes.mainThemeColorAccent.shade500.withOpacity(0.5) : colors.Colors().darkGrey(1),),
+                                    style: TypographyStyles.title(20),
                                   ),
                                   SizedBox(height: 5,),
                                   Text(end.value != "" ? "${end.value}" : "-",
@@ -688,21 +696,14 @@ class SelectedPlan extends StatelessWidget {
               ),
             ),
 
-            SizedBox(height: 5,),
+            SizedBox(height: 10,),
 
             Container(
               width: Get.width,
               padding: EdgeInsets.fromLTRB(0, 5, 0, 10),
               color: Theme.of(context).scaffoldBackgroundColor,
-              child: ElevatedButton(
-                style: ButtonStyles.bigBlackButton(),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text(
-                    'CONFIRM TO PAY',
-                    style: TypographyStyles.boldText(14, Themes.mainThemeColorAccent.shade100),
-                  ),
-                ),
+              child: Buttons.yellowFlatButton(
+                label:"confirm to pay",
                 onPressed: () {
                   if(start.value != "" && end.value != ""){
                     confirmAndPay(

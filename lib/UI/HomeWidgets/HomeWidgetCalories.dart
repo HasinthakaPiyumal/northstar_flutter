@@ -5,7 +5,6 @@ import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Plugins/Utils.dart';
 import 'package:north_star/Styles/AppColors.dart';
-import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetDashboard/WatchData.dart';
 import 'package:north_star/UI/Members/UserView.dart';
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
@@ -13,6 +12,7 @@ import 'package:north_star/UI/SharedWidgets/RingsWidget.dart';
 import 'package:north_star/UI/SharedWidgets/WatchDataWidget.dart';
 
 import '../../Styles/TypographyStyles.dart';
+import '../../components/CircularProgressBar.dart';
 
 class HomeWidgetCalories extends StatelessWidget {
   const HomeWidgetCalories({Key? key}) : super(key: key);
@@ -65,8 +65,9 @@ class HomeWidgetCalories extends StatelessWidget {
                         child: ListView.builder(
                           itemCount: macrosData.length,
                           itemBuilder: (_, index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
+                            Widget mainItem = Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 16.0, right: 16.0, bottom: 16.0),
                               child: Material(
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(16),
@@ -198,8 +199,9 @@ class HomeWidgetCalories extends StatelessWidget {
                                                       Expanded(
                                                         child: Container(
                                                           padding:
-                                                          const EdgeInsets
-                                                              .only(left:30),
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 30),
                                                           height: 98,
                                                           decoration: BoxDecoration(
                                                               color: macrosData[
@@ -219,29 +221,41 @@ class HomeWidgetCalories extends StatelessWidget {
                                                                           5)),
                                                           child: Column(
                                                             crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
+                                                                CrossAxisAlignment
+                                                                    .start,
                                                             mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
+                                                                MainAxisAlignment
+                                                                    .center,
                                                             children: [
                                                               Text('Current',
-                                                                  style: TextStyle(
-                                                                    color: Colors.white,
-                                                                    fontSize: 16,
-                                                                    fontFamily: 'Poppins',
-                                                                    fontWeight: FontWeight.w300,
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                        16,
+                                                                    fontFamily:
+                                                                        'Poppins',
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w300,
                                                                   )),
                                                               Text(
                                                                   macrosData[index]
                                                                           [
                                                                           'daily_calories']
                                                                       .toString(),
-                                                                  style: TextStyle(
-                                                                    color: Colors.white,
-                                                                    fontSize: 20,
-                                                                    fontFamily: 'Poppins',
-                                                                    fontWeight: FontWeight.w600,
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                        20,
+                                                                    fontFamily:
+                                                                        'Poppins',
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
                                                                   )),
                                                             ],
                                                           ),
@@ -252,13 +266,16 @@ class HomeWidgetCalories extends StatelessWidget {
                                                         child: Container(
                                                           padding:
                                                               const EdgeInsets
-                                                                  .only(left:30),
+                                                                      .only(
+                                                                  left: 30),
                                                           height: 98,
                                                           decoration: BoxDecoration(
                                                               color: Get
                                                                       .isDarkMode
-                                                                  ? AppColors.primary1Color
-                                                                  : AppColors.baseColor,
+                                                                  ? AppColors
+                                                                      .primary1Color
+                                                                  : AppColors
+                                                                      .baseColor,
                                                               borderRadius:
                                                                   BorderRadius
                                                                       .circular(
@@ -271,15 +288,20 @@ class HomeWidgetCalories extends StatelessWidget {
                                                                 MainAxisAlignment
                                                                     .center,
                                                             children: [
+                                                              Text('Target',
+                                                                  style: TypographyStyles
+                                                                      .text(
+                                                                          16)),
                                                               Text(
-                                                                'Target',
-                                                                  style:TypographyStyles.text(16)
-                                                              ),
-                                                              Text(macrosData[
-                                                                          index]
-                                                                      [
-                                                                      'target_calories']
-                                                                  .toString(),style: TypographyStyles.title(20),)
+                                                                macrosData[index]
+                                                                        [
+                                                                        'target_calories']
+                                                                    .toString(),
+                                                                style:
+                                                                    TypographyStyles
+                                                                        .title(
+                                                                            20),
+                                                              )
                                                             ],
                                                           ),
                                                         ),
@@ -289,13 +311,15 @@ class HomeWidgetCalories extends StatelessWidget {
                                                   ),
                                                   SizedBox(height: 15),
                                                   Center(
-                                                    child: Text(
-                                                      'Last Updated on: ' +
-                                                          Utils.dateFormat(
-                                                              macrosData[index]
-                                                                  ['updated_at']),
-                                                      textAlign: TextAlign.center,
-                                                      style: TypographyStyles.textWithWeight(13,FontWeight.w300),
+                                                      child: Text(
+                                                    'Last Updated on: ' +
+                                                        Utils.dateFormat(
+                                                            macrosData[index]
+                                                                ['updated_at']),
+                                                    textAlign: TextAlign.center,
+                                                    style: TypographyStyles
+                                                        .textWithWeight(13,
+                                                            FontWeight.w300),
                                                   )),
                                                   SizedBox(height: 5),
                                                 ],
@@ -310,6 +334,85 @@ class HomeWidgetCalories extends StatelessWidget {
                                   ),
                                 ),
                               ),
+                            );
+
+                            if (index != macrosData.length - 1) {
+                              return mainItem;
+                            }
+                            return Column(
+                              children: [
+                                mainItem,
+                                Container(
+                                  padding: EdgeInsets.symmetric(vertical: 16),
+                                  margin: EdgeInsets.all(16),
+                                  decoration: BoxDecoration(
+                                      color: Get.isDarkMode
+                                          ? AppColors.primary2Color
+                                          : Colors.white,
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        "Today Workout",
+                                        style: TypographyStyles.title(20),
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          CircularProgressBar(
+                                            progress: 0.1,
+                                            radius: 50,
+                                            strokeWidth: 6,
+                                            fontSize: 20,
+                                          ),
+                                          Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                padding: EdgeInsets.all(8),
+                                                width:Get.width-224,
+                                                decoration: BoxDecoration(
+                                                    color: Get.isDarkMode
+                                                        ? AppColors
+                                                            .primary1Color
+                                                        : AppColors.baseColor,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                                child: Column(children: [
+                                                  Text("Excercise",style: TypographyStyles.textWithWeight(14, FontWeight.w300),),
+                                                  Text("02",style: TypographyStyles.title(20),),
+                                                ],),
+                                              ),
+                                              SizedBox(height: 8,),
+                                              Container(
+                                                padding: EdgeInsets.all(8),
+                                                width:Get.width-224,
+                                                decoration: BoxDecoration(
+                                                    color: Get.isDarkMode
+                                                        ? AppColors
+                                                            .primary1Color
+                                                        : AppColors.baseColor,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                                child: Column(children: [
+                                                  Text("Remaining",style: TypographyStyles.textWithWeight(14, FontWeight.w300),),
+
+                                                  Text("02",style: TypographyStyles.title(20),),
+                                                ],),
+                                              )
+                                            ],
+                                          )
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
                             );
                           },
                         ),

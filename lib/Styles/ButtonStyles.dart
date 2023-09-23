@@ -44,9 +44,17 @@ class ButtonStyles {
 
   static ButtonStyle bigBlackButton() {
     return ElevatedButton.styleFrom(
-        foregroundColor: Colors.white,
-        backgroundColor: Colors.black,
-        elevation: 6,
+        // foregroundColor: Colors.white,
+        // backgroundColor: Colors.black,
+        backgroundColor: AppColors.accentColor,
+        textStyle: TextStyle(
+          color: Color(0xFF1B1F24),
+          fontSize: 20,
+          fontFamily: 'Bebas Neue',
+          fontWeight: FontWeight.w400,
+          height: 0,
+        ),
+        // elevation: 6,
         padding: EdgeInsets.zero,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)));
   }
@@ -134,7 +142,7 @@ class ButtonStyles {
         foregroundColor: Get.isDarkMode ? Colors.white : Colors.black,
         backgroundColor: color,
         elevation: elevation,
-        maximumSize: Get.size,
+        // maximumSize: Get.size,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)));
   }
 
@@ -201,7 +209,7 @@ class ButtonStyles {
       padding: const EdgeInsets.symmetric(vertical: 20),
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
+        borderRadius: BorderRadius.circular(10.0),
       ),
       textStyle: TextStyle(
         fontSize: 20,
@@ -219,11 +227,11 @@ class ButtonStyles {
     return ElevatedButton.styleFrom(
       foregroundColor: Get.isDarkMode ? Colors.white : Colors.black,
       backgroundColor: Get.isDarkMode
-          ? colors.Colors().deepGrey(1)
-          : colors.Colors().selectedCardBG,
+          ? AppColors.primary2Color
+          : Colors.white,
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
+        borderRadius: BorderRadius.circular(10.0),
       ),
       textStyle: TextStyle(
         fontSize: 20,
@@ -239,12 +247,12 @@ class ButtonStyles {
     return ElevatedButton.styleFrom(
       foregroundColor: Get.isDarkMode ? Colors.white : Colors.black,
       backgroundColor: Get.isDarkMode
-          ? colors.Colors().deepGrey(1)
-          : colors.Colors().lightCardBG,
+          ? AppColors.primary2Color
+          : Colors.white,
       padding: const EdgeInsets.symmetric(vertical: 20),
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
+        borderRadius: BorderRadius.circular(10.0),
       ),
       textStyle: TextStyle(
         fontSize: 20,
@@ -256,11 +264,11 @@ class ButtonStyles {
     return ElevatedButton.styleFrom(
       foregroundColor: Get.isDarkMode ? Colors.white : Colors.black,
       backgroundColor: Get.isDarkMode
-          ? colors.Colors().deepGrey(1)
-          : colors.Colors().lightCardBG,
+          ? AppColors.primary2Color
+          : Colors.white,
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
+        borderRadius: BorderRadius.circular(10.0),
       ),
       textStyle: TextStyle(
         fontSize: 20,

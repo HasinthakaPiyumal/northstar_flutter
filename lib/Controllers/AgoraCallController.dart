@@ -23,10 +23,13 @@ class AgoraCallController {
   static late Timer timer;
 
   // static const String token = '983f2eee1a9a4d2f90c04e17b9694fea';
-  static const String token =
-      '007eJxTYNhouCButkT3v5+rX32akKBl+jV3hdWhGXNzPz53f6YboVqlwJCaYm6ZnJhoaGhilGiSaG5oYWJmaG6ekpRmbmyeamSZKnv/X0pDICNDvI8cAyMUgvh8DCmpaYmlOSXOGYl5eak5DAwAbiUlPw==';
+  // static var String token =
+  //     '007eJxTYNhouCButkT3v5+rX32akKBl+jV3hdWhGXNzPz53f6YboVqlwJCaYm6ZnJhoaGhilGiSaG5oYWJmaG6ekpRmbmyeamSZKnv/X0pDICNDvI8cAyMUgvh8DCmpaYmlOSXOGYl5eak5DAwAbiUlPw==';
   // static const String appId = '0e76a00a008e418bb9074ccad44724de';
-  static const String appId = 'ed79caa1142a4a71846177dbf737e29e';
+  // static const String appId = '717e3dfc72374428b1daa46b39e9145b'; // backend appId
+  static const String appId = 'ed79caa1142a4a71846177dbf737e29e'; // temporary appId
+  static const String token = "007eJxTYLhgEJMy55bCq61Vb52E/d9cdwv5/KhrQjf//7QL5hc+bz+jwJCaYm6ZnJhoaGhilGiSaG5oYWJmaG6ekpRmbmyeamSZ+i6OL7UhkJEhSHwpAyMUgvh8DCmpaYmlOSXOGYl5eak5DAwAlHclwQ==";
+
 
   static RxString callStatus =
       'Calling...'.obs; // Calling, Connected, Disconnected
@@ -35,6 +38,12 @@ class AgoraCallController {
 
   static RxBool speakerPhone = false.obs;
   static RxBool mute = false.obs;
+
+  static Future<String> getToken() async{
+    dynamic res = await httpClient.getRtcToken();
+    print('rtc token ---> $res');
+    return res['data'][0]['data']['token'];
+  }
 
   static Future<bool> init(Map<String, dynamic> userData) async {
     user = userData;
@@ -84,11 +93,13 @@ class AgoraCallController {
     await agoraEngine.enableAudio();
     await agoraEngine.enableLocalAudio(true);
 
-    await httpClient.invokeCall({
-      'from': authUser.id,
-      'to': user['id'],
+    dynamic res = await httpClient.invokeCall({
+      'from': "${authUser.id}",
+      'to': "${user['id']}",
       'channel': channelName,
     });
+
+    print('--------------> $res');
 
     print(channelName);
 
@@ -138,7 +149,7 @@ class AgoraCallController {
           endTime = DateTime.now();
           timer.cancel();
           duration = Duration(seconds: 0).obs;
-          Get.back(closeOverlays: true, canPop: false);
+          // Get.back(closeOverlays: true, canPop: false);
           agoraEngine.leaveChannel();
         },
       ),
@@ -157,10 +168,13 @@ class AgoraCallController {
       clientRoleType: ClientRoleType.clientRoleBroadcaster,
       channelProfile: ChannelProfileType.channelProfileCommunication,
     );
-
+    var crcToken = await getToken();
+    print('cr token ---? $crcToken');
     try {
+      var crToken = await getToken();
+      print('cr token ---? $crToken');
       await agoraEngine.joinChannel(
-        token: token,
+        token:token,
         channelId: channelName,
         options: options,
         uid: authUser.id,
@@ -176,11 +190,11 @@ class AgoraCallController {
 
   static rejectCall() async {
     try {
-      await httpClient.invokeCall({
-        'from': authUser.id,
-        'to': user['id'],
-        'channel': channelName,
-      });
+      // await httpClient.invokeCall({
+      //   'from': '${authUser.id}',
+      //   'to': '${user['id']}',
+      //   'channel': channelName,
+      // });
       timer.cancel();
     } catch (e) {
       print(e);

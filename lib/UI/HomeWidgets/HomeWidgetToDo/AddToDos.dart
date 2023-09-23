@@ -14,6 +14,8 @@ import 'dart:math';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
+import '../../../components/ImageUploader.dart';
+
 class AddToDos extends StatelessWidget {
 
   @override
@@ -120,6 +122,10 @@ class AddToDos extends StatelessWidget {
               ),
 
               SizedBox(height: 16),
+              Container(width: Get.width,child: Text("Add Image (Optional)",textAlign: TextAlign.left,style: TypographyStyles.text(14),)),
+              SizedBox(height: 10),
+              ImageUploader().getImageUploader(handler: (){}),
+              SizedBox(height: 30),
               Container(
                 height: 44,
                 width: Get.width,

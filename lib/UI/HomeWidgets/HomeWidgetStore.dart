@@ -15,6 +15,8 @@ import 'package:north_star/UI/HomeWidgets/HomeWidgetStore/StoreItemView.dart';
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 
+import '../../Styles/AppColors.dart';
+
 class HomeWidgetStore extends StatelessWidget {
 
   const HomeWidgetStore({Key? key}) : super(key: key);
@@ -55,21 +57,24 @@ class HomeWidgetStore extends StatelessWidget {
         onPressed: (){
           Get.to(()=>StoreCart());
         },
-        backgroundColor: Colors.black,
+        backgroundColor: AppColors.accentColor,
         child: Stack(
           fit: StackFit.expand,
           children: [
-            Icon(Icons.shopping_cart, color: Colors.white,),
+            Padding(
+              padding: const EdgeInsets.only(top: 5.0),
+              child: Icon(Icons.shopping_cart_outlined,size: 30, color: AppColors.primary2Color,),
+            ),
             Positioned(
-              top: 9,
-              right: 9,
+              top: 5,
+              right: 8,
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  Icon(Icons.circle, size: 20, color: Themes.mainThemeColor.shade500),
+                  Icon(Icons.circle, size: 22, color: AppColors.primary2Color),
                   Obx(() => Text(
                     storeHelper.cart.length.toString(),
-                    style: TypographyStyles.boldText(12, Colors.black,),
+                    style: TypographyStyles.boldText(12, AppColors.accentColor,),
                   ))
                 ],
               ),
@@ -92,8 +97,8 @@ class HomeWidgetStore extends StatelessWidget {
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.search),
                       labelText: 'Search Store...',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0)),
+                      border:
+                        UnderlineInputBorder()
                     )),
                 suggestionsCallback: (pattern) async {
                   return await searchStore(pattern);
@@ -111,7 +116,7 @@ class HomeWidgetStore extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Categories', style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade300 : colors.Colors().lightBlack(1),)),
+                  Text('Categories', style: TypographyStyles.title(16)),
                 ],
               ),
             ),
@@ -137,7 +142,7 @@ class HomeWidgetStore extends StatelessWidget {
                             margin: index == 0 ? EdgeInsets.only(left: 15) : EdgeInsets.only(left: 8),
                             padding: EdgeInsets.symmetric(horizontal: 10),
                             decoration: BoxDecoration(
-                              color: Get.isDarkMode ? colors.Colors().deepGrey(1) : colors.Colors().lightCardBG,
+                              color: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
                               borderRadius: BorderRadius.circular(15)
                             ),
                             child: Column(
@@ -194,7 +199,7 @@ class HomeWidgetStore extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('More To Love', style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade300 : colors.Colors().lightBlack(1),)),
+                  Text('More To Love', style: TypographyStyles.title(16)),
                 ],
               ),
             ),

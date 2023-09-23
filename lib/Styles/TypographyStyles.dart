@@ -55,7 +55,7 @@ class TypographyStyles {
   }
 
   static TextStyle text(int size) {
-    return TextStyle(fontSize: size.toDouble(), fontWeight: FontWeight.normal);
+    return TextStyle(fontSize: size.toDouble(), fontWeight: FontWeight.normal,fontFamily: 'Poppins',);
   }
 
   static TextStyle walletTransactions(int size, String type) {

@@ -13,6 +13,9 @@ import 'package:north_star/UI/SharedWidgets/CommonConfirmDialog.dart';
 import 'package:north_star/Utils/PopUps.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 
+import '../../../Styles/AppColors.dart';
+import '../../../components/Buttons.dart';
+
 class EditMeal extends StatelessWidget {
   const EditMeal({Key? key, required this.foodList, required this.mealID, required this.selectedDay, required this.editMode}) : super(key: key);
 
@@ -114,21 +117,21 @@ class EditMeal extends StatelessWidget {
         floatingActionButton: FloatingActionButton(
             onPressed: (){
               Get.defaultDialog(
-                radius: 12,
+                radius: 10,
                 titlePadding: EdgeInsets.only(top: 20),
                 contentPadding: EdgeInsets.fromLTRB(20, 20, 20, 10),
                 title: 'Custom Food',
-                backgroundColor: Get.isDarkMode ? colors.Colors().deepGrey(1) : colors.Colors().lightCardBG,
+                backgroundColor: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
                 content: Column(
                   children: [
                     Container(
                       height: 60,
                       width: Get.width,
                       child: ElevatedButton(
-                        style: ButtonStyles.matRadButton(Get.isDarkMode ? colors.Colors().darkGrey(1) : colors.Colors().selectedCardBG, 5, 12),
+                        style: ButtonStyles.matRadButton(Get.isDarkMode ? AppColors.primary1Color: colors.Colors().selectedCardBG, 0, 5),
                         child: Padding(
                           padding: EdgeInsets.symmetric(vertical: 20, horizontal: 25),
-                          child: Text('Ingredients Based',),
+                          child: Text('Ingredients Based',style: TypographyStyles.title(14)),
                         ),
                         onPressed: (){
                           Get.back();
@@ -149,10 +152,10 @@ class EditMeal extends StatelessWidget {
                       height: 60,
                       width: Get.width,
                       child: ElevatedButton(
-                        style: ButtonStyles.matRadButton(Get.isDarkMode ? colors.Colors().darkGrey(1) : colors.Colors().selectedCardBG, 5, 12),
+                        style: ButtonStyles.matRadButton(Get.isDarkMode ? AppColors.primary1Color : colors.Colors().selectedCardBG, 0, 5),
                         child: Padding(
                           padding: EdgeInsets.symmetric(vertical: 20,),
-                          child: Text('Nutrients Based'),
+                          child: Text('Nutrients Based',style: TypographyStyles.title(14),),
                         ),
                         onPressed: (){
                           Get.back();
@@ -170,8 +173,8 @@ class EditMeal extends StatelessWidget {
                 ),
               );
             },
-            child: Icon(Icons.add, color: Colors.white),
-            backgroundColor: Colors.black
+            child: Icon(Icons.add, color: AppColors.textOnAccentColor),
+            backgroundColor: AppColors.accentColor
         ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -188,9 +191,10 @@ class EditMeal extends StatelessWidget {
                         prefixIcon: Icon(Icons.search),
                         labelText: 'Search Foods...',
                         hintText: 'Start Typing to Search Foods...',
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                        border: UnderlineInputBorder(),
                       )
                   ),
+                  suggestionsBoxDecoration: SuggestionsBoxDecoration(color: Get.isDarkMode?AppColors.primary2Color:Colors.white),
                   suggestionsCallback: (pattern) async {
                     return await searchFoods(pattern);
                   },
@@ -234,7 +238,7 @@ class EditMeal extends StatelessWidget {
                               child: Container(
                                 width: Get.width,
                                 decoration: BoxDecoration(
-                                  color: Get.isDarkMode ? colors.Colors().deepGrey(1) : colors.Colors().lightCardBG,
+                                  color: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
                                   borderRadius: new BorderRadius.only(
                                     topLeft: const Radius.circular(25.0),
                                     topRight: const Radius.circular(25.0),
@@ -255,7 +259,7 @@ class EditMeal extends StatelessWidget {
                                               width: 64,
                                               height: 4,
                                               decoration: BoxDecoration(
-                                                color: Colors.grey.shade600,
+                                                color: AppColors.accentColor,
                                                 borderRadius: BorderRadius.circular(8),
                                               ),
                                             ),
@@ -265,8 +269,8 @@ class EditMeal extends StatelessWidget {
                                         Container(
                                           width: Get.width,
                                           decoration: BoxDecoration(
-                                            color: Get.isDarkMode ? Themes.mainThemeColorAccent : colors.Colors().selectedCardBG,
-                                            borderRadius: BorderRadius.circular(15),
+                                            color: Get.isDarkMode ? AppColors.primary1Color : colors.Colors().selectedCardBG,
+                                            borderRadius: BorderRadius.circular(10),
                                           ),
                                           child: Padding(
                                             padding: EdgeInsets.symmetric(vertical: 25, horizontal: 20),
@@ -294,7 +298,7 @@ class EditMeal extends StatelessWidget {
                                         Container(
                                           width: Get.width,
                                           decoration: BoxDecoration(
-                                            color: Get.isDarkMode ? Themes.mainThemeColorAccent.withOpacity(0.3) : colors.Colors().selectedCardBG,
+                                            color: Get.isDarkMode ? AppColors.primary1Color : colors.Colors().selectedCardBG,
                                             borderRadius: BorderRadius.circular(15),
                                           ),
                                           child: Padding(
@@ -440,7 +444,7 @@ class EditMeal extends StatelessWidget {
                                               flex: 1,
                                               child: Container(
                                                 decoration: BoxDecoration(
-                                                  color: Get.isDarkMode ? Themes.mainThemeColorAccent : colors.Colors().selectedCardBG,
+                                                  color: Get.isDarkMode ? AppColors.primary1Color : colors.Colors().selectedCardBG,
                                                   borderRadius: BorderRadius.circular(15),
                                                 ),
                                                 child: Padding(
@@ -472,13 +476,13 @@ class EditMeal extends StatelessWidget {
                                                               style: ElevatedButton.styleFrom(
                                                                 shape: CircleBorder(),
                                                                 padding: EdgeInsets.all(10),
-                                                                backgroundColor: Get.isDarkMode ? colors.Colors().deepGrey(1) : colors.Colors().deepGrey(0.6),
+                                                                backgroundColor: Get.isDarkMode ? AppColors.primary2Color : colors.Colors().deepGrey(0.6),
                                                                 foregroundColor: colors.Colors().deepYellow(1),
                                                               ),
                                                             ),
                                                           ),
                                                           SizedBox(width: 16),
-                                                          Obx(()=> Text(foods[index]['no_of_potions'].toString(), style: TypographyStyles.title(21).copyWith(color: Get.isDarkMode ? colors.Colors().deepYellow(1) : colors.Colors().lightBlack(1),))),
+                                                          Obx(()=> Text(foods[index]['no_of_potions'].toString(), style: TypographyStyles.title(21).copyWith(color: AppColors.accentColor))),
                                                           SizedBox(width: 16),
                                                           Expanded(
                                                             child: ElevatedButton(
@@ -496,7 +500,7 @@ class EditMeal extends StatelessWidget {
                                                               style: ElevatedButton.styleFrom(
                                                                 shape: CircleBorder(),
                                                                 padding: EdgeInsets.all(10),
-                                                                backgroundColor: Get.isDarkMode ? colors.Colors().deepGrey(1) : colors.Colors().deepGrey(0.6),
+                                                                backgroundColor: Get.isDarkMode ? AppColors.primary2Color : colors.Colors().deepGrey(0.6),
                                                                 foregroundColor: colors.Colors().deepYellow(1), // <-- Splash color
                                                               ),
                                                             ),
@@ -552,25 +556,12 @@ class EditMeal extends StatelessWidget {
           child: Container(
             margin: EdgeInsets.only(top: 8),
             width: Get.width,
-            height: 56,
-            child: ElevatedButton(
-              style: ButtonStyles.bigBlackButton(),
-              child: Obx(()=> foods.length > 0 ? Text('Save'): Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.delete_outline),
-                  SizedBox(width: 10),
-                  Text('Delete Meal'),
-                ],
-              )),
-              onPressed: (){
-                if(foods.length > 0){
-                  saveMeal();
-                } else {
-                  deleteMeal(mealID);
-                }
-              },
-            ),
+            child: Obx(()=>foods.length>0?Buttons.yellowFlatButton(onPressed: (){
+              saveMeal();
+
+            },label: "save"):Buttons.yellowTextIconButton(onPressed: (){
+              deleteMeal(mealID);
+            },label: "delete",icon:Icons.delete_outline_rounded))
           ),
         ),
       ),

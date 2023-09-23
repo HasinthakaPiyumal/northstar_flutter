@@ -20,21 +20,46 @@ import 'package:north_star/UI/SharedWidgets/ExitWidget.dart';
 import 'package:north_star/UI/Wallet.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:north_star/Styles/AppColors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class Layout extends StatelessWidget {
+class Layout extends StatefulWidget {
+
   const Layout({Key? key}) : super(key: key);
 
   @override
+  State<Layout> createState() => _LayoutState();
+}
+
+class _LayoutState extends State<Layout> {
+
+  final RxInt currentPage = 0.obs;
+  String preferenceName = "homeViewTabIndex";
+  @override
   Widget build(BuildContext context) {
-    Rx<PageController> pgController = PageController(initialPage: 0).obs;
+    Rx<PageController> pgController = PageController(initialPage: currentPage.value).obs;
     //bool hasShown = false;
-    RxInt currentPage = 0.obs;
+
+    Future<int?> retrieveSelectedTabIndex() async {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      int val = prefs.getInt(preferenceName)!;
+      currentPage.value = val;
+      print('$preferenceName $val ------> Getting');
+      return prefs.getInt(preferenceName);
+    }
+
+    Future<void> saveSelectedTabIndex(int index) async {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      print('$preferenceName $index ------> Setting');
+      prefs.setInt(preferenceName, index);
+    }
+    retrieveSelectedTabIndex();
 
     void checkPermissions() async {
       await [
         Permission.camera,
         Permission.microphone,
         Permission.activityRecognition,
+        Permission.photos
       ].request();
 
       FlutterLocalNotificationsPlugin fNP = FlutterLocalNotificationsPlugin();
@@ -78,6 +103,7 @@ class Layout extends StatelessWidget {
                 currentIndex: currentPage.value,
                 onTap: (int index) {
                   currentPage.value = index;
+                  saveSelectedTabIndex(index);
                   pgController.value.jumpToPage(index);
                 },
                 items: [
@@ -255,5 +281,12 @@ class Layout extends StatelessWidget {
         ),
       );
     }
+  }
+
+  @override
+  void dispose() async{
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt(preferenceName, 0);
+    super.dispose();
   }
 }

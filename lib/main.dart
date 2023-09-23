@@ -1,8 +1,14 @@
+import 'dart:async';
+import 'dart:ui';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
+
+// import 'package:flutter_zoom_videosdk/native/zoom_videosdk.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
@@ -14,7 +20,6 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'Plugins/HttpClient.dart';
 import 'Styles/AppColors.dart';
 
 bool isLoggedIn = false;
@@ -27,6 +32,9 @@ void main() async {
     DeviceOrientation.portraitDown,
     DeviceOrientation.portraitUp,
   ]);
+  String preferenceName = "homeViewTabIndex";
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setInt(preferenceName, 0);
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -41,9 +49,10 @@ void main() async {
 
   await checkAuth();
 
-  await OneSignal.shared.setLogLevel(OSLogLevel.none, OSLogLevel.none);
+  await OneSignal.shared.setLogLevel(OSLogLevel.debug, OSLogLevel.none);
 
-  await OneSignal.shared.setAppId("813517cd-7999-4c5b-92c5-8a1554ae9984");
+  // await OneSignal.shared.setAppId("813517cd-7999-4c5b-92c5-8a1554ae9984");
+  await OneSignal.shared.setAppId("d8154a83-a601-4611-9416-17cdd2f0e6bb");
 
   await OneSignal.shared
       .promptUserForPushNotificationPermission()
@@ -51,20 +60,23 @@ void main() async {
     print("Accepted permission: $accepted");
   });
 
+  final currentTheme =
+      isDarkMode ? ThemeAll().darkTheme : ThemeAll().lightTheme;
+
   OneSignal.shared.setNotificationWillShowInForegroundHandler(
       (OSNotificationReceivedEvent event) {
     if (event.notification.body == 'Incoming Call!' && isLoggedIn) {
-      print(event.notification.additionalData);
+      print("Call inner calling");
+      print(event.notification);
       Get.to(() =>
           IncomingVoiceCallUI(callData: event.notification.additionalData));
+      event.complete(event.notification);
     } else {
-      print('Incoming Call! Else');
+      print("Call outer calling");
+      print(event.notification.body);
       event.complete(event.notification);
     }
   });
-
-  final currentTheme =
-      isDarkMode ? ThemeAll().darkTheme : ThemeAll().lightTheme;
 
   runApp(
     ChangeNotifierProvider(
@@ -77,6 +89,7 @@ void main() async {
 Future checkAuth() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? '';
+  print("Token found -----> $token");
   isDarkMode = prefs.getBool('darkMode') ?? true;
 
   if (token.isEmpty) {
@@ -84,10 +97,13 @@ Future checkAuth() async {
   } else {
     httpClient.setToken(token);
     Map res = await httpClient.authCheck();
+    print(res);
 
     if (res['code'] == 200) {
+      print('Printing token inner 1');
       isLoggedIn = true;
       httpClient.setToken(token);
+      print('Printing token inner 2');
       Map<String, dynamic> userData = res['data']['user'];
       if (res['data']['user']['subscription'] != null) {
         DateTime expDate =
@@ -100,8 +116,10 @@ Future checkAuth() async {
         }
       }
       authUser.saveUser(userData);
+      print('Printing token inner 3');
 
-      client.changeToken(res['data']['token']);
+      // client.changeToken(res['data']['token']);
+      httpClient.setToken(res['data']['token']);
     } else {
       isLoggedIn = false;
     }
@@ -130,7 +148,9 @@ class ThemeAll {
   final lightTheme = ThemeData(
       checkboxTheme: CheckboxThemeData(
         fillColor: MaterialStateProperty.all(Colors.white),
-        checkColor: MaterialStateProperty.all(Colors.black), /// Change to your desired color
+        checkColor: MaterialStateProperty.all(Colors.black),
+
+        /// Change to your desired color
       ),
       inputDecorationTheme: InputDecorationTheme(
         border: OutlineInputBorder(
@@ -139,44 +159,79 @@ class ThemeAll {
         ),
         hintStyle: TextStyle(color: Colors.black),
         labelStyle: TextStyle(color: Colors.black),
+        // focusedBorder: OutlineInputBorder(
+        //   borderRadius: BorderRadius.circular(5),
+        //   borderSide: BorderSide(color: AppColors.accentColor, width: 1),
+        // ),
+        contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       ),
       brightness: Brightness.light,
       primarySwatch: Themes.mainThemeColor,
       scaffoldBackgroundColor: Color(0xFFF2F2F2),
       appBarTheme: AppBarTheme(
-        elevation: 0,
-        centerTitle: true,
-        backgroundColor: Color(0xFFF2F2F2),
-      ),
+          elevation: 0,
+          centerTitle: true,
+          backgroundColor: Color(0xFFF2F2F2),
+          titleTextStyle: TextStyle(
+            color: Colors.black,
+            fontSize: 20,
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.w600,
+            height: 0,
+          )),
       dialogBackgroundColor: Colors.white,
       cardColor: Colors.white,
-      primaryColor: AppColors.accentColor);
+      primaryColor: AppColors.accentColor,
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: Colors.white,
+      ),
+      listTileTheme: ListTileThemeData(tileColor: Colors.white));
 
   final darkTheme = ThemeData(
       checkboxTheme: CheckboxThemeData(
-        fillColor: MaterialStateProperty.all(Colors.white), // Change to your desired color
-        checkColor: MaterialStateProperty.all(Colors.black), // Change to your desired color
+        fillColor: MaterialStateProperty.all(Colors.white),
+        // Change to your desired color
+        checkColor: MaterialStateProperty.all(
+            Colors.black), // Change to your desired color
       ),
       brightness: Brightness.dark,
       primarySwatch: Themes.mainThemeColor,
       scaffoldBackgroundColor: AppColors.primary1Color,
       appBarTheme: AppBarTheme(
-        elevation: 0,
-        centerTitle: true,
-        backgroundColor: AppColors.primary1Color,
-        iconTheme: IconThemeData(size: 30),
-      ),
+          elevation: 0,
+          centerTitle: true,
+          backgroundColor: AppColors.primary1Color,
+          iconTheme: IconThemeData(size: 30),
+          titleTextStyle: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.w600,
+            height: 0,
+          )),
       inputDecorationTheme: InputDecorationTheme(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(1),
-          borderSide: BorderSide(color: Colors.white),
-        ),
-        hintStyle: TextStyle(color: Colors.white),
-        labelStyle: TextStyle(color: Colors.white),
-      ),
+          // focusedBorder: OutlineInputBorder(
+          //   borderRadius: BorderRadius.circular(5),
+          //   borderSide: BorderSide(color: AppColors.accentColor, width: 1),
+          // ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5),
+            borderSide: BorderSide(color: Colors.white, width: 1),
+          ),
+          hintStyle: TextStyle(color: Colors.white),
+          labelStyle: TextStyle(color: Colors.white),
+          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10)),
       dialogBackgroundColor: AppColors.primary2Color,
       cardColor: AppColors.primary2Color,
-      primaryColor: AppColors.accentColor);
+      primaryColor: AppColors.accentColor,
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: AppColors.primary2Color,
+      ),
+      tabBarTheme: TabBarTheme(
+        labelColor: Colors.white,
+        unselectedLabelColor: Colors.white.withOpacity(0.7),
+      ),
+      listTileTheme: ListTileThemeData(tileColor: AppColors.primary2Color));
 }
 // class ThemeAll {
 //   final lightTheme = ThemeData(

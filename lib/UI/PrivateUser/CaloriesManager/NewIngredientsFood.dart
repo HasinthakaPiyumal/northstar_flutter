@@ -473,7 +473,7 @@ class NewIngredientsFood extends StatelessWidget {
         child: Container(
           margin: EdgeInsets.only(top: 8),
           width: Get.width,
-          height: 56,
+          height: 44,
           child: ElevatedButton(
             style: ButtonStyles.bigBlackButton(),
             child: Text('Save'),

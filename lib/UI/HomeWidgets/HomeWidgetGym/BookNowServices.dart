@@ -14,8 +14,8 @@ import 'package:north_star/Utils/CustomColors.dart' as colors;
 
 import '../../../components/Buttons.dart';
 
-class BookNow extends StatelessWidget {
-  const BookNow({Key? key, this.gymObj}) : super(key: key);
+class BookNowServices extends StatelessWidget {
+  const BookNowServices({Key? key, this.gymObj}) : super(key: key);
   final gymObj;
 
   @override

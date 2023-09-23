@@ -20,7 +20,8 @@ bool enabledProWidgets(String text) {
     'Health Services',
     'Calories',
     'Lab Reports',
-    'Online Clinic'
+    'Online Clinic',
+    'Physiotherapy'
   ];
 
   if (proWidgets.contains(text) && authUser.user['subscription'] == null) {
@@ -93,13 +94,14 @@ Widget homeWidgetButton(Function goTo, String icon, String text) {
                             )
                           : Image.asset(
                               'assets/home/$icon.png',
-                              color: Get.isDarkMode
-                                  ? enabledProWidgets(text)
-                                      ? null
-                                      : Colors.grey[800]
-                                  : enabledProWidgets(text)
-                                      ? null
-                                      : Colors.grey,
+                              opacity: AlwaysStoppedAnimation(enabledProWidgets(text)?1.0:0.5),
+                              // color: Get.isDarkMode
+                              //     ? enabledProWidgets(text)
+                              //         ? null
+                              //         : Colors.grey[800]
+                              //     : enabledProWidgets(text)
+                              //         ? null
+                              //         : Colors.grey,
                             ),
                       Get.isDarkMode
                           ? Text(text,
@@ -108,7 +110,7 @@ Widget homeWidgetButton(Function goTo, String icon, String text) {
                                   10,
                                   enabledProWidgets(text)
                                       ? Colors.white
-                                      : Colors.grey.shade800))
+                                      : Colors.white60))
                           : Text(text,
                               textAlign: TextAlign.center,
                               style: TypographyStyles.boldText(
@@ -120,10 +122,16 @@ Widget homeWidgetButton(Function goTo, String icon, String text) {
                   ),
                   if (!enabledProWidgets(text))
                     Center(
-                      child: Image.asset(
-                        'assets/images/pro.png',
-                        height: 50,
-                        width: 50,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Image.asset(
+                            'assets/images/pro.png',
+                            height: 50,
+                            width: 50,
+                          ),
+                          SizedBox(height: 20,),
+                        ],
                       ),
                     ),
                 ],

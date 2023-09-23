@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:north_star/Controllers/AgoraCallController.dart';
@@ -9,17 +10,63 @@ import 'package:north_star/Controllers/AgoraCallController.dart';
 import './InCall.dart';
 import '../../Models/HttpClient.dart';
 import '../../Styles/TypographyStyles.dart';
-
-class IncomingVoiceCallUI extends StatelessWidget {
+import 'package:vibration/vibration.dart';
+class IncomingVoiceCallUI extends StatefulWidget {
   const IncomingVoiceCallUI({Key? key, this.callData}) : super(key: key);
   final callData;
+
+  @override
+  State<IncomingVoiceCallUI> createState() => _IncomingVoiceCallUIState();
+}
+
+class _IncomingVoiceCallUIState extends State<IncomingVoiceCallUI> {
+
+  bool isPlaying = false;
+
+  // Function to play the ringtone and vibration
+  void playRingtoneWithVibration() async {
+    if (!isPlaying) {
+      // Play the ringtone
+      FlutterRingtonePlayer.playRingtone();
+
+      // Vibrate the device
+      if (await Vibration.hasVibrator()??false) {
+        await Vibration.vibrate(duration: 10000,pattern: [1000, 700, 1400, 700], repeat: 1);
+      }
+
+      setState(() {
+        isPlaying = true;
+      });
+    }
+  }
+
+  // Function to stop the ringtone and vibration
+  void stopRingtoneWithVibration() {
+    if (isPlaying) {
+      FlutterRingtonePlayer.stop();
+      Vibration.cancel();
+
+      setState(() {
+        isPlaying = false;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    // Ensure that the ringtone and vibration are stopped when the screen is disposed
+    print("Disposing incoming call");
+    stopRingtoneWithVibration();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     AgoraCallController.accepted.value = false;
     AgoraCallController.callStatus.value = "Incoming";
     print(AgoraCallController.callStatus);
-    AgoraCallController.initIncoming(callData);
+    AgoraCallController.initIncoming(widget.callData);
+    playRingtoneWithVibration();
 
     Future<void> leaveCall() async {
       AgoraCallController.leaveCall();
@@ -38,7 +85,7 @@ class IncomingVoiceCallUI extends StatelessWidget {
         ),
         child: Obx(() => AgoraCallController.accepted.value
             ? InCall(
-                callData: callData,
+                callData: widget.callData,
               )
             : Column(
                 children: [
@@ -51,7 +98,7 @@ class IncomingVoiceCallUI extends StatelessWidget {
                     decoration: ShapeDecoration(
                       image: DecorationImage(
                         image: NetworkImage(HttpClient.s3BaseUrl +
-                            callData['from']['avatar_url']),
+                            widget.callData['from']['avatar_url']),
                         fit: BoxFit.cover,
                       ),
                       shape: OvalBorder(),
@@ -61,7 +108,7 @@ class IncomingVoiceCallUI extends StatelessWidget {
                     height: 16,
                   ),
                   Text(
-                    callData['from']['name'],
+                    widget.callData['from']['name'],
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
@@ -122,6 +169,8 @@ class IncomingVoiceCallUI extends StatelessWidget {
                           children: [
                             GestureDetector(
                               onTap: () {
+                                FlutterRingtonePlayer.stop();
+                                Vibration.cancel();
                                 AgoraCallController.joinCall();
                               },
                               child: Lottie.asset(

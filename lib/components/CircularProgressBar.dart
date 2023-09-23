@@ -6,6 +6,7 @@ class CircularProgressBar extends StatelessWidget {
   final Color progressColor;
   final Color backgroundColor;
   final double radius;
+  final double fontSize;
 
   CircularProgressBar({
     required this.progress,
@@ -13,6 +14,7 @@ class CircularProgressBar extends StatelessWidget {
     this.progressColor = const Color(0xFF67FB7F),
     this.radius = 26.0,
     this.backgroundColor = const Color(0x1167FB7F),
+    this.fontSize = 16
   });
 
   @override
@@ -34,7 +36,7 @@ class CircularProgressBar extends StatelessWidget {
           child: Text(
             '${(progress * 100).toInt()}%',
             style: TextStyle(
-              fontSize: 16,
+              fontSize: fontSize,
               fontWeight: FontWeight.bold,
             ),
           ),

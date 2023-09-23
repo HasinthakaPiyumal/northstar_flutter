@@ -16,10 +16,10 @@ import 'package:north_star/UI/SharedWidgets/ReviewWidget.dart';
 import 'package:north_star/UI/SharedWidgets/UploadAvatar.dart';
 import 'package:north_star/Utils/PopUps.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
+import 'package:north_star/main.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import './';
 
 
 class TrainerProfile extends StatelessWidget {
@@ -517,7 +517,8 @@ class TrainerProfile extends StatelessWidget {
                               ready.value = false;
                               if(value){
                                 bool hasPermissions = await WatchDataController.requestPermission();
-                                if(!hasPermissions){
+                                print('Permission status for health data ----> $hasPermissions');
+                                if(hasPermissions){
                                   showSnack('Permission Denied', 'Please allow permission to sync health data');
                                   ready.value = true;
                                 } else {

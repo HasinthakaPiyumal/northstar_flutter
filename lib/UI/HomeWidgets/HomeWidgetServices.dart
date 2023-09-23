@@ -15,17 +15,13 @@ class HomeWidgetServices extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(title: Text("Health Services")),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 20,),
-            Text("Health Services",
-              style: TypographyStyles.boldText(20, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
-            ),
-            SizedBox(height: 30,),
             Container(
               width: Get.width,
               height: Get.height/100*15,

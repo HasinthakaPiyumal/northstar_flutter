@@ -7,6 +7,8 @@ import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/Utils/PopUps.dart';
 
+import '../../../components/Buttons.dart';
+
 class BloodPressureCalculator extends StatefulWidget {
   const BloodPressureCalculator({Key? key}) : super(key: key);
 
@@ -124,27 +126,8 @@ class _BloodPressureCalculatorState extends State<BloodPressureCalculator> {
 
             Container(
               width: Get.width,
-              height: 58,
-              child: Obx(() {
-                return ElevatedButton(
-                  style: ButtonStyles.bigBlackButton(),
-                  child: !ready.value
-                      ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                      : Text(
-                    'CALCULATE',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,),
-                  ),
-                  onPressed: () {
-                    getBP();
-                  },
-                );
-              }),
-            ),
+                child: Buttons.yellowFlatButton(onPressed:  (){getBP();},label: "calculae")),
+
             SizedBox(height: 16),
             Obx(()=>result['success'] != null
                 ? Column(

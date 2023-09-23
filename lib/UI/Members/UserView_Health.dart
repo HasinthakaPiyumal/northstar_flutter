@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Models/NSNotification.dart';
-import 'package:north_star/Plugins/Utils.dart';
 import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/ButtonStyles.dart';
 import 'package:north_star/Styles/Themes.dart';
@@ -12,8 +11,8 @@ import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetDietaryConsultation.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetLabReports.dart';
 import 'package:north_star/UI/SharedWidgets/RingsWidget.dart';
-import 'package:north_star/Utils/PopUps.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
+import 'package:north_star/Utils/PopUps.dart';
 
 class UserViewHealth extends StatelessWidget {
   const UserViewHealth({Key? key, required this.userID}) : super(key: key);
@@ -61,45 +60,52 @@ class UserViewHealth extends StatelessWidget {
 
     void getUserHealthData() async {
       Map res = await httpClient.getClientHealthData(userID);
-      if (res['code'] == 200) {
-        healthData.value = res['data'];
-
-        if (authUser.role == 'trainer') {
-          if (healthData.value['user_data']['diet_trainer_id'] == null) {
-            canIEditP.value = true;
-            canIEditD.value = true;
-            print('I Can Edit');
-          } else {
-            if (healthData.value['user_data']['diet_trainer_id'] ==
-                authUser.id) {
-              canIEditD.value = true;
-              canIEditP.value = false;
-              print('I Can Edit');
-            } else if (healthData.value['user_data']['physical_trainer_id'] ==
-                authUser.id) {
-              canIEditD.value = false;
+      print('Printing res --> $res');
+      try {
+        if (res['code'] == 200) {
+          healthData.value = res['data'];
+          if (authUser.role == 'trainer') {
+            if (healthData.value['user_data']['diet_trainer_id'] == null) {
               canIEditP.value = true;
+              canIEditD.value = true;
               print('I Can Edit');
+            } else {
+              if (healthData.value['user_data']['diet_trainer_id'] ==
+                  authUser.id) {
+                canIEditD.value = true;
+                canIEditP.value = false;
+                print('I Can Edit');
+              } else if (healthData.value['user_data']['physical_trainer_id'] ==
+                  authUser.id) {
+                canIEditD.value = false;
+                canIEditP.value = true;
+                print('I Can Edit');
+              }
             }
+          } else if (authUser.id == userID) {
+            if (healthData.value['user_data']['diet_trainer_id'] == null &&
+                healthData.value['user_data']['physical_trainer_id'] == null) {
+              print('I Can Edit');
+              canIEditD.value = true;
+              canIEditP.value = true;
+            }
+          } else {
+            canIEditD.value = false;
+            canIEditP.value = false;
+            print('I Can Not Edit');
           }
-        } else if (authUser.id == userID) {
-          if (healthData.value['user_data']['diet_trainer_id'] == null &&
-              healthData.value['user_data']['physical_trainer_id'] == null) {
-            print('I Can Edit');
-            canIEditD.value = true;
-            canIEditP.value = true;
-          }
-        } else {
-          canIEditD.value = false;
-          canIEditP.value = false;
-          print('I Can Not Edit');
-        }
 
+          ready.value = true;
+          print(res['data']);
+        } else {
+          print(res);
+          ready.value = true;
+        }
+      } on Exception catch (e) {
+        // TODO
+        print("Error");
         ready.value = true;
-        //print(res['data']);
-      } else {
-        print(res);
-        ready.value = true;
+        print(e);
       }
     }
 
@@ -720,7 +726,7 @@ class UserViewHealth extends StatelessWidget {
 
     getUserHealthData();
 
-    Widget cardHealth(value, category, unit,color) {
+    Widget cardHealth(value, category, unit, color) {
       return Container(
         padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
@@ -733,20 +739,24 @@ class UserViewHealth extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(unit,
+                Text(
+                  unit,
                   style: TextStyle(
                     color: Color(0xFF1B1F24),
                     fontSize: 14,
                     fontFamily: 'Poppins',
                     fontWeight: FontWeight.w300,
-                  ),),
-                Text(category,
-                    style: TextStyle(
+                  ),
+                ),
+                Text(
+                  category,
+                  style: TextStyle(
                     color: Color(0xFF1B1F24),
-        fontSize: 16,
-        fontFamily: 'Poppins',
-        fontWeight: FontWeight.w400,
-      ),)
+                    fontSize: 16,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w400,
+                  ),
+                )
               ],
             ),
             Container(
@@ -758,8 +768,7 @@ class UserViewHealth extends StatelessWidget {
                 ),
               ),
               child: Text(value.toString(),
-                  style: TypographyStyles.boldText(
-                      24, Colors.white)),
+                  style: TypographyStyles.boldText(24, Colors.white)),
             ),
           ],
         ),
@@ -1076,8 +1085,9 @@ class UserViewHealth extends StatelessWidget {
                                             'Updated on : ' +
                                                 DateFormat("MMM dd,yyyy HH:mm")
                                                     .format(DateTime.parse(
-                                                        healthData['macros']
-                                                            ['updated_at'])),
+                                                        healthData['macros'][
+                                                                'updated_at'] ??
+                                                            "")),
                                             style: TypographyStyles.text(14),
                                           ),
                                           Visibility(
@@ -1121,9 +1131,7 @@ class UserViewHealth extends StatelessWidget {
                                     padding: EdgeInsets.only(top: 10),
                                     child: Text(
                                       "Data Unavailable, Contact Your Trainer",
-                                      style: TextStyle(
-                                        color: colors.Colors().darkGrey(1),
-                                      ),
+                                      style: TypographyStyles.text(12),
                                     ),
                                   ),
                           ],
@@ -1187,18 +1195,16 @@ class UserViewHealth extends StatelessWidget {
                                     children: [
                                       SizedBox(height: 10),
                                       cardHealth(
-                                        healthData['bmi_pi']['bmi'],
-                                        healthData['bmi_pi']['bmi_category'],
-                                        'Body Mass Index (BMI)',
-                                          Color(0xFFC3FB67)
-                                      ),
+                                          healthData['bmi_pi']['bmi'],
+                                          healthData['bmi_pi']['bmi_category'],
+                                          'Body Mass Index (BMI)',
+                                          Color(0xFFC3FB67)),
                                       SizedBox(height: 8),
                                       cardHealth(
-                                        healthData['bmi_pi']['pi'],
-                                        healthData['bmi_pi']['pi_category'],
-                                        'Ponderal Index (PI)',
-                                          Color(0xFFC3FB67)
-                                      ),
+                                          healthData['bmi_pi']['pi'],
+                                          healthData['bmi_pi']['pi_category'],
+                                          'Ponderal Index (PI)',
+                                          Color(0xFFC3FB67)),
                                       SizedBox(height: 12),
                                       Row(
                                         children: [
@@ -1208,8 +1214,9 @@ class UserViewHealth extends StatelessWidget {
                                                   DateFormat(
                                                           "MMM dd,yyyy HH:mm")
                                                       .format(DateTime.parse(
-                                                          healthData['bmi_pi']
-                                                              ['updated_at'])),
+                                                          healthData['bmi_pi'][
+                                                                  'updated_at'] ??
+                                                              "")),
                                               style: TypographyStyles
                                                   .textWithWeight(
                                                       14, FontWeight.w300),
@@ -1258,8 +1265,7 @@ class UserViewHealth extends StatelessWidget {
                                       authUser.role == "trainer"
                                           ? "Contact this client and gather relevant data"
                                           : "Data Unavailable, Contact Your Trainer",
-                                      style: TextStyle(
-                                          color: colors.Colors().darkGrey(1)),
+                                      style: TypographyStyles.text(12),
                                     ),
                                   ),
                           ],
@@ -1326,25 +1332,24 @@ class UserViewHealth extends StatelessWidget {
                                           children: [
                                             SizedBox(height: 10),
                                             cardHealth(
-                                              healthData['body_fat']['body_fat']
-                                                      .toString() +
-                                                  '%',
-                                              healthData['body_fat']
-                                                  ['body_fat_category'],
-                                              'Body Fat',
-                                                Color(0xFFFFC149)
-                                            ),
+                                                healthData['body_fat']
+                                                            ['body_fat']
+                                                        .toString() +
+                                                    '%',
+                                                healthData['body_fat']
+                                                    ['body_fat_category'],
+                                                'Body Fat',
+                                                Color(0xFFFFC149)),
                                             SizedBox(height: 8),
                                             cardHealth(
-                                              healthData['body_fat']
-                                                          ['muscle_mass']
-                                                      .toString() +
-                                                  '%',
-                                              healthData['body_fat']
-                                                  ['body_fat_category'],
-                                              'Muscle Mass',
-                                                Color(0xFFFFC149)
-                                            ),
+                                                healthData['body_fat']
+                                                            ['muscle_mass']
+                                                        .toString() +
+                                                    '%',
+                                                healthData['body_fat']
+                                                    ['body_fat_category'],
+                                                'Muscle Mass',
+                                                Color(0xFFFFC149)),
                                             SizedBox(height: 12),
                                           ],
                                         ),
@@ -1365,19 +1370,16 @@ class UserViewHealth extends StatelessWidget {
                                       authUser.role == "trainer"
                                           ? "Contact this client and gather relevant data"
                                           : "Data Unavailable, Contact Your Trainer",
-                                      style: TextStyle(
-                                        color: colors.Colors().darkGrey(1),
-                                      ),
+                                      style: TypographyStyles.text(12),
                                     ),
                                   ),
                             Row(
                               children: [
                                 Expanded(
                                   child: Text(
-                                    'Updated on : ' +
-                                        DateFormat("MMM dd,yyyy HH:mm").format(
-                                            DateTime.parse(healthData['bmi_pi']
-                                                ['updated_at'])),
+                                    'Updated on : ' + (healthData['bmi_pi'] != null
+                                        ? DateFormat("MMM dd, yyyy HH:mm").format(DateTime.parse(healthData['bmi_pi']['updated_at']))
+                                        : ""),
                                     style: TypographyStyles.textWithWeight(
                                         14, FontWeight.w300),
                                   ),
@@ -1476,37 +1478,35 @@ class UserViewHealth extends StatelessWidget {
                                     children: [
                                       SizedBox(height: 10),
                                       cardHealth(
-                                        healthData['blood_sugar']
-                                                    ['fasting_blood_sugar']
-                                                .toString() +
-                                            'mg/dl',
-                                        healthData['blood_sugar']
-                                            ['fbs_category'],
-                                        'Fasting Blood Sugar',
-                                          Color(0xFF67A3FB)
-                                      ),
+                                          healthData['blood_sugar']
+                                                      ['fasting_blood_sugar']
+                                                  .toString() +
+                                              'mg/dl',
+                                          healthData['blood_sugar']
+                                              ['fbs_category'],
+                                          'Fasting Blood Sugar',
+                                          Color(0xFF67A3FB)),
                                       SizedBox(height: 8),
                                       cardHealth(
-                                        healthData['blood_sugar']
-                                                    ['random_blood_sugar']
-                                                .toString() +
-                                            'mg/dl',
-                                        healthData['blood_sugar']
-                                            ['rbs_category'],
-                                        'Post Blood Sugar',
-                                          Color(0xFF67A3FB)
-                                      ),
+                                          healthData['blood_sugar']
+                                                      ['random_blood_sugar']
+                                                  .toString() +
+                                              'mg/dl',
+                                          healthData['blood_sugar']
+                                              ['rbs_category'],
+                                          'Post Blood Sugar',
+                                          Color(0xFF67A3FB)),
                                       SizedBox(height: 12),
                                       Row(
                                         children: [
                                           Expanded(
                                             child: Text(
                                               'Updated on : ' +
-                                                  DateFormat(
-                                                          "MMM dd,yyyy HH:mm")
-                                                      .format(DateTime.parse(
-                                                          healthData['bmi_pi']
-                                                              ['updated_at'])),
+                                              DateFormat(
+                                                      "MMM dd,yyyy HH:mm")
+                                                  .format(DateTime.parse(
+                                                      healthData['bmi_pi']
+                                                          ['updated_at']??"")),
                                               style: TypographyStyles
                                                   .textWithWeight(
                                                       14, FontWeight.w300),
@@ -1555,9 +1555,7 @@ class UserViewHealth extends StatelessWidget {
                                       authUser.role == "trainer"
                                           ? "Contact this client and gather relevant data"
                                           : "Data Unavailable, Contact Your Trainer",
-                                      style: TextStyle(
-                                        color: colors.Colors().darkGrey(1),
-                                      ),
+                                      style: TypographyStyles.text(12),
                                     ),
                                   ),
                           ],
@@ -1622,28 +1620,28 @@ class UserViewHealth extends StatelessWidget {
                                     children: [
                                       SizedBox(height: 10),
                                       cardHealth(
-                                        healthData['blood_pressure']['systolic']
-                                                .toString() +
-                                            '/' +
-                                            healthData['blood_pressure']
-                                                    ['diastolic']
-                                                .toString(),
-                                        healthData['blood_pressure']
-                                            ['blood_pressure_category'],
-                                        'Blood Pressure',
-                                          Color(0xFFFF4242)
-                                      ),
+                                          healthData['blood_pressure']
+                                                      ['systolic']
+                                                  .toString() +
+                                              '/' +
+                                              healthData['blood_pressure']
+                                                      ['diastolic']
+                                                  .toString(),
+                                          healthData['blood_pressure']
+                                              ['blood_pressure_category'],
+                                          'Blood Pressure',
+                                          Color(0xFFFF4242)),
                                       SizedBox(height: 12),
                                       Row(
                                         children: [
                                           Expanded(
                                             child: Text(
                                               'Updated on : ' +
-                                                  DateFormat(
-                                                          "MMM dd,yyyy HH:mm")
-                                                      .format(DateTime.parse(
-                                                          healthData['bmi_pi']
-                                                              ['updated_at'])),
+                                              DateFormat(
+                                                      "MMM dd,yyyy HH:mm")
+                                                  .format(DateTime.parse(
+                                                      healthData['bmi_pi']
+                                                          ['updated_at']??"")),
                                               style: TypographyStyles
                                                   .textWithWeight(
                                                       14, FontWeight.w300),
@@ -1692,8 +1690,7 @@ class UserViewHealth extends StatelessWidget {
                                       authUser.role == "trainer"
                                           ? "Contact this client and gather relevant data"
                                           : "Data Unavailable, Contact Your Trainer",
-                                      style: TextStyle(
-                                          color: colors.Colors().darkGrey(1)),
+                                      style: TypographyStyles.text(12),
                                     ),
                                   ),
                           ],
@@ -1945,12 +1942,12 @@ class UserViewHealth extends StatelessWidget {
                                         children: [
                                           Expanded(
                                             child: Text(
-                                              'Updated on : ' +
-                                                  DateFormat(
-                                                          "MMM dd,yyyy HH:mm")
-                                                      .format(DateTime.parse(
-                                                          healthData['bmi_pi']
-                                                              ['updated_at'])),
+                                              'Updated on : '+
+                                              DateFormat(
+                                                      "MMM dd,yyyy HH:mm")
+                                                  .format(DateTime.parse(
+                                                      healthData['bmi_pi']
+                                                          ['updated_at']??"")),
                                               style: TypographyStyles
                                                   .textWithWeight(
                                                       14, FontWeight.w300),
@@ -1999,8 +1996,7 @@ class UserViewHealth extends StatelessWidget {
                                       authUser.role == "trainer"
                                           ? "Contact this client and gather relevant data"
                                           : "Data Unavailable, Contact Your Trainer",
-                                      style: TextStyle(
-                                          color: colors.Colors().darkGrey(1)),
+                                      style: TypographyStyles.text(12),
                                     ),
                                   ),
                           ],

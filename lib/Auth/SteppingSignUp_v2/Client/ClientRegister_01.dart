@@ -61,6 +61,8 @@ class _ClientRegisterFirstState extends State<ClientRegisterFirst> {
       }
       ready.value = true;
     } else {
+      print(res);
+      print("res----->");
       showSnack('Incomplete information', 'Please Enter correct information');
     }
   }

@@ -7,8 +7,8 @@ import 'package:north_star/Models/AuthUser.dart';
 class HttpClient {
   Dio dio = Dio();
 
-  static String baseURL = 'https://api.northstar.mv/api';
-  // static String baseURL =  'http://192.168.43.182:8081/api';
+  // static String baseURL = 'https://api.northstar.mv/api';
+  static String baseURL =  'http://175.41.184.146:8081/api';
 
   static String buildInfo = '9.0.0 Build 1';
 
@@ -80,6 +80,7 @@ class HttpClient {
       Response response = await post('/users/check', {});
 
       if (response.statusCode != 200) {
+
         await authUser.clearUser();
         return {
           "code": response.statusCode,
@@ -251,6 +252,7 @@ class HttpClient {
   //GetMyProfile
   Future<Map> getMyProfile() async {
     Response response = await get('/users/me');
+    print('Printing headers ---> $headers');
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -420,6 +422,7 @@ class HttpClient {
   Future<Map> getHomeWidgetCalories() async {
     Response response =
         await get('/fitness/' + authUser.id.toString() + '/all-macros-data');
+    print(response.data);
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -527,6 +530,13 @@ class HttpClient {
   //Make a Exclusive Gym Schedule
   Future<Map> makeASchedule(
       gymID, clientIDs, DateTime startTime, endTime, int amount) async {
+    print({
+      "gym_id": gymID,
+      "trainer_id": authUser.id,
+      "client_ids": clientIDs,
+      "start_time": startTime.toString(),
+      "end_time": endTime.toString()
+    });
     Response response =
         await post('/fitness/exclusive-gyms/actions/new-schedule', {
       "gym_id": gymID,
@@ -590,6 +600,18 @@ class HttpClient {
       pattern = "ALL";
     }
     Response response = await post('/doctors/search', {'search_key': pattern});
+    return {
+      "code": response.statusCode,
+      "data": response.data,
+    };
+  }
+
+  //Search Doctors
+  Future<Map> searchTherapy(String pattern) async {
+    if (pattern.isEmpty) {
+      pattern = "";
+    }
+    Response response = await post('/therapy/search', {'search': pattern});
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -749,6 +771,15 @@ class HttpClient {
 
   Future<Map> invokeCall(var data) async {
     Response response = await post('/meeting/voice-call/actions/invoke', data);
+    print('Headers ----> $headers');
+    return {
+      "code": response.statusCode,
+      "data": response.data,
+    };
+  }
+  Future<Map> getRtcToken() async {
+    Response response = await post('/meeting/voice-call/actions/rtcToken',{"channelName":"defaultChannel"});
+    print(headers);
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -1033,6 +1064,13 @@ class HttpClient {
         authUser.role.toString() +
         '/' +
         authUser.id.toString());
+    return {
+      "code": response.statusCode,
+      "data": response.data,
+    };
+  }
+  Future<Map> getMyTherapyMeetings() async {
+    Response response = await get('/meeting/my-meetings');
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -1428,10 +1466,23 @@ class HttpClient {
 
   Future<Map> getDietConsults(int userId) async {
     Response response = await get('/fitness/diet-consultation/actions/get/$userId');
-    return {
-      "code": response.statusCode,
-      "data": response.data,
-    };
+    return response.data;
+  }
+
+  Future<Map> checkReservedTherapy(dynamic data) async {
+    Response response = await post('/meeting/reserved-times',data);
+    print('printing reserved time data--->$data');
+    if(response.statusCode==200){
+      return {"code":200,"data":response.data};
+    }
+    return response.data;
+  }
+  Future<Map> addTherapyMeeting(dynamic data) async {
+    Response response = await post('/meeting/new-client-therapy-meeting',data);
+    if(response.statusCode==200){
+      return {"code":200,"data":response.data};
+    }
+    return {"code":401,"data":response.data};
   }
 }
 

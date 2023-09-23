@@ -84,8 +84,8 @@ class TherapyMeetings extends StatelessWidget {
 
     void getScheduled() async {
       ready.value = false;
-      Map res = await httpClient.getMyDocMeetings();
-
+      Map res = await httpClient.getMyTherapyMeetings();
+      print(res);
       if (res['code'] == 200) {
         meetings.value = res['data'];
         print(res['data']);
@@ -142,6 +142,38 @@ class TherapyMeetings extends StatelessWidget {
                                         MainAxisAlignment.spaceBetween,
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left:4,bottom: 10),
+                                        child: Text(
+                                          '${meetings[index]['reason']}'.capitalizeFirst as String,
+                                          style:
+                                          TypographyStyles.textWithWeight(
+                                              16, FontWeight.w600),
+                                        ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          SvgPicture.asset(
+                                            "assets/svgs/clipboard.svg",
+                                            width: 24,
+                                            height: 24,
+                                            color: Get.isDarkMode
+                                                ? Colors.white
+                                                : Color(0xFF1B1F24),
+                                          ),
+                                          SizedBox(
+                                            width: 15,
+                                          ),
+                                          Text("${meetings[index]['title']??"-"}",
+                                              textAlign: TextAlign.left,
+                                              style:
+                                              TypographyStyles.textWithWeight(
+                                                  16, FontWeight.w300)),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
                                       Row(
                                         children: [
                                           SvgPicture.asset(
@@ -156,13 +188,14 @@ class TherapyMeetings extends StatelessWidget {
                                             width: 10,
                                           ),
                                           Text(
-                                            '${meetings[index]['client']['name']}',
+                                            '${meetings[index]['therapy_name']??"Dr. John Doe"}'.capitalizeFirst as String,
                                             style:
-                                                TypographyStyles.textWithWeight(
-                                                    14, FontWeight.w400),
+                                            TypographyStyles.textWithWeight(
+                                                16, FontWeight.w600),
                                           ),
                                         ],
                                       ),
+
                                       SizedBox(
                                         height: 5,
                                       ),
@@ -181,8 +214,7 @@ class TherapyMeetings extends StatelessWidget {
                                           ),
                                           Text(
                                             DateFormat("h:mm a").format(
-                                                DateTime.parse(meetings[index]
-                                                    ['start_time'])),
+                                                DateTime.parse("2000-01-22 ${meetings[index]['start_time']}")),
                                             style: TextStyle(
                                               color: Color(0xFFFFB700),
                                               fontSize: 20,
@@ -205,8 +237,7 @@ class TherapyMeetings extends StatelessWidget {
                                           ),
                                           Text(
                                               DateFormat("dd MMM, yyyy").format(
-                                                  DateTime.parse(meetings[index]
-                                                      ['start_time'])),
+                                                  DateTime.parse("2000-01-22 ${meetings[index]['start_time']}")),
                                               style: TextStyle(
                                                 color: Color(0xFFFFB700),
                                                 fontSize: 20,
@@ -215,216 +246,191 @@ class TherapyMeetings extends StatelessWidget {
                                               ))
                                         ],
                                       ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Row(
-                                        children: [
-                                          SvgPicture.asset(
-                                            "assets/svgs/clipboard.svg",
-                                            width: 24,
-                                            height: 24,
-                                            color: Get.isDarkMode
-                                                ? Colors.white
-                                                : Color(0xFF1B1F24),
-                                          ),
-                                          SizedBox(
-                                            width: 15,
-                                          ),
-                                          Text("${meetings[index]['title']}",
-                                              textAlign: TextAlign.left,
-                                              style:
-                                                  TypographyStyles.textWithWeight(
-                                                      16, FontWeight.w300)),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: 30,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        children: [
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              color: meetings[index]['approved']
-                                                  ? Colors.green
-                                                  : meetings[index]
-                                                          ['has_rejected']
-                                                      ? Colors.red
-                                                      : colors.Colors()
-                                                          .deepYellow(1),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(5)),
-                                            ),
-                                            child: Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 5, horizontal: 15),
-                                              child: Text(
-                                                meetings[index]['approved']
-                                                    ? "Approved"
-                                                    : meetings[index]
-                                                            ['has_rejected']
-                                                        ? "Rejected"
-                                                        : "Waiting for Approval",
-                                                style: TextStyle(
-                                                  color: Color(0xFF1B1F24),
-                                                  fontSize: 20,
-                                                  fontFamily: 'Bebas Neue',
-                                                  fontWeight: FontWeight.w400,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          (meetings[index]['approved'] &&
-                                                  !meetings[index]['finished'])
-                                              ? SizedBox(
-                                                  width: 10,
-                                                )
-                                              : SizedBox(
-                                                  width: 0,
-                                                ),
-                                          (meetings[index]['approved'] &&
-                                                  !meetings[index]['finished'])
-                                              ? MaterialButton(
-                                                  onPressed: () {
-                                                    int timeDif = DateTime.parse(
-                                                            meetings[index]
-                                                                ['start_time'])
-                                                        .difference(
-                                                            DateTime.now())
-                                                        .inMinutes;
 
-                                                    print(timeDif);
-
-                                                    if (timeDif < 5 &&
-                                                        timeDif > -120) {
-                                                      //joinMeeting(context, meetings[index]['meeting_id'], meetings[index]['passcode']);
-                                                    } else {
-                                                      showDialog(
-                                                        context: context,
-                                                        builder: (context) =>
-                                                            AlertDialog(
-                                                          shape:
-                                                              RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(5),
-                                                          ),
-                                                          backgroundColor: Get
-                                                                  .isDarkMode
-                                                              ? AppColors
-                                                                  .primary2Color
-                                                              : AppColors
-                                                                  .baseColor,
-                                                          title: RichText(
-                                                            textAlign:
-                                                                TextAlign.center,
-                                                            text: TextSpan(
-                                                              text: "Can't join,",
-                                                              style:
-                                                                  TypographyStyles
-                                                                      .title(18),
-                                                              children: <TextSpan>[
-                                                                TextSpan(
-                                                                  text: timeDif >
-                                                                          5
-                                                                      ? ' you are early.'
-                                                                      : timeDif <
-                                                                              -120
-                                                                          ? " your time period expired"
-                                                                          : "",
-                                                                  style:
-                                                                      TypographyStyles
-                                                                          .title(
-                                                                              18),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                          content: RichText(
-                                                            textAlign:
-                                                                TextAlign.center,
-                                                            text: TextSpan(
-                                                              text:
-                                                                  "Your meeting",
-                                                              style: TypographyStyles
-                                                                  .textWithWeight(
-                                                                      14,
-                                                                      FontWeight
-                                                                          .w400),
-                                                              children: <TextSpan>[
-                                                                TextSpan(
-                                                                  text: timeDif >
-                                                                          5
-                                                                      ? ' is '
-                                                                      : timeDif <
-                                                                              -120
-                                                                          ? " was "
-                                                                          : "",
-                                                                  style: TypographyStyles
-                                                                      .textWithWeight(
-                                                                          14,
-                                                                          FontWeight
-                                                                              .w400),
-                                                                ),
-                                                                TextSpan(
-                                                                  text: timeDif >
-                                                                          5
-                                                                      ? 'scheduled for ${DateFormat("dd MMM, yyyy").format(DateTime.parse(meetings[index]['start_time']))} at ${DateFormat("h:mm a").format(DateTime.parse(meetings[index]['start_time']))}. Please join at this time.'
-                                                                      : timeDif <
-                                                                              -120
-                                                                          ? "scheduled for ${DateFormat("dd MMM, yyyy").format(DateTime.parse(meetings[index]['start_time']))} at ${DateFormat("h:mm a").format(DateTime.parse(meetings[index]['start_time']))}."
-                                                                          : "",
-                                                                  style: TypographyStyles
-                                                                      .textWithWeight(
-                                                                          14,
-                                                                          FontWeight
-                                                                              .w400),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      );
-                                                    }
-                                                  },
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(5),
-                                                  ),
-                                                  color: Colors.black,
-                                                  child: Padding(
-                                                    padding: EdgeInsets.symmetric(
-                                                        vertical: 5,
-                                                        horizontal: 15),
-                                                    child: Row(
-                                                      children: [
-                                                        Icon(
-                                                          Icons.videocam_rounded,
-                                                          color: Colors.white,
-                                                          size: 20,
-                                                        ),
-                                                        SizedBox(
-                                                          width: 5,
-                                                        ),
-                                                        Text(
-                                                          "Join",
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 20,
-                                                            fontFamily:
-                                                                'Bebas Neue',
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                )
-                                              : SizedBox(),
-                                        ],
-                                      ),
+                                      // Row(
+                                      //   mainAxisAlignment: MainAxisAlignment.end,
+                                      //   children: [
+                                      //     Container(
+                                      //       decoration: BoxDecoration(
+                                      //         color: meetings[index]['approved']
+                                      //             ? Colors.green
+                                      //             : meetings[index]
+                                      //                     ['has_rejected']
+                                      //                 ? Colors.red
+                                      //                 : colors.Colors()
+                                      //                     .deepYellow(1),
+                                      //         borderRadius: BorderRadius.all(
+                                      //             Radius.circular(5)),
+                                      //       ),
+                                      //       child: Padding(
+                                      //         padding: EdgeInsets.symmetric(
+                                      //             vertical: 5, horizontal: 15),
+                                      //         child: Text(
+                                      //           meetings[index]['approved']
+                                      //               ? "Approved"
+                                      //               : meetings[index]
+                                      //                       ['has_rejected']
+                                      //                   ? "Rejected"
+                                      //                   : "Waiting for Approval",
+                                      //           style: TextStyle(
+                                      //             color: Color(0xFF1B1F24),
+                                      //             fontSize: 20,
+                                      //             fontFamily: 'Bebas Neue',
+                                      //             fontWeight: FontWeight.w400,
+                                      //           ),
+                                      //         ),
+                                      //       ),
+                                      //     ),
+                                      //     (meetings[index]['approved'] &&
+                                      //             !meetings[index]['finished'])
+                                      //         ? SizedBox(
+                                      //             width: 10,
+                                      //           )
+                                      //         : SizedBox(
+                                      //             width: 0,
+                                      //           ),
+                                      //     (meetings[index]['approved'] &&
+                                      //             !meetings[index]['finished'])
+                                      //         ? MaterialButton(
+                                      //             onPressed: () {
+                                      //               int timeDif = DateTime.parse(
+                                      //                       meetings[index]
+                                      //                           ['start_time'])
+                                      //                   .difference(
+                                      //                       DateTime.now())
+                                      //                   .inMinutes;
+                                      //
+                                      //               print(timeDif);
+                                      //
+                                      //               if (timeDif < 5 &&
+                                      //                   timeDif > -120) {
+                                      //                 //joinMeeting(context, meetings[index]['meeting_id'], meetings[index]['passcode']);
+                                      //               } else {
+                                      //                 showDialog(
+                                      //                   context: context,
+                                      //                   builder: (context) =>
+                                      //                       AlertDialog(
+                                      //                     shape:
+                                      //                         RoundedRectangleBorder(
+                                      //                       borderRadius:
+                                      //                           BorderRadius
+                                      //                               .circular(5),
+                                      //                     ),
+                                      //                     backgroundColor: Get
+                                      //                             .isDarkMode
+                                      //                         ? AppColors
+                                      //                             .primary2Color
+                                      //                         : AppColors
+                                      //                             .baseColor,
+                                      //                     title: RichText(
+                                      //                       textAlign:
+                                      //                           TextAlign.center,
+                                      //                       text: TextSpan(
+                                      //                         text: "Can't join,",
+                                      //                         style:
+                                      //                             TypographyStyles
+                                      //                                 .title(18),
+                                      //                         children: <TextSpan>[
+                                      //                           TextSpan(
+                                      //                             text: timeDif >
+                                      //                                     5
+                                      //                                 ? ' you are early.'
+                                      //                                 : timeDif <
+                                      //                                         -120
+                                      //                                     ? " your time period expired"
+                                      //                                     : "",
+                                      //                             style:
+                                      //                                 TypographyStyles
+                                      //                                     .title(
+                                      //                                         18),
+                                      //                           ),
+                                      //                         ],
+                                      //                       ),
+                                      //                     ),
+                                      //                     content: RichText(
+                                      //                       textAlign:
+                                      //                           TextAlign.center,
+                                      //                       text: TextSpan(
+                                      //                         text:
+                                      //                             "Your meeting",
+                                      //                         style: TypographyStyles
+                                      //                             .textWithWeight(
+                                      //                                 14,
+                                      //                                 FontWeight
+                                      //                                     .w400),
+                                      //                         children: <TextSpan>[
+                                      //                           TextSpan(
+                                      //                             text: timeDif >
+                                      //                                     5
+                                      //                                 ? ' is '
+                                      //                                 : timeDif <
+                                      //                                         -120
+                                      //                                     ? " was "
+                                      //                                     : "",
+                                      //                             style: TypographyStyles
+                                      //                                 .textWithWeight(
+                                      //                                     14,
+                                      //                                     FontWeight
+                                      //                                         .w400),
+                                      //                           ),
+                                      //                           // TextSpan(
+                                      //                           //   text: timeDif >
+                                      //                           //           5
+                                      //                           //       ? 'scheduled for ${DateFormat("dd MMM, yyyy").format(DateTime.parse(meetings[index]['start_time']))} at ${DateFormat("h:mm a").format(DateTime.parse(meetings[index]['start_time']))}. Please join at this time.'
+                                      //                           //       : timeDif <
+                                      //                           //               -120
+                                      //                           //           ? "scheduled for ${DateFormat("dd MMM, yyyy").format(DateTime.parse(meetings[index]['start_time']))} at ${DateFormat("h:mm a").format(DateTime.parse(meetings[index]['start_time']))}."
+                                      //                           //           : "",
+                                      //                           //   style: TypographyStyles
+                                      //                           //       .textWithWeight(
+                                      //                           //           14,
+                                      //                           //           FontWeight
+                                      //                           //               .w400),
+                                      //                           // ),
+                                      //                         ],
+                                      //                       ),
+                                      //                     ),
+                                      //                   ),
+                                      //                 );
+                                      //               }
+                                      //             },
+                                      //             shape: RoundedRectangleBorder(
+                                      //               borderRadius:
+                                      //                   BorderRadius.circular(5),
+                                      //             ),
+                                      //             color: Colors.black,
+                                      //             child: Padding(
+                                      //               padding: EdgeInsets.symmetric(
+                                      //                   vertical: 5,
+                                      //                   horizontal: 15),
+                                      //               child: Row(
+                                      //                 children: [
+                                      //                   Icon(
+                                      //                     Icons.videocam_rounded,
+                                      //                     color: Colors.white,
+                                      //                     size: 20,
+                                      //                   ),
+                                      //                   SizedBox(
+                                      //                     width: 5,
+                                      //                   ),
+                                      //                   Text(
+                                      //                     "Join",
+                                      //                     style: TextStyle(
+                                      //                       color: Colors.white,
+                                      //                       fontSize: 20,
+                                      //                       fontFamily:
+                                      //                           'Bebas Neue',
+                                      //                       fontWeight:
+                                      //                           FontWeight.w400,
+                                      //                     ),
+                                      //                   )
+                                      //                 ],
+                                      //               ),
+                                      //             ),
+                                      //           )
+                                      //         : SizedBox(),
+                                      //   ],
+                                      // ),
                                     ],
                                   ),
                                 ),

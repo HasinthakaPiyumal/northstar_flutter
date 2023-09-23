@@ -15,12 +15,25 @@ class TherapyList extends StatelessWidget {
   Widget build(BuildContext context) {
     RxBool ready = false.obs;
     RxList doctors = [].obs;
+    RxList availableDateList = [].obs;
 
     Future<List> searchDoctors(String pattern) async {
-      Map res = await httpClient.searchDoctors(pattern);
+      Map res = await httpClient.searchTherapy(pattern);
+      print(res);
       if (res['code'] == 200) {
         doctors.value = res['data'];
         ready.value = true;
+        res['data'].forEach((item){
+          RxString currentTherapyDays = "".obs;
+          item['therapy_working_hours'].forEach((subItem){
+            var day = ["Mo","Tu","We","Th","Fr","Sa","Su"][subItem['id']-1];
+            if(subItem['rest_day']==0){
+              currentTherapyDays.value = '${currentTherapyDays.value}${currentTherapyDays.value!=""?" | ":""}$day';
+            }
+          });
+          availableDateList.add(currentTherapyDays);
+
+        });
         return [];
       } else {
         ready.value = true;
@@ -121,6 +134,7 @@ class TherapyList extends StatelessWidget {
                                                     image: DecorationImage(
                                                       image: CachedNetworkImageProvider(
                                                           "${HttpClient.s3BaseUrl}${doctors[index]['avatar_url']}"),
+                                                          // "https://placehold.co/400"),
                                                       fit: BoxFit.fill,
                                                     ),
                                                     shape: OvalBorder(),
@@ -134,8 +148,7 @@ class TherapyList extends StatelessWidget {
                                                   width: 16,
                                                   height: 16,
                                                   decoration: ShapeDecoration(
-                                                    color: doctors[index]
-                                                            ['doctor']['online']
+                                                    color: 1==1
                                                         ? Color(0xFF05FF00)
                                                         : Color(0xFF636363),
                                                     shape: OvalBorder(),
@@ -169,42 +182,42 @@ class TherapyList extends StatelessWidget {
                                                         CrossAxisAlignment
                                                             .start,
                                                     children: [
-                                                      Container(
-                                                        width: double.infinity,
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                          left: 10,
-                                                        ),
-                                                        child: Row(
-                                                          mainAxisSize:
-                                                              MainAxisSize.min,
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .start,
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            SizedBox(
-                                                              child: Text(
-                                                                "${doctors[index]['doctor']['speciality'].toString().capitalizeFirst}",
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Color(
-                                                                      0xFFFFB700),
-                                                                  fontSize: 16,
-                                                                  fontFamily:
-                                                                      'Poppins',
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w700,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
+                                                      // Container(
+                                                      //   width: double.infinity,
+                                                      //   padding:
+                                                      //       const EdgeInsets
+                                                      //           .only(
+                                                      //     left: 10,
+                                                      //   ),
+                                                      //   child: Row(
+                                                      //     mainAxisSize:
+                                                      //         MainAxisSize.min,
+                                                      //     mainAxisAlignment:
+                                                      //         MainAxisAlignment
+                                                      //             .start,
+                                                      //     crossAxisAlignment:
+                                                      //         CrossAxisAlignment
+                                                      //             .center,
+                                                      //     children: [
+                                                      //       SizedBox(
+                                                      //         child: Text(
+                                                      //           "${doctors[index]['doctor']['speciality'].toString().capitalizeFirst}",
+                                                      //           style:
+                                                      //               TextStyle(
+                                                      //             color: Color(
+                                                      //                 0xFFFFB700),
+                                                      //             fontSize: 16,
+                                                      //             fontFamily:
+                                                      //                 'Poppins',
+                                                      //             fontWeight:
+                                                      //                 FontWeight
+                                                      //                     .w700,
+                                                      //           ),
+                                                      //         ),
+                                                      //       ),
+                                                      //     ],
+                                                      //   ),
+                                                      // ),
                                                       Padding(
                                                         padding:
                                                             const EdgeInsets
@@ -222,7 +235,7 @@ class TherapyList extends StatelessWidget {
                                                           padding: EdgeInsets.only(
                                                               left: 10),
                                                           child: Text(
-                                                            "Location - Hulhumale Maldives",
+                                                            "Location - ${doctors[index]['address'].toString().capitalize}",
                                                             style: TypographyStyles
                                                                 .textWithWeight(14,
                                                                 FontWeight.w300),
@@ -232,7 +245,7 @@ class TherapyList extends StatelessWidget {
                                                           padding: EdgeInsets.only(
                                                               left: 10),
                                                           child: Text(
-                                                            "Mo | Tu | We | Th | Fr | Sa | Su",
+                                                            availableDateList[index].value,
                                                             style: TypographyStyles
                                                                 .textWithWeight(16,
                                                                 FontWeight.w500),

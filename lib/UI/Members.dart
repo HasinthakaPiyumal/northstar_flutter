@@ -7,6 +7,9 @@ import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/UI/Members/AddMember.dart';
 import 'package:north_star/UI/Members/UserView.dart';
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
+import 'package:north_star/components/Buttons.dart';
+
+import '../Styles/AppColors.dart';
 
 class Members extends StatelessWidget {
   const Members({Key? key}) : super(key: key);
@@ -30,21 +33,9 @@ class Members extends StatelessWidget {
     return Scaffold(
       floatingActionButton: Visibility(
         visible: authUser.role == 'trainer',
-        child: FloatingActionButton.extended(
-          onPressed: () {
-            Get.to(() => AddMember());
-          },
-          backgroundColor: Colors.black,
-          extendedPadding: EdgeInsets.symmetric(horizontal: 20),
-          label: Text(
-            "Add Member",
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-          ),
-          icon: Icon(
-            Icons.add,
-            color: Colors.white,
-          ),
-        ),
+        child: Buttons.yellowTextIconButton(onPressed: () {
+      Get.to(() => AddMember());
+      }, icon: Icons.add,label: "Add Member",width: 140),
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 16.0),
@@ -61,7 +52,7 @@ class Members extends StatelessWidget {
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.search),
                         labelText: 'Search Members...',
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                        border: UnderlineInputBorder(),
                       )
                   ),
                   suggestionsCallback: (pattern) async {
@@ -85,10 +76,10 @@ class Members extends StatelessWidget {
                                 horizontal: 16, vertical: 4
                             ),
                             child: Material(
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(10),
                               child: ListTile(
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
                                 onTap: () {
                                   Get.to(() => UserView(
@@ -111,6 +102,7 @@ class Members extends StatelessWidget {
                                     members[index]['user']['email']
                                 ),
                                 trailing: Chip(
+                                  backgroundColor: Get.isDarkMode?AppColors.primary1Color:AppColors.baseColor,
                                   label: Text('ID: ' +
                                       members[index]['user_id'].toString()),
                                 ),

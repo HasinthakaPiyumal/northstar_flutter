@@ -9,6 +9,8 @@ import 'package:north_star/Plugins/Utils.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 
+import '../../../components/Buttons.dart';
+
 class BodyFatCalculator extends StatelessWidget {
   const BodyFatCalculator({Key? key}) : super(key: key);
 
@@ -179,7 +181,7 @@ class BodyFatCalculator extends StatelessWidget {
                             contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                             suffix: Text("mm", style: TypographyStyles.boldText(14, Themes.mainThemeColor.shade500),),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(5),
                             ),
                           ),
                         ),
@@ -199,7 +201,7 @@ class BodyFatCalculator extends StatelessWidget {
                             contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                             suffix: Text("mm", style: TypographyStyles.boldText(14, Themes.mainThemeColor.shade500),),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(5),
                             ),
                           ),
                         ),
@@ -219,7 +221,7 @@ class BodyFatCalculator extends StatelessWidget {
                             contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                             suffix: Text("mm", style: TypographyStyles.boldText(14, Themes.mainThemeColor.shade500),),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(5),
                             ),
                           ),
                         ),
@@ -239,7 +241,7 @@ class BodyFatCalculator extends StatelessWidget {
                             contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                             suffix: Text("mm", style: TypographyStyles.boldText(14, Themes.mainThemeColor.shade500),),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(5),
                             ),
                           ),
                         ),
@@ -264,7 +266,7 @@ class BodyFatCalculator extends StatelessWidget {
                             contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                             suffix: Text("kg", style: TypographyStyles.boldText(14, Themes.mainThemeColor.shade500),),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(5),
                             ),
                           ),
                         ),
@@ -276,30 +278,10 @@ class BodyFatCalculator extends StatelessWidget {
             ),
             SizedBox(height: 40),
             Container(
-              width: Get.width,
-              height: 58,
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Obx(() {
-                return ElevatedButton(
-                  style: ButtonStyles.bigBlackButton(),
-                  child: !ready.value
-                      ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                      : Text(
-                    'CALCULATE',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
-                  onPressed: () {
-                    getFATMM();
-                  },
-                );
-              }),
-            ),
+                width: Get.width,
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Buttons.yellowFlatButton(onPressed:  (){getFATMM();},label: "calculate")),
+
             SizedBox(height: 8),
             Obx(()=>result['success'] != null ? Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),

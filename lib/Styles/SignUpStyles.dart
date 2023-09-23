@@ -10,7 +10,7 @@ class SignUpStyles{
       foregroundColor: Get.isDarkMode ? Colors.white: Colors.black,
       backgroundColor: Colors.transparent, elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12)
+        borderRadius: BorderRadius.circular(5)
       ),
       textStyle: TextStyle(
         fontSize: 20,

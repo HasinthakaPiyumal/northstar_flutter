@@ -191,23 +191,24 @@ class HomeWidgetToDos extends StatelessWidget {
                               color: colors.Colors().deepYellow(1),
                               borderRadius: BorderRadius.circular(50),
                             ),
-                            cellMargin: const EdgeInsets.all(2),
+                            cellMargin: const EdgeInsets.all(0),
                             selectedTextStyle:
-                                TypographyStyles.title(16).copyWith(
+                                TypographyStyles.title(12).copyWith(
                               color: Colors.white,
                             ),
                             weekendTextStyle:
-                                TypographyStyles.title(16).copyWith(
+                                TypographyStyles.title(12).copyWith(
                               color: Colors.white,
                             ),
                             defaultTextStyle:
-                                TypographyStyles.title(16).copyWith(
+                                TypographyStyles.title(12).copyWith(
                               color: Colors.white,
                             ),
                           ),
-                          daysOfWeekHeight: 20,
-                          rowHeight: 50,
-                          calendarFormat: CalendarFormat.week,
+                          daysOfWeekHeight: 30,
+                          rowHeight: 25,
+
+                          calendarFormat: CalendarFormat.month,
                           headerStyle: HeaderStyle(
                             formatButtonVisible: false,
                             titleCentered: true,

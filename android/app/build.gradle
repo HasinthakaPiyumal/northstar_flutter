@@ -34,7 +34,7 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 apply plugin: 'com.onesignal.androidsdk.onesignal-gradle-plugin'
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 34
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -42,7 +42,7 @@ android {
 
     defaultConfig {
         applicationId "com.northstar.fitness"
-        minSdkVersion 23
+        minSdkVersion 28
         targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -61,6 +61,9 @@ android {
     }
     buildTypes {
         release {
+//            signingConfig signingConfigs.debug
+//            shrinkResources false
+//            minifyEnabled false
             signingConfig signingConfigs.release
         }
     }
@@ -73,4 +76,5 @@ flutter {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "androidx.multidex:multidex:2.0.1"
+//    implementation "us.zoom.videosdk:ZoomVideoSDK:1.7.10"
 }

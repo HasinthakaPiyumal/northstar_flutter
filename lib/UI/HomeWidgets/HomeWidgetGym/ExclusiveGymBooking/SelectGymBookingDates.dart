@@ -11,7 +11,9 @@ import 'package:north_star/UI/Layout.dart';
 import 'package:north_star/Utils/PopUps.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../Styles/AppColors.dart';
 import '../../../../Styles/ButtonStyles.dart';
+import '../../../../components/Buttons.dart';
 import '../../../SharedWidgets/CommonConfirmDialog.dart';
 import '../../../SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
@@ -293,25 +295,26 @@ class SelectGymBookingDates extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                width: Get.width*80/100,
+                width: Get.width,
                 margin: const EdgeInsets.all(16),
+                height: 44,
                 child: ElevatedButton(
                   onPressed: () {
                     Get.to(() => GymDateAndTime(gymObj: gymObj, clientIDs: clientIds,))
                         ?.then((value) => getUnconfirmedBookings());
                   },
-                  style: ButtonStyles.matButton(Get.isDarkMode ? colors.Colors().darkGrey(1) : colors.Colors().selectedCardBG, 0),
+                  style: ButtonStyles.matButton(AppColors.accentColor, 0),
                   child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 25),
+                    padding: EdgeInsets.symmetric(vertical: 0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.add,
-                          color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),
+                         color: AppColors.textOnAccentColor,
                         ),
                         SizedBox(width: 10,),
                         Text('Pick Your Date & Time',
-                          style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
+                          style: TypographyStyles.boldText(16, AppColors.textOnAccentColor),
                         ),
                         Icon(Icons.add, color: Colors.transparent,),
                       ],
@@ -327,7 +330,7 @@ class SelectGymBookingDates extends StatelessWidget {
                           return Container(
                             margin: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
                             decoration: BoxDecoration(
-                              color: Get.isDarkMode ? colors.Colors().lightBlack(1) : colors.Colors().selectedCardBG,
+                              color: Get.isDarkMode ? AppColors.primary2Color: Colors.white,
                               borderRadius: BorderRadius.circular(8)
                             ),
                             child: Padding(
@@ -338,7 +341,7 @@ class SelectGymBookingDates extends StatelessWidget {
                                     height: 70,
                                     width: 70,
                                     decoration: BoxDecoration(
-                                      color: Get.isDarkMode ? Colors.black : colors.Colors().darkGrey(1),
+                                      color: AppColors.accentColor,
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: Column(
@@ -346,10 +349,10 @@ class SelectGymBookingDates extends StatelessWidget {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text((DateFormat('MMM').format(DateTime.parse(bookings[index]['start_time']))).toUpperCase(),
-                                          style: TypographyStyles.boldText(12, Themes.mainThemeColorAccent.shade100),
+                                          style: TypographyStyles.boldText(12, AppColors.textOnAccentColor),
                                         ),
                                         Text(DateFormat('dd').format(DateTime.parse(bookings[index]['start_time'])),
-                                          style: TypographyStyles.boldText(24, Themes.mainThemeColorAccent.shade100),
+                                          style: TypographyStyles.boldText(24, AppColors.textOnAccentColor),
                                         ),
                                       ],
                                     ),
@@ -393,65 +396,57 @@ class SelectGymBookingDates extends StatelessWidget {
           ),
           bottomSheet: Container(
             color: Theme.of(context).scaffoldBackgroundColor,
-            child: Container(
-              width: Get.width,
-              decoration: BoxDecoration(
-                color: Get.isDarkMode ? Color(0xFF434343) : Color(0xFFDBDBDB),
-                borderRadius: new BorderRadius.only(
-                  topLeft: const Radius.circular(25.0),
-                  topRight: const Radius.circular(25.0),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Container(
+                width: Get.width,
+                decoration: BoxDecoration(
+                  color: Get.isDarkMode?AppColors.primary2Color:Colors.white,
+                  borderRadius: new BorderRadius.circular(10                ),
                 ),
-              ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Total Price",
-                                style: TypographyStyles.boldText(14, Get.isDarkMode ? Themes.mainThemeColorAccent.shade300 : colors.Colors().lightBlack(1)),
-                              ),
-                              SizedBox(height: 5,),
-
-                              Obx(() => RichText(
-                                text: TextSpan(
-                                  text: 'MVR',
-                                  style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                      text: ' ${(totalHours.value * gymObj['hourly_rate']).toStringAsFixed(2)}',
-                                      style: TypographyStyles.boldText(24, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
-                                    ),
-                                  ],
-                                ),
-                              ),),
-                            ],
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text("Total Price",
+                            style: TypographyStyles.text(16),
                           ),
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyles.bigBlackButton(),
-                          child: Obx(() => ready.value ? Padding(
-                            padding: EdgeInsets.symmetric(vertical: 18, horizontal: 36),
-                            child: Text('CONFIRM'),
-                          ) : LoadingAndEmptyWidgets.loadingWidget()),
-                          onPressed: () {
-                            if(bookings.length>0){
-                              confirmAndPay();
-                            }else{
-                              showSnack("No Bookings Added", "Please add bookings to continue");
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
+                          SizedBox(height: 5,),
+
+                          Obx(() => RichText(
+                            text: TextSpan(
+                              text: 'MVR',
+                              style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: ' ${(totalHours.value * gymObj['hourly_rate']).toStringAsFixed(2)}',
+                                  style: TypographyStyles.boldText(24, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
+                                ),
+                              ],
+                            ),
+                          ),),
+                          SizedBox(height: 20,),
+                          Container(
+                            width: Get.width,
+                            child: Buttons.yellowFlatButton(
+                              label: "confirm"
+                            ,onPressed: () {
+                              if(bookings.length>0){
+                                confirmAndPay();
+                              }else{
+                                showSnack("No Bookings Added", "Please add bookings to continue");
+                              }
+                            },),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

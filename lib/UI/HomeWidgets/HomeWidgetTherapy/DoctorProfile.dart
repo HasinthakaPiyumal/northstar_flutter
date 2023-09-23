@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Styles/AppColors.dart';
@@ -17,75 +19,11 @@ class DoctorProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if(doctor['qualifications'].length ==0){
-      doctor['qualifications'].add({"title":"No Qualification Found","description":""});
-    }
-    void showSelection() {
-      Get.defaultDialog(
-        radius: 10,
-        titlePadding: EdgeInsets.only(top: 20),
-        contentPadding: EdgeInsets.fromLTRB(20, 20, 20, 10),
-        title: 'Channel for',
-        titleStyle: TypographyStyles.title(20),
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        content: Container(
-          width: Get.width - 20,
-          child: Row(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  style: ButtonStyles.matRadButton(AppColors.accentColor, 5, 5),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Text(
-                      'ME',
-                      style: TextStyle(
-                        color: Color(0xFF1B1F24),
-                        fontSize: 20,
-                        fontFamily: 'Bebas Neue',
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ),
-                  onPressed: () {
-                    Get.back();
-                    Get.to(() => ScheduleForMe(doctor: doctor));
-                  },
-                ),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Visibility(
-                child: Expanded(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(width: 2, color: Color(0xFFFFB700)),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Text(
-                        'CLIENT',
-                        style: TypographyStyles.smallBoldTitle(20),
-                      ),
-                    ),
-                    onPressed: () {
-                      Get.back();
-                      Get.to(() => ScheduleForClient(doctor: doctor));
-                    },
-                  ),
-                ),
-                visible: authUser.role == 'trainer',
-              )
-            ],
-          ),
-        ),
-      );
+    CarouselController _carouselController = new CarouselController();
+
+    if (doctor["therapy__qualifications"].length == 0) {
+      doctor["therapy__qualifications"]
+          .add({"title": "No Qualification Found", "description": ""});
     }
 
     return Scaffold(
@@ -131,36 +69,37 @@ class DoctorProfile extends StatelessWidget {
                           width: 378,
                           padding: const EdgeInsets.only(top: 4),
                           child: Text(
-                            doctor['doctor']['title'] + ' ' + doctor['name'],
+                            //'doctor['doctor']['title']'
+                            doctor['name'],
                             textAlign: TextAlign.center,
                             style: TypographyStyles.title(20),
                           ),
                         ),
-                        Container(
-                          height: 44,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: double.infinity,
-                                padding:
-                                    const EdgeInsets.only(top: 4, bottom: 10),
-                                child: Text(
-                                  doctor['doctor']['speciality'],
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Color(0xFFFFB700),
-                                    fontSize: 16,
-                                    fontFamily: 'Poppins',
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        // Container(
+                        //   height: 44,
+                        //   child: Column(
+                        //     mainAxisSize: MainAxisSize.min,
+                        //     mainAxisAlignment: MainAxisAlignment.start,
+                        //     crossAxisAlignment: CrossAxisAlignment.center,
+                        //     children: [
+                        //       Container(
+                        //         width: double.infinity,
+                        //         padding:
+                        //             const EdgeInsets.only(top: 4, bottom: 10),
+                        //         child: Text(
+                        //           doctor['doctor']['speciality'],
+                        //           textAlign: TextAlign.center,
+                        //           style: TextStyle(
+                        //             color: Color(0xFFFFB700),
+                        //             fontSize: 16,
+                        //             fontFamily: 'Poppins',
+                        //             fontWeight: FontWeight.w400,
+                        //           ),
+                        //         ),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),
@@ -209,11 +148,14 @@ class DoctorProfile extends StatelessWidget {
             ),
             SizedBox(height: 12),
             Container(
-              width: Get.width-32,
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(color:AppColors.primary2Color,borderRadius: BorderRadius.circular(10)),
-              child:Text('No: 123 road,\nmain street,\nhulhumale maldives.',textAlign: TextAlign.start,style:TypographyStyles.text(12))
-            ),
+                width: Get.width - 32,
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                    color: AppColors.primary2Color,
+                    borderRadius: BorderRadius.circular(10)),
+                child: Text( doctor['address'],
+                    textAlign: TextAlign.start,
+                    style: TypographyStyles.text(12))),
 
             SizedBox(height: 12),
             Padding(
@@ -224,7 +166,7 @@ class DoctorProfile extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        'Qualifications',
+                        "Qualifications",
                         style: TypographyStyles.title(20),
                       ),
                     ],
@@ -233,56 +175,102 @@ class DoctorProfile extends StatelessWidget {
               ),
             ),
             SizedBox(height: 12),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Container(
-                height: doctor['qualifications'].length > 0 ? 180 : 8,
-                // width: Get.width-32,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: doctor['qualifications'].length,
-                  itemBuilder: (_, index) {
-                    return Container(
-                      width: Get.width-32,
-                      margin: EdgeInsets.only(bottom: 10,right: index+1==doctor['qualifications'].length?0:16.0),
-                      decoration: BoxDecoration(
-                        color: Get.isDarkMode
-                            ? AppColors.primary2Color
-                            : AppColors.baseColor,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Padding(
-                        padding:
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                CarouselSlider(
+                  carouselController: _carouselController,
+                  options: CarouselOptions(
+                    height: 144,
+                    autoPlay: true,
+                    enableInfiniteScroll: doctor["therapy__qualifications"].length > 1,
+                    autoPlayCurve: Curves.fastEaseInToSlowEaseOut,
+                    viewportFraction: 1,
+                  ),
+                  items: [
+                    for (int i = 0; i < doctor["therapy__qualifications"].length; i++) i
+                  ].map((index) {
+                    return Builder(
+                      builder: (BuildContext context) {
+                        return Container(
+                          width: Get.width,
+                          margin: EdgeInsets.symmetric(horizontal: 26.0),
+                          decoration: BoxDecoration(
+                            color: Get.isDarkMode
+                                ? AppColors.primary2Color
+                                : AppColors.baseColor,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding:
                             EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 36,
-                              child: Image.asset(
-                                "assets/images/award_v2.png",
-                                fit: BoxFit.fitWidth,
-                              ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: 36,
+                                  child: Image.asset(
+                                    "assets/images/award_v2.png",
+                                    fit: BoxFit.fitWidth,
+                                  ),
+                                ),
+                                SizedBox(height: 10.0),
+                                Text(
+                                    // doctor["therapy__qualifications"][index]['title']
+                                    //     .toString(),
+                                  //
+                                    doctor["therapy__qualifications"][index]['title'],
+                                    style: TypographyStyles.title(16)),
+                                SizedBox(height: 8.0),
+                                Text(
+                                  doctor["therapy__qualifications"][index]['description'],
+                                  textAlign: TextAlign.center,
+                                  style: TypographyStyles.textWithWeight(
+                                      12, FontWeight.w300),
+                                )
+                              ],
                             ),
-                            SizedBox(height: 10.0),
-                            Text(
-                                doctor['qualifications'][index]['title']
-                                    .toString(),
-                                style: TypographyStyles.title(16)),
-                            SizedBox(height: 8.0),
-                            Text(
-                              doctor['qualifications'][index]['description'],
-                              textAlign: TextAlign.center,
-                              style: TypographyStyles.textWithWeight(12, FontWeight.w300),
-                            )
-                          ],
-                        ),
-                      ),
+                          ),
+                        );
+                      },
                     );
-                  },
+                  }).toList(),
                 ),
-              ),
+                Positioned(
+                  bottom: 40,
+                  left: 0,
+                  right: 0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ElevatedButton(
+
+                        onPressed: () {
+                          _carouselController.previousPage();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: AppColors.accentColor,
+                          shape: CircleBorder(),
+                          minimumSize: Size(30, 30),
+                        ),
+                        child: Icon(Icons.arrow_back_ios_outlined, color: Colors.black,size: 22,),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          _carouselController.nextPage();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: AppColors.accentColor,
+                          shape: CircleBorder(),
+                          minimumSize: Size(30, 30),
+                        ),
+                        child: Icon(Icons.arrow_forward_ios_outlined, color: Colors.black,size: 22),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: 10),
             Padding(
@@ -354,6 +342,18 @@ class DoctorProfile extends StatelessWidget {
                       sizedHeight = 0;
                       break;
                   }
+                  print("Therapy working");
+                  print(doctor["therapy_working_hours"][index]["start_time"]);
+                  var stTime = doctor["therapy_working_hours"][index]["start_time"];
+                  var enTime = doctor["therapy_working_hours"][index]["end_time"];
+                  DateFormat dateFormat = DateFormat("hh:mm a");
+                  print("stTime==null");
+                  if(stTime==null || enTime==null){
+                    return SizedBox();
+                  }
+                  String stT = dateFormat.format(DateTime.parse('1970-01-01 ${stTime!=null?stTime:"00:00:00"}'));
+                  String enT = dateFormat.format(DateTime.parse('1970-01-01 ${enTime!=null?enTime:"00:00:00"}'));
+                  time = "$stT - $enT";
 
                   // Create the widget for each day
                   return Column(
@@ -428,3 +428,6 @@ class DoctorProfile extends StatelessWidget {
     );
   }
 }
+
+
+

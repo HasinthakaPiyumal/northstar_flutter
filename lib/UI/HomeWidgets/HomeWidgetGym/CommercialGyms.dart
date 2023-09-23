@@ -113,7 +113,7 @@ class CommercialGyms extends StatelessWidget {
                           hideOnLoading: true,
                           textFieldConfiguration: TextFieldConfiguration(
                               decoration: InputDecoration(
-                                prefixIcon: Icon(Icons.search),
+                                prefixIcon: Icon(Icons.search,),
                                 labelText: 'Search Gyms...',
                                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
                               )
@@ -136,7 +136,7 @@ class CommercialGyms extends StatelessWidget {
                             0,
                             12,
                           ),
-                          child: Icon(Icons.filter_alt_outlined,
+                          child: Icon(Icons.filter_alt_outlined,color: AppColors.textOnAccentColor,
                             size: 30,
                           ),
                           onPressed: (){
