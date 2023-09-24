@@ -28,7 +28,7 @@ class AgoraCallController {
   // static const String appId = '0e76a00a008e418bb9074ccad44724de';
   // static const String appId = '717e3dfc72374428b1daa46b39e9145b'; // backend appId
   static const String appId = 'ed79caa1142a4a71846177dbf737e29e'; // temporary appId
-  static const String token = "007eJxTYLhgEJMy55bCq61Vb52E/d9cdwv5/KhrQjf//7QL5hc+bz+jwJCaYm6ZnJhoaGhilGiSaG5oYWJmaG6ekpRmbmyeamSZ+i6OL7UhkJEhSHwpAyMUgvh8DCmpaYmlOSXOGYl5eak5DAwAlHclwQ==";
+  static const String token = "007eJxTYAhsOfKmodeTafNk6f2CKk0Hk+vPHPXcI71E61AL68FtD/IUGFJTzC2TExMNDU2MEk0SzQ0tTMwMzc1TktLMjc1TjSxTs8/zpzYEMjLY3/rGzMgAgSA+H0NKalpiaU6Jc0ZiXl5qDgMDAMQvJAI=";
 
 
   static RxString callStatus =

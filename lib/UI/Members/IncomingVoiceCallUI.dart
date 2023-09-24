@@ -6,6 +6,7 @@ import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:north_star/Controllers/AgoraCallController.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import './InCall.dart';
 import '../../Models/HttpClient.dart';

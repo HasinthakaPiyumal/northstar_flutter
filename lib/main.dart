@@ -66,14 +66,9 @@ void main() async {
   OneSignal.shared.setNotificationWillShowInForegroundHandler(
       (OSNotificationReceivedEvent event) {
     if (event.notification.body == 'Incoming Call!' && isLoggedIn) {
-      print("Call inner calling");
-      print(event.notification);
       Get.to(() =>
           IncomingVoiceCallUI(callData: event.notification.additionalData));
-      event.complete(event.notification);
     } else {
-      print("Call outer calling");
-      print(event.notification.body);
       event.complete(event.notification);
     }
   });
@@ -157,7 +152,7 @@ class ThemeAll {
           borderRadius: BorderRadius.circular(1),
           borderSide: BorderSide(color: Colors.black),
         ),
-        hintStyle: TextStyle(color: Colors.black),
+        hintStyle: TextStyle(color: Colors.black.withOpacity(0.7)),
         labelStyle: TextStyle(color: Colors.black),
         // focusedBorder: OutlineInputBorder(
         //   borderRadius: BorderRadius.circular(5),
@@ -218,7 +213,7 @@ class ThemeAll {
             borderRadius: BorderRadius.circular(5),
             borderSide: BorderSide(color: Colors.white, width: 1),
           ),
-          hintStyle: TextStyle(color: Colors.white),
+          hintStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
           labelStyle: TextStyle(color: Colors.white),
           contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10)),
       dialogBackgroundColor: AppColors.primary2Color,
@@ -230,6 +225,9 @@ class ThemeAll {
       tabBarTheme: TabBarTheme(
         labelColor: Colors.white,
         unselectedLabelColor: Colors.white.withOpacity(0.7),
+      ),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        selectedItemColor: AppColors.accentColor
       ),
       listTileTheme: ListTileThemeData(tileColor: AppColors.primary2Color));
 }

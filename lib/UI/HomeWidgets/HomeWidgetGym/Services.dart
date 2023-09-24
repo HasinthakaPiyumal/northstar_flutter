@@ -24,9 +24,10 @@ class Services extends StatelessWidget {
     RxString countryName = "".obs;
 
     Future<List> searchGyms(String pattern) async {
-      Map res = await httpClient.searchGyms(pattern, 'exclusive');
+      Map res = await httpClient.searchGymServices();
       gyms.value = res['data'];
       ready.value = true;
+      print(res);
       return [];
     }
 
@@ -230,12 +231,13 @@ class Services extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                  title: Text(gyms[index]['gym_name'],
+                                  title: Text(gyms[index]['name'],
                                       style: TypographyStyles.title(18)),
                                   subtitle: Padding(
                                     padding: EdgeInsets.only(top: 5),
                                     child: Text(
-                                        "${gyms[index]['gym_city']}, ${CountryPickerUtils.getCountryByIsoCode(gyms[index]['gym_country']).name}"),
+                                        "${gyms[index]['gym_name']}"),
+                                    //, ${CountryPickerUtils.getCountryByIsoCode(gyms[index]['gym_country']).name
                                   ),
                                 ),
                               )),

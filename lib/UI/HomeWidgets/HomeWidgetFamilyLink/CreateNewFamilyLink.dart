@@ -1,15 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
+import 'package:north_star/Utils/PopUps.dart';
 import 'package:north_star/components/Buttons.dart';
 
 class CreateNewFamilyLink extends StatelessWidget {
   RxInt familyMemberCount = 0.obs;
   RxInt expandedMember = 0.obs;
-  TextEditingController familyMemberCountController =
-  new TextEditingController();
+  TextEditingController familyMemberCountController =  new TextEditingController();
+  TextEditingController familyNameCountController =  new TextEditingController();
+  TextEditingController familyDescriptionCountController =  new TextEditingController();
+
+  Future<void> createFamily() async{
+    var data = {
+      "title":familyNameCountController.text,
+      "description":familyDescriptionCountController.text,
+      "member_count":familyMemberCountController.text
+    };
+    var res = await httpClient.createFamilyLink(data);
+    print(res);
+    if(familyNameCountController.text.isEmpty || familyDescriptionCountController.text.isEmpty || familyMemberCountController.text.isEmpty){
+      showSnack("Failed", "Please fill all text fields");
+      return;
+    }
+    if(res['code']==200){
+      showSnack("Success", "Family Creating Success");
+    }else{
+      showSnack("Failed", res['data'][0]['message']);
+    }
+    return;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +49,7 @@ class CreateNewFamilyLink extends StatelessWidget {
                 height: 20,
               ),
               TextField(
+                controller: familyNameCountController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   label: Text("Name Of Family"),
@@ -33,6 +57,7 @@ class CreateNewFamilyLink extends StatelessWidget {
               ),
               SizedBox(height: 20),
               TextField(
+                controller: familyDescriptionCountController,
                 maxLength: 50,
                 maxLines: 2,
                 decoration: InputDecoration(
@@ -55,7 +80,8 @@ class CreateNewFamilyLink extends StatelessWidget {
               ),
               SizedBox(height: 20),
               Buttons.yellowFlatButton(
-                  onPressed: () {
+                  onPressed: () async{
+                    await createFamily();
                       familyMemberCount.value = int.tryParse(familyMemberCountController.text) ?? 0;
                       FocusScope.of(context).unfocus();
                   },

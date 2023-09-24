@@ -19,9 +19,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../main.dart';
 import '../SharedWidgets/UploadAvatar.dart';
 
-class DoctorPrivateProfile extends StatelessWidget {
+class DoctorPrivateProfile extends StatefulWidget {
   const DoctorPrivateProfile({Key? key}) : super(key: key);
 
+  @override
+  State<DoctorPrivateProfile> createState() => _DoctorPrivateProfileState();
+}
+
+class _DoctorPrivateProfileState extends State<DoctorPrivateProfile> {
   @override
   Widget build(BuildContext context) {
     RxMap doctor = {}.obs;
@@ -209,7 +214,6 @@ class DoctorPrivateProfile extends StatelessWidget {
                           value: isDarkMode.value,
                           onChanged: (value) {
                             themeProvider.toggleTheme();
-                            isDarkMode.value = value;
                           },
                           // onChanged: (value){
                           //   SharedPreferences.getInstance().then((prefs){

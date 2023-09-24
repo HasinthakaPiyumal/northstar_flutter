@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 
@@ -28,13 +29,13 @@ class SignUpStyles{
       foregroundColor: Get.isDarkMode ? Themes.mainThemeColor.shade600: colors.Colors().lightBlack(1), 
       backgroundColor: Get.isDarkMode ? Colors.transparent : colors.Colors().selectedCardBG, elevation: 0,
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12)
+          borderRadius: BorderRadius.circular(5)
       ),
       textStyle: TextStyle(
         fontSize: 20,
       ),
       side: BorderSide(
-        color: Themes.mainThemeColor.shade600,
+        color: AppColors.accentColor,
         width: 1,
       ),
     );

@@ -482,6 +482,15 @@ class HttpClient {
       "data": response.data,
     };
   }
+  Future<Map> searchGymServices() async {
+
+    Response response =
+        await get('/gyms/exclusive-services/search');
+    return {
+      "code": response.statusCode,
+      "data": response.data,
+    };
+  }
 
   //Get Exclusive Gym Availability
   Future<Map> getAvailability(gymID, DateTime dateTime) async {
@@ -1483,6 +1492,14 @@ class HttpClient {
       return {"code":200,"data":response.data};
     }
     return {"code":401,"data":response.data};
+  }
+  Future<Map> getFamiliLinks(dynamic data) async {
+    Response response = await post('/family-link/actions/search',data);
+    return {"code":response.statusCode,"data":response.data};
+  }
+  Future<Map> createFamilyLink(dynamic data) async {
+    Response response = await post('/family-link/actions/add',data);
+    return {"code":response.statusCode,"data":response.data};
   }
 }
 

@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Models/ProModel.dart';
+import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/ButtonStyles.dart';
 import 'package:north_star/Styles/SignUpStyles.dart';
 import 'package:north_star/Styles/Themes.dart';
@@ -14,11 +15,13 @@ import 'package:north_star/UI/SharedWidgets/CommonConfirmDialog.dart';
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/Utils/PopUps.dart';
+import 'package:north_star/components/Buttons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomeWidgetPro extends StatelessWidget {
-  const HomeWidgetPro({Key? key, this.extend = false}) : super(key: key);
+  HomeWidgetPro({Key? key, this.extend = false}) : super(key: key);
   final bool extend;
+
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +34,20 @@ class HomeWidgetPro extends StatelessWidget {
     RxBool check = false.obs;
     ProList _proList = ProList();
     RxInt selectedPackage = 0.obs;
+
+    RxDouble couponValue = 0.0.obs;
+    RxInt couponPercentage = 0.obs;
+
+    TextEditingController couponController = new TextEditingController();
+    void applyCoupon()async{
+      if(couponPercentage.value>0){
+        couponPercentage.value = 0;
+        return;
+      }
+      if(couponController.text.toLowerCase()=="excode"){
+        couponPercentage.value = 10;
+      }
+    }
 
     void getPlansList() async {
       ready.value = false;
@@ -95,7 +112,7 @@ class HomeWidgetPro extends StatelessWidget {
           contentPadding: EdgeInsets.symmetric(
             horizontal: 20,
           ),
-          content: Column(
+          content: Obx(()=>Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
@@ -142,7 +159,7 @@ class HomeWidgetPro extends StatelessWidget {
                         16, Themes.mainThemeColorAccent.shade300),
                   ),
                   Text(
-                    'Rf ${getPlanPrice(plan)}',
+                    'Rf ${getPlanPrice(plan)-couponValue.value}',
                     style: TypographyStyles.boldText(
                       16,
                       Get.isDarkMode
@@ -157,6 +174,7 @@ class HomeWidgetPro extends StatelessWidget {
                 thickness: 1,
                 color: Themes.mainThemeColorAccent.shade300.withOpacity(0.2),
               ),
+
               SizedBox(height: 30),
               RichText(
                 textAlign: TextAlign.center,
@@ -196,9 +214,10 @@ class HomeWidgetPro extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 10,),
+
             ],
-          ),
+          )),
           actions: [
             // Container(
             //   width: Get.width,
@@ -255,8 +274,13 @@ class HomeWidgetPro extends StatelessWidget {
                               SizedBox(width: 16),
                               Text(
                                 'Pay with Card',
-                                style: TypographyStyles.boldText(
-                                    15, Themes.mainThemeColor.shade500),
+                                style: TextStyle(
+                                  color: AppColors.accentColor,
+                                  fontSize: 20,
+                                  fontFamily: 'Bebas Neue',
+                                  fontWeight: FontWeight.w400,
+                                  height: 0,
+                                ),
                               )
                             ]),
                       )
@@ -597,7 +621,9 @@ class HomeWidgetPro extends StatelessWidget {
                                   SizedBox(
                                     height: 15,
                                   ),
+
                                 ],
+
                               );
                             },
                           ): Center(
@@ -606,79 +632,125 @@ class HomeWidgetPro extends StatelessWidget {
                                   colors.Colors().deepYellow(1)),
                             ),
                           )),
-                    ],
-                  ))),
-      ),
-      bottomNavigationBar: Obx(() => Visibility(
-            visible: !check.value,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(15)),
-                  gradient: LinearGradient(
-                    colors: <Color>[
-                      Color(0xFFFDB800),
-                      Color(0xFFF38F00),
-                    ],
-                  ),
-                ),
-                child: MaterialButton(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 17,
-                  ),
-                  minWidth: double.infinity,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 18),
-                    child: Obx(() => ready.value
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                      Visibility(
+                        visible: !check.value,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 20.0),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              Image.asset(
-                                'assets/images/crown.png',
-                                height: 30,
+                              Visibility(
+                                visible: couponPercentage.value>0,
+                                  child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("Coupon Applied",style: TypographyStyles.text(16),),
+                                    Text("10% Discount",style: TypographyStyles.title(16)),
+                                  ],
+                                ),
+                              )),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: TextField(
+                                      readOnly: couponPercentage.value>0,
+                                      controller: couponController,
+                                      decoration: InputDecoration(
+                                        label: Text("Coupon Code"),
+                                        hintText: "EXCODE",
+                                      ),
+
+                                    ),
+                                  ),
+                                  SizedBox(width: 10,),
+                                  Container(height:48,child: ElevatedButton(onPressed: applyCoupon, child: Text(couponPercentage.value>0?"clear":"apply",style: TextStyle(
+                                    color: Color(0xFF1B1F24),
+                                    fontSize: 20,
+                                    fontFamily: 'Bebas Neue',
+                                    fontWeight: FontWeight.w400,
+                                    height: 0,
+                                  ),),))
+                                ],
                               ),
-                              SizedBox(
-                                width: 15,
-                              ),
-                              Text(
-                                extend ? 'EXTEND' : 'UPGRADE',
-                                textAlign: TextAlign.left,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelLarge!
-                                    .copyWith(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.white),
+                              SizedBox(height: 10,),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                                  gradient: LinearGradient(
+                                    colors: <Color>[
+                                      Color(0xFFFDB800),
+                                      Color(0xFFF38F00),
+                                    ],
+                                  ),
+                                ),
+                                child: MaterialButton(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 17,
+                                  ),
+                                  minWidth: double.infinity,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 18),
+                                    child: Obx(() => ready.value
+                                        ? Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Image.asset(
+                                          'assets/images/crown.png',
+                                          height: 30,
+                                        ),
+                                        SizedBox(
+                                          width: 15,
+                                        ),
+                                        Text(
+                                          extend ? 'EXTEND' : 'UPGRADE',
+                                          textAlign: TextAlign.left,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .labelLarge!
+                                              .copyWith(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w700,
+                                              color: Colors.white),
+                                        ),
+                                      ],
+                                    )
+                                        : Container(
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 3,
+                                        valueColor:
+                                        AlwaysStoppedAnimation<Color>(Colors.white),
+                                      ),
+                                    )),
+                                  ),
+                                  onPressed: () async {
+                                    if (plansList[selectedPackage.value]['price'] > 0) {
+                                      couponValue.value = getPlanPrice(plansList[selectedPackage.value])*couponPercentage.value/100;
+                                      confirmAndPay(plansList[selectedPackage.value]);
+                                    } else {
+                                      CommonConfirmDialog.confirm('Activate Free Trial')
+                                          .then((value) {
+                                        activateFreeTrial();
+                                      });
+                                    }
+                                  },
+                                ),
                               ),
                             ],
-                          )
-                        : Container(
-                            child: CircularProgressIndicator(
-                              strokeWidth: 3,
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.white),
-                            ),
-                          )),
-                  ),
-                  onPressed: () async {
-                    if (plansList[selectedPackage.value]['price'] > 0) {
-                      confirmAndPay(plansList[selectedPackage.value]);
-                    } else {
-                      CommonConfirmDialog.confirm('Activate Free Trial')
-                          .then((value) {
-                        activateFreeTrial();
-                      });
-                    }
-                  },
-                ),
-              ),
-            ),
-          )),
+                          ),
+                        ),
+                      )
+                    ],
+                  ))),
+
+      ),
+      // bottomNavigationBar: SingleChildScrollView(
+      //   child: Obx(() => ),
+      // ),
     );
   }
 }

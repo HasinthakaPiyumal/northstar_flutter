@@ -296,8 +296,8 @@ class HomeWidgetWorkouts extends StatelessWidget {
                                               ),
                                               CircularProgressBar(
                                                   progress: workouts[index]
-                                                          ['completed_steps'] +
-                                                      7 /
+                                                          ['completed_steps']
+                                                       /
                                                           workouts[index]
                                                               ['totalSteps'])
                                             ],

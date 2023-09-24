@@ -65,6 +65,7 @@ dependencies:
   share_plus: ^7.1.0
   health: ^8.0.0
   vibration: ^1.8.1
+  wakelock_plus: ^1.1.1
 #  flutter_zoom_sdk: ^1.1.0+4
 #  flutter_zoom_videosdk: ^1.7.0
 dev_dependencies:

@@ -2,7 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Models/AuthUser.dart';
+import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Models/StoreHelper.dart';
+import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/ButtonStyles.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
@@ -29,7 +31,7 @@ class StoreItemView extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(16),
                   child: CachedNetworkImage(
-                    imageUrl: product['image_path'],
+                    imageUrl: HttpClient.s3ResourcesBaseUrl+product['image_path'],
                     fit: BoxFit.cover,
                     placeholder: (context, url) => Center(
                       child: CircularProgressIndicator(),
@@ -44,8 +46,8 @@ class StoreItemView extends StatelessWidget {
                 width: double.infinity,
                 padding: EdgeInsets.all(15),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  color: Get.isDarkMode ? colors.Colors().deepGrey(1) : colors.Colors().lightCardBG,
+                  borderRadius: BorderRadius.circular(10),
+                  color: Get.isDarkMode ?AppColors.primary2Color :Colors.white,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,8 +65,8 @@ class StoreItemView extends StatelessWidget {
                 width: double.infinity,
                 padding: EdgeInsets.symmetric(horizontal: 15, vertical: 25),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  color: Get.isDarkMode ? colors.Colors().deepGrey(1) : colors.Colors().lightCardBG,
+                  borderRadius: BorderRadius.circular(10),
+                  color: Get.isDarkMode ?AppColors.primary2Color :Colors.white,
                 ),
                 child: Text(product['description'], textAlign: TextAlign.justify,
                 ),
@@ -76,11 +78,11 @@ class StoreItemView extends StatelessWidget {
         ),
       ),
       bottomSheet: Container(
-        color: Theme.of(context).scaffoldBackgroundColor,
+        color: Colors.transparent,
         child: Container(
           width: Get.width,
           decoration: BoxDecoration(
-            color: Get.isDarkMode ? Color(0xFF434343) : colors.Colors().selectedCardBG,
+            color: Get.isDarkMode ? AppColors.primary2Color :Colors.white,
             borderRadius: new BorderRadius.only(
               topLeft: const Radius.circular(20.0),
               topRight: const Radius.circular(20.0),

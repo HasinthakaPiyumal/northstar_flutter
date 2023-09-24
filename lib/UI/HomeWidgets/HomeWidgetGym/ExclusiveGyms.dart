@@ -27,6 +27,7 @@ class ExclusiveGyms extends StatelessWidget {
       Map res = await httpClient.searchGyms(pattern, 'exclusive');
       gyms.value = res['data'];
       ready.value = true;
+      print(res['data']);
       return [];
     }
 

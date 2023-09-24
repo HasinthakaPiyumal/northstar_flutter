@@ -221,7 +221,7 @@ class HomeWidgetStore extends StatelessWidget {
                     return Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
-                        color: Get.isDarkMode ? colors.Colors().darkGrey(1) : Themes.mainThemeColorAccent.shade100,
+                        color: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
                       ),
                       child: Material(
                         color: Colors.transparent,
@@ -250,7 +250,7 @@ class HomeWidgetStore extends StatelessWidget {
                                         borderRadius:
                                         BorderRadius.circular(8.0),
                                         child: CachedNetworkImage(
-                                          imageUrl: products[index]
+                                          imageUrl: HttpClient.s3ResourcesBaseUrl+ products[index]
                                           ['image_path'],
                                           fit: BoxFit.cover,
                                           placeholder: (context, url) =>
@@ -261,7 +261,7 @@ class HomeWidgetStore extends StatelessWidget {
                                     ),
                                     SizedBox(height: 10),
                                     Text(
-                                      "${products[index]['name']} Testtesttest",
+                                      "${products[index]['name']}",
                                       style: TypographyStyles.text(14),
                                     ),
                                     SizedBox(height: 8),
