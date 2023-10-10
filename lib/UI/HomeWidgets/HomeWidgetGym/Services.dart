@@ -24,10 +24,20 @@ class Services extends StatelessWidget {
     RxString countryName = "".obs;
 
     Future<List> searchGyms(String pattern) async {
-      Map res = await httpClient.searchGymServices();
+      Map res = await httpClient.searchGymServices(pattern);
       gyms.value = res['data'];
+      var tempGyms = [];
+      res['data'].forEach((gym) {
+        gym["gym_services"].forEach((service){
+          var currentGym = Map.from(gym);
+          currentGym["gym_services"] = service;
+          tempGyms.add(currentGym);
+        });
+      });
+      print('gym services 1 $gyms');
+      gyms.value = tempGyms;
       ready.value = true;
-      print(res);
+      print('gym services 2 $tempGyms');
       return [];
     }
 
@@ -231,7 +241,7 @@ class Services extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                  title: Text(gyms[index]['name'],
+                                  title: Text(gyms[index]['gym_services']['name'],
                                       style: TypographyStyles.title(18)),
                                   subtitle: Padding(
                                     padding: EdgeInsets.only(top: 5),

@@ -472,7 +472,7 @@ class GymDateAndTime extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Price ( ${selectedEndTime.value.difference(selectedStartTime.value).inHours} Hours )',style: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),),
-                        Obx(()=>Text("Rf ${(gymObj['hourly_rate'] * (selectedEndTime.value.difference(selectedStartTime.value).inHours)).toStringAsFixed(2)}",
+                        Obx(()=>Text("MVR${(gymObj['hourly_rate'] * (selectedEndTime.value.difference(selectedStartTime.value).inHours)).toStringAsFixed(2)}",
                           style: TypographyStyles.boldText(22, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
                         )),
                       ],

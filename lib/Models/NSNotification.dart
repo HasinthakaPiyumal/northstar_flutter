@@ -48,8 +48,7 @@ class NSNotification {
   });
 
   factory NSNotification.fromJson(Map<String, dynamic> json) {
-
-    print(json['data']);
+    print("json data ${json['data']}");
 
     return NSNotification(
       id: json['id'],
@@ -89,5 +88,14 @@ class NSNotification {
         }
       }
     });
+  }
+
+  Future deleteSelectedNotification() async {
+    Map res = await httpClient.deleteOneNotification(this.id);
+    if (res['code'] == 200) {
+      NotificationsController.notifications
+          .removeWhere((notification) => notification.id == this.id);
+      NotificationsController.notifications.refresh();
+    }
   }
 }

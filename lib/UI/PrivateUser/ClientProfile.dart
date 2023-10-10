@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
@@ -7,7 +6,6 @@ import 'package:north_star/Controllers/WatchDataController.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Styles/AppColors.dart';
-import 'package:north_star/Styles/ButtonStyles.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetTrainers/TrainerView.dart';
@@ -17,9 +15,12 @@ import 'package:north_star/UI/SharedWidgets/CommonConfirmDialog.dart';
 import 'package:north_star/UI/SharedWidgets/UploadAvatar.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/Utils/PopUps.dart';
+import 'package:north_star/components/Buttons.dart';
 import 'package:provider/provider.dart';
 
+import '../../components/CheckButton.dart';
 import '../../main.dart';
+import '../HelpAndSupport/HelpAndSupportHome.dart';
 import '../HomeWidgets/ContactUsPage.dart';
 
 class ClientProfile extends StatelessWidget {
@@ -585,7 +586,9 @@ class ClientProfile extends StatelessWidget {
                                   height: 126,
                                   padding: const EdgeInsets.all(10),
                                   decoration: ShapeDecoration(
-                                    color: Get.isDarkMode?AppColors.primary2Color:Colors.white,
+                                    color: Get.isDarkMode
+                                        ? AppColors.primary2Color
+                                        : Colors.white,
                                     shape: RoundedRectangleBorder(
                                       side: BorderSide(
                                         width: 1,
@@ -599,7 +602,8 @@ class ClientProfile extends StatelessWidget {
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Container(
                                         width: 48,
@@ -618,7 +622,9 @@ class ClientProfile extends StatelessWidget {
                                         child: Text(
                                           'Account Information',
                                           textAlign: TextAlign.center,
-                                          style: TypographyStyles.textWithWeight(16, FontWeight.w400),
+                                          style:
+                                              TypographyStyles.textWithWeight(
+                                                  16, FontWeight.w400),
                                         ),
                                       ),
                                     ],
@@ -626,60 +632,67 @@ class ClientProfile extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            SizedBox(width: 16,),
+                            SizedBox(
+                              width: 16,
+                            ),
                             Expanded(
                               child: InkWell(
                                 onTap: () {
                                   Get.to(() => CompleteUserProfile());
                                 },
                                 child: Container(
-                                // width: 189,
-                                height: 126,
-                                padding: const EdgeInsets.all(10),
-                                decoration: ShapeDecoration(
-                                  color: Get.isDarkMode?AppColors.primary2Color:Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                      width: 1,
-                                      strokeAlign: BorderSide.strokeAlignOutside,
-                                      color: Colors.white,
+                                  // width: 189,
+                                  height: 126,
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: ShapeDecoration(
+                                    color: Get.isDarkMode
+                                        ? AppColors.primary2Color
+                                        : Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      side: BorderSide(
+                                        width: 1,
+                                        strokeAlign:
+                                            BorderSide.strokeAlignOutside,
+                                        color: Colors.white,
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                    borderRadius: BorderRadius.circular(10),
                                   ),
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      width: 48,
-                                      height: 48,
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: AssetImage(
-                                              "assets/images/firstaidbox.png"),
-                                          fit: BoxFit.fill,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        width: 48,
+                                        height: 48,
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: AssetImage(
+                                                "assets/images/firstaidbox.png"),
+                                            fit: BoxFit.fill,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    SizedBox(
-                                      width: 146,
-                                      child: Text(
-                                        'Health Information',
-                                        textAlign: TextAlign.center,
-                                        style: TypographyStyles.textWithWeight(16, FontWeight.w400),
+                                      const SizedBox(height: 10),
+                                      SizedBox(
+                                        width: 146,
+                                        child: Text(
+                                          'Health Information',
+                                          textAlign: TextAlign.center,
+                                          style:
+                                              TypographyStyles.textWithWeight(
+                                                  16, FontWeight.w400),
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
                               ),
                             )
                           ],
                         ),
-
                         SizedBox(height: 16),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -787,53 +800,41 @@ class ClientProfile extends StatelessWidget {
                         SizedBox(height: 16),
                         Divider(),
                         SizedBox(height: 16),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Dark Mode'),
-                            CupertinoSwitch(
-                              value: isDarkMode.value,
-                              onChanged: (value) {
-                                themeProvider.toggleTheme();
-                                isDarkMode.value = value;
-                              },
-                            ),
-                          ],
-                        ),
                         SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Health Data Sync'),
-                            CupertinoSwitch(
-                              value: authUser.user['health_data'],
-                              onChanged: (value) async {
-                                ready.value = false;
-                                if (value) {
-                                  bool hasPermissions =
-                                      await WatchDataController
-                                          .requestPermission();
-                                  if (!hasPermissions) {
-                                    showSnack('Permission Denied',
-                                        'Please allow permission to sync health data');
-                                    ready.value = true;
-                                  } else {
-                                    await httpClient.toggleHealthDataConsent();
-                                    await authUser.checkAuth();
-                                    showSnack('Permission Granted',
-                                        'Health data will be synced');
-                                    ready.value = true;
-                                  }
-                                } else {
-                                  await httpClient.toggleHealthDataConsent();
-                                  await authUser.checkAuth();
-                                  showSnack('Permission Revoked',
-                                      'Health data will not be synced');
-                                  ready.value = true;
-                                }
-                              },
-                            ),
-                          ],
+                        GestureDetector(
+                          onTap: () async {
+                            ready.value = false;
+                            if (!authUser.user['health_data']) {
+                              bool hasPermissions =
+                                  await WatchDataController.requestPermission();
+                              if (!hasPermissions) {
+                                showSnack('Permission Denied',
+                                    'Please allow permission to sync health data');
+                                ready.value = true;
+                              } else {
+                                await httpClient.toggleHealthDataConsent();
+                                await authUser.checkAuth();
+                                showSnack('Permission Granted',
+                                    'Health data will be synced');
+                                ready.value = true;
+                              }
+                            } else {
+                              await httpClient.toggleHealthDataConsent();
+                              await authUser.checkAuth();
+                              showSnack('Permission Revoked',
+                                  'Health data will not be synced');
+                              ready.value = true;
+                            }
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Health Data Sync'),
+                              CheckButton(
+                                isChecked: authUser.user['health_data'],
+                              ),
+                            ],
+                          ),
                         )
                       ],
                     )
@@ -841,52 +842,29 @@ class ClientProfile extends StatelessWidget {
                       child: CircularProgressIndicator(),
                     )),
               SizedBox(height: 30),
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: MaterialButton(
+              Buttons.outlineTextIconButton(
                   onPressed: () {
-                    Get.to(() => ContactUsPage());
+                    Get.to(() => HelpAndSupportHome());
                   },
-                  color: colors.Colors().deepGrey(1),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    'Contact North Star',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ),
+                  label: "Help And Support",
+                  width: Get.width - 32,
+                  icon: Icons.help),
+              SizedBox(height: 10,),
+              Buttons.yellowFlatButton(onPressed: () {
+                Get.to(() => ContactUsPage());
+              },label: "Contact North Start",width: double.infinity),
               SizedBox(
                 height: 10,
               ),
               SizedBox(
                 width: double.infinity,
-                height: 50,
-                child: MaterialButton(
+                height: 44,
+                child: Buttons.outlineTextIconButton(
                     onPressed: () {
                       showSignOutDialog();
                     },
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        side: BorderSide(color: Colors.red)),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.logout,
-                          color: Colors.red,
-                        ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Text(
-                          'LOGOUT',
-                          style: TextStyle(color: Colors.red),
-                        ),
-                      ],
-                    )),
+                    label: "logout",
+                    icon: Icons.logout),
               ),
               SizedBox(height: 20),
               Text(HttpClient.buildInfo),

@@ -28,6 +28,7 @@ class ClientAccountInfo extends StatelessWidget {
       Map res = await httpClient.getMyProfile();
       if (res['code'] == 200) {
         data = res['data'];
+        print(data);
         nameController.text = data['emergency_contact_name'];
         phoneController.text = data['emergency_contact_phone'];
         ready.value = true;
@@ -101,6 +102,7 @@ class ClientAccountInfo extends StatelessWidget {
                           Text(data['user']['nic'], style: TypographyStyles.title(16)),
                           SizedBox(height: 24),
                           Text(CountryPickerUtils.getCountryByIsoCode(data['user']['country_code']).name! , style: TypographyStyles.title(16)),
+                          // Text(CountryPickerUtils.getCountryByIsoCode("ad").name! , style: TypographyStyles.title(16)),
                           SizedBox(height: 24),
                         ],
                       ),

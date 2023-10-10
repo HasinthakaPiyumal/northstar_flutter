@@ -339,7 +339,9 @@ class HttpClient {
 
   //Upload Avatar
   Future<Map> uploadAvatar(XFile avatar) async {
+    print(avatar);
     Response response = await fileUpload('/users/file-uploads/avatar', avatar);
+    print(response);
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -482,10 +484,11 @@ class HttpClient {
       "data": response.data,
     };
   }
-  Future<Map> searchGymServices() async {
+  Future<Map> searchGymServices(data) async {
 
     Response response =
-        await get('/gyms/exclusive-services/search');
+        await post('/gyms/exclusive-services/search', {"search":''});
+    print(response);
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -670,12 +673,27 @@ class HttpClient {
   }
 
   //Save To-do
-  Future<Map> saveTodo(Map data) async {
-    Response response = await post('/meeting/todos/actions/add', data);
-    return {
-      "code": response.statusCode,
-      "data": response.data,
-    };
+  Future<Map> saveTodo(dynamic data,XFile file) async {
+    FormData form = FormData.fromMap({
+      'user_id': data['user_id'],
+      'todo': data['todo'],
+      'notes': data['notes'],
+      'endDate':data['endDate'],
+      "image": await MultipartFile.fromFile(file.path, filename: file.name),
+    });
+    try {
+      var response =  await dio.post('/meeting/todos/actions/add', data: form);
+      return {"code":response.statusCode,"data":response.data};
+    } on DioError catch (e) {
+      print(e.response);
+      return {"code":-1,"data":"Something went wrong"};
+    }
+
+    // Response response = await post('/meeting/todos/actions/add', data);
+    // return {
+    //   "code": response.statusCode,
+    //   "data": response.data,
+    // };
   }
 
   //Save Meeting

@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:country_currency_pickers/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Controllers/WatchDataController.dart';
@@ -13,9 +14,12 @@ import 'package:north_star/UI/SharedWidgets/CommonProfileUpdate.dart';
 import 'package:north_star/UI/SharedWidgets/QualificationsAddEdit.dart';
 import 'package:north_star/UI/SharedWidgets/ReviewWidget.dart';
 import 'package:north_star/Utils/PopUps.dart';
+import 'package:north_star/components/Buttons.dart';
 import 'package:provider/provider.dart';
 
 import '../../main.dart';
+import '../HelpAndSupport/HelpAndSupportHome.dart';
+import '../SharedWidgets/UploadAvatar.dart';
 
 class TrainerProfile extends StatefulWidget {
   const TrainerProfile({Key? key}) : super(key: key);
@@ -80,7 +84,7 @@ class _TrainerProfileState extends State<TrainerProfile> {
       ready.value = false;
       Map res = await httpClient.getReviews(authUser.id);
       if (res['code'] == 200) {
-        print(res['data']);
+        print('Review data ${res['data']}');
         reviews.value = res['data'];
         ready.value = true;
       } else {
@@ -132,31 +136,38 @@ class _TrainerProfileState extends State<TrainerProfile> {
                               Positioned(
                                 left: 0,
                                 top: 76.69,
-                                child: Container(
-                                  width: 124,
-                                  height: 70,
-                                  decoration: BoxDecoration(
-                                    color: Color(0x88000000),
-                                  ),
-                                  child: Stack(
-                                    children: [
-                                      Positioned(
-                                        left: 36.75,
-                                        top: 0,
-                                        child: Container(
-                                          width: 46,
-                                          height: 46.50,
-                                          // clipBehavior: Clip.antiAlias,
-                                          child: Icon(
-                                            Icons.camera_alt_rounded,
-                                            color:
-                                                Themes.mainThemeColor.shade500,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Get.to(() => UploadAvatar())?.then((value) {
+                                      getProfile();
+                                    });
+                                  },
+                                  child: Container(
+                                    width: 124,
+                                    height: 70,
+                                    decoration: BoxDecoration(
+                                      color: Color(0x88000000),
+                                    ),
+                                    child: Stack(
+                                      children: [
+                                        Positioned(
+                                          left: 36.75,
+                                          top: 0,
+                                          child: Container(
+                                            width: 46,
+                                            height: 46.50,
+                                            // clipBehavior: Clip.antiAlias,
+                                            child: Icon(
+                                              Icons.camera_alt_rounded,
+                                              color: Themes
+                                                  .mainThemeColor.shade500,
+                                            ),
+                                            // decoration: BoxDecoration(
+                                            // ),
                                           ),
-                                          // decoration: BoxDecoration(
-                                          // ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -707,7 +718,11 @@ class _TrainerProfileState extends State<TrainerProfile> {
                                               TypographyStyles.textWithWeight(
                                                   14, FontWeight.w400)),
                                       SizedBox(height: 28),
-                                      Text(data.value['country_code'],
+                                      Text(
+                                          CountryPickerUtils
+                                                  .getCountryByIsoCode(data
+                                                      .value['country_code'])
+                                              .name!,
                                           style:
                                               TypographyStyles.textWithWeight(
                                                   14, FontWeight.w400)),
@@ -1374,6 +1389,16 @@ class _TrainerProfileState extends State<TrainerProfile> {
             //   color: Color(0xFFFFB700),
             //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             // )
+            Buttons.outlineTextIconButton(
+                onPressed: () {
+                  Get.to(() => HelpAndSupportHome());
+                },
+                label: "Help And Support",
+                width: Get.width - 32,
+                icon: Icons.help),
+            SizedBox(
+              height: 10,
+            ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: SizedBox(
@@ -1402,6 +1427,7 @@ class _TrainerProfileState extends State<TrainerProfile> {
             SizedBox(
               height: 10,
             ),
+
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: SizedBox(

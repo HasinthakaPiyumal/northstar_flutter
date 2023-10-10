@@ -29,6 +29,8 @@ class UserCalories extends StatelessWidget {
 
       print(res);
       if (res['code'] == 200) {
+        print("Calory data ---------");
+        print(res['data']);
         homeData.value = res['data'];
         ready.value = true;
       } else {
@@ -257,14 +259,10 @@ class UserCalories extends StatelessWidget {
                                                             .title(24),
                                                       ),
                                                       SizedBox(height: 16),
-                                                      Text('Remaining'),
+                                                      Text('Target Calories'),
                                                       Text(
                                                         (homeData['macros'][
-                                                                        'target_calories'] -
-                                                                    homeData[
-                                                                            'macros']
-                                                                        [
-                                                                        'daily_calories'])
+                                                                        'target_calories'])
                                                                 .round()
                                                                 .toString() +
                                                             ' Cal',

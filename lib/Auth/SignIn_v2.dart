@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Auth/CommonAuthUtils.dart';
+import 'package:north_star/Auth/ForgotPassword.dart';
 import 'package:north_star/Auth/SteppingSignUp/SignUpStart.dart';
 import 'package:north_star/Auth/SteppingSignUp_v2/SignUpUserType.dart';
 import 'package:north_star/Models/HttpClient.dart';
@@ -255,7 +256,7 @@ class _SignInState extends State<SignIn> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => SignUpStart(),
+                                      builder: (context) => ForgotPassword(),
                                     ),
                                   );
                                 },

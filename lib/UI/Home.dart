@@ -129,7 +129,6 @@ class Home extends StatelessWidget {
 
     getNotificationsAndShowPrompt();
 
-
     return RefreshIndicator(
       onRefresh: () {
         return Future.delayed(
@@ -187,7 +186,7 @@ class Home extends StatelessWidget {
                 child: Obx(() => CarouselSlider(
                       options: CarouselOptions(
                         autoPlay: true,
-                        autoPlayInterval: Duration(seconds:carouselTime.value),
+                        autoPlayInterval: Duration(seconds: carouselTime.value),
                         height: carouselHeight,
                         viewportFraction: 1.0,
                         onPageChanged: (index, reason) {
@@ -197,7 +196,6 @@ class Home extends StatelessWidget {
                         },
                       ),
                       items: carouselItems,
-
                     )),
               ),
               authUser.role == 'trainer'
@@ -211,7 +209,7 @@ class Home extends StatelessWidget {
                           }, 'dashboard', 'Dashboard'),
                           homeWidgetButton(() {
                             Get.to(() => HomeWidgetWorkouts());
-                          }, 'workouts', 'Workouts'),
+                          }, 'workouts', 'Exercise Bank'),
                           homeWidgetButton(() {
                             Get.to(() => HomeWidgetToDos());
                           }, 'todo', 'Todo'),
@@ -254,7 +252,7 @@ class Home extends StatelessWidget {
                           }, 'resources', 'Resources'),
                           homeWidgetButton(() {
                             Get.to(() => HomeWidgetServices());
-                          }, 'calculators', 'Health Services'),
+                          }, 'calculators', 'Fitness Calculator'),
                         ],
                       ))
                   : SizedBox(),
@@ -315,7 +313,7 @@ class Home extends StatelessWidget {
                             } else {
                               Get.to(() => HomeWidgetWorkouts());
                             }
-                          }, 'workouts', 'Workouts'),
+                          }, 'workouts', 'Exercise Bank'),
                           homeWidgetButton(() {
                             if (authUser.user['subscription'] == null) {
                               Get.to(() => Doctors());
@@ -421,7 +419,6 @@ class Home extends StatelessWidget {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   crossAxisAlignment: CrossAxisAlignment.end,
-
                                   children: [
                                     Expanded(
                                         child: Card(
@@ -466,7 +463,8 @@ class Home extends StatelessWidget {
                                                   Card(
                                                     elevation: 0,
                                                     color: Get.isDarkMode
-                                                        ? AppColors.primary1Color
+                                                        ? AppColors
+                                                            .primary1Color
                                                         : Colors.white,
                                                     shape:
                                                         RoundedRectangleBorder(
@@ -522,7 +520,11 @@ class Home extends StatelessWidget {
                                                                         'target_calories']
                                                                     .round()
                                                                     .toString(),
-                                                                style: TypographyStyles.textWithWeight(12, FontWeight.w300),
+                                                                style: TypographyStyles
+                                                                    .textWithWeight(
+                                                                        12,
+                                                                        FontWeight
+                                                                            .w300),
                                                               ),
                                                             ],
                                                           ),

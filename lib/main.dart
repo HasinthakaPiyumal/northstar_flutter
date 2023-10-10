@@ -92,7 +92,6 @@ Future checkAuth() async {
   } else {
     httpClient.setToken(token);
     Map res = await httpClient.authCheck();
-    print(res);
 
     if (res['code'] == 200) {
       print('Printing token inner 1');

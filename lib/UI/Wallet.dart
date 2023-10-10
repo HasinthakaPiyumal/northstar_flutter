@@ -65,6 +65,7 @@ class Wallet extends StatelessWidget {
 
       if (res['code'] == 200) {
         data.value = res['data'];
+        print('wallet data --> $data');
         getTransactions();
         await ClientNotesController.getClientNotes();
         ready.value = true;
@@ -119,7 +120,7 @@ class Wallet extends StatelessWidget {
                                   style: TypographyStyles.normalText(18, Get.isDarkMode ? Colors.white : Colors.black),
                                   children: [
                                     TextSpan(
-                                      text: Utils.currencyFmt.format(data['balance']/100),
+                                      text: Utils.currencyFmt.format(data['balance']),
                                       style: TypographyStyles.title(35),
                                     ),
                                   ]

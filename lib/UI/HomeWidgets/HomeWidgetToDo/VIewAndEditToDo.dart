@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/components/Buttons.dart';
@@ -17,27 +19,32 @@ class ViewAndEditToDo extends StatelessWidget {
 
   Future<void> shareNow(BuildContext context) async {
     final RenderBox box = context.findRenderObject() as RenderBox;
-
+    print('${HttpClient.s3ResourcesBaseUrl}${selectedToDo["image"]}');
     try {
-      final response =
-          await http.get(Uri.parse("https://placehold.co/600x400@3x.png"));
-
-      if (response.statusCode == 200) {
-        final directory = await getTemporaryDirectory();
-        final filePath = '${directory.path}/image.png';
-
-        final File file = File(filePath);
-        await file.writeAsBytes(response.bodyBytes);
-
-        Share.shareFiles(
-          [filePath],
-          text: '${selectedToDo["notes"]}'.capitalizeFirst as String,
-          subject: '${selectedToDo["todo"]}'.capitalizeFirst as String,
-          mimeTypes: ['image/*'],
-          sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
-        );
+      if (selectedToDo["image"] == null) {
+        Share.share(
+            '${selectedToDo["todo"]}\n\n${selectedToDo["notes"]}\n${DateFormat("yyyy-MM-dd hh:mm a").format(DateTime.parse(selectedToDo["endDate"]))}');
       } else {
-        throw Exception('Failed to load image');
+        final response = await http.get(Uri.parse('${HttpClient.s3ResourcesBaseUrl}${selectedToDo["image"]}'));
+        // await http.get(Uri.parse("https://placehold.co/600x400@3x.png"));
+
+        if (response.statusCode == 200) {
+          final directory = await getTemporaryDirectory();
+          final filePath = '${directory.path}/image.png';
+
+          final File file = File(filePath);
+          await file.writeAsBytes(response.bodyBytes);
+
+          Share.shareFiles(
+            [filePath],
+            text: '${selectedToDo["todo"]}\n\n${selectedToDo["notes"]}\n${DateFormat("yyyy-MM-dd hh:mm a").format(DateTime.parse(selectedToDo["endDate"]))}',
+            subject: '${selectedToDo["todo"]}'.capitalizeFirst as String,
+            mimeTypes: ['image/*'],
+            sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
+          );
+        } else {
+          throw Exception('Failed to load image');
+        }
       }
     } catch (e) {
       print('Error: $e');
@@ -46,6 +53,7 @@ class ViewAndEditToDo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('print(selectedToDo); --> $selectedToDo');
     return Scaffold(
       appBar: AppBar(
         title: Text("View ToDo"),
@@ -103,6 +111,19 @@ class ViewAndEditToDo extends StatelessWidget {
                         ],
                       ),
                     ),
+                    Visibility(
+                        visible: selectedToDo["image"] != null,
+                        child: Container(
+                            padding: EdgeInsets.only(bottom: 16),
+                            width: Get.width,
+                            // height: Get.width,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: CachedNetworkImage(
+                                imageUrl: '${HttpClient.s3ResourcesBaseUrl}${selectedToDo["image"]}',
+                                fit: BoxFit.cover,
+                              ),
+                            ))),
                     Row(
                       children: [
                         Expanded(

@@ -54,14 +54,13 @@ class _TrainerRegisterSecondState extends State<TrainerRegisterSecond> {
     // print(signUpData.toClientJson());
 
     if (_countryController.text.isEmpty ||
-        _addressController.text.isEmpty ||
         _contactPersonController.text.isEmpty ||
         _emergencyContactController.text.isEmpty ||
         _passwordController.text.isEmpty ||
         _confirmPasswordController.text.isEmpty) {
       showSnack('Incomplete information', 'Please enter correct information');
     } else {
-      signUpData.countryCode = _countryController.text;
+      // signUpData.countryCode = _countryController.text;
       signUpData.address = _addressController.text;
       signUpData.eContactName = _contactPersonController.text;
       signUpData.eContactPhone = emergencyContact;

@@ -16,7 +16,10 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
+import '../../components/Buttons.dart';
+import '../../components/CheckButton.dart';
 import '../../main.dart';
+import '../HelpAndSupport/HelpAndSupportHome.dart';
 import '../SharedWidgets/UploadAvatar.dart';
 
 class DoctorPrivateProfile extends StatefulWidget {
@@ -107,6 +110,111 @@ class _DoctorPrivateProfileState extends State<DoctorPrivateProfile> {
                     ),
                   ),
                   SizedBox(height: 8),
+                  GestureDetector(
+                    onTap: () {
+                      themeProvider.toggleTheme();
+                      // isDarkMode.value = value;
+                    },
+                    child: Container(
+                      alignment: Alignment.bottomRight,
+                      padding: EdgeInsets.only(right: 16),
+                      child: Container(
+                        width: 96,
+                        height: 44,
+                        child: Stack(
+                          children: [
+                            Positioned(
+                              left: 0,
+                              top: 0,
+                              child: Container(
+                                width: 96,
+                                height: 44,
+                                decoration: ShapeDecoration(
+                                  color: Color(0xFF1E2630),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              left: Get.isDarkMode ? 56 : 4,
+                              top: 4,
+                              child: Container(
+                                width: 36,
+                                height: 36,
+                                child: Stack(
+                                  children: [
+                                    Positioned(
+                                      left: 0,
+                                      top: 0,
+                                      child: Container(
+                                        width: 36,
+                                        height: 36,
+                                        decoration: ShapeDecoration(
+                                          color: Color(0xFFFFB700),
+                                          shape: OvalBorder(),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              left: 4,
+                              top: 4,
+                              child: Container(
+                                width: 36,
+                                height: 36,
+                                child: Stack(
+                                  children: [
+                                    Positioned(
+                                      left: 0,
+                                      top: 0,
+                                      child: Container(
+                                        width: 36,
+                                        height: 36,
+                                        child: Icon(
+                                            Icons.light_mode_rounded,
+                                            color: Get.isDarkMode
+                                                ? Color(0xFFFFFFFF)
+                                                : Color(0xFF1B1F24)),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              left: 56,
+                              top: 4,
+                              child: Container(
+                                width: 36,
+                                height: 36,
+                                child: Stack(
+                                  children: [
+                                    Positioned(
+                                      left: 0,
+                                      top: 0,
+                                      child: Container(
+                                        width: 36,
+                                        height: 36,
+                                        child: Icon(Icons.dark_mode,
+                                            color: !Get.isDarkMode
+                                                ? Color(0xFFFFFFFF)
+                                                : Color(0xFF1B1F24)),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Divider(thickness: 1),
@@ -204,31 +312,6 @@ class _DoctorPrivateProfileState extends State<DoctorPrivateProfile> {
                     ),
                   ),
                   SizedBox(height: 16),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Dark Mode'),
-                        CupertinoSwitch(
-                          value: isDarkMode.value,
-                          onChanged: (value) {
-                            themeProvider.toggleTheme();
-                          },
-                          // onChanged: (value){
-                          //   SharedPreferences.getInstance().then((prefs){
-                          //     prefs.setBool('darkMode', value);
-                          //   });
-                          //   print(value);
-                          //   isDarkMode.value = value;
-                          //   //Get.changeTheme(value ? ThemeData.dark() : ThemeData.light());
-                          //   showSnack('Theme Changed!', 'Please Reopen the App');
-                          // },
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 16),
 
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -299,29 +382,25 @@ class _DoctorPrivateProfileState extends State<DoctorPrivateProfile> {
                 ],
               ) : Center(child: CircularProgressIndicator(),)),
               SizedBox(height: 20,),
+              Buttons.outlineTextIconButton(
+                  onPressed: () {
+                    Get.to(() => HelpAndSupportHome());
+                  },
+                  label: "Help And Support",
+                  width: Get.width - 32,
+                  icon: Icons.help),
+              SizedBox(height: 20,),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: SizedBox(
                   width: double.infinity,
-                  height: 50,
-                  child: MaterialButton(
-                      onPressed: (){
+                  height: 44,
+                  child: Buttons.outlineTextIconButton(
+                      onPressed: () {
                         showSignOutDialog();
                       },
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          side: BorderSide(
-                              color: Colors.red
-                          )
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.logout, color: Colors.red,),
-                          SizedBox(width: 20,),
-                          Text('LOGOUT', style: TextStyle(color: Colors.red),),
-                        ],
-                      )),
+                      label: "logout",
+                      icon: Icons.logout),
                 ),
               ),
               SizedBox(height: 20),

@@ -15,7 +15,7 @@ class HomeWidgetServices extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Health Services")),
+      appBar: AppBar(title: Text("Fitness Calculator")),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16),
         child: Column(

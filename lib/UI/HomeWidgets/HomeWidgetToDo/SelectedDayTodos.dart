@@ -35,13 +35,19 @@ class SelectedDayTodos extends StatelessWidget {
       selectedDayCompletedToDos.value = [];
       upcomingToDos.value = [];
 
+      Map res = await httpClient.getTodo();
+      allTodos.value = res['data'];
+
       allTodos.forEach((element) {
-        if(element['endDate'] == DateFormat("yyyy-MM-dd").format(selectedDate) && element['completed'] == false) {
-          selectedDayPendingToDos.add(element);
-        } else if (element['endDate'] == DateFormat("yyyy-MM-dd").format(selectedDate) && element['completed'] == true) {
+
+        if(DateFormat("yyyy-MM-dd").format(DateTime.parse(element['endDate'])) == DateFormat("yyyy-MM-dd").format(selectedDate) && element['completed'] == false) {
+          if (DateTime.parse(element['endDate']).difference(selectedDate).inMinutes < 0) {
+            upcomingToDos.add(element);
+          }else{
+            selectedDayPendingToDos.add(element);
+          }
+        } else if (DateFormat("yyyy-MM-dd").format(DateTime.parse(element['endDate'])) == DateFormat("yyyy-MM-dd").format(selectedDate) && element['completed'] == true) {
           selectedDayCompletedToDos.add(element);
-        } else if (DateTime.parse(element['endDate']).difference(selectedDate).inMinutes > 0 && element['completed'] == false) {
-          upcomingToDos.add(element);
         }
       });
 
@@ -252,6 +258,7 @@ class SelectedDayTodos extends StatelessWidget {
             // Text(DateFormat("EEEE, MMMM dd, yyyy").format(selectedDate),
             //   style: TypographyStyles.boldText(25, Get.isDarkMode ? Colors.white : Colors.black ),
             // ),
+            Visibility(visible: selectedDayPendingToDos.isEmpty && upcomingToDos.isEmpty && selectedDayCompletedToDos.isEmpty,child: LoadingAndEmptyWidgets.emptyWidget()),
             SizedBox(height: 24,),
             Visibility(
               visible: selectedDayPendingToDos.isNotEmpty,

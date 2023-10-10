@@ -159,7 +159,7 @@ class Reports extends StatelessWidget {
                 ),
                 RichText(
                   text: TextSpan(
-                    text: "Rf ",
+                    text: "MVR",
                     style: TypographyStyles.normalText(16, Get.isDarkMode ? Colors.white : Colors.black),
                     children: [
                       TextSpan(
@@ -200,7 +200,7 @@ class Reports extends StatelessWidget {
                     SizedBox(height: 4,),
                     RichText(
                       text: TextSpan(
-                          text: "Rf ",
+                          text: "MVR",
                           style: TypographyStyles.normalText(14, Get.isDarkMode ? Colors.white : Colors.black),
                           children: [
                             TextSpan(
@@ -232,7 +232,7 @@ class Reports extends StatelessWidget {
                     SizedBox(height: 4,),
                     RichText(
                       text: TextSpan(
-                          text: "Rf ",
+                          text: "MVR",
                           style: TypographyStyles.normalText(14, Get.isDarkMode ? Colors.white : Colors.black),
                           children: [
                             TextSpan(
@@ -264,7 +264,7 @@ class Reports extends StatelessWidget {
                     SizedBox(height: 4,),
                     RichText(
                       text: TextSpan(
-                          text: "Rf ",
+                          text: "MVR",
                           style: TypographyStyles.normalText(14, Get.isDarkMode ? Colors.white : Colors.black),
                           children: [
                             TextSpan(
@@ -333,7 +333,7 @@ class Reports extends StatelessWidget {
                                   style: TypographyStyles.boldText(8, Colors.white),
                                 ),
                                 Text(
-                                  "Value : ${data.value} Rf",
+                                  "Value : ${data.value} MVR",
                                   style: TypographyStyles.boldText(8, Colors.white),
                                 ),
                               ],

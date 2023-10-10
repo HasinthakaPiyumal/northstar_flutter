@@ -137,7 +137,7 @@ class HomeWidgetFinance extends StatelessWidget {
                             children: [
                               RichText(
                                 text: TextSpan(
-                                    text: "Rf ",
+                                    text: "MVR",
                                     style: TypographyStyles.normalText(22, Get.isDarkMode ? Colors.white : Colors.black),
                                     children: [
                                       TextSpan(
@@ -153,7 +153,7 @@ class HomeWidgetFinance extends StatelessWidget {
                               child: CircularProgressIndicator()),
                           )),
                           SizedBox(height: 4),
-                          Obx(()=> ready.value ? Text('Tax - Rf 15,920.00', style: TypographyStyles.boldText(16, Colors.white, )):Container(),),
+                          Obx(()=> ready.value ? Text('Tax - MVR15,920.00', style: TypographyStyles.boldText(16, Colors.white, )):Container(),),
                           SizedBox(height: 15),
                           SizedBox(
                             width: Get.width,
@@ -189,7 +189,7 @@ class HomeWidgetFinance extends StatelessWidget {
                                           SizedBox(height: 4,),
                                           RichText(
                                             text: TextSpan(
-                                                text: "Rf ",
+                                                text: "MVR",
                                                 style: TypographyStyles.normalText(14, Get.isDarkMode ? Colors.white : Colors.black),
                                                 children: [
                                                   TextSpan(
@@ -235,7 +235,7 @@ class HomeWidgetFinance extends StatelessWidget {
                                           SizedBox(height: 4,),
                                           RichText(
                                             text: TextSpan(
-                                                text: "Rf ",
+                                                text: "MVR",
                                                 style: TypographyStyles.normalText(14, Get.isDarkMode ? Colors.white : Colors.black),
                                                 children: [
                                                   TextSpan(

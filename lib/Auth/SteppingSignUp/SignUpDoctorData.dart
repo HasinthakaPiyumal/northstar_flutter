@@ -102,7 +102,7 @@ class SignUpDoctorData extends StatelessWidget {
                       controller: _hourlyController,
                       keyboardType: TextInputType.numberWithOptions(decimal: true),
                       decoration: InputDecoration(
-                        labelText: 'Hourly Rate (' + signUpData.currency + ')',
+                        labelText: 'Aprox Rate (' + signUpData.currency + ')',
                         border: OutlineInputBorder(),
                       ),
                     ),

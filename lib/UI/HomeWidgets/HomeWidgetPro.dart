@@ -52,6 +52,7 @@ class HomeWidgetPro extends StatelessWidget {
     void getPlansList() async {
       ready.value = false;
       Map res = await httpClient.getPlansList();
+      print('plan list =---> $res');
       if (res['code'] == 200) {
         List temp = res['data'];
         if (authUser.user['trial_used'] == true){
@@ -81,6 +82,7 @@ class HomeWidgetPro extends StatelessWidget {
 
       Map res = await httpClient.subscribeNow(
           {'months': months, 'user_id': authUser.id, 'amount': getPlanPrice(plan)});
+      print('printing price ${getPlanPrice(plan)}');
       print(res);
       if (res['code'] == 200) {
         print(res['data']['url']);
@@ -159,7 +161,7 @@ class HomeWidgetPro extends StatelessWidget {
                         16, Themes.mainThemeColorAccent.shade300),
                   ),
                   Text(
-                    'Rf ${getPlanPrice(plan)-couponValue.value}',
+                    'MVR ${getPlanPrice(plan)-couponValue.value}',
                     style: TypographyStyles.boldText(
                       16,
                       Get.isDarkMode
@@ -556,14 +558,14 @@ class HomeWidgetPro extends StatelessWidget {
                                                       plansList[index]
                                                               ['discounted']
                                                           ? Text(
-                                                              'Rf ${plansList[index]['price']}',style: TextStyle(
+                                                              'MVR ${plansList[index]['price']}',style: TextStyle(
                                                                 decoration: TextDecoration.lineThrough,
                                                                 color: Colors.orange,
                                                                 fontSize: 12
                                                               ))
                                                           : SizedBox(),
                                                       SizedBox(width: 4),
-                                                      Text('Rf ${getPlanPrice(plansList[index])}',
+                                                      Text('MVR ${getPlanPrice(plansList[index])}',
                                                         textAlign:
                                                             TextAlign.left,
                                                         style: Theme.of(context)

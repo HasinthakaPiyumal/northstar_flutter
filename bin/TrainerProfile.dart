@@ -209,7 +209,7 @@ class TrainerProfile extends StatelessWidget {
                 child: CircularProgressIndicator(color: Color(0xFFFFB800),),
               ),
             )),
-            Obx(()=> (ready.value && data.value.isNotEmpty && reviews.value.isNotEmpty ) ? Column(
+            Obx(()=> (ready.value && data.value.isNotEmpty && reviews.value.isNotEmpty) ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 16),

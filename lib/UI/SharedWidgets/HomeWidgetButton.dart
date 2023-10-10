@@ -10,14 +10,14 @@ import 'package:north_star/UI/HomeWidgets/HomeWidgetPro.dart';
 bool enabledProWidgets(String text) {
   List proWidgets = [
     'Dashboard',
-    'Workouts',
+    'Exercise Bank',
     'Todo',
     'Video Sessions',
     'Resources',
     'Doctors',
     'Calls',
     'Client Notes',
-    'Health Services',
+    'Fitness Calculator',
     'Calories',
     'Lab Reports',
     'Online Clinic',

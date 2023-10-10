@@ -63,7 +63,7 @@ class HomeWidgetClientNotes extends StatelessWidget {
                   backgroundImage: CachedNetworkImageProvider(HttpClient.s3BaseUrl + client['client']['avatar_url']),
                 ),
                 title: Text("${client['client']['name']}"),
-                subtitle: Text("Rf ${valueFmt.format(client['income'])}"),
+                subtitle: Text("MVR${valueFmt.format(client['income'])}"),
                 trailing: Chip(
                   label: Text("${ClientNotesController.getClientNotesByClientId(client['client']['id']).length}"),
                   backgroundColor: colors.Colors().lightBlack(1),

@@ -283,11 +283,8 @@ class ScheduleForMe extends StatelessWidget {
     }
 
     Future<void> getImage() async {
-      print("Picker callin 01");
       final ImagePicker picker = ImagePicker();
-      print("Picker callin 02");
       final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-      print("Picker callin 03");
       if (pickedFile != null) {
         // _handleLostFiles(files);
       } else {

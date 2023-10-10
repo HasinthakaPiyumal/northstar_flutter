@@ -15,6 +15,7 @@ import 'package:north_star/UI/HomeWidgets/HomeWidgetWorkouts/ViewWorkoutFeedBack
 import 'package:north_star/UI/HomeWidgets/HomeWidgetWorkouts/WorkoutPresets.dart';
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
+import 'package:north_star/components/Buttons.dart';
 
 import '../../components/CircularProgressBar.dart';
 
@@ -47,7 +48,7 @@ class HomeWidgetWorkouts extends StatelessWidget {
     getWorkouts();
 
     return Scaffold(
-      floatingActionButton: authUser.role == 'trainer'
+      floatingActionButton: authUser.role == 'trainer' || authUser.role == 'client'
           ? Container(
               height: 44,
               child: FloatingActionButton.extended(
@@ -81,19 +82,18 @@ class HomeWidgetWorkouts extends StatelessWidget {
           centerTitle: true,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           title: Text(
-            'Workouts',
+            'Exercise Bank',
             style: TypographyStyles.title(20),
           )),
       body: SingleChildScrollView(
+
         child: Column(
           children: [
             //authUser.role == 'trainer' ? SizedBox(height: 15) : SizedBox(),
-            authUser.role == 'trainer'
-                ? Padding(
+            Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Row(
-                      children: [
-                        Expanded(
+                      children: [Expanded(
                           child: ElevatedButton(
                             style: ButtonStyles.matRadButton(
                                 Get.isDarkMode
@@ -162,13 +162,11 @@ class HomeWidgetWorkouts extends StatelessWidget {
                         ),
                       ],
                     ),
-                  )
-                : Container(),
+                  ),
 
-            authUser.role == 'trainer' ? SizedBox(height: 20) : SizedBox(),
+            SizedBox(height: 20),
 
-            authUser.role == 'trainer'
-                ? Padding(
+            Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Row(
                       children: [
@@ -176,8 +174,7 @@ class HomeWidgetWorkouts extends StatelessWidget {
                             style: TypographyStyles.title(20)),
                       ],
                     ),
-                  )
-                : SizedBox(),
+                  ),
 
             SizedBox(height: 15),
 
@@ -296,10 +293,9 @@ class HomeWidgetWorkouts extends StatelessWidget {
                                               ),
                                               CircularProgressBar(
                                                   progress: workouts[index]
-                                                          ['completed_steps']
-                                                       /
-                                                          workouts[index]
-                                                              ['totalSteps'])
+                                                          ['completed_steps'] /
+                                                      workouts[index]
+                                                          ['totalSteps'])
                                             ],
                                           ),
                                         ),
@@ -481,23 +477,25 @@ class HomeWidgetWorkouts extends StatelessWidget {
                                                       mainAxisAlignment:
                                                           MainAxisAlignment.end,
                                                       children: [
-                                                        ElevatedButton(
-                                                            style: ButtonStyles
-                                                                .bigBlackButton(),
-                                                            onPressed: () {
-                                                              Get.to(
-                                                                  () =>
-                                                                      ViewWorkoutFeedback(
-                                                                        data: workouts[
-                                                                            index],
-                                                                        viewOnly:
-                                                                            false,
-                                                                      ))?.then(
-                                                                  (value) =>
-                                                                      getWorkouts());
-                                                            },
-                                                            child: Text(
-                                                                'Add Feedback'))
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(bottom: 8.0),
+                                                          child: Buttons
+                                                              .yellowFlatButton(
+                                                            label:"Add Feedback",
+                                                                  width: 140,
+                                                                  height: 36,
+                                                                  onPressed: () {
+                                                            Get.to(() =>
+                                                                    ViewWorkoutFeedback(
+                                                                      data: workouts[
+                                                                          index],
+                                                                      viewOnly:
+                                                                          false,
+                                                                    ))
+                                                                ?.then((value) =>
+                                                                    getWorkouts());
+                                                          }),
+                                                        )
                                                       ],
                                                     )
                                                   ],
