@@ -12,7 +12,7 @@ class AuthUser {
   late Map user;
 
   void _setUser(Map<String, dynamic> userObj) {
-    id = userObj['id'];
+    id = int.parse(userObj['id']) ;
     name = userObj['name'];
     email = userObj['email'];
     role = userObj['role'];

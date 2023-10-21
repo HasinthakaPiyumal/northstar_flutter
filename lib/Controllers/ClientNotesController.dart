@@ -12,6 +12,7 @@ class ClientNotesController {
     });
     if (res['code'] == 200) {
       clientNotes.value = res['data'].map<ClientNote>((e) => ClientNote.fromJson(e)).toList();
+      print(res['data']);
       clientNotes.refresh();
       print(clientNotes);
     } else {

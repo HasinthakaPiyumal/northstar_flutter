@@ -6,6 +6,8 @@ import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:uuid/uuid.dart';
 
+import 'CallConrtoller.dart';
+
 class AgoraCallController {
   static RxBool ready = false.obs;
 
@@ -28,7 +30,7 @@ class AgoraCallController {
   // static const String appId = '0e76a00a008e418bb9074ccad44724de';
   // static const String appId = '717e3dfc72374428b1daa46b39e9145b'; // backend appId
   static const String appId = 'ed79caa1142a4a71846177dbf737e29e'; // temporary appId
-  static const String token = "007eJxTYAhsOfKmodeTafNk6f2CKk0Hk+vPHPXcI71E61AL68FtD/IUGFJTzC2TExMNDU2MEk0SzQ0tTMwMzc1TktLMjc1TjSxTs8/zpzYEMjLY3/rGzMgAgSA+H0NKalpiaU6Jc0ZiXl5qDgMDAMQvJAI=";
+  static const String token = "007eJxTYLBaOHnnnNJNjjrBn5eyfRUpS9erej6b+3GiR8P/3RNfKwQoMKSmmFsmJyYaGpoYJZokmhtamJgZmpunJKWZG5unGlmmpnUYpTYEMjIsv13IyMgAgSA+H0NKalpiaU6Jc0ZiXl5qDgMDAM0uI+o=";
 
 
   static RxString callStatus =
@@ -84,7 +86,7 @@ class AgoraCallController {
           endTime = DateTime.now();
           timer.cancel();
           duration = Duration(seconds: 0).obs;
-          Get.back(closeOverlays: true, canPop: false);
+          // Get.back(closeOverlays: true, canPop: false);
           agoraEngine.leaveChannel();
         },
       ),
@@ -92,14 +94,14 @@ class AgoraCallController {
 
     await agoraEngine.enableAudio();
     await agoraEngine.enableLocalAudio(true);
+    invokeCall(int.parse(user['id']),channelName);
+    // dynamic res = await httpClient.invokeCall({
+    //   'from': "${authUser.id}",
+    //   'to': "${user['id']}",
+    //   'channel': channelName,
+    // });
 
-    dynamic res = await httpClient.invokeCall({
-      'from': "${authUser.id}",
-      'to': "${user['id']}",
-      'channel': channelName,
-    });
-
-    print('--------------> $res');
+    // print('--------------> $res');
 
     print(channelName);
 

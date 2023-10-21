@@ -22,18 +22,23 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:north_star/Styles/AppColors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Controllers/FirebaseMessageController.dart';
+
 class Layout extends StatefulWidget {
 
   const Layout({Key? key}) : super(key: key);
 
   @override
   State<Layout> createState() => _LayoutState();
+
 }
 
 class _LayoutState extends State<Layout> {
 
   final RxInt currentPage = 0.obs;
   String preferenceName = "homeViewTabIndex";
+
+
   @override
   Widget build(BuildContext context) {
     Rx<PageController> pgController = PageController(initialPage: currentPage.value).obs;

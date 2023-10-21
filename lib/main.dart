@@ -6,7 +6,6 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 
 // import 'package:flutter_zoom_videosdk/native/zoom_videosdk.dart';
 import 'package:get/get.dart';
@@ -19,7 +18,9 @@ import 'package:north_star/firebase_options.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
+import 'Controllers/CallConrtoller.dart';
 import 'Styles/AppColors.dart';
 
 bool isLoggedIn = false;
@@ -35,7 +36,6 @@ void main() async {
   String preferenceName = "homeViewTabIndex";
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.setInt(preferenceName, 0);
-
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -72,7 +72,7 @@ void main() async {
       event.complete(event.notification);
     }
   });
-
+  setupNotificationAction();
   runApp(
     ChangeNotifierProvider(
       create: (_) => ThemeProvider(currentTheme), // Initial theme
@@ -121,6 +121,7 @@ Future checkAuth() async {
 }
 
 class NorthStar extends StatelessWidget {
+  NorthStar();
   @override
   Widget build(BuildContext context) {
     precacheImage(AssetImage("assets/appicons/Northstar.png"), context);
@@ -226,8 +227,7 @@ class ThemeAll {
         unselectedLabelColor: Colors.white.withOpacity(0.7),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        selectedItemColor: AppColors.accentColor
-      ),
+          selectedItemColor: AppColors.accentColor),
       listTileTheme: ListTileThemeData(tileColor: AppColors.primary2Color));
 }
 // class ThemeAll {

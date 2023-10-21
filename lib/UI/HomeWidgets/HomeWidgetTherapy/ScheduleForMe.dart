@@ -15,28 +15,47 @@ import 'package:north_star/UI/Payments/CardPayment.dart';
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/Utils/PopUps.dart';
+import 'package:north_star/components/ImageUploader.dart';
 
 import '../../../Styles/AppColors.dart';
 
-class ScheduleForMe extends StatelessWidget {
-  const ScheduleForMe({Key? key, this.doctor}) : super(key: key);
-
+class ScheduleForMe extends StatefulWidget {
+  ScheduleForMe({Key? key, this.doctor}) : super(key: key);
+  RxList reservedTimes = [].obs;
+  RxString curDate = "".obs;
+  RxString stTime = "".obs;
+  RxString enTime = "".obs;
+  TextEditingController selectedDate = new TextEditingController();
+  TextEditingController startTime = new TextEditingController();
+  TextEditingController endTime = new TextEditingController();
+  TextEditingController descriptionController = new TextEditingController();
+  TextEditingController titleController = new TextEditingController();
   final doctor;
 
   @override
+  State<ScheduleForMe> createState() => _ScheduleForMeState();
+}
+
+class _ScheduleForMeState extends State<ScheduleForMe> {
+  late dynamic _imageFile;
+
+  @override
   Widget build(BuildContext context) {
-    print(doctor);
+    print(widget.doctor);
 
     RxBool ready = true.obs;
     RxMap walletData = {}.obs;
 
-    TextEditingController selectedDate = new TextEditingController();
-    TextEditingController startTime = new TextEditingController();
-    TextEditingController endTime = new TextEditingController();
-    TextEditingController descriptionController = new TextEditingController();
-    TextEditingController titleController = new TextEditingController();
-
     late DateTime selectedDateTime;
+    DateTime selectedStartTime = DateTime(2000, 1, 1, 0, 0);
+    DateTime selectedEndTime = DateTime(2000, 1, 1, 0, 0);
+
+    DateTime roundToNearestHour(DateTime date) {
+      int minutes = date.minute;
+      int roundedMinutes = (minutes + 30) ~/ 60 * 60; // Round to the nearest hour
+      DateTime roundedDate = date.subtract(Duration(minutes: minutes)).add(Duration(minutes: roundedMinutes));
+      return roundedDate;
+    }
 
     void confirmAndPay(DateTime dateTimeOfBooking, double total) async {
       Map res = await httpClient.getWallet();
@@ -115,7 +134,7 @@ class ScheduleForMe extends StatelessWidget {
                         16, Themes.mainThemeColorAccent.shade300),
                   ),
                   Text(
-                    '${doctor['name']}',
+                    '${widget.doctor['name']}',
                     style: TypographyStyles.textWithWeight(16, FontWeight.w500),
                   ),
                 ],
@@ -174,13 +193,13 @@ class ScheduleForMe extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () async {
                   if (walletData.value['balance'] >=
-                      double.parse(doctor['hourly_rate'].toString())) {
+                      double.parse(widget.doctor['hourly_rate'].toString())) {
                     Map res = await httpClient.newTrainerDoctorMeeting({
-                      'doctor_id': doctor['id'].toString(),
+                      'doctor_id': widget.doctor['id'].toString(),
                       'trainer_id': authUser.id.toString(),
                       'role': authUser.role,
-                      'title': titleController.text,
-                      'description': descriptionController.text,
+                      'title': widget.titleController.text,
+                      'description': widget.descriptionController.text,
                       'start_time': dateTimeOfBooking.toString(),
                     });
                     print(res);
@@ -279,64 +298,50 @@ class ScheduleForMe extends StatelessWidget {
     }
 
     String getChargingMethod() {
-      return doctor['paying_type'] == 1 ? '(Per Session)' : '(Per Hour)';
+      return widget.doctor['paying_type'] == 2 ? '(Per Session)' : '(Per Hour)';
     }
 
-    Future<void> getImage() async {
-      final ImagePicker picker = ImagePicker();
-      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-      if (pickedFile != null) {
-        // _handleLostFiles(files);
-      } else {
-        // _handleError(response.exception);
-      }
-    }
 
-    RxList reservedTimes = [].obs;
-    RxString curDate = "".obs;
-    RxString stTime = "".obs;
-    RxString enTime = "".obs;
+
 
     void checkReserved(String date) async {
-      var data = {"therapy_id": doctor["therapy_Id"], "apt_date": date};
+      var data = {"therapy_id": widget.doctor["therapy_Id"], "apt_date": date};
       var res = await httpClient.checkReservedTherapy(data);
       print(res["data"]);
       if (res['code'] == 200) {
         if (res['data'].length > 0) {
           // reservedTimes.value = res['data'];
           res['data'].forEach((item) {
-            reservedTimes.add(item);
+            widget.reservedTimes.add(item);
             print(item);
           });
         } else {
-          reservedTimes.value = [];
+          widget.reservedTimes.value = [];
         }
       } else {
-        reservedTimes.value = [];
+        widget.reservedTimes.value = [];
       }
     }
 
     void addMeeting() async {
       var data = {
-        "therapy_id": doctor["therapy_Id"],
-        "reason": descriptionController.text??"",
-        "additional": titleController.text??"",
-        "apt_date": curDate.value,
-        "start_time": stTime.value,
-        "end_time": enTime.value
+        "therapy_id": widget.doctor["therapy_Id"],
+        "reason": widget.descriptionController.text ?? "",
+        "additional": widget.titleController.text ?? "",
+        "apt_date": widget.curDate.value,
+        "start_time": widget.stTime.value,
+        "end_time": widget.enTime.value
       };
-      print('data printing-->$data');
-      var res = await httpClient.addTherapyMeeting(data);
-      print('data printing-->$res');
+      var res = await httpClient.addTherapyMeeting(data,_imageFile);
       if (res["code"] == 200 && res["data"][0]["status"]) {
+        Get.back();
+        Get.back();
+        Get.back();
         showSnack(
             'Booking Successful', 'Your booking has been successfully placed.');
-        Get.back();
-        Get.back();
-      }else{
+      } else {
         print('data printing-->$res');
-        showSnack(
-            'Booking Failed', res["data"][0]["message"]);
+        showSnack('Booking Failed', res["data"][0]["message"]);
       }
     }
 
@@ -371,7 +376,7 @@ class ScheduleForMe extends StatelessWidget {
                       CircleAvatar(
                         radius: 32,
                         backgroundImage: CachedNetworkImageProvider(
-                            HttpClient.s3BaseUrl + doctor['avatar_url']),
+                            HttpClient.s3BaseUrl + widget.doctor['avatar_url']),
                       ),
                       SizedBox(
                         width: 26,
@@ -390,7 +395,7 @@ class ScheduleForMe extends StatelessWidget {
                             //     )),
                             // SizedBox(height: 5),
                             Text(
-                              'Dr. ' + doctor['name'],
+                              'Dr. ' + widget.doctor['name'],
                               overflow: TextOverflow.clip,
                               maxLines: 1,
                               style: TypographyStyles.title(20),
@@ -407,7 +412,9 @@ class ScheduleForMe extends StatelessWidget {
                                 Spacer(),
                                 Text(
                                     'MVR ' +
-                                        doctor['hourly_rate']
+                                        (widget.doctor['paying_type'] == 1
+                                                ? widget.doctor['hourly_rate']
+                                                : widget.doctor['session_rate'])
                                             .toStringAsFixed(2),
                                     style: TextStyle(
                                       color: Color(0xFFFFB700),
@@ -416,7 +423,13 @@ class ScheduleForMe extends StatelessWidget {
                                       fontWeight: FontWeight.w600,
                                     )),
                               ],
-                            )
+                            ),
+                            Visibility(
+                              visible: widget.doctor['paying_type'] == 2,
+                              child: Text(
+                                  "Session Duration: ${widget.doctor['session_duration']} Min",
+                                  style: TypographyStyles.text(14)),
+                            ),
                           ],
                         ),
                       )
@@ -428,7 +441,7 @@ class ScheduleForMe extends StatelessWidget {
               Text('Appointment for you', style: TypographyStyles.title(18)),
               SizedBox(height: 25),
               TextField(
-                controller: selectedDate,
+                controller: widget.selectedDate,
                 readOnly: true,
                 decoration: InputDecoration(
                   labelText: 'Approximate Date',
@@ -448,14 +461,18 @@ class ScheduleForMe extends StatelessWidget {
                       print('change $date');
                     },
                     onConfirm: (date) {
-                      print('confirm $date');
                       selectedDateTime = date;
+                      if (widget.doctor['paying_type'] == 2) {
+                        //  Per session
+                      } else {
+                        //  Per hour
+                      }
                       checkReserved(
                           DateFormat("yyyy-M-d").format(date).toString());
-                      selectedDate.text = DateFormat("MMM dd,yyyy")
+                      widget.selectedDate.text = DateFormat("MMM dd,yyyy")
                           .format(date)
                           .toString(); //+" at " +DateFormat('HH:mm').format(date);
-                      curDate.value =
+                      widget.curDate.value =
                           DateFormat("yyyy-M-d").format(date).toString();
                     },
                   );
@@ -464,7 +481,7 @@ class ScheduleForMe extends StatelessWidget {
               SizedBox(height: 16),
 
               Obx(() => Visibility(
-                    visible: reservedTimes.value.length > 0,
+                    visible: widget.reservedTimes.value.length > 0,
                     child: Container(
                       width: Get.width,
                       padding: EdgeInsets.all(16),
@@ -485,9 +502,9 @@ class ScheduleForMe extends StatelessWidget {
                           ),
                           ListView.builder(
                             shrinkWrap: true,
-                            itemCount: reservedTimes.value.length,
+                            itemCount: widget.reservedTimes.value.length,
                             itemBuilder: (context, index) {
-                              final item = reservedTimes.value[index];
+                              final item = widget.reservedTimes.value[index];
                               DateFormat dateFormat = DateFormat("hh:mm a");
                               String stT = dateFormat.format(DateTime.parse(
                                   '1970-01-01 ${item['start_time']}'));
@@ -522,7 +539,7 @@ class ScheduleForMe extends StatelessWidget {
                   Container(
                     width: ((Get.width - 32) / 2) - 8,
                     child: TextField(
-                      controller: startTime,
+                      controller: widget.startTime,
                       readOnly: true,
                       decoration: InputDecoration(
                         labelText: 'Start Time',
@@ -537,16 +554,26 @@ class ScheduleForMe extends StatelessWidget {
                           theme: ThemeBdayaStyles.main(),
                           showTitleActions: true,
                           showSecondsColumn: false,
+
                           // minTime: DateTime.now(),
-                          // currentTime: DateTime.now(),
+                          currentTime: selectedStartTime,
                           onChanged: (date) {
                             print('change $date');
                           },
                           onConfirm: (date) {
                             print('confirm $date');
-                            selectedDateTime = date;
-                            startTime.text = DateFormat('HH:mm').format(date);
-                            stTime.value =
+                            date = roundToNearestHour(date);
+                            selectedStartTime = date;
+                            if (widget.doctor['paying_type'] == 2) {
+                              print('setting session');
+                              DateTime sessionEndTime = date.add(Duration(
+                                  minutes: widget.doctor['session_duration']));
+                              widget.endTime.text = DateFormat('HH:mm').format(sessionEndTime);
+                              widget.enTime.value =
+                                  '${DateFormat("HH:mm").format(sessionEndTime).toString()}:00';
+                            }
+                            widget.startTime.text = DateFormat('HH:mm').format(date);
+                            widget.stTime.value =
                                 '${DateFormat("HH:mm").format(date).toString()}:00';
                           },
                         );
@@ -556,7 +583,7 @@ class ScheduleForMe extends StatelessWidget {
                   Container(
                     width: ((Get.width - 32) / 2) - 8,
                     child: TextField(
-                      controller: endTime,
+                      controller: widget.endTime,
                       readOnly: true,
                       decoration: InputDecoration(
                         labelText: 'End Time',
@@ -566,22 +593,26 @@ class ScheduleForMe extends StatelessWidget {
                         ),
                       ),
                       onTap: () {
+                        if (widget.doctor['paying_type'] == 2) {
+                          showSnack("Info", "The end time is automatically selected based on the session's duration.");
+                          return;
+                        }
                         DatePickerBdaya.showTimePicker(
                           context,
                           theme: ThemeBdayaStyles.main(),
                           showTitleActions: true,
                           showSecondsColumn: false,
-                          // minTime: DateTime.now(),
-                          // currentTime: DateTime.now(),
+                          currentTime: selectedEndTime,
                           onChanged: (date) {
                             print('change $date');
                           },
                           onConfirm: (date) {
                             print('confirm $date');
-                            selectedDateTime = date;
-                            endTime.text = DateFormat('HH:mm').format(date);
-                            enTime.value =
-                            '${DateFormat("HH:mm").format(date).toString()}:00';
+                            date = roundToNearestHour(date);
+                            selectedEndTime = date;
+                            widget.endTime.text = DateFormat('HH:mm').format(date);
+                            widget.enTime.value =
+                                '${DateFormat("HH:mm").format(date).toString()}:00';
                           },
                         );
                       },
@@ -603,7 +634,7 @@ class ScheduleForMe extends StatelessWidget {
 
               SizedBox(height: 16),
               TextField(
-                controller: descriptionController,
+                controller: widget.descriptionController,
                 maxLength: 250,
                 decoration: InputDecoration(
                   labelText: 'Additional details',
@@ -615,27 +646,11 @@ class ScheduleForMe extends StatelessWidget {
               SizedBox(
                 height: 16,
               ),
-              InkWell(
-                onTap: () {
-                  getImage();
-                },
-                customBorder: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-                child: Ink(
-                  decoration: ShapeDecoration(
-                    color: Color(0xFF1E2630),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: Container(
-                    width: 398,
-                    height: 124,
-                    child: Icon(Icons.add_photo_alternate_outlined,
-                        color: AppColors.accentColor),
-                  ),
-                ),
-              ),
+              ImageUploader(handler: (img) {
+                setState(() {
+                  _imageFile = img;
+                });
+              }),
               SizedBox(
                 height: 16,
               ),
@@ -671,10 +686,14 @@ class ScheduleForMe extends StatelessWidget {
                         child: CircularProgressIndicator(),
                       ),
                 onPressed: () {
-                  if (descriptionController.text.isNotEmpty && curDate.value.isNotEmpty  && stTime.value.isNotEmpty  && enTime.value.isNotEmpty) {
-                    addMeeting();return;
+                  if (widget.descriptionController.text.isNotEmpty &&
+                      widget.curDate.value.isNotEmpty &&
+                      widget.stTime.value.isNotEmpty &&
+                      widget.enTime.value.isNotEmpty) {
+                    addMeeting();
+                    return;
                     confirmAndPay(selectedDateTime,
-                        double.parse(doctor['hourly_rate'].toString()));
+                        double.parse(widget.doctor['hourly_rate'].toString()));
                   } else {
                     showSnack('Something Went Wrong!',
                         'Please fill out all the input fields');

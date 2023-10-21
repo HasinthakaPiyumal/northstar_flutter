@@ -48,7 +48,9 @@ class AddWorkoutPreset extends StatelessWidget {
       if (editWorkoutObject != null) {
         id = editWorkoutObject['id'];
       }
-
+      String jsonString = jsonEncode(workouts.value);
+      print("===== jsonString");
+      print(workouts);
       Map res = await httpClient.addOrEditWorkoutPresets({
         'workout_plan': json.encode(workouts.value),
         'trainer_id': authUser.id,

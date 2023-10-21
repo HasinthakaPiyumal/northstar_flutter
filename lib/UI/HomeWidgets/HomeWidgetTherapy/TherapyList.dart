@@ -19,20 +19,19 @@ class TherapyList extends StatelessWidget {
 
     Future<List> searchDoctors(String pattern) async {
       Map res = await httpClient.searchTherapy(pattern);
-      print(res);
       if (res['code'] == 200) {
         doctors.value = res['data'];
         ready.value = true;
         res['data'].forEach((item){
           RxString currentTherapyDays = "".obs;
+          print('item --> $currentTherapyDays');
           item['therapy_working_hours'].forEach((subItem){
-            var day = ["Mo","Tu","We","Th","Fr","Sa","Su"][subItem['id']-1];
+            var day = ["Mo","Tu","We","Th","Fr","Sa","Su"][subItem['day']-1];
             if(subItem['rest_day']==0){
               currentTherapyDays.value = '${currentTherapyDays.value}${currentTherapyDays.value!=""?" | ":""}$day';
             }
           });
           availableDateList.add(currentTherapyDays);
-
         });
         return [];
       } else {
@@ -246,6 +245,7 @@ class TherapyList extends StatelessWidget {
                                                               left: 10),
                                                           child: Text(
                                                             availableDateList[index].value,
+                                                            // '${availableDateList.length}',
                                                             style: TypographyStyles
                                                                 .textWithWeight(16,
                                                                 FontWeight.w500),

@@ -58,7 +58,9 @@ class InCall extends StatelessWidget {
               () => Text(
                 AgoraCallController.callStatus.value == 'Connected'
                     ? '${AgoraCallController.duration.value.inMinutes.toString().padLeft(2, '0')}:${AgoraCallController.duration.value.inSeconds.remainder(60).toString().padLeft(2, '0')}'
-                    : 'Connecting...',
+                    : AgoraCallController.callStatus.value == 'Disconnected'
+                        ? 'Disconnected'
+                        : 'Connecting...',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,
@@ -132,7 +134,6 @@ class InCall extends StatelessWidget {
                           size: 32, color: AppColors.primary2Color),
                     ),
                   )
-
                 ],
               ),
             )

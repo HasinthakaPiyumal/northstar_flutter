@@ -108,7 +108,7 @@ class ViewResourceDoc extends StatelessWidget {
                       body: Html(data: step.body,
                         style: {
                           "*": Style(color: Colors.white, fontSize: FontSize(16)),
-                          "li": Style(padding: EdgeInsets.fromLTRB(0, 5, 0, 5)),
+                          "li": Style(padding: HtmlPaddings.only(left:5, right: 5)),
                         },
                       ),
                       isExpanded: step.isExpanded.value,

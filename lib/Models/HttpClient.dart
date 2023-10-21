@@ -31,6 +31,7 @@ class HttpClient {
     "Authorization": "",
   };
 
+
   HttpClient() {
     dio.options.baseUrl = baseURL;
     dio.options.connectTimeout = Duration(seconds: 10);
@@ -688,12 +689,6 @@ class HttpClient {
       print(e.response);
       return {"code":-1,"data":"Something went wrong"};
     }
-
-    // Response response = await post('/meeting/todos/actions/add', data);
-    // return {
-    //   "code": response.statusCode,
-    //   "data": response.data,
-    // };
   }
 
   //Save Meeting
@@ -1504,13 +1499,33 @@ class HttpClient {
     }
     return response.data;
   }
-  Future<Map> addTherapyMeeting(dynamic data) async {
+  Future<Map> addTherapyMeetingOld(dynamic data) async {
     Response response = await post('/meeting/new-client-therapy-meeting',data);
     if(response.statusCode==200){
       return {"code":200,"data":response.data};
     }
     return {"code":401,"data":response.data};
   }
+
+  Future<Map> addTherapyMeeting(dynamic data,XFile file) async {
+    FormData form = FormData.fromMap({
+      'therapy_id': data['therapy_id'],
+      'reason': data['reason'],
+      'additional': data['additional'],
+      'apt_date':data['apt_date'],
+      'start_time':data['start_time'],
+      'end_time':data['end_time'],
+      "image": await MultipartFile.fromFile(file.path, filename: file.name),
+    });
+    try {
+      var response =  await dio.post('/meeting/new-client-therapy-meeting', data: form);
+      return {"code":response.statusCode,"data":response.data};
+    } on DioError catch (e) {
+      print(e.response);
+      return {"code":-1,"data":"Something went wrong"};
+    }
+  }
+
   Future<Map> getFamiliLinks(dynamic data) async {
     Response response = await post('/family-link/actions/search',data);
     return {"code":response.statusCode,"data":response.data};

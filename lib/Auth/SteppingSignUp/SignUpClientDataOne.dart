@@ -90,7 +90,7 @@ class SignUpClientDataOne extends StatelessWidget {
                           borderSide: BorderSide(),
                         ),
                       ),
-                      countries: ['MV','LK', 'AU', 'IN'],
+                      // countries: ['MV','LK', 'AU', 'IN'],
                       initialCountryCode: 'MV',
                       onChanged: (phone) {
                         _emergencyPhoneController.text = "${phone.completeNumber}";

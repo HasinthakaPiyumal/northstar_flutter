@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:north_star/UI/Layout.dart';
 import 'package:north_star/UI/WelcomeScreens/welcome_v2.dart';
+import 'package:uuid/uuid.dart';
+
+import '../Controllers/FirebaseMessageController.dart';
 
 class SplashScreen extends StatefulWidget {
 
   final bool isLoggedIn;
 
-  const SplashScreen({Key? key, required this.isLoggedIn}) : super(key: key);
+  const SplashScreen( {Key? key, required this.isLoggedIn}) : super(key: key);
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -16,8 +19,11 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
 
+  late final Uuid _uuid;
+
   Future<void>? runSplash() {
     if(widget.isLoggedIn){
+      initFirebase(_uuid);
       Timer(Duration(seconds: 1), () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>Layout())));
     }else{
       Timer(Duration(seconds: 1), () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>WelcomeOne())));
@@ -28,6 +34,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    _uuid = const Uuid();
     runSplash();
   }
 

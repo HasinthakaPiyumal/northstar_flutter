@@ -44,7 +44,7 @@ class NewsLetterView extends StatelessWidget {
               child: Html(data: newsLetter['article'],
                 style: {
                   "p": Style(color: colors.Colors().selectedCardBG.withOpacity(0.8), fontSize: FontSize(16)),
-                  "li": Style(padding: EdgeInsets.fromLTRB(0, 5, 0, 5)),
+                  "li": Style(padding: HtmlPaddings.only(left:5, right: 5)),
                 },
               ),
             ),

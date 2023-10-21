@@ -125,7 +125,7 @@ class CreateClientNotes extends StatelessWidget {
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.search),
                     labelText: 'Search Members...',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
                   ),
                 ),
                 suggestionsCallback: (pattern) async {
@@ -155,7 +155,7 @@ class CreateClientNotes extends StatelessWidget {
 
               Obx(()=> selectedClient['user_id'] == null ? Container() : ListTile(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.0),
+                  borderRadius: BorderRadius.circular(5.0),
                 ),
                 tileColor: Get.isDarkMode ? Color(0xff101010) : Color(0xffF1F1F1),
                 leading: CircleAvatar(
@@ -184,12 +184,11 @@ class CreateClientNotes extends StatelessWidget {
               Obx(()=>DropdownButtonFormField(
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
+                    borderRadius: BorderRadius.circular(5.0),
                     borderSide: BorderSide(
                       color: colors.Colors().darkGrey(1),
                     ),
                   ),
-                  suffixIcon: Icon(Icons.keyboard_arrow_down),
                   contentPadding: const EdgeInsets.symmetric(vertical: 17, horizontal: 10),
                 ),
                 icon: Icon(Icons.keyboard_arrow_down),
@@ -206,12 +205,11 @@ class CreateClientNotes extends StatelessWidget {
               Obx(()=>DropdownButtonFormField(
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
+                    borderRadius: BorderRadius.circular(5.0),
                     borderSide: BorderSide(
                       color: colors.Colors().darkGrey(1),
                     ),
                   ),
-                  suffixIcon: Icon(Icons.keyboard_arrow_down),
                   contentPadding: const EdgeInsets.symmetric(vertical: 17, horizontal: 10),
                 ),
                 icon: Icon(Icons.keyboard_arrow_down),
@@ -260,7 +258,7 @@ class CreateClientNotes extends StatelessWidget {
                       actionsPadding: EdgeInsets.zero,
                       titlePadding: EdgeInsets.zero,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(5),
                       ),
                       content: SizedBox(
                         height: Get.height/2.5,

@@ -460,7 +460,9 @@ class TherapyMeetings extends StatelessWidget {
                 ],
               ),
               onPressed: () {
-                Get.to(() => TherapyList());
+                Get.to(() => TherapyList())?.then((value) => {
+                getScheduled()
+                });
                 // Get.to(() => TherapyMeetings());
               },
             ),

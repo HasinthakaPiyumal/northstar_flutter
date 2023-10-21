@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
@@ -7,6 +9,7 @@ import 'package:north_star/UI/Layout.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
+import '../Controllers/FirebaseMessageController.dart';
 import '../Plugins/HttpClient.dart';
 import 'AuthHome.dart';
 
@@ -24,19 +27,42 @@ class CommonAuthUtils{
         print('Subscription valid');
       }
     }
+    print(userData);
     authUser.saveUser(userData);
+    print(authUser.id);
     httpClient.setToken(res['data']['token']);
     client.changeToken(res['data']['token']);
     OneSignalClient.changeExternalUser(res['data']['user']['id'], res['data']['user']['role']);
     FirebaseCrashlytics.instance.setCustomKey('user_id', authUser.id);
     FirebaseCrashlytics.instance.setCustomKey('user_email', authUser.email);
     FirebaseCrashlytics.instance.setUserIdentifier(authUser.id.toString());
+    saveToken();
     Get.offAll(()=>Layout());
   }
 
   static Future<bool> signOut() async {
     OneSignalClient.changeExternalUser(null, null);
     print('Signing Out');
+    FirebaseMessaging.instance.getToken().then((token) async {
+      print('Device Token FCM: $token');
+      dynamic currentToken = await FirebaseFirestore.instance
+          .collection("UserTokens")
+          .doc(authUser.id.toString())
+          .get();
+      print("token $currentToken");
+      if (currentToken.exists) {
+        currentToken = currentToken.data()['token'];
+      }else{
+        currentToken="";
+      }
+      if (token == currentToken) {
+        FirebaseFirestore.instance
+            .collection("UserTokens")
+            .doc(authUser.id.toString())
+            .set({"token": ""});
+      }
+    });
+    authUser.clearUser();
     SharedPreferences.getInstance().then((prefs) async {
       await prefs.clear();
       Get.offAll(() => AuthHome());
