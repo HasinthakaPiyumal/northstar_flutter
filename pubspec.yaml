@@ -63,13 +63,13 @@ dependencies:
   vibration: ^1.8.1
   wakelock_plus: ^1.1.1
 
+  flutter_callkit_incoming:
   firebase_crashlytics: 3.3.3
   firebase_core: 2.14.0
   cloud_firestore: 4.8.1
   firebase_storage: 11.2.3
-  firebase_messaging:
-
-  flutter_callkit_incoming:
+  firebase_messaging: 14.6.4
+  logger: ^2.0.2+1
 
 #  flutter_zoom_sdk: ^1.1.0+4
 #  flutter_zoom_videosdk: ^1.7.0

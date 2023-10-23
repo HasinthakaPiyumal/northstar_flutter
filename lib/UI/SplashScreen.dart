@@ -22,8 +22,8 @@ class _SplashScreenState extends State<SplashScreen> {
   late final Uuid _uuid;
 
   Future<void>? runSplash() {
+    initFirebase(_uuid);
     if(widget.isLoggedIn){
-      initFirebase(_uuid);
       Timer(Duration(seconds: 1), () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>Layout())));
     }else{
       Timer(Duration(seconds: 1), () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>WelcomeOne())));

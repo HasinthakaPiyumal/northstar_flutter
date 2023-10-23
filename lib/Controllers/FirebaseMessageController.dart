@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:logger/logger.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' as http;
@@ -13,10 +13,11 @@ import '../Models/Enums.dart';
 late final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  _firebaseMessagingHandler(message, Uuid().v4());
+  Logger().i("Incoming message firebase");
+  firebaseMessagingHandler(message, Uuid().v4());
 }
 
-Future<void> _firebaseMessagingHandler(
+Future<void> firebaseMessagingHandler(
     RemoteMessage message, String? uuid) async {
   print(
       'channel---> ${MessageChannel.Logout} ${MessageChannel.Logout == message.data['channel']}');
@@ -29,12 +30,12 @@ Future<void> _firebaseMessagingHandler(
 }
 
 Future<void> initFirebase(Uuid uuid) async {
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   print("=================== Firebase initializing =======================");
   FirebaseMessaging.onMessage.listen((RemoteMessage msg) async {
     print(
         'Message title: ${msg.notification?.title}, body: ${msg.notification?.body}, data: ${msg.data}');
-    _firebaseMessagingHandler(msg, uuid.v4());
+    firebaseMessagingHandler(msg, uuid.v4());
   });
   _firebaseMessaging.getToken().then((token) async {
     String currentToken = (await FirebaseFirestore.instance
@@ -87,9 +88,10 @@ void sendFCMMessage(String deviceToken, dynamic data) async {
 
   final message = {
     'data': data,
+    'priority':'high',
     'to': deviceToken, // Replace with the recipient device token
   };
-
+  print('Sending FCM message------------------\n$message');
   final response = await http.post(
     url,
     headers: headers,

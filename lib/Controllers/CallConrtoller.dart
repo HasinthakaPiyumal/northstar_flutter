@@ -39,6 +39,9 @@ void invokeCall(int userId, String channelName) async {
 void rejectCall(int userId, String channelName) async {
   callMessage(userId, channelName, CallEvents.RejectCall);
 }
+void endCall(int userId, String channelName) async {
+  callMessage(userId, channelName, CallEvents.DisconnectCall);
+}
 
 void callMessage(int userId, String channelName,CallEvents callEvent) async {
   String deviceToken = await getTokenByUser(userId);
@@ -120,8 +123,6 @@ void setupNotificationAction() async{
         break;
       case Event.actionCallCustom:
       // TODO: Handle this case.
-        FlutterCallkitIncoming.endAllCalls();
-        Get.to(()=>CallView(callData: {"channel":callData.channelName,"from":{"avatar_url":callData.avatar,"name":callData.callerName}},));
         break;
       case Event.actionCallAccept:
       // TODO: Handle this case.
