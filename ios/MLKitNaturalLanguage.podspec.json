@@ -16,7 +16,7 @@
         "GoogleToolboxForMac/StringEncoding": [
             "~> 2.1"
         ],
-        "MLKitCommon": "~> 8.0",
+        "MLKitCommon": "~> 9.0",
         "Protobuf": [
             "~> 3.12"
         ]
