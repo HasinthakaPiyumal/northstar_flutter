@@ -50,6 +50,6 @@ end
 
 target 'OneSignalNotificationServiceExtension' do
   use_frameworks!
-#   pod 'OneSignalXCFramework', '>= 3.4.3', '< 4.0'
-  pod 'OneSignalXCFramework', '3.12.4'
+  pod 'OneSignalXCFramework', '>= 3.4.3', '< 4.0'
+#   pod 'OneSignalXCFramework', '3.12.4'
 end
