@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
@@ -43,25 +43,25 @@ class CommonAuthUtils {
   static Future<bool> signOut() async {
     OneSignalClient.changeExternalUser(null, null);
     print('Signing Out');
-    // FirebaseMessaging.instance.getToken().then((token) async {
-    //   print('Device Token FCM: $token');
-    //   dynamic currentToken = await FirebaseFirestore.instance
-    //       .collection("UserTokens")
-    //       .doc(authUser.id.toString())
-    //       .get();
-    //   print("token $currentToken");
-    //   if (currentToken.exists) {
-    //     currentToken = currentToken.data()['token'];
-    //   }else{
-    //     currentToken="";
-    //   }
-    //   if (token == currentToken) {
-    //     FirebaseFirestore.instance
-    //         .collection("UserTokens")
-    //         .doc(authUser.id.toString())
-    //         .set({"token": ""});
-    //   }
-    // });
+    FirebaseMessaging.instance.getToken().then((token) async {
+      print('Device Token FCM: $token');
+      dynamic currentToken = await FirebaseFirestore.instance
+          .collection("UserTokens")
+          .doc(authUser.id.toString())
+          .get();
+      print("token $currentToken");
+      if (currentToken.exists) {
+        currentToken = currentToken.data()['token'];
+      } else {
+        currentToken = "";
+      }
+      if (token == currentToken) {
+        FirebaseFirestore.instance
+            .collection("UserTokens")
+            .doc(authUser.id.toString())
+            .set({"token": ""});
+      }
+    });
     authUser.clearUser();
     SharedPreferences.getInstance().then((prefs) async {
       await prefs.clear();
