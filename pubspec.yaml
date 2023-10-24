@@ -66,7 +66,7 @@ dependencies:
   flutter_callkit_incoming:
   firebase_crashlytics: ^3.0.17
   firebase_core: ^2.8.0
-  cloud_firestore: 4.4.5
+  cloud_firestore: ^4.4.3
   firebase_storage: ^11.0.16
   firebase_messaging: ^14.6.4
   logger: ^2.0.2+1
