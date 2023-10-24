@@ -40,17 +40,17 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		9CE9763E27CBD244001EA48B /* Embed Foundation Extensions */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 13;
-			files = (
-				9CE9763D27CBD244001EA48B /* OneSignalNotificationServiceExtension.appex in Embed Foundation Extensions */,
-			);
-			name = "Embed Foundation Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
+		// 9CE9763E27CBD244001EA48B /* Embed Foundation Extensions */ = {
+		// 	isa = PBXCopyFilesBuildPhase;
+		// 	buildActionMask = 2147483647;
+		// 	dstPath = "";
+		// 	dstSubfolderSpec = 13;
+		// 	files = (
+		// 		9CE9763D27CBD244001EA48B /* OneSignalNotificationServiceExtension.appex in Embed Foundation Extensions */,
+		// 	);
+		// 	name = "Embed Foundation Extensions";
+		// 	runOnlyForDeploymentPostprocessing = 0;
+		// };
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -194,7 +194,7 @@
 				97C146EC1CF9000F007C117D /* Resources */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
-				9CE9763E27CBD244001EA48B /* Embed Foundation Extensions */,
+				// 9CE9763E27CBD244001EA48B /* Embed Foundation Extensions */,
 				F8E778875AA2A7BF7539E789 /* [CP] Embed Pods Frameworks */,
 				99668339A1B39E3F790F0185 /* [CP] Copy Pods Resources */,
 				3C1B3517BA63EC1CB9E2B0A8 /* [firebase_crashlytics] Crashlytics Upload Symbols */,
