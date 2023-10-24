@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:logger/logger.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' as http;
 import 'package:north_star/Controllers/CallConrtoller.dart';
 import 'package:north_star/Models/AuthUser.dart';
@@ -10,43 +10,43 @@ import 'package:uuid/uuid.dart';
 import '../Auth/CommonAuthUtils.dart';
 import '../Models/Enums.dart';
 
-late final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+// late final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  Logger().i("Incoming message firebase");
-  firebaseMessagingHandler(message, Uuid().v4());
-}
+// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+//   Logger().i("Incoming message firebase");
+//   firebaseMessagingHandler(message, Uuid().v4());
+// }
 
-Future<void> firebaseMessagingHandler(
-    RemoteMessage message, String? uuid) async {
-  print(
-      'channel---> ${MessageChannel.Logout} ${MessageChannel.Logout == message.data['channel']}');
-  if (MessageChannel.Call.index.toString() == message.data['channel']) {
-    processCall(message.data, uuid!);
-  } else if (MessageChannel.Logout.index.toString() ==
-      message.data['channel']) {
-    await CommonAuthUtils.signOut();
-  }
-}
+// Future<void> firebaseMessagingHandler(
+//     RemoteMessage message, String? uuid) async {
+//   print(
+//       'channel---> ${MessageChannel.Logout} ${MessageChannel.Logout == message.data['channel']}');
+//   if (MessageChannel.Call.index.toString() == message.data['channel']) {
+//     processCall(message.data, uuid!);
+//   } else if (MessageChannel.Logout.index.toString() ==
+//       message.data['channel']) {
+//     await CommonAuthUtils.signOut();
+//   }
+// }
 
 Future<void> initFirebase(Uuid uuid) async {
   // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   print("=================== Firebase initializing =======================");
-  FirebaseMessaging.onMessage.listen((RemoteMessage msg) async {
-    print(
-        'Message title: ${msg.notification?.title}, body: ${msg.notification?.body}, data: ${msg.data}');
-    firebaseMessagingHandler(msg, uuid.v4());
-  });
-  _firebaseMessaging.getToken().then((token) async {
-    String currentToken = (await FirebaseFirestore.instance
-            .collection("UserTokens")
-            .doc(authUser.id.toString())
-            .get())['token'] ??
-        "";
-    if (token != currentToken) {
-      await CommonAuthUtils.signOut();
-    }
-  });
+  // FirebaseMessaging.onMessage.listen((RemoteMessage msg) async {
+  //   print(
+  //       'Message title: ${msg.notification?.title}, body: ${msg.notification?.body}, data: ${msg.data}');
+  //   firebaseMessagingHandler(msg, uuid.v4());
+  // });
+  // _firebaseMessaging.getToken().then((token) async {
+  //   String currentToken = (await FirebaseFirestore.instance
+  //           .collection("UserTokens")
+  //           .doc(authUser.id.toString())
+  //           .get())['token'] ??
+  //       "";
+  //   if (token != currentToken) {
+  //     await CommonAuthUtils.signOut();
+  //   }
+  // });
 }
 
 Future<void> saveToken() async {
@@ -60,19 +60,19 @@ Future<void> saveToken() async {
   } else {
     currentToken = "";
   }
-  _firebaseMessaging.getToken().then((token) {
-    print('Device Token FCM: $currentToken');
-    if (currentToken != "" && token != currentToken) {
-      print("trying to send Logout");
-      dynamic data = {"channel": MessageChannel.Logout.index.toString()};
+  // _firebaseMessaging.getToken().then((token) {
+  //   print('Device Token FCM: $currentToken');
+  //   if (currentToken != "" && token != currentToken) {
+  //     print("trying to send Logout");
+  //     dynamic data = {"channel": MessageChannel.Logout.index.toString()};
 
-      sendFCMMessage(currentToken, data);
-    }
-    FirebaseFirestore.instance
-        .collection("UserTokens")
-        .doc(authUser.id.toString())
-        .set({"token": token});
-  });
+  //     sendFCMMessage(currentToken, data);
+  //   }
+  //   FirebaseFirestore.instance
+  //       .collection("UserTokens")
+  //       .doc(authUser.id.toString())
+  //       .set({"token": token});
+  // });
 }
 
 void sendFCMMessage(String deviceToken, dynamic data) async {
@@ -88,7 +88,7 @@ void sendFCMMessage(String deviceToken, dynamic data) async {
 
   final message = {
     'data': data,
-    'priority':'high',
+    'priority': 'high',
     'to': deviceToken, // Replace with the recipient device token
   };
   print('Sending FCM message------------------\n$message');
