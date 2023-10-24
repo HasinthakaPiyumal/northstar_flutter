@@ -382,14 +382,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.3.1"
-  flutter_callkit_incoming:
-    dependency: "direct main"
-    description:
-      name: flutter_callkit_incoming
-      sha256: "2d2f2e9a416a37948f4820827becdd01527b77d631a087cb4e7cf78102141b22"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0+2"
   flutter_cupertino_date_picker_fork:
     dependency: "direct main"
     description:
@@ -836,10 +828,10 @@ packages:
     dependency: "direct main"
     description:
       name: onesignal_flutter
-      sha256: f4e54ad09bbfc2401b5d3e9cda6b31577facf0dd119d282d008df5710f5665d0
+      sha256: "92a1d83a5cf1a4186ffd7d9d14d7e16890ae0cad42aa39586ecff3e4b00e1218"
       url: "https://pub.dev"
     source: hosted
-    version: "3.5.1"
+    version: "3.3.2"
   package_info_plus:
     dependency: transitive
     description:

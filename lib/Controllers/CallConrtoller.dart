@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_callkit_incoming/entities/call_event.dart';
-import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
+// import 'package:flutter_callkit_incoming/entities/call_event.dart';
+// import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,21 +13,25 @@ import '../UI/Members/CallView.dart';
 import 'CallKitController.dart';
 import 'FirebaseMessageController.dart';
 
-void processCall(dynamic data,String uuid) async {
+void processCall(dynamic data, String uuid) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? '';
   if (token.isNotEmpty) {
     print("Calling------<,,");
-    if(data["method"]==CallEvents.StartCall.index.toString()){
+    if (data["method"] == CallEvents.StartCall.index.toString()) {
       print("Incoming call ==");
-      callData.setCallData(id:data["caller"],callerName: data["caller_name"], avatar: data["caller_avatar"],channelName: data["channel_name"]);
+      callData.setCallData(
+          id: data["caller"],
+          callerName: data["caller_name"],
+          avatar: data["caller_avatar"],
+          channelName: data["channel_name"]);
       showCallkitIncoming(uuid,
           nameCaller: data["caller_name"], avatar: data["caller_avatar"]);
-    }else if(data["method"]==CallEvents.RejectCall.index.toString()){
+    } else if (data["method"] == CallEvents.RejectCall.index.toString()) {
       print("Reject call ==");
-      if(callData.id==data["caller"]){
+      if (callData.id == data["caller"]) {
         print("Valid call");
-        FlutterCallkitIncoming.endAllCalls();
+        // FlutterCallkitIncoming.endAllCalls();
       }
     }
   }
@@ -36,14 +40,16 @@ void processCall(dynamic data,String uuid) async {
 void invokeCall(int userId, String channelName) async {
   callMessage(userId, channelName, CallEvents.StartCall);
 }
+
 void rejectCall(int userId, String channelName) async {
   callMessage(userId, channelName, CallEvents.RejectCall);
 }
+
 void endCall(int userId, String channelName) async {
   callMessage(userId, channelName, CallEvents.DisconnectCall);
 }
 
-void callMessage(int userId, String channelName,CallEvents callEvent) async {
+void callMessage(int userId, String channelName, CallEvents callEvent) async {
   String deviceToken = await getTokenByUser(userId);
   Map res = await httpClient.getMyProfile();
   dynamic avatar = res["data"]["avatar_url"] ?? "default.jpg";
@@ -81,55 +87,55 @@ Future<String> getTokenByUser(int id) async {
   return currentToken;
 }
 
-void setupNotificationAction() async{
+void setupNotificationAction() async {
   print("calling callkit listner");
-  FlutterCallkitIncoming.onEvent.listen((CallEvent? event) async {
-    switch (event!.event) {
-      case Event.actionDidUpdateDevicePushTokenVoip:
-      // TODO: Handle this case.
-        break;
-      case Event.actionCallIncoming:
-      // TODO: Handle this case.
-        break;
-      case Event.actionCallStart:
-      // TODO: Handle this case.
-        break;
-      case Event.actionCallDecline:
-        rejectCall(callData.id,callData.channelName);
-        break;
-      case Event.actionCallEnded:
-      // TODO: Handle this case.
-        break;
-      case Event.actionCallTimeout:
-      // TODO: Handle this case.
-        break;
-      case Event.actionCallCallback:
-      // TODO: Handle this case.
-        break;
-      case Event.actionCallToggleHold:
-      // TODO: Handle this case.
-        break;
-      case Event.actionCallToggleMute:
-      // TODO: Handle this case.
-        break;
-      case Event.actionCallToggleDmtf:
-      // TODO: Handle this case.
-        break;
-      case Event.actionCallToggleGroup:
-      // TODO: Handle this case.
-        break;
-      case Event.actionCallToggleAudioSession:
-      // TODO: Handle this case.
-        break;
-      case Event.actionCallCustom:
-      // TODO: Handle this case.
-        break;
-      case Event.actionCallAccept:
-      // TODO: Handle this case.
-        print("answer clicked");
-        FlutterCallkitIncoming.endAllCalls();
-        Get.to(()=>CallView(callData: {"channel":callData.channelName,"from":{"avatar_url":callData.avatar,"name":callData.callerName}},));
-        break;
-    }
-  });
+  // FlutterCallkitIncoming.onEvent.listen((CallEvent? event) async {
+  //   switch (event!.event) {
+  //     case Event.actionDidUpdateDevicePushTokenVoip:
+  //     // TODO: Handle this case.
+  //       break;
+  //     case Event.actionCallIncoming:
+  //     // TODO: Handle this case.
+  //       break;
+  //     case Event.actionCallStart:
+  //     // TODO: Handle this case.
+  //       break;
+  //     case Event.actionCallDecline:
+  //       rejectCall(callData.id,callData.channelName);
+  //       break;
+  //     case Event.actionCallEnded:
+  //     // TODO: Handle this case.
+  //       break;
+  //     case Event.actionCallTimeout:
+  //     // TODO: Handle this case.
+  //       break;
+  //     case Event.actionCallCallback:
+  //     // TODO: Handle this case.
+  //       break;
+  //     case Event.actionCallToggleHold:
+  //     // TODO: Handle this case.
+  //       break;
+  //     case Event.actionCallToggleMute:
+  //     // TODO: Handle this case.
+  //       break;
+  //     case Event.actionCallToggleDmtf:
+  //     // TODO: Handle this case.
+  //       break;
+  //     case Event.actionCallToggleGroup:
+  //     // TODO: Handle this case.
+  //       break;
+  //     case Event.actionCallToggleAudioSession:
+  //     // TODO: Handle this case.
+  //       break;
+  //     case Event.actionCallCustom:
+  //     // TODO: Handle this case.
+  //       break;
+  //     case Event.actionCallAccept:
+  //     // TODO: Handle this case.
+  //       print("answer clicked");
+  //       FlutterCallkitIncoming.endAllCalls();
+  //       Get.to(()=>CallView(callData: {"channel":callData.channelName,"from":{"avatar_url":callData.avatar,"name":callData.callerName}},));
+  //       break;
+  //   }
+  // });
 }
