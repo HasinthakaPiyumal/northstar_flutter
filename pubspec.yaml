@@ -69,7 +69,7 @@ dependencies:
   cloud_firestore: ^4.4.5
   firebase_storage: ^11.0.16
   # firebase_messaging: ^14.6.4
-  firebase_messaging: ^11.4.2
+  firebase_messaging: ^14.0.2
   logger: ^2.0.2+1
 
 #  flutter_zoom_sdk: ^1.1.0+4
