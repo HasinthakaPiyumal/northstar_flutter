@@ -35,7 +35,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
   print('Background Message ===> 1 ${message.messageId}');
-  firebaseMessagingHandler(message, Uuid().v4());
+  firebaseMessagingHandler(message,Uuid().v4());
   print('Background Message ===> 2 ${message.messageId}');
 }
 
