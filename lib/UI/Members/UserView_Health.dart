@@ -10,6 +10,7 @@ import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetDietaryConsultation.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetLabReports.dart';
+import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:north_star/UI/SharedWidgets/RingsWidget.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/Utils/PopUps.dart';
@@ -574,8 +575,8 @@ class UserViewHealth extends StatelessWidget {
           ),
         ],
       );
-    }
 
+    }
     void updateMacros() {
       Get.defaultDialog(
         radius: 8.0,
@@ -797,7 +798,7 @@ class UserViewHealth extends StatelessWidget {
 
     return Scaffold(
       body: Obx(() => ready.value
-          ? SingleChildScrollView(
+          ? healthData.isEmpty? SingleChildScrollView(
               child: Column(
                 children: [
                   SizedBox(height: 16),
@@ -2009,7 +2010,7 @@ class UserViewHealth extends StatelessWidget {
                   ),
                 ],
               ),
-            )
+            ):LoadingAndEmptyWidgets.emptyWidget()
           : Center(
               child: CircularProgressIndicator(),
             )),
