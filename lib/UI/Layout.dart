@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:north_star/Controllers/LocalNotificationsController.dart';
 import 'package:north_star/Controllers/NotificationsController.dart';
 import 'package:north_star/Models/AuthUser.dart';
+import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/IcoMoon.dart';
 import 'package:north_star/UI/Chats/ChatHome.dart';
 import 'package:north_star/UI/Home.dart';
@@ -19,29 +20,38 @@ import 'package:north_star/UI/PrivateUser/ClientProfile.dart';
 import 'package:north_star/UI/SharedWidgets/ExitWidget.dart';
 import 'package:north_star/UI/Wallet.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:north_star/Styles/AppColors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../Controllers/FirebaseMessageController.dart';
-
 class Layout extends StatefulWidget {
-
   const Layout({Key? key}) : super(key: key);
 
   @override
   State<Layout> createState() => _LayoutState();
-
 }
 
 class _LayoutState extends State<Layout> {
-
   final RxInt currentPage = 0.obs;
   String preferenceName = "homeViewTabIndex";
+  late Rx<PageController> pgController;
 
+  @override
+  void dispose() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt(preferenceName, 0);
+    pgController.close();
+    dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    pgController = PageController(initialPage: currentPage.value).obs;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    Rx<PageController> pgController = PageController(initialPage: currentPage.value).obs;
     //bool hasShown = false;
 
     Future<int?> retrieveSelectedTabIndex() async {
@@ -57,6 +67,7 @@ class _LayoutState extends State<Layout> {
       print('$preferenceName $index ------> Setting');
       prefs.setInt(preferenceName, index);
     }
+
     retrieveSelectedTabIndex();
 
     void checkPermissions() async {
@@ -103,7 +114,8 @@ class _LayoutState extends State<Layout> {
             return BottomNavigationBar(
                 type: BottomNavigationBarType.fixed,
                 elevation: 0,
-                backgroundColor: Get.isDarkMode?AppColors.primary2Color:Colors.white,
+                backgroundColor:
+                    Get.isDarkMode ? AppColors.primary2Color : Colors.white,
                 selectedItemColor: AppColors.accentColor,
                 currentIndex: currentPage.value,
                 onTap: (int index) {
@@ -286,12 +298,5 @@ class _LayoutState extends State<Layout> {
         ),
       );
     }
-  }
-
-  @override
-  void dispose() async{
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt(preferenceName, 0);
-    super.dispose();
   }
 }

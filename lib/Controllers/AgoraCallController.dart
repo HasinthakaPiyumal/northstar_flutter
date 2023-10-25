@@ -94,7 +94,7 @@ class AgoraCallController {
 
     await agoraEngine.enableAudio();
     await agoraEngine.enableLocalAudio(true);
-    invokeCall(int.parse(user['id']),channelName);
+    invokeCall(user['id'],channelName);
     // dynamic res = await httpClient.invokeCall({
     //   'from': "${authUser.id}",
     //   'to': "${user['id']}",

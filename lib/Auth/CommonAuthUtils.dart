@@ -40,7 +40,7 @@ class CommonAuthUtils {
     Get.offAll(() => Layout());
   }
 
-  static Future<bool> signOut() async {
+  static Future<bool> signOut({bool redirect=true}) async {
     OneSignalClient.changeExternalUser(null, null);
     print('Signing Out');
     FirebaseMessaging.instance.getToken().then((token) async {
@@ -65,7 +65,9 @@ class CommonAuthUtils {
     authUser.clearUser();
     SharedPreferences.getInstance().then((prefs) async {
       await prefs.clear();
-      Get.offAll(() => AuthHome());
+      if(redirect){
+        Get.offAll(() => AuthHome());
+      }
     });
     return true;
   }

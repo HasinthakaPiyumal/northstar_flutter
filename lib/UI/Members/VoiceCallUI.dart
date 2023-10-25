@@ -2,18 +2,28 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:north_star/Models/CallData.dart';
 import 'package:north_star/Styles/AppColors.dart';
 
 import '../../Controllers/AgoraCallController.dart';
+import '../../Controllers/CallConrtoller.dart';
 import '../../Models/HttpClient.dart';
 
+void afterMinutes(int seconds) {
+  Future.delayed(Duration(seconds: seconds), () {
+    endCall(callData.id,callData.channelName);
+    Get.back();
+  });
+}
+
 class VoiceCallUI extends StatelessWidget {
-  const VoiceCallUI({Key? key, this.user}) : super(key: key);
+  VoiceCallUI({Key? key, this.user}) : super(key: key);
   final user;
 
   @override
   Widget build(BuildContext context) {
     AgoraCallController.init(user);
+    afterMinutes(30);
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(

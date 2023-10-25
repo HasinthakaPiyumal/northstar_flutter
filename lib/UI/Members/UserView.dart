@@ -9,7 +9,7 @@ import 'package:north_star/UI/Members/UserView_Diet.dart';
 import 'package:north_star/UI/Members/UserView_Health.dart';
 import 'package:north_star/UI/Members/UserView_Progress.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
-
+import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 class UserView extends StatelessWidget {
   const UserView({Key? key, required this.userID}) : super(key: key);
 
@@ -27,6 +27,7 @@ class UserView extends StatelessWidget {
       if (res['code'] == 200) {
         data = res['data'];
         print(data);
+        print('id data type--->${data['user']['id'].runtimeType}');
         complete.value = data['user']['client']['is_complete'] == 1;
         ready.value = true;
       } else {
@@ -151,7 +152,7 @@ class UserView extends StatelessWidget {
             Expanded(
               child: TabBarView(
                 children: [
-                  UserViewHealth(userID: data['user']['id']),
+                  data['user']['client']['is_complete']==1?UserViewHealth(userID: data['user']['id']):LoadingAndEmptyWidgets.emptyWidget(),
                   UserViewBio(data: data['user']),
                   UserViewDiet(data: data['user']),
                   UserViewProgress(userId: data['user']['id']),

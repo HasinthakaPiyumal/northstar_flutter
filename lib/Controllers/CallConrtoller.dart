@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_callkit_incoming/entities/call_event.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
 import 'package:get/get.dart';
+import 'package:north_star/Controllers/AgoraCallController.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
@@ -24,9 +25,15 @@ void processCall(dynamic data,String uuid) async {
       showCallkitIncoming(uuid,
           nameCaller: data["caller_name"], avatar: data["caller_avatar"]);
     }else if(data["method"]==CallEvents.RejectCall.index.toString()){
-      print("Reject call ==");
       if(callData.id==data["caller"]){
         print("Valid call");
+        AgoraCallController.rejectCall();
+        FlutterCallkitIncoming.endAllCalls();
+      }
+    }else if(data["method"]==CallEvents.DisconnectCall.index.toString()){
+      if(callData.id==data["caller"]){
+        print("Valid call");
+        AgoraCallController.leaveCall();
         FlutterCallkitIncoming.endAllCalls();
       }
     }

@@ -725,7 +725,7 @@ class UserViewHealth extends StatelessWidget {
     }
 
     getUserHealthData();
-
+    print('Health data printing--->$healthData');
     Widget cardHealth(value, category, unit, color) {
       return Container(
         padding: const EdgeInsets.all(16.0),
