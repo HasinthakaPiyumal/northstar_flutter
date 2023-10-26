@@ -26,10 +26,18 @@ class HomeWidgetWorkouts extends StatelessWidget {
   Widget build(BuildContext context) {
     RxList workouts = [].obs;
     RxBool ready = false.obs;
+    RxBool showAddWorkoutToClient = false.obs;
 
     void getWorkouts() async {
       ready.value = false;
       Map res = await httpClient.getWorkout();
+      Map user = await httpClient.getMyProfile();
+      print(user);
+      if(user['code']==200){
+        showAddWorkoutToClient.value = user['data']['physical_trainer_id']==null && user['data']['diet_trainer_id']==null;
+        print(showAddWorkoutToClient.value);
+        print('showAddWorkoutToClient.value');
+      }
       if (res['code'] == 200) {
         workouts.value = res['data'];
         print(res['data']);
@@ -48,36 +56,38 @@ class HomeWidgetWorkouts extends StatelessWidget {
     getWorkouts();
 
     return Scaffold(
-      floatingActionButton: authUser.role == 'trainer' || authUser.role == 'client'
-          ? Container(
-              height: 44,
-              child: FloatingActionButton.extended(
-                onPressed: () {
-                  Get.to(() => AddWorkouts(workoutList: [], workoutID: -1))
-                      ?.then((value) {
-                    Future.delayed(Duration(milliseconds: 500), () {
-                      getWorkouts();
-                    });
-                  });
-                },
-                icon: Icon(Icons.add, color: AppColors.textOnAccentColor),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5), //
-                  // Set the desired radius
-                ),
-                label: Text(
-                  'Workout',
-                  style: TextStyle(
-                    color: Color(0xFF1B1F24),
-                    fontSize: 20,
-                    fontFamily: 'Bebas Neue',
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                backgroundColor: AppColors.accentColor,
+      floatingActionButton: Obx(() {
+        if (authUser.role == 'trainer' || (authUser.role == 'client' && showAddWorkoutToClient.value)) {
+          return Container(
+            height: 44,
+            child: FloatingActionButton.extended(
+              onPressed: () async {
+                final result = await Get.to(() => AddWorkouts(workoutList: [], workoutID: -1));
+                if (result != null) {
+                  // Only if a result is returned, perform the following actions.
+                  getWorkouts();
+                }
+              },
+              icon: Icon(Icons.add, color: AppColors.textOnAccentColor),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
               ),
-            )
-          : null,
+              label: Text(
+                'Workout',
+                style: TextStyle(
+                  color: Color(0xFF1B1F24),
+                  fontSize: 20,
+                  fontFamily: 'Bebas Neue',
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              backgroundColor: AppColors.accentColor,
+            ),
+          );
+        } else {
+          return SizedBox(); // Return an empty widget if the condition is not met.
+        }
+      }),
       appBar: AppBar(
           centerTitle: true,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -509,8 +519,9 @@ class HomeWidgetWorkouts extends StatelessWidget {
                               ),
                             )
                       : LoadingAndEmptyWidgets.emptyWidget()
-                  : LoadingAndEmptyWidgets.loadingWidget(),
+                  : LoadingAndEmptyWidgets.loadingWidget()
             ),
+            SizedBox(height: 100,)
           ],
         ),
       ),

@@ -470,6 +470,15 @@ class HttpClient {
       "data": response.data,
     };
   }
+  //Ecommerce
+  Future<Map> getCategories() async {
+    Response response =
+        await get('/ecom/categories/actions/list');
+    return {
+      "code": response.statusCode,
+      "data": response.data,
+    };
+  }
 
   //Gyms
 

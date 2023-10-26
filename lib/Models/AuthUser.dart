@@ -22,6 +22,7 @@ class AuthUser {
   Future<bool> saveUser(Map<String, dynamic> user) async {
     _setUser(user);
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    print('Saving user printing-->$user');
     await prefs.setString('user', jsonEncode(user));
     return true;
   }

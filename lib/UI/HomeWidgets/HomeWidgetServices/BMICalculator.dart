@@ -33,6 +33,7 @@ class BMICalculator extends StatelessWidget {
       var request = http.Request(
           'POST',
           Uri.parse(HttpClient.baseURL + '/api/fitness/static/health-services/bmi-pi'));
+      print(client.getHeader());
           request.headers.addAll(client.getHeader());
           request.body = jsonEncode(
           {'weight': weight, 'height': height});

@@ -39,7 +39,6 @@ class _LayoutState extends State<Layout> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt(preferenceName, 0);
     pgController.close();
-    dispose();
     super.dispose();
   }
 

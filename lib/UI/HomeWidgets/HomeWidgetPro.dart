@@ -221,35 +221,37 @@ class HomeWidgetPro extends StatelessWidget {
             ],
           )),
           actions: [
-            // Container(
-            //   width: Get.width,
-            //   child: ElevatedButton(
-            //     onPressed: () async{
-            //       if(plansList[_current.value]['amount']/100 <= walletData.value['balance']){
-            //         List temp = [];
-            //       } else {
-            //         showSnack('Insufficient Balance','You do not have sufficient balance to pay for this booking.');
-            //       }
-            //     },
-            //     style: ButtonStyles.matButton(Themes.mainThemeColor.shade500, 0),
-            //     child: Obx(() => ready.value ? Padding(
-            //       padding: EdgeInsets.symmetric(vertical: 12),
-            //       child: Column(
-            //         mainAxisAlignment: MainAxisAlignment.center,
-            //         mainAxisSize: MainAxisSize.min,
-            //         children: [
-            //           Text('Pay with eWallet',
-            //             style: TypographyStyles.boldText(16, Colors.black),
-            //           ),
-            //           SizedBox(height: 3,),
-            //           Text('(eWallet Balance: ${walletData['balance'].toStringAsFixed(2)})',
-            //             style: TypographyStyles.normalText(13, Colors.black),
-            //           ),
-            //         ],
-            //       ),
-            //     ) : LoadingAndEmptyWidgets.loadingWidget()),
-            //   ),
-            // ),
+            Container(
+              width: Get.width,
+              child: ElevatedButton(
+                onPressed: () async{
+                  print(_current.value);
+                  print(plansList[_current.value]);
+                  if(plansList[_current.value]['real_price']/100 <= walletData['balance']){
+                    List temp = [];
+                  } else {
+                    showSnack('Insufficient Balance','You do not have sufficient balance to pay for this booking.');
+                  }
+                },
+                style: ButtonStyles.matButton(Themes.mainThemeColor.shade500, 0),
+                child: Obx(() => ready.value ? Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('Pay with eWallet',
+                        style: TypographyStyles.boldText(16, Colors.black),
+                      ),
+                      SizedBox(height: 3,),
+                      Text('(eWallet Balance: ${walletData['balance'].toStringAsFixed(2)})',
+                        style: TypographyStyles.normalText(13, Colors.black),
+                      ),
+                    ],
+                  ),
+                ) : LoadingAndEmptyWidgets.loadingWidget()),
+              ),
+            ),
             Container(
               width: Get.width,
               padding: EdgeInsets.only(top: 3),

@@ -17,6 +17,7 @@ class HttpClient{
   HttpClient();
 
   void changeToken(String newToken){
+    print("token priting");
     this.token = newToken;
     this.headers = {
       'Authorization': 'Bearer $newToken',

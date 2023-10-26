@@ -13,6 +13,7 @@ import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
+import 'package:north_star/Plugins/HttpClient.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/UI/Members/IncomingVoiceCallUI.dart';
 import 'package:north_star/UI/SplashScreen.dart';
@@ -111,6 +112,7 @@ Future checkAuth() async {
       print('Printing token inner 1');
       isLoggedIn = true;
       httpClient.setToken(token);
+      client.changeToken(res['data']['token']);
       print('Printing token inner 2');
       Map<String, dynamic> userData = res['data']['user'];
       if (res['data']['user']['subscription'] != null) {

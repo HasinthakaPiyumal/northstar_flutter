@@ -24,7 +24,7 @@ class HomeWidgetStore extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final List cat = ["Merch", "Food", "Beverages", "Supplements", "Accessories",];
+    RxList cat = [].obs;
 
     RxBool ready = false.obs;
     RxList products = [].obs;
@@ -39,7 +39,21 @@ class HomeWidgetStore extends StatelessWidget {
       ready.value = true;
       return [];
     }
-
+    Future<List> getCategories() async {
+      ready.value = false;
+      Map res = await httpClient.getCategories();
+      print('---------------------------------Cat');
+      print(res);
+      if (res['code'] == 200) {
+        print('---------------------------------Cat 2');
+        cat.value = res['data']['data'];
+        print(res['data']['data']);
+      }
+      // print(res);
+      ready.value = true;
+      return [];
+    }
+    getCategories();
     searchStore('');
 
     storeHelper.refreshCart();
@@ -125,7 +139,7 @@ class HomeWidgetStore extends StatelessWidget {
               height: 4,
             ),
 
-            Container(
+            Obx(()=>Container(
               height: Get.height*12/100,
               child: Row(
                 children: <Widget>[
@@ -163,7 +177,7 @@ class HomeWidgetStore extends StatelessWidget {
                                     style: TextStyle(
                                       color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),
                                     ),
-                                    text: "${cat[index]}",
+                                    text: "${cat[index]['name']}",
                                     scrollAxis: Axis.horizontal,
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     blankSpace: 10.0,
@@ -190,7 +204,7 @@ class HomeWidgetStore extends StatelessWidget {
                   ),
                 ],
               ),
-            ),
+            )),
 
             SizedBox(height: 30.0),
 

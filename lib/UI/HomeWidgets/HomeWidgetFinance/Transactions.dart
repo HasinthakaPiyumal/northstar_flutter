@@ -73,7 +73,7 @@ class Transactions extends StatelessWidget {
                           )
                         ],
                       ),
-                      Text((Utils.formatCurrency.format(transactions[index]['amount']/100)).toString(),style: TypographyStyles.walletTransactions(16, transactions[index]['type']),),
+                      Text((Utils.formatCurrency.format(transactions[index]['amount'])).toString(),style: TypographyStyles.walletTransactions(16, transactions[index]['type']),),
                     ],
                   ),
                 );

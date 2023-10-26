@@ -99,7 +99,7 @@ class Doctors extends StatelessWidget {
                     children: [
                       Icon(Icons.video_call_outlined),
                       SizedBox(width: 8),
-                      Text('ADD ITEM',
+                      Text('Channel',
                           style: TextStyle(
                             fontSize: 20,
                             fontFamily: 'Bebas Neue',
