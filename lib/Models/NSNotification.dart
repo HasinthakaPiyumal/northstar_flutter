@@ -18,7 +18,8 @@ enum NSNotificationTypes {
   DoctorAppointmentAccepted,
   DoctorAppointmentDeclined,
   DietConsultationRequest,
-  Payments
+  Payments,
+  ClientProfileUpdated,
 }
 
 class NSNotification {
@@ -31,7 +32,8 @@ class NSNotification {
   String title;
   String description;
   NSNotificationTypes type;
-  Map<String, dynamic> data;
+  // Map<String, dynamic> data;
+  dynamic data;
 
   DateTime createdAt;
 
@@ -48,7 +50,7 @@ class NSNotification {
   });
 
   factory NSNotification.fromJson(Map<String, dynamic> json) {
-    print("json data ${json['data']}");
+    print("json data ${json['data'].runtimeType}");
 
     return NSNotification(
       id: json['id'],

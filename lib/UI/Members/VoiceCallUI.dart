@@ -4,15 +4,20 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Models/CallData.dart';
 import 'package:north_star/Styles/AppColors.dart';
+import 'package:north_star/UI/SharedWidgets/CommonConfirmDialog.dart';
 
 import '../../Controllers/AgoraCallController.dart';
 import '../../Controllers/CallConrtoller.dart';
 import '../../Models/HttpClient.dart';
 
-void afterMinutes(int seconds) {
+void afterSeconds(int seconds) {
   Future.delayed(Duration(seconds: seconds), () {
-    endCall(callData.id,callData.channelName);
-    Get.back();
+    print('AgoraCallController.callStatus.value ${AgoraCallController.callStatus.value}');
+    if(AgoraCallController.callStatus.value == 'Calling...'){
+      endCall(callData.id,callData.channelName);
+      AgoraCallController.leaveCall();
+      // Get.back();
+    }
   });
 }
 
@@ -20,134 +25,150 @@ class VoiceCallUI extends StatelessWidget {
   VoiceCallUI({Key? key, this.user}) : super(key: key);
   final user;
 
+
+
   @override
   Widget build(BuildContext context) {
     AgoraCallController.init(user);
-    afterMinutes(30);
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/images/backgrounds/call.png"),
-            // Replace with your image path
-            fit: BoxFit.cover, // You can adjust the fit as needed
+    afterSeconds(45);
+    Future<bool> _onWillPop() async {
+      bool canPop = false;
+      bool confirmed = await CommonConfirmDialog.confirm('End Call');
+      if (confirmed) {
+        AgoraCallController.leaveCall();
+        canPop = true;
+      } else {
+        canPop = false;
+      }
+      return canPop;
+    }
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        body: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/images/backgrounds/call.png"),
+              // Replace with your image path
+              fit: BoxFit.cover, // You can adjust the fit as needed
+            ),
           ),
-        ),
-        child: Column(
-          children: [
-            SizedBox(
-              height: Get.height / 10,
-            ),
-            Container(
-              width: 124,
-              height: 124,
-              decoration: ShapeDecoration(
-                image: DecorationImage(
-                  image: CachedNetworkImageProvider(
-                      HttpClient.s3BaseUrl + user['avatar_url']),
-                  fit: BoxFit.cover,
+          child: Column(
+            children: [
+              SizedBox(
+                height: Get.height / 10,
+              ),
+              Container(
+                width: 124,
+                height: 124,
+                decoration: ShapeDecoration(
+                  image: DecorationImage(
+                    image: CachedNetworkImageProvider(
+                        HttpClient.s3BaseUrl + user['avatar_url']),
+                    fit: BoxFit.cover,
+                  ),
+                  shape: OvalBorder(),
                 ),
-                shape: OvalBorder(),
               ),
-            ),
-            SizedBox(
-              height: 16,
-            ),
-            Text(
-              user['name'],
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 26,
-                fontFamily: 'Bebas Neue',
-                fontWeight: FontWeight.w400,
+              SizedBox(
+                height: 16,
               ),
-            ),
-            SizedBox(
-              height: 12,
-            ),
-            Obx(
-                  () => Text(
-                AgoraCallController.callStatus.value == 'Connected'
-                    ? '${AgoraCallController.duration.value.inMinutes.toString().padLeft(2, '0')}:${AgoraCallController.duration.value.inSeconds.remainder(60).toString().padLeft(2, '0')}'
-                    : 'Calling...',
+              Text(
+                user['name'],
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 16,
-                  fontFamily: 'Poppins',
+                  fontSize: 26,
+                  fontFamily: 'Bebas Neue',
                   fontWeight: FontWeight.w400,
                 ),
               ),
-            ),
-            Expanded(
-              child: SizedBox(),
-            ),
-            Container(
-              color: AppColors.primary2Color,
-              padding: EdgeInsets.all(10),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Obx(() => MaterialButton(
-                    onPressed: () async {
-                      AgoraCallController.switchSpeaker();
-                    },
-                    shape: CircleBorder(),
-                    elevation: 0,
-                    color: AgoraCallController.speakerPhone.value
-                        ? Color(0x11FFFFFF)
-                        : Color(0x00FFFFFF),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Icon(Icons.volume_up_outlined, size: 32),
-                    ),
-                  )),
-                  MaterialButton(
-                    onPressed: () async {
-                      // AgoraCallController.switchMute();
-                    },
-                    shape: CircleBorder(),
-                    elevation: 0,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Icon(Icons.video_call_rounded, size: 32),
-                    ),
+              SizedBox(
+                height: 12,
+              ),
+              Obx(
+                    () => Text(
+                  AgoraCallController.callStatus.value == 'Connected'
+                      ? '${AgoraCallController.duration.value.inMinutes.toString().padLeft(2, '0')}:${AgoraCallController.duration.value.inSeconds.remainder(60).toString().padLeft(2, '0')}'
+                      : 'Calling...',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w400,
                   ),
-                  Obx(() => MaterialButton(
-                    onPressed: () async {
-                      AgoraCallController.switchMute();
-                    },
-                    shape: CircleBorder(),
-                    elevation: 0,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Icon(
-                        AgoraCallController.mute.value
-                            ? Icons.mic_none_outlined
-                            : Icons.mic_off_outlined,
-                        size: 32,
+                ),
+              ),
+              Expanded(
+                child: SizedBox(),
+              ),
+              Container(
+                color: AppColors.primary2Color,
+                padding: EdgeInsets.all(10),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Obx(() => MaterialButton(
+                      onPressed: () async {
+                        AgoraCallController.switchSpeaker();
+                      },
+                      shape: CircleBorder(),
+                      elevation: 0,
+                      color: AgoraCallController.speakerPhone.value
+                          ? Color(0x11FFFFFF)
+                          : Color(0x00FFFFFF),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Icon(Icons.volume_up_outlined, size: 32),
+                      ),
+                    )),
+                    MaterialButton(
+                      onPressed: () async {
+                        // AgoraCallController.switchMute();
+                      },
+                      shape: CircleBorder(),
+                      elevation: 0,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Icon(Icons.video_call_rounded, size: 32),
                       ),
                     ),
-                  )),
-                  MaterialButton(
-                    onPressed: () async {
-                      AgoraCallController.leaveCall();
-                    },
-                    shape: CircleBorder(),
-                    elevation: 0,
-                    color: Color(0xFFFF4040),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Icon(Icons.call_end,
-                          size: 28, color: AppColors.primary2Color),
-                    ),
-                  )
-                ],
-              ),
-            )
-          ],
+                    Obx(() => MaterialButton(
+                      onPressed: () async {
+                        AgoraCallController.switchMute();
+                      },
+                      shape: CircleBorder(),
+                      elevation: 0,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Icon(
+                          AgoraCallController.mute.value
+                              ? Icons.mic_none_outlined
+                              : Icons.mic_off_outlined,
+                          size: 32,
+                        ),
+                      ),
+                    )),
+                    MaterialButton(
+                      onPressed: () async {
+                        AgoraCallController.leaveCall();
+                      },
+                      shape: CircleBorder(),
+                      elevation: 0,
+                      color: Color(0xFFFF4040),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Icon(Icons.call_end,
+                            size: 28, color: AppColors.primary2Color),
+                      ),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

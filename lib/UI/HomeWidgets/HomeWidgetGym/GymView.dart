@@ -88,6 +88,35 @@ class GymView extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
             children: [
+              gymObj['gym_type'] == 'services'
+                  ? Column(
+                      children: [
+                        SizedBox(height: 20),
+                        Row(
+                          children: [
+                            Text(gymObj["gym_services"]["name"],
+                                style: TypographyStyles.title(20)),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text(gymObj["gym_services"]["description"],
+                                style: TypographyStyles.text(16)),
+                          ],
+                        ),
+                        Container(
+                          width: Get.width,
+                          height: 200, // Optionally set the height if needed
+                          child: CachedNetworkImage(
+                            imageUrl: HttpClient.s3ResourcesBaseUrl +
+                                gymObj["gym_services"]["image_path"],
+                            fit: BoxFit
+                                .cover, // This ensures the image covers the entire container
+                          ),
+                        ),
+                      ],
+                    )
+                  : SizedBox(),
               SizedBox(height: 20),
               Row(
                 children: [
@@ -342,9 +371,13 @@ class GymView extends StatelessWidget {
               ),
               SizedBox(height: 20),
               Container(
-               decoration:BoxDecoration(borderRadius: BorderRadius.circular(10), color: Get.isDarkMode ? AppColors.primary2Color : Colors.white,),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color:
+                      Get.isDarkMode ? AppColors.primary2Color : Colors.white,
+                ),
                 width: Get.width,
-                height: 178,
+                height: viewOnly ? 110 : 178,
                 padding: EdgeInsets.all(20),
                 child: Column(
                   children: [
@@ -381,7 +414,8 @@ class GymView extends StatelessWidget {
                                       ),
                                       Text(
                                         "HOURLY RATE",
-                                        style: TypographyStyles.textWithWeight(16,FontWeight.w400),
+                                        style: TypographyStyles.textWithWeight(
+                                            16, FontWeight.w400),
                                       ),
                                     ],
                                   ),
@@ -407,26 +441,36 @@ class GymView extends StatelessWidget {
                                 ),
                                 Text(
                                   "CAPACITY",
-                                  style:  TypographyStyles.textWithWeight(16,FontWeight.w400),
-                                  )
+                                  style: TypographyStyles.textWithWeight(
+                                      16, FontWeight.w400),
+                                )
                               ],
                             ),
                           ),
                         ],
                       ),
                     ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Buttons.yellowFlatButton(
-                        onPressed: () { if (gymObj['gym_type'] == 'exclusive'){
-                          Get.to(() => BookNow(gymObj: gymObj));
-                        }else if(gymObj['gym_type'] == 'services'){
-                          Get.to(() => BookNowServices(gymObj: gymObj));
-                        }
-                        else {
-                          Get.to(()=> PurchaseGymSubscription(gymObj: gymObj));
-                        }}, label: "BOOK NOW", width: Get.width)
+                    viewOnly
+                        ? SizedBox()
+                        : SizedBox(
+                            height: 20,
+                          ),
+                    Visibility(
+                      visible: !viewOnly,
+                      child: Buttons.yellowFlatButton(
+                          onPressed: () {
+                            if (gymObj['gym_type'] == 'exclusive') {
+                              Get.to(() => BookNow(gymObj: gymObj));
+                            } else if (gymObj['gym_type'] == 'services') {
+                              Get.to(() => BookNowServices(gymObj: gymObj));
+                            } else {
+                              Get.to(() =>
+                                  PurchaseGymSubscription(gymObj: gymObj));
+                            }
+                          },
+                          label: "BOOK NOW",
+                          width: Get.width),
+                    )
                   ],
                 ),
               ),

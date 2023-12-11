@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart' hide DatePickerTheme;
 import 'package:flutter_datetime_picker_bdaya/flutter_datetime_picker_bdaya.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
@@ -18,6 +17,7 @@ import 'package:north_star/Utils/PopUps.dart';
 import 'package:north_star/components/ImageUploader.dart';
 
 import '../../../Styles/AppColors.dart';
+import '../../../components/SessionTimePicker.dart';
 
 class ScheduleForMe extends StatefulWidget {
   ScheduleForMe({Key? key, this.doctor}) : super(key: key);
@@ -37,7 +37,12 @@ class ScheduleForMe extends StatefulWidget {
 }
 
 class _ScheduleForMeState extends State<ScheduleForMe> {
-  late dynamic _imageFile;
+  late dynamic imageFile = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +57,11 @@ class _ScheduleForMeState extends State<ScheduleForMe> {
 
     DateTime roundToNearestHour(DateTime date) {
       int minutes = date.minute;
-      int roundedMinutes = (minutes + 30) ~/ 60 * 60; // Round to the nearest hour
-      DateTime roundedDate = date.subtract(Duration(minutes: minutes)).add(Duration(minutes: roundedMinutes));
+      int roundedMinutes =
+          (minutes + 30) ~/ 60 * 60; // Round to the nearest hour
+      DateTime roundedDate = date
+          .subtract(Duration(minutes: minutes))
+          .add(Duration(minutes: roundedMinutes));
       return roundedDate;
     }
 
@@ -198,7 +206,7 @@ class _ScheduleForMeState extends State<ScheduleForMe> {
                       'doctor_id': widget.doctor['id'].toString(),
                       'trainer_id': authUser.id.toString(),
                       'role': authUser.role,
-                      'title': widget.titleController.text,
+                      'reason': widget.titleController.text,
                       'description': widget.descriptionController.text,
                       'start_time': dateTimeOfBooking.toString(),
                     });
@@ -301,9 +309,6 @@ class _ScheduleForMeState extends State<ScheduleForMe> {
       return widget.doctor['paying_type'] == 2 ? '(Per Session)' : '(Per Hour)';
     }
 
-
-
-
     void checkReserved(String date) async {
       var data = {"therapy_id": widget.doctor["therapy_Id"], "apt_date": date};
       var res = await httpClient.checkReservedTherapy(data);
@@ -327,12 +332,17 @@ class _ScheduleForMeState extends State<ScheduleForMe> {
       var data = {
         "therapy_id": widget.doctor["therapy_Id"],
         "reason": widget.descriptionController.text ?? "",
-        "additional": widget.titleController.text ?? "",
+        "additional":"-",
+        "amount": 10.0,
         "apt_date": widget.curDate.value,
         "start_time": widget.stTime.value,
         "end_time": widget.enTime.value
       };
-      var res = await httpClient.addTherapyMeeting(data,_imageFile);
+      print(data);
+      var res;
+      res = await httpClient.addTherapyMeeting(
+          data, imageFile != false ? imageFile : null);
+
       if (res["code"] == 200 && res["data"][0]["status"]) {
         Get.back();
         Get.back();
@@ -549,30 +559,23 @@ class _ScheduleForMeState extends State<ScheduleForMe> {
                         ),
                       ),
                       onTap: () {
-                        DatePickerBdaya.showTimePicker(
-                          context,
-                          theme: ThemeBdayaStyles.main(),
-                          showTitleActions: true,
-                          showSecondsColumn: false,
-
-                          // minTime: DateTime.now(),
-                          currentTime: selectedStartTime,
-                          onChanged: (date) {
-                            print('change $date');
-                          },
+                        SessionTimePicker(
+                          initial: selectedStartTime,
                           onConfirm: (date) {
                             print('confirm $date');
-                            date = roundToNearestHour(date);
+                            // date = roundToNearestHour(date);
                             selectedStartTime = date;
                             if (widget.doctor['paying_type'] == 2) {
                               print('setting session');
                               DateTime sessionEndTime = date.add(Duration(
                                   minutes: widget.doctor['session_duration']));
-                              widget.endTime.text = DateFormat('HH:mm').format(sessionEndTime);
+                              widget.endTime.text =
+                                  DateFormat('HH:mm').format(sessionEndTime);
                               widget.enTime.value =
                                   '${DateFormat("HH:mm").format(sessionEndTime).toString()}:00';
                             }
-                            widget.startTime.text = DateFormat('HH:mm').format(date);
+                            widget.startTime.text =
+                                DateFormat('HH:mm').format(date);
                             widget.stTime.value =
                                 '${DateFormat("HH:mm").format(date).toString()}:00';
                           },
@@ -594,27 +597,41 @@ class _ScheduleForMeState extends State<ScheduleForMe> {
                       ),
                       onTap: () {
                         if (widget.doctor['paying_type'] == 2) {
-                          showSnack("Info", "The end time is automatically selected based on the session's duration.");
+                          showSnack("Info",
+                              "The end time is automatically selected based on the session's duration.");
                           return;
                         }
-                        DatePickerBdaya.showTimePicker(
-                          context,
-                          theme: ThemeBdayaStyles.main(),
-                          showTitleActions: true,
-                          showSecondsColumn: false,
-                          currentTime: selectedEndTime,
-                          onChanged: (date) {
-                            print('change $date');
-                          },
+                        SessionTimePicker(
+                          initial: selectedEndTime,
                           onConfirm: (date) {
                             print('confirm $date');
-                            date = roundToNearestHour(date);
+                            // date = roundToNearestHour(date);
                             selectedEndTime = date;
-                            widget.endTime.text = DateFormat('HH:mm').format(date);
+                            widget.endTime.text =
+                                DateFormat('HH:mm').format(date);
                             widget.enTime.value =
-                                '${DateFormat("HH:mm").format(date).toString()}:00';
+                            '${DateFormat("HH:mm").format(date).toString()}:00';
                           },
                         );
+                        // DatePickerBdaya.showTimePicker(
+                        //   context,
+                        //   theme: ThemeBdayaStyles.main(),
+                        //   showTitleActions: true,
+                        //   showSecondsColumn: false,
+                        //   currentTime: selectedEndTime,
+                        //   onChanged: (date) {
+                        //     print('change $date');
+                        //   },
+                        //   onConfirm: (date) {
+                        //     print('confirm $date');
+                        //     date = roundToNearestHour(date);
+                        //     selectedEndTime = date;
+                        //     widget.endTime.text =
+                        //         DateFormat('HH:mm').format(date);
+                        //     widget.enTime.value =
+                        //         '${DateFormat("HH:mm").format(date).toString()}:00';
+                        //   },
+                        // );
                       },
                     ),
                   ),
@@ -648,7 +665,7 @@ class _ScheduleForMeState extends State<ScheduleForMe> {
               ),
               ImageUploader(handler: (img) {
                 setState(() {
-                  _imageFile = img;
+                  imageFile = img;
                 });
               }),
               SizedBox(
@@ -686,8 +703,7 @@ class _ScheduleForMeState extends State<ScheduleForMe> {
                         child: CircularProgressIndicator(),
                       ),
                 onPressed: () {
-                  if (widget.descriptionController.text.isNotEmpty &&
-                      widget.curDate.value.isNotEmpty &&
+                  if (widget.curDate.value.isNotEmpty &&
                       widget.stTime.value.isNotEmpty &&
                       widget.enTime.value.isNotEmpty) {
                     addMeeting();

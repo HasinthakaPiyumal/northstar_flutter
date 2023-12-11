@@ -18,6 +18,7 @@ import 'package:north_star/Utils/PopUps.dart';
 import 'package:north_star/components/Buttons.dart';
 import 'package:provider/provider.dart';
 
+import '../../Models/NSNotification.dart';
 import '../../components/CheckButton.dart';
 import '../../main.dart';
 import '../HelpAndSupport/HelpAndSupportHome.dart';
@@ -40,6 +41,7 @@ class ClientProfile extends StatelessWidget {
       Map res = await httpClient.getMyProfile();
       if (res['code'] == 200) {
         data = res['data'];
+        print(data);
         ready.value = true;
       } else {
         print(res);
@@ -55,6 +57,7 @@ class ClientProfile extends StatelessWidget {
       }, trainerID);
 
       if (res['code'] == 200) {
+
         Get.back();
         getProfile();
       } else {
@@ -394,7 +397,7 @@ class ClientProfile extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              Obx(() => ready.value
+              Obx(() => ready.value && data['user']!=null
                   ? Column(
                       children: [
                         ClipOval(

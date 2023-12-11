@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Models/NSNotification.dart';
+import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
+import 'package:north_star/UI/HomeWidgets/HomeWidgetNotifications.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 
 class NotificationsController {
@@ -22,6 +25,8 @@ class NotificationsController {
     Map res = await httpClient.getNotifications();
     print('printing notification ${res['data']}');
     if (res['code'] == 200) {
+      print('notification loeader -->$res');
+      print(authUser.name);
       notifications.value = List<NSNotification>.from(
           res['data'].map((x) => NSNotification.fromJson(x))).toList();
       notifications.sort((a, b) => b.createdAt.compareTo(a.createdAt));
@@ -124,7 +129,8 @@ class NotificationsController {
         ),
         backgroundColor: Colors.transparent,
         content: Container(
-          height: 230,
+          height: 240,
+          width: Get.width,
           child: Stack(
             children: [
               Container(
@@ -141,7 +147,7 @@ class NotificationsController {
                         child: Container(
                           decoration: BoxDecoration(
                             color: Get.isDarkMode
-                                ? colors.Colors().deepGrey(1)
+                                ? AppColors.primary2Color
                                 : colors.Colors().lightWhite(1),
                             borderRadius: BorderRadius.circular(15),
                           ),
@@ -194,29 +200,67 @@ class NotificationsController {
                           SizedBox(
                             height: 15,
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              MaterialButton(
-                                onPressed: () {
-                                  Get.back();
-                                },
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 15),
-                                  child: Text(
-                                    'OK',
-                                    style: TypographyStyles.boldText(16,
-                                        Themes.mainThemeColorAccent.shade100),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 20.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: MaterialButton(
+                                    onPressed: () {
+                                      // Get.to(() => HomeWidgetNotifications());
+                                      NotificationsController.readAllNotifications();
+                                      Get.back();
+                                    },
+                                    child: Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 15),
+                                      child: Text(
+                                        'Read All',
+                                        style: TypographyStyles.boldText(
+                                            16,
+                                            Themes
+                                                .mainThemeColorAccent.shade100),
+                                      ),
+                                    ),
+                                    color: AppColors.primary2Color,
+                                    shape: StadiumBorder(
+                                        side: BorderSide(color: Colors.white)),
                                   ),
                                 ),
-                                color: Themes.mainThemeColor.shade600,
-                                shape: StadiumBorder(),
-                              ),
-                            ],
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Expanded(
+                                  child: MaterialButton(
+                                    onPressed: () {
+                                      Get.back();
+                                      Get.to(() => HomeWidgetNotifications());
+                                    },
+                                    child: Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 15),
+                                      child: Text(
+                                        'View',
+                                        style: TypographyStyles.boldText(
+                                            16,
+                                           AppColors.textOnAccentColor),
+                                      ),
+                                    ),
+                                    color: AppColors.accentColor,
+                                    shape: StadiumBorder(),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
                     ),
+                    SizedBox(
+                      height: 10,
+                    )
                   ],
                 ),
               ),

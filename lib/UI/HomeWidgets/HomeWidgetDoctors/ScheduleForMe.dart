@@ -15,6 +15,7 @@ import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/Utils/PopUps.dart';
 
 import '../../../Styles/AppColors.dart';
+import '../../../components/SessionTimePicker.dart';
 
 class ScheduleForMe extends StatelessWidget {
   const ScheduleForMe({Key? key, this.doctor}) : super(key: key);
@@ -29,10 +30,12 @@ class ScheduleForMe extends StatelessWidget {
     RxMap walletData = {}.obs;
 
     TextEditingController dateTime = new TextEditingController();
+    TextEditingController startTime = new TextEditingController();
     TextEditingController descriptionController = new TextEditingController();
     TextEditingController titleController = new TextEditingController();
 
-    late DateTime selectedDateTime;
+    DateTime now = DateTime.now();
+    late DateTime selectedDateTime = DateTime(now.year,now.month,now.day,0,0);
 
     void confirmAndPay(DateTime dateTimeOfBooking, double total) async {
       Map res = await httpClient.getWallet();
@@ -317,36 +320,75 @@ class ScheduleForMe extends StatelessWidget {
               SizedBox(height: 25),
               Text('Appointment for you', style: TypographyStyles.title(18)),
               SizedBox(height: 25),
-              TextField(
-                controller: dateTime,
-                readOnly: true,
-                decoration: InputDecoration(
-                  labelText: 'Approximate Meeting Start Time',
-                  prefixIcon: Icon(Icons.calendar_today),
-                  border: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: ((Get.width - 32) / 2) - 8,
+                    child: TextField(
+                      controller: dateTime,
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        labelText: 'Date',
+                        prefixIcon: Icon(Icons.calendar_today),
+                        border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                      ),
+                      onTap: () {
+                        DatePickerBdaya.showDatePicker(
+                          context,
+                          theme: ThemeBdayaStyles.main(),
+                          showTitleActions: true,
+                          minTime: DateTime.now(),
+                          currentTime: DateTime.now(),
+                          onChanged: (date) {
+                            print('change $date');
+                          },
+                          onConfirm: (date) {
+                            print('confirm $date');
+
+                            selectedDateTime = DateTime(
+                                date.year,
+                                date.month,
+                                date.day,
+                                selectedDateTime.hour,
+                                selectedDateTime.minute);
+                            dateTime.text = DateFormat("MMM dd,yyyy")
+                                .format(date)
+                                .toString();
+                          },
+                        );
+                      },
+                    ),
                   ),
-                ),
-                onTap: () {
-                  DatePickerBdaya.showDateTimePicker(
-                    context,
-                    theme: ThemeBdayaStyles.main(),
-                    showTitleActions: true,
-                    minTime: DateTime.now(),
-                    currentTime: DateTime.now(),
-                    onChanged: (date) {
-                      print('change $date');
-                    },
-                    onConfirm: (date) {
-                      print('confirm $date');
-                      selectedDateTime = date;
-                      dateTime.text =
-                          DateFormat("MMM dd,yyyy").format(date).toString() +
-                              " at " +
-                              DateFormat('HH:mm').format(date);
-                    },
-                  );
-                },
+                  Container(
+                    width: ((Get.width - 32) / 2) - 8,
+                    child: TextField(
+                      controller: startTime,
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        labelText: 'Start Time',
+                        prefixIcon: Icon(Icons.access_time_rounded),
+                        border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                      ),
+                      onTap: () {
+                          SessionTimePicker(
+                            initial: selectedDateTime,
+                            onConfirm: (date) {
+                              print('confirm $date');
+                              selectedDateTime = date;
+                              startTime.text =
+                                  '${DateFormat("HH:mm").format(date).toString()}';
+                            },
+                          );
+
+                      },
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 16),
               TextField(
@@ -402,15 +444,17 @@ class ScheduleForMe extends StatelessWidget {
                         child: CircularProgressIndicator(),
                       ),
                 onPressed: () {
-                  if (descriptionController.text.isNotEmpty) {
-                    confirmAndPay(
-                        selectedDateTime,
-                        double.parse(
-                            doctor['doctor']['hourly_rate'].toString()));
-                  } else {
-                    showSnack('Description is empty!',
-                        'please add a description about the meeting');
-                  }
+                  confirmAndPay(selectedDateTime,
+                      double.parse(doctor['doctor']['hourly_rate'].toString()));
+                  // if (descriptionController.text.isNotEmpty) {
+                  //   confirmAndPay(
+                  //       selectedDateTime,
+                  //       double.parse(
+                  //           doctor['doctor']['hourly_rate'].toString()));
+                  // } else {
+                  //   showSnack('Description is empty!',
+                  //       'please add a description about the meeting');
+                  // }
                 },
               )),
         ),

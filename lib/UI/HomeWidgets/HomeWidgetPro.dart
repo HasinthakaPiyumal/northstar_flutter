@@ -15,13 +15,13 @@ import 'package:north_star/UI/SharedWidgets/CommonConfirmDialog.dart';
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/Utils/PopUps.dart';
-import 'package:north_star/components/Buttons.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../components/CouponApply.dart';
 
 class HomeWidgetPro extends StatelessWidget {
   HomeWidgetPro({Key? key, this.extend = false}) : super(key: key);
   final bool extend;
-
 
   @override
   Widget build(BuildContext context) {
@@ -39,12 +39,18 @@ class HomeWidgetPro extends StatelessWidget {
     RxInt couponPercentage = 0.obs;
 
     TextEditingController couponController = new TextEditingController();
-    void applyCoupon()async{
-      if(couponPercentage.value>0){
+    void applyCoupon() async {
+      if (couponPercentage.value > 0) {
         couponPercentage.value = 0;
         return;
       }
-      if(couponController.text.toLowerCase()=="excode"){
+      const data = {
+        "code": "Hello test",
+        "coupon_type": 2,
+        "coupon_type_id": 18
+      };
+      var res = await httpClient.couponApply(data);
+      if (couponController.text.toLowerCase() == "excode") {
         couponPercentage.value = 10;
       }
     }
@@ -55,7 +61,7 @@ class HomeWidgetPro extends StatelessWidget {
       print('plan list =---> $res');
       if (res['code'] == 200) {
         List temp = res['data'];
-        if (authUser.user['trial_used'] == true){
+        if (authUser.user['trial_used'] == true) {
           temp.removeWhere((element) => element['price'] == 0);
         }
 
@@ -66,9 +72,9 @@ class HomeWidgetPro extends StatelessWidget {
       ready.value = true;
     }
 
-    double getPlanPrice(Map plan){
+    double getPlanPrice(Map plan) {
       double price = double.parse(plan['price'].toString());
-      if(plan['discounted']){
+      if (plan['discounted']) {
         price = price - (price * plan['discounted_percentage'] / 100);
       }
       return price;
@@ -80,8 +86,11 @@ class HomeWidgetPro extends StatelessWidget {
       int durationAmountMultiplier = durationsMap[plan['duration_unit']];
       int months = plan['duration_amount'] * durationAmountMultiplier;
 
-      Map res = await httpClient.subscribeNow(
-          {'months': months, 'user_id': authUser.id, 'amount': getPlanPrice(plan)});
+      Map res = await httpClient.subscribeNow({
+        'months': months,
+        'user_id': authUser.id,
+        'amount': getPlanPrice(plan)
+      });
       print('printing price ${getPlanPrice(plan)}');
       print(res);
       if (res['code'] == 200) {
@@ -94,8 +103,6 @@ class HomeWidgetPro extends StatelessWidget {
       }
       ready.value = true;
     }
-
-    
 
     void confirmAndPay(Map plan) async {
       Map res = await httpClient.getWallet();
@@ -114,29 +121,11 @@ class HomeWidgetPro extends StatelessWidget {
           contentPadding: EdgeInsets.symmetric(
             horizontal: 20,
           ),
-          content: Obx(()=>Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "PURCHASE SUMMARY",
-                style: TypographyStyles.boldText(
-                  16,
-                  Get.isDarkMode
-                      ? Themes.mainThemeColorAccent.shade100
-                      : colors.Colors().lightBlack(1),
-                ),
-              ),
-              SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          content: Obx(() => Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Selected Plan',
-                    style: TypographyStyles.normalText(
-                        16, Themes.mainThemeColorAccent.shade300),
-                  ),
-                  Text(
-                    '${plan['name']}',
+                    "PURCHASE SUMMARY",
                     style: TypographyStyles.boldText(
                       16,
                       Get.isDarkMode
@@ -144,112 +133,170 @@ class HomeWidgetPro extends StatelessWidget {
                           : colors.Colors().lightBlack(1),
                     ),
                   ),
-                ],
-              ),
-              SizedBox(height: 4),
-              Divider(
-                thickness: 1,
-                color: Themes.mainThemeColorAccent.shade300.withOpacity(0.2),
-              ),
-              SizedBox(height: 4),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Total To be Paid',
-                    style: TypographyStyles.normalText(
-                        16, Themes.mainThemeColorAccent.shade300),
-                  ),
-                  Text(
-                    'MVR ${getPlanPrice(plan)-couponValue.value}',
-                    style: TypographyStyles.boldText(
-                      16,
-                      Get.isDarkMode
-                          ? Themes.mainThemeColorAccent.shade100
-                          : colors.Colors().lightBlack(1),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 8),
-              Divider(
-                thickness: 1,
-                color: Themes.mainThemeColorAccent.shade300.withOpacity(0.2),
-              ),
-
-              SizedBox(height: 30),
-              RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  text: 'By clicking Pay with Card, you are agreeing to our ',
-                  style: TypographyStyles.normalText(
-                    12,
-                    Get.isDarkMode
-                        ? Themes.mainThemeColorAccent.shade100
-                        : colors.Colors().lightBlack(1),
-                  ),
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: 'Terms & Conditions',
-                      style: TypographyStyles.normalText(
-                          12, Themes.mainThemeColor),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () => launchUrl(Uri.parse(
-                            'https://northstar.mv/terms-conditions/')),
-                    ),
-                    TextSpan(
-                      text: " & ",
-                      style: TypographyStyles.normalText(
-                          12,
+                  SizedBox(height: 30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Selected Plan',
+                        style: TypographyStyles.normalText(
+                            16, Themes.mainThemeColorAccent.shade300),
+                      ),
+                      Text(
+                        '${plan['name']}',
+                        style: TypographyStyles.boldText(
+                          16,
                           Get.isDarkMode
                               ? Themes.mainThemeColorAccent.shade100
-                              : colors.Colors().lightBlack(1)),
-                    ),
-                    TextSpan(
-                      text: 'Privacy Policy',
-                      style: TypographyStyles.normalText(
-                          12, Themes.mainThemeColor),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () => launchUrl(
-                            Uri.parse('https://northstar.mv/privacy-policy')),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 10,),
+                              : colors.Colors().lightBlack(1),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 4),
+                  Divider(
+                    thickness: 1,
+                    color:
+                        Themes.mainThemeColorAccent.shade300.withOpacity(0.2),
+                  ),
+                  SizedBox(height: 4),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Total To be Paid',
+                        style: TypographyStyles.normalText(
+                            16, Themes.mainThemeColorAccent.shade300),
+                      ),
+                      Text(
+                        'MVR ${getPlanPrice(plan) - couponValue.value}',
+                        style: TypographyStyles.boldText(
+                          16,
+                          Get.isDarkMode
+                              ? Themes.mainThemeColorAccent.shade100
+                              : colors.Colors().lightBlack(1),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8),
+                  Divider(
+                    thickness: 1,
+                    color:
+                        Themes.mainThemeColorAccent.shade300.withOpacity(0.2),
+                  ),
 
-            ],
-          )),
+                  SizedBox(height: 30),
+                  RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      text:
+                          'By clicking Pay with Card, you are agreeing to our ',
+                      style: TypographyStyles.normalText(
+                        12,
+                        Get.isDarkMode
+                            ? Themes.mainThemeColorAccent.shade100
+                            : colors.Colors().lightBlack(1),
+                      ),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: 'Terms & Conditions',
+                          style: TypographyStyles.normalText(
+                              12, Themes.mainThemeColor),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () => launchUrl(Uri.parse(
+                                'https://northstar.mv/terms-conditions/')),
+                        ),
+                        TextSpan(
+                          text: " & ",
+                          style: TypographyStyles.normalText(
+                              12,
+                              Get.isDarkMode
+                                  ? Themes.mainThemeColorAccent.shade100
+                                  : colors.Colors().lightBlack(1)),
+                        ),
+                        TextSpan(
+                          text: 'Privacy Policy',
+                          style: TypographyStyles.normalText(
+                              12, Themes.mainThemeColor),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () => launchUrl(Uri.parse(
+                                'https://northstar.mv/privacy-policy')),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  // Row(
+                  //   children: [
+                  //     Expanded(
+                  //       child: TextField(
+                  //         readOnly: couponPercentage.value>0,
+                  //         controller: couponController,
+                  //         decoration: InputDecoration(
+                  //           label: Text("Coupon Code"),
+                  //           hintText: "EXCODE",
+                  //         ),
+                  //
+                  //       ),
+                  //     ),
+                  //     SizedBox(width: 10,),
+                  //     Container(height:48,child: ElevatedButton(onPressed: applyCoupon, child: Text(couponPercentage.value>0?"clear":"apply",style: TextStyle(
+                  //       color: Color(0xFF1B1F24),
+                  //       fontSize: 20,
+                  //       fontFamily: 'Bebas Neue',
+                  //       fontWeight: FontWeight.w400,
+                  //       height: 0,
+                  //     ),),))
+                  //   ],
+                  // ),
+                  CouponApply(
+                      type: 1, typeId: plan['id'], couponValue: couponValue)
+                ],
+              )),
           actions: [
             Container(
               width: Get.width,
               child: ElevatedButton(
-                onPressed: () async{
+                onPressed: () async {
                   print(_current.value);
                   print(plansList[_current.value]);
-                  if(plansList[_current.value]['real_price']/100 <= walletData['balance']){
+                  if (plansList[_current.value]['real_price'] / 100 <=
+                      walletData['balance']) {
                     List temp = [];
                   } else {
-                    showSnack('Insufficient Balance','You do not have sufficient balance to pay for this booking.');
+                    showSnack('Insufficient Balance',
+                        'You do not have sufficient balance to pay for this booking.');
                   }
                 },
-                style: ButtonStyles.matButton(Themes.mainThemeColor.shade500, 0),
-                child: Obx(() => ready.value ? Padding(
-                  padding: EdgeInsets.symmetric(vertical: 12),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text('Pay with eWallet',
-                        style: TypographyStyles.boldText(16, Colors.black),
-                      ),
-                      SizedBox(height: 3,),
-                      Text('(eWallet Balance: ${walletData['balance'].toStringAsFixed(2)})',
-                        style: TypographyStyles.normalText(13, Colors.black),
-                      ),
-                    ],
-                  ),
-                ) : LoadingAndEmptyWidgets.loadingWidget()),
+                style:
+                    ButtonStyles.matButton(Themes.mainThemeColor.shade500, 0),
+                child: Obx(() => ready.value
+                    ? Padding(
+                        padding: EdgeInsets.symmetric(vertical: 12),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'Pay with eWallet',
+                              style:
+                                  TypographyStyles.boldText(16, Colors.black),
+                            ),
+                            SizedBox(
+                              height: 3,
+                            ),
+                            Text(
+                              '(eWallet Balance: ${walletData['balance'].toStringAsFixed(2)})',
+                              style:
+                                  TypographyStyles.normalText(13, Colors.black),
+                            ),
+                          ],
+                        ),
+                      )
+                    : LoadingAndEmptyWidgets.loadingWidget()),
               ),
             ),
             Container(
@@ -519,123 +566,140 @@ class HomeWidgetPro extends StatelessWidget {
                       SizedBox(
                         height: 30,
                       ),
-                      Obx(() => ready.value ? ListView.builder(
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: plansList.length,
-                            itemBuilder: (context, index) {
-                              return Column(
-                                children: [
-                                  Obx(() => ElevatedButton(
-                                        style: selectedPackage.value == index
-                                            ? ButtonStyles.selectedButton()
-                                            : ButtonStyles.notSelectedButton(),
-                                        child: Padding(
-                                          padding: index == 0
-                                              ? EdgeInsets.symmetric(
-                                                  horizontal: 18, vertical: 10)
-                                              : EdgeInsets.symmetric(
-                                                  horizontal: 18),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                plansList[index]['name'],
-                                                textAlign: TextAlign.left,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .labelLarge!
-                                                    .copyWith(fontSize: 16),
-                                              ),
-                                              Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                crossAxisAlignment: CrossAxisAlignment.end,
-                                                children: [
-                                                  Row(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      plansList[index]
-                                                              ['discounted']
-                                                          ? Text(
-                                                              'MVR ${plansList[index]['price']}',style: TextStyle(
-                                                                decoration: TextDecoration.lineThrough,
-                                                                color: Colors.orange,
-                                                                fontSize: 12
-                                                              ))
-                                                          : SizedBox(),
-                                                      SizedBox(width: 4),
-                                                      Text('MVR ${getPlanPrice(plansList[index])}',
-                                                        textAlign:
-                                                            TextAlign.left,
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .labelLarge!
-                                                            .copyWith(
-                                                                fontSize: 16),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    height: 6,
-                                                  ),
-                                                  Visibility(
-                                                    child: Chip(
-                                                      label: Text(
+                      Obx(() => ready.value
+                          ? ListView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: plansList.length,
+                              itemBuilder: (context, index) {
+                                return Column(
+                                  children: [
+                                    Obx(() => ElevatedButton(
+                                          style: selectedPackage.value == index
+                                              ? ButtonStyles.selectedButton()
+                                              : ButtonStyles
+                                                  .notSelectedButton(),
+                                          child: Padding(
+                                            padding: index == 0
+                                                ? EdgeInsets.symmetric(
+                                                    horizontal: 18,
+                                                    vertical: 10)
+                                                : EdgeInsets.symmetric(
+                                                    horizontal: 18),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  plansList[index]['name'],
+                                                  textAlign: TextAlign.left,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .labelLarge!
+                                                      .copyWith(fontSize: 16),
+                                                ),
+                                                Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.end,
+                                                  children: [
+                                                    Row(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
                                                         plansList[index]
                                                                 ['discounted']
-                                                            ? 'Save ${plansList[index]['discounted_percentage']}%'
-                                                            : '',
-                                                        textAlign:
-                                                            TextAlign.left,
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .labelLarge!
-                                                            .copyWith(
-                                                                fontSize: 10,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600),
-                                                      ),
-                                                      backgroundColor:
-                                                          colors.Colors()
-                                                              .deepYellow(1),
-                                                      padding: EdgeInsets.zero,
-                                                      materialTapTargetSize:
-                                                          MaterialTapTargetSize
-                                                              .shrinkWrap,
-                                                      labelPadding:
-                                                          EdgeInsets.symmetric(
-                                                              vertical: -7,
-                                                              horizontal: 10),
+                                                            ? Text(
+                                                                'MVR ${plansList[index]['price']}',
+                                                                style: TextStyle(
+                                                                    decoration:
+                                                                        TextDecoration
+                                                                            .lineThrough,
+                                                                    color: Colors
+                                                                        .orange,
+                                                                    fontSize:
+                                                                        12))
+                                                            : SizedBox(),
+                                                        SizedBox(width: 4),
+                                                        Text(
+                                                          'MVR ${getPlanPrice(plansList[index])}',
+                                                          textAlign:
+                                                              TextAlign.left,
+                                                          style:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .labelLarge!
+                                                                  .copyWith(
+                                                                      fontSize:
+                                                                          16),
+                                                        ),
+                                                      ],
                                                     ),
-                                                    visible: plansList[index]['discounted'],
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
+                                                    SizedBox(
+                                                      height: 6,
+                                                    ),
+                                                    Visibility(
+                                                      child: Chip(
+                                                        label: Text(
+                                                          plansList[index]
+                                                                  ['discounted']
+                                                              ? 'Save ${plansList[index]['discounted_percentage']}%'
+                                                              : '',
+                                                          textAlign:
+                                                              TextAlign.left,
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .labelLarge!
+                                                              .copyWith(
+                                                                  fontSize: 10,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600),
+                                                        ),
+                                                        backgroundColor:
+                                                            colors.Colors()
+                                                                .deepYellow(1),
+                                                        padding:
+                                                            EdgeInsets.zero,
+                                                        materialTapTargetSize:
+                                                            MaterialTapTargetSize
+                                                                .shrinkWrap,
+                                                        labelPadding: EdgeInsets
+                                                            .symmetric(
+                                                                vertical: -7,
+                                                                horizontal: 10),
+                                                      ),
+                                                      visible: plansList[index]
+                                                          ['discounted'],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                        onPressed: () {
-                                          selectedPackage.value = index;
-                                        },
-                                      )),
-                                  SizedBox(
-                                    height: 15,
-                                  ),
-
-                                ],
-
-                              );
-                            },
-                          ): Center(
-                            child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                  colors.Colors().deepYellow(1)),
-                            ),
-                          )),
+                                          onPressed: () {
+                                            selectedPackage.value = index;
+                                          },
+                                        )),
+                                    SizedBox(
+                                      height: 15,
+                                    ),
+                                  ],
+                                );
+                              },
+                            )
+                          : Center(
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    colors.Colors().deepYellow(1)),
+                              ),
+                            )),
                       Visibility(
                         visible: !check.value,
                         child: Padding(
@@ -644,44 +708,30 @@ class HomeWidgetPro extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Visibility(
-                                visible: couponPercentage.value>0,
+                                  visible: couponPercentage.value > 0,
                                   child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text("Coupon Applied",style: TypographyStyles.text(16),),
-                                    Text("10% Discount",style: TypographyStyles.title(16)),
-                                  ],
-                                ),
-                              )),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: TextField(
-                                      readOnly: couponPercentage.value>0,
-                                      controller: couponController,
-                                      decoration: InputDecoration(
-                                        label: Text("Coupon Code"),
-                                        hintText: "EXCODE",
-                                      ),
-
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "Coupon Applied",
+                                          style: TypographyStyles.text(16),
+                                        ),
+                                        Text("10% Discount",
+                                            style: TypographyStyles.title(16)),
+                                      ],
                                     ),
-                                  ),
-                                  SizedBox(width: 10,),
-                                  Container(height:48,child: ElevatedButton(onPressed: applyCoupon, child: Text(couponPercentage.value>0?"clear":"apply",style: TextStyle(
-                                    color: Color(0xFF1B1F24),
-                                    fontSize: 20,
-                                    fontFamily: 'Bebas Neue',
-                                    fontWeight: FontWeight.w400,
-                                    height: 0,
-                                  ),),))
-                                ],
+                                  )),
+                              SizedBox(
+                                height: 10,
                               ),
-                              SizedBox(height: 10,),
                               Container(
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5)),
                                   gradient: LinearGradient(
                                     colors: <Color>[
                                       Color(0xFFFDB800),
@@ -698,45 +748,57 @@ class HomeWidgetPro extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(5.0),
                                   ),
                                   child: Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 18),
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 18),
                                     child: Obx(() => ready.value
                                         ? Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Image.asset(
-                                          'assets/images/crown.png',
-                                          height: 30,
-                                        ),
-                                        SizedBox(
-                                          width: 15,
-                                        ),
-                                        Text(
-                                          extend ? 'EXTEND' : 'UPGRADE',
-                                          textAlign: TextAlign.left,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .labelLarge!
-                                              .copyWith(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w700,
-                                              color: Colors.white),
-                                        ),
-                                      ],
-                                    )
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Image.asset(
+                                                'assets/images/crown.png',
+                                                height: 30,
+                                              ),
+                                              SizedBox(
+                                                width: 15,
+                                              ),
+                                              Text(
+                                                extend ? 'EXTEND' : 'UPGRADE',
+                                                textAlign: TextAlign.left,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .labelLarge!
+                                                    .copyWith(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                        color: Colors.white),
+                                              ),
+                                            ],
+                                          )
                                         : Container(
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 3,
-                                        valueColor:
-                                        AlwaysStoppedAnimation<Color>(Colors.white),
-                                      ),
-                                    )),
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 3,
+                                              valueColor:
+                                                  AlwaysStoppedAnimation<Color>(
+                                                      Colors.white),
+                                            ),
+                                          )),
                                   ),
                                   onPressed: () async {
-                                    if (plansList[selectedPackage.value]['price'] > 0) {
-                                      couponValue.value = getPlanPrice(plansList[selectedPackage.value])*couponPercentage.value/100;
-                                      confirmAndPay(plansList[selectedPackage.value]);
+                                    if (plansList[selectedPackage.value]
+                                            ['price'] >
+                                        0) {
+                                      couponValue.value = getPlanPrice(
+                                              plansList[
+                                                  selectedPackage.value]) *
+                                          couponPercentage.value /
+                                          100;
+                                      confirmAndPay(
+                                          plansList[selectedPackage.value]);
                                     } else {
-                                      CommonConfirmDialog.confirm('Activate Free Trial')
+                                      CommonConfirmDialog.confirm(
+                                              'Activate Free Trial')
                                           .then((value) {
                                         activateFreeTrial();
                                       });
@@ -750,7 +812,6 @@ class HomeWidgetPro extends StatelessWidget {
                       )
                     ],
                   ))),
-
       ),
       // bottomNavigationBar: SingleChildScrollView(
       //   child: Obx(() => ),

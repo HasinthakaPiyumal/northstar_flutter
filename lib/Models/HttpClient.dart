@@ -1,14 +1,16 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/NSNotification.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:north_star/Models/AuthUser.dart';
-
+import 'package:http/http.dart' as http;
 class HttpClient {
   Dio dio = Dio();
 
   // static String baseURL = 'https://api.northstar.mv/api';
-  static String baseURL =  'http://175.41.184.146:8081/api';
+  static String baseURL = 'http://175.41.184.146:8081/api';
 
   static String buildInfo = '9.0.0 Build 1';
 
@@ -22,15 +24,16 @@ class HttpClient {
       'https://north-star-storage.s3.ap-southeast-1.amazonaws.com/lab-reports/';
   static String s3GymGalleriesBaseUrl =
       'https://north-star-storage.s3.ap-southeast-1.amazonaws.com/gym-galleries/';
-  static String s3ResourcesBaseUrl =
-      'https://north-star-storage.s3.ap-southeast-1.amazonaws.com/';
+  // static String s3ResourcesBaseUrl =
+  //     'https://north-star-storage.s3.ap-southeast-1.amazonaws.com/';
+      static String s3ResourcesBaseUrl =
+      'https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/';
 
   Map<String, dynamic> headers = {
     "Accept": "application/json",
     "Content-Type": "application/json",
     "Authorization": "",
   };
-
 
   HttpClient() {
     dio.options.baseUrl = baseURL;
@@ -48,7 +51,6 @@ class HttpClient {
 
   Future post(String url, Map data) async {
     try {
-
       return await dio.post(url, data: data);
     } on DioError catch (e) {
       print(e);
@@ -81,7 +83,6 @@ class HttpClient {
       Response response = await post('/users/check', {});
 
       if (response.statusCode != 200) {
-
         await authUser.clearUser();
         return {
           "code": response.statusCode,
@@ -100,8 +101,6 @@ class HttpClient {
         "data": {},
       };
     }
-
-
   }
 
   //AuthCheck
@@ -281,11 +280,10 @@ class HttpClient {
         trainerID,
         'Client Has Accepted Your Request',
         'Client ' + authUser.name + ' has Accepted Your Request',
-        NSNotificationTypes.TrainerRequestAccepted,
-        {
-          'trainer_id': trainerID,
-          'client_id': authUser.id,
-        });
+        NSNotificationTypes.TrainerRequestAccepted, {
+      'trainer_id': trainerID,
+      'client_id': authUser.id,
+    });
 
     return {
       "code": response.statusCode,
@@ -295,18 +293,17 @@ class HttpClient {
 
   //RejectTrainer
   Future<Map> rejectTrainer(requestID, trainerID) async {
-    Response response = await post('/clients/requests/' + requestID.toString() + '/reject', {});
-
+    Response response =
+        await post('/clients/requests/' + requestID.toString() + '/reject', {});
 
     this.sendNotification(
         trainerID,
         'Client Has Rejected Your Request',
         'Client ' + authUser.name + ' has Rejected Your Request',
-        NSNotificationTypes.TrainerRequestAccepted,
-        {
-          'trainer_id': trainerID,
-          'client_id': authUser.id,
-        });
+        NSNotificationTypes.TrainerRequestAccepted, {
+      'trainer_id': trainerID,
+      'client_id': authUser.id,
+    });
 
     await post('/meeting/notifications/actions/delete-requests', {});
 
@@ -323,7 +320,7 @@ class HttpClient {
     this.sendNotification(
       trainerID,
       'Client Has Removed You as their Trainer',
-      'Client ' + authUser.name + 'has removed you as their Trainer',
+      'Client ' + authUser.name + ' has removed you as their Trainer',
       NSNotificationTypes.TrainerRemoved,
       {
         'trainer_id': trainerID,
@@ -367,7 +364,6 @@ class HttpClient {
       "data": response.data,
     };
   }
-
 
   Future<Map> inviteMember(Map data) async {
     Response response = await post('/trainer/clients/invite', data);
@@ -470,10 +466,10 @@ class HttpClient {
       "data": response.data,
     };
   }
+
   //Ecommerce
   Future<Map> getCategories() async {
-    Response response =
-        await get('/ecom/categories/actions/list');
+    Response response = await get('/ecom/categories/actions/list');
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -494,10 +490,10 @@ class HttpClient {
       "data": response.data,
     };
   }
-  Future<Map> searchGymServices(data) async {
 
+  Future<Map> searchGymServices(data) async {
     Response response =
-        await post('/gyms/exclusive-services/search', {"search":''});
+        await post('/gyms/exclusive-services/search', {"search": ''});
     print(response);
     return {
       "code": response.statusCode,
@@ -573,7 +569,7 @@ class HttpClient {
     };
   }
 
-  Future<Map> confirmSchedules(scheduleIds, num amount,int gymID) async {
+  Future<Map> confirmSchedules(scheduleIds, num amount, int gymID) async {
     Response response = await post('/exclusive-gyms/pay-now', {
       "amount": amount,
       "trainer_id": authUser.id,
@@ -588,6 +584,21 @@ class HttpClient {
 
   Future<Map> newComGymBooking(Map data) async {
     Response response = await post('/commercial-gyms/pay-now', data);
+    return {
+      "code": response.statusCode,
+      "data": response.data,
+    };
+  }
+  Future<Map> serviceBooking(Map data) async {
+    Response response = await post('/commercial-gyms/pay-now', data);
+    return {
+      "code": response.statusCode,
+      "data": response.data,
+    };
+  }
+
+  Future<Map> couponApply(Map data) async {
+    Response response = await post('/coupon/actions/apply', data);
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -683,20 +694,31 @@ class HttpClient {
   }
 
   //Save To-do
-  Future<Map> saveTodo(dynamic data,XFile file) async {
-    FormData form = FormData.fromMap({
-      'user_id': data['user_id'],
-      'todo': data['todo'],
-      'notes': data['notes'],
-      'endDate':data['endDate'],
-      "image": await MultipartFile.fromFile(file.path, filename: file.name),
-    });
+  Future<Map> saveTodo(dynamic data, XFile? file) async {
+    late FormData form;
+    if (file != null) {
+      form = FormData.fromMap({
+        'user_id': data['user_id'],
+        'todo': data['todo'],
+        'notes': data['notes'],
+        'endDate': data['endDate'],
+        "image": await MultipartFile.fromFile(file.path, filename: file.name),
+      });
+    } else {
+      form = FormData.fromMap({
+        'user_id': data['user_id'],
+        'todo': data['todo'],
+        'notes': data['notes'],
+        'endDate': data['endDate'],
+      });
+    }
+
     try {
-      var response =  await dio.post('/meeting/todos/actions/add', data: form);
-      return {"code":response.statusCode,"data":response.data};
+      var response = await dio.post('/meeting/todos/actions/add', data: form);
+      return {"code": response.statusCode, "data": response.data};
     } on DioError catch (e) {
       print(e.response);
-      return {"code":-1,"data":"Something went wrong"};
+      return {"code": -1, "data": "Something went wrong"};
     }
   }
 
@@ -808,12 +830,23 @@ class HttpClient {
       "data": response.data,
     };
   }
-  Future<Map> getRtcToken() async {
-    Response response = await post('/meeting/voice-call/actions/rtcToken',{"channelName":"defaultChannel"});
-    print(headers);
+
+  Future<Map> getRtcToken(data) async {
+    // Response response = await post('/meeting/voice-call/actions/rtcToken',data);
+
+    var headers = {
+      'Content-Type': 'application/json'
+    };
+    var request = http.Request('POST', Uri.parse('https://nodejs--hasinthakapiyum.repl.co/generateToken'));
+    request.body = json.encode(data);
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    print('response.data');
     return {
       "code": response.statusCode,
-      "data": response.data,
+      "data": await response.stream.bytesToString(),
     };
   }
 
@@ -993,6 +1026,7 @@ class HttpClient {
   }
 
   Future<Map> newDoctorMeeting(Map data) async {
+    print(data);
     Response response = await post('/meeting/new-client-doctor-meeting', data);
     return {
       "code": response.statusCode,
@@ -1038,8 +1072,6 @@ class HttpClient {
       "data": response.data,
     };
   }
-
-
 
   Future<Map> newReview(Map data) async {
     Response response = await post('/ratings/actions/new', data);
@@ -1100,6 +1132,7 @@ class HttpClient {
       "data": response.data,
     };
   }
+
   Future<Map> getMyTherapyMeetings() async {
     Response response = await get('/meeting/my-meetings');
     return {
@@ -1172,8 +1205,6 @@ class HttpClient {
       "data": response.data,
     };
   }
-
-
 
   Future<Map> getMyPaymentHistories() async {
     Response response = await get('/doctors/actions/get-payment-history');
@@ -1488,7 +1519,8 @@ class HttpClient {
 
   //Diet Consultation
   Future<Map> addDietConsult(Map data) async {
-    Response response = await post('/fitness/diet-consultation/actions/save', data);
+    Response response =
+        await post('/fitness/diet-consultation/actions/save', data);
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -1496,52 +1528,72 @@ class HttpClient {
   }
 
   Future<Map> getDietConsults(int userId) async {
-    Response response = await get('/fitness/diet-consultation/actions/get/$userId');
+    Response response =
+        await get('/fitness/diet-consultation/actions/get/$userId');
     return response.data;
   }
 
   Future<Map> checkReservedTherapy(dynamic data) async {
-    Response response = await post('/meeting/reserved-times',data);
+    Response response = await post('/meeting/reserved-times', data);
     print('printing reserved time data--->$data');
-    if(response.statusCode==200){
-      return {"code":200,"data":response.data};
+    if (response.statusCode == 200) {
+      return {"code": 200, "data": response.data};
     }
     return response.data;
   }
+
   Future<Map> addTherapyMeetingOld(dynamic data) async {
-    Response response = await post('/meeting/new-client-therapy-meeting',data);
-    if(response.statusCode==200){
-      return {"code":200,"data":response.data};
+    Response response = await post('/meeting/new-client-therapy-meeting', data);
+    if (response.statusCode == 200) {
+      return {"code": 200, "data": response.data};
     }
-    return {"code":401,"data":response.data};
+    return {"code": 401, "data": response.data};
   }
 
-  Future<Map> addTherapyMeeting(dynamic data,XFile file) async {
-    FormData form = FormData.fromMap({
-      'therapy_id': data['therapy_id'],
-      'reason': data['reason'],
-      'additional': data['additional'],
-      'apt_date':data['apt_date'],
-      'start_time':data['start_time'],
-      'end_time':data['end_time'],
-      "image": await MultipartFile.fromFile(file.path, filename: file.name),
-    });
+  Future<Map> addTherapyMeeting(dynamic data, XFile? file) async {
+    late FormData form;
+    if (file != null) {
+      form = FormData.fromMap({
+        'therapy_id': data['therapy_id'],
+        'amount': data['amount'],
+        'reason': data['reason'],
+        'additional': data['additional'],
+        'apt_date': data['apt_date'],
+        'start_time': data['start_time'],
+        'end_time': data['end_time'],
+        "image": await MultipartFile.fromFile(file.path, filename: file.name),
+      });
+    } else {
+      print("object");
+      form = FormData.fromMap({
+        'therapy_id': data['therapy_id'],
+        'amount': data['amount'],
+        'reason': data['reason'],
+        'additional': data['additional'],
+        'apt_date': data['apt_date'],
+        'start_time': data['start_time'],
+        'end_time': data['end_time']
+      });
+    }
+    print(form.fields);
     try {
-      var response =  await dio.post('/meeting/new-client-therapy-meeting', data: form);
-      return {"code":response.statusCode,"data":response.data};
+      var response =
+          await dio.post('/meeting/new-client-therapy-meeting', data: form);
+      return {"code": response.statusCode, "data": response.data};
     } on DioError catch (e) {
       print(e.response);
-      return {"code":-1,"data":"Something went wrong"};
+      return {"code": -1, "data": "Something went wrong"};
     }
   }
 
   Future<Map> getFamiliLinks(dynamic data) async {
-    Response response = await post('/family-link/actions/search',data);
-    return {"code":response.statusCode,"data":response.data};
+    Response response = await post('/family-link/actions/search', data);
+    return {"code": response.statusCode, "data": response.data};
   }
+
   Future<Map> createFamilyLink(dynamic data) async {
-    Response response = await post('/family-link/actions/add',data);
-    return {"code":response.statusCode,"data":response.data};
+    Response response = await post('/family-link/actions/add', data);
+    return {"code": response.statusCode, "data": response.data};
   }
 }
 

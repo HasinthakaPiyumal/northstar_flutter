@@ -106,16 +106,16 @@ class TherapyMeetings extends StatelessWidget {
             'My Appointments',
             style: TypographyStyles.title(20),
           ),
-          actions: [
-            IconButton(
-                onPressed: () {
-                  Get.to(() => CalenderView(meetings: meetings));
-                },
-                icon: Icon(
-                  Icons.calendar_today_rounded,
-                  size: 24,
-                )),
-          ],
+          // actions: [
+          //   IconButton(
+          //       onPressed: () {
+          //         Get.to(() => CalenderView(meetings: meetings));
+          //       },
+          //       icon: Icon(
+          //         Icons.calendar_today_rounded,
+          //         size: 24,
+          //       )),
+          // ],
         ),
         body: Obx(() => ready.value
             ? Column(children: [
@@ -151,26 +151,26 @@ class TherapyMeetings extends StatelessWidget {
                                               16, FontWeight.w600),
                                         ),
                                       ),
-                                      Row(
-                                        children: [
-                                          SvgPicture.asset(
-                                            "assets/svgs/clipboard.svg",
-                                            width: 24,
-                                            height: 24,
-                                            color: Get.isDarkMode
-                                                ? Colors.white
-                                                : Color(0xFF1B1F24),
-                                          ),
-                                          SizedBox(
-                                            width: 15,
-                                          ),
-                                          Text("${meetings[index]['title']??"-"}",
-                                              textAlign: TextAlign.left,
-                                              style:
-                                              TypographyStyles.textWithWeight(
-                                                  16, FontWeight.w300)),
-                                        ],
-                                      ),
+                                      // Row(
+                                      //   children: [
+                                      //     SvgPicture.asset(
+                                      //       "assets/svgs/clipboard.svg",
+                                      //       width: 24,
+                                      //       height: 24,
+                                      //       color: Get.isDarkMode
+                                      //           ? Colors.white
+                                      //           : Color(0xFF1B1F24),
+                                      //     ),
+                                      //     SizedBox(
+                                      //       width: 15,
+                                      //     ),
+                                      //     Text("${meetings[index]['title']??"-"}",
+                                      //         textAlign: TextAlign.left,
+                                      //         style:
+                                      //         TypographyStyles.textWithWeight(
+                                      //             16, FontWeight.w300)),
+                                      //   ],
+                                      // ),
                                       SizedBox(
                                         height: 10,
                                       ),

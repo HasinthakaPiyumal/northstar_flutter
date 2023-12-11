@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
+
 // import 'package:flutter_zoom_videosdk/native/zoom_videosdk.dart';
 //
 // import 'package:flutter_zoom_sdk/zoom_options.dart';
@@ -16,6 +16,7 @@ import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/ButtonStyles.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetVideoSessions/CreateVideoSession.dart';
+import 'package:north_star/UI/SharedWidgets/MeetingScreen.dart';
 
 import '../../components/Buttons.dart';
 import '../SharedWidgets/LoadingAndEmptyWidgets.dart';
@@ -28,6 +29,13 @@ class HomeWidgetVideoSessions extends StatelessWidget {
     RxList meetings = [].obs;
     RxBool ready = false.obs;
     late Timer timer;
+
+    void joinMeeting(meeting) {
+      Get.to(() => MeetingScreen(
+            meeting['meeting_id'] + meeting['passcode'],
+            isMulti: true,
+          ));
+    }
 
     // var zoom = ZoomVideoSdk();
     // InitConfig initConfig = InitConfig(
@@ -185,7 +193,6 @@ class HomeWidgetVideoSessions extends StatelessWidget {
     //   }
     // }
 
-
     void getMeeting() async {
       ready.value = false;
       var request;
@@ -209,15 +216,11 @@ class HomeWidgetVideoSessions extends StatelessWidget {
 
       if (response.statusCode == 200) {
         var res = jsonDecode(await response.stream.bytesToString());
-        print(res);
         meetings.value = res;
         ready.value = true;
-        print(res);
       } else {
         var dt = jsonDecode(await response.stream.bytesToString());
-        print(dt);
         ready.value = true;
-        print(response.reasonPhrase);
       }
     }
 
@@ -229,115 +232,115 @@ class HomeWidgetVideoSessions extends StatelessWidget {
       ),
       floatingActionButton: authUser.role == 'trainer'
           ? Buttons.yellowTextIconButton(
-          onPressed: () {
-            Get.to(() => CreateVideoSession())
-                ?.then((value) => {getMeeting()});
-          },
-          icon: Icons.add,
-          label: 'create new',
-          width: 135)
+              onPressed: () {
+                Get.to(() => CreateVideoSession())
+                    ?.then((value) => {getMeeting()});
+              },
+              icon: Icons.add,
+              label: 'create new',
+              width: 135)
           : null,
-      body: Obx(() =>
-      ready.value
+      body: Obx(() => ready.value
           ? meetings.length > 0
-          ? ListView.builder(
-        itemCount: meetings.length,
-        itemBuilder: (context, index) {
-          return Container(
-            padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
-            width: Get.width,
-            // height: Get.height * 0.23,
-            child: Card(
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              color: Get.isDarkMode
-                  ? AppColors.primary2Color
-                  : Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                                DateFormat.d().format(DateTime.parse(
-                                    meetings[index]['start_time'])),
-                                style: TypographyStyles.title(30)),
-                            ElevatedButton(
-                                style: ButtonStyles.bigBlackButton(),
-                                onPressed: () {
-                                  // joinMeeting(
-                                  //   context,
-                                  //     meetings[index]['meeting_id'],
-                                  //     meetings[index]['passcode']);
-                                },
-                                child: Text('Join'))
-                          ],
+              ? ListView.builder(
+                  itemCount: meetings.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+                      width: Get.width,
+                      // height: Get.height * 0.23,
+                      child: Card(
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        Row(
-                          children: [
-                            Text(
-                                DateFormat.EEEE().format(
-                                    DateTime.parse(meetings[index]
-                                    ['start_time'])) +
-                                    ', ' +
-                                    DateFormat.MMMM().format(
-                                        DateTime.parse(meetings[index]
-                                        ['start_time'])) +
-                                    ' ' +
-                                    DateFormat.y().format(
-                                        DateTime.parse(meetings[index]
-                                        ['start_time'])),
-                                style: TypographyStyles.text(16)),
-                          ],
+                        color: Get.isDarkMode
+                            ? AppColors.primary2Color
+                            : Colors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                          DateFormat.d().format(DateTime.parse(
+                                              meetings[index]['start_time'])),
+                                          style: TypographyStyles.title(30)),
+                                      ElevatedButton(
+                                          style: ButtonStyles.bigBlackButton(),
+                                          onPressed: () {
+                                            joinMeeting(meetings[index]);
+                                            // joinMeeting(
+                                            //   context,
+                                            //     meetings[index]['meeting_id'],
+                                            //     meetings[index]['passcode']);
+                                          },
+                                          child: Text('Join'))
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                          DateFormat.EEEE().format(
+                                                  DateTime.parse(meetings[index]
+                                                      ['start_time'])) +
+                                              ', ' +
+                                              DateFormat.MMMM().format(
+                                                  DateTime.parse(meetings[index]
+                                                      ['start_time'])) +
+                                              ' ' +
+                                              DateFormat.y().format(
+                                                  DateTime.parse(meetings[index]
+                                                      ['start_time'])),
+                                          style: TypographyStyles.text(16)),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(meetings[index]['title'],
+                                              style:
+                                                  TypographyStyles.title(14)),
+                                        ],
+                                      ),
+                                      SizedBox(height: 4),
+                                      Row(
+                                        children: [
+                                          Text(
+                                              DateFormat.jm().format(
+                                                  DateTime.parse(meetings[index]
+                                                      ['start_time'])),
+                                              style:
+                                                  TypographyStyles.title(14)),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
                         ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment:
-                      MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment:
-                          CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(meetings[index]['title'],
-                                    style:
-                                    TypographyStyles.title(14)),
-                              ],
-                            ),
-                            SizedBox(height: 4),
-                            Row(
-                              children: [
-                                Text(
-                                    DateFormat.jm().format(
-                                        DateTime.parse(meetings[index]
-                                        ['start_time'])),
-                                    style:
-                                    TypographyStyles.title(14)),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
-      )
-          : LoadingAndEmptyWidgets.emptyWidget()
+                      ),
+                    );
+                  },
+                )
+              : LoadingAndEmptyWidgets.emptyWidget()
           : LoadingAndEmptyWidgets.loadingWidget()),
     );
   }

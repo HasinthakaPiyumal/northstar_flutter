@@ -19,6 +19,7 @@ class Services extends StatelessWidget {
   Widget build(BuildContext context) {
     RxBool ready = false.obs;
     RxList gyms = [].obs;
+    RxList allGyms = [].obs;
 
     RxString country = "".obs;
     RxString countryName = "".obs;
@@ -28,14 +29,18 @@ class Services extends StatelessWidget {
       gyms.value = res['data'];
       var tempGyms = [];
       res['data'].forEach((gym) {
-        gym["gym_services"].forEach((service){
+        gym["gym_services"].forEach((service) {
           var currentGym = Map.from(gym);
           currentGym["gym_services"] = service;
+          currentGym["gym_type"] = "services";
           tempGyms.add(currentGym);
         });
       });
       print('gym services 1 $gyms');
       gyms.value = tempGyms;
+      if (pattern == '') {
+        allGyms.value = tempGyms;
+      }
       ready.value = true;
       print('gym services 2 $tempGyms');
       return [];
@@ -62,7 +67,9 @@ class Services extends StatelessWidget {
       showDialog(
         context: context,
         builder: (context) => Theme(
-          data: Theme.of(context).copyWith(dialogBackgroundColor: Get.isDarkMode?AppColors.primary2Color:Colors.white),
+          data: Theme.of(context).copyWith(
+              dialogBackgroundColor:
+                  Get.isDarkMode ? AppColors.primary2Color : Colors.white),
           child: Container(
             height: Get.height / 2,
             child: CountryPickerDialog(
@@ -70,7 +77,16 @@ class Services extends StatelessWidget {
               searchCursorColor: colors.Colors().deepYellow(1),
               searchInputDecoration: InputDecoration(hintText: 'Search...'),
               isSearchable: true,
-
+              itemFilter: (c) {
+                List tempList = [];
+                allGyms.forEach((value) {
+                  String isoCode = value["gym_country"];
+                  if (!tempList.contains(isoCode)) {
+                    tempList.add(isoCode);
+                  }
+                });
+                return tempList.contains(c.isoCode);
+              },
               title: Padding(
                 padding: EdgeInsets.only(bottom: 10),
                 child: Row(
@@ -213,7 +229,9 @@ class Services extends StatelessWidget {
                           elevation: 0,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
-                          color: Get.isDarkMode?AppColors.primary2Color:Colors.white,
+                          color: Get.isDarkMode
+                              ? AppColors.primary2Color
+                              : Colors.white,
                           child: InkWell(
                               onTap: () {
                                 Get.to(() => GymView(gymObj: gyms[index]));
@@ -241,12 +259,12 @@ class Services extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                  title: Text(gyms[index]['gym_services']['name'],
+                                  title: Text(
+                                      gyms[index]['gym_services']['name'],
                                       style: TypographyStyles.title(18)),
                                   subtitle: Padding(
                                     padding: EdgeInsets.only(top: 5),
-                                    child: Text(
-                                        "${gyms[index]['gym_name']}"),
+                                    child: Text("${gyms[index]['gym_name']}"),
                                     //, ${CountryPickerUtils.getCountryByIsoCode(gyms[index]['gym_country']).name
                                   ),
                                 ),

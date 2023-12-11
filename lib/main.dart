@@ -10,13 +10,13 @@ import 'package:flutter/services.dart';
 
 // import 'package:flutter_zoom_videosdk/native/zoom_videosdk.dart';
 import 'package:get/get.dart';
-import 'package:logger/logger.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Plugins/HttpClient.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/UI/Members/IncomingVoiceCallUI.dart';
 import 'package:north_star/UI/SplashScreen.dart';
+import 'package:north_star/components/Buttons.dart';
 import 'package:north_star/firebase_options.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
@@ -36,7 +36,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
   print('Background Message ===> 1 ${message.messageId}');
-  firebaseMessagingHandler(message,Uuid().v4());
+  firebaseMessagingHandler(message, Uuid().v4());
   print('Background Message ===> 2 ${message.messageId}');
 }
 
@@ -138,6 +138,7 @@ Future checkAuth() async {
 
 class NorthStar extends StatelessWidget {
   NorthStar();
+
   @override
   Widget build(BuildContext context) {
     precacheImage(AssetImage("assets/appicons/Northstar.png"), context);
@@ -145,12 +146,16 @@ class NorthStar extends StatelessWidget {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final themeData = themeProvider.getTheme();
 
+
     return GetMaterialApp(
         title: 'North Star',
         defaultTransition: Transition.rightToLeftWithFade,
         transitionDuration: Duration(milliseconds: 200),
         debugShowCheckedModeBanner: false,
         theme: themeData,
+        supportedLocales: [
+          const Locale('en'),
+        ],
         home: SplashScreen(isLoggedIn: isLoggedIn));
   }
 }

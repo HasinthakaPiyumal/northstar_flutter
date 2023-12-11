@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
+import 'package:north_star/Models/NSNotification.dart';
 import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/ButtonStyles.dart';
 import 'package:north_star/Styles/SignUpStyles.dart';
@@ -73,6 +74,37 @@ class SelectedPlan extends StatelessWidget {
       }
       ready.value = true;
     }
+    // void informUser(){
+    //   clientIds.forEach((element) {
+    //     print("Sending notification to client");
+    //     print('GYM object $gymObj');
+    //
+    //     bookings.forEach((bookingElement) {
+    //       DateTime stTime = DateTime.parse(bookingElement['start_time']);
+    //       DateTime enTime = DateTime.parse(bookingElement['end_time']);
+    //
+    //       Duration duration = enTime.difference(stTime);
+    //       int totalHours = duration.inHours;
+    //
+    //       String formattedStartTime = DateFormat('h:mm a').format(stTime); // Format the start time as '12:11 AM'
+    //       String formattedDate = DateFormat('EEEE, MMM d').format(stTime); // Format the date as 'Saturday, Oct 27'
+    //
+    //       String notes = "Your $totalHours-hour gym session starts at $formattedStartTime on $formattedDate.";
+    //       print('bookingElement-->$bookingElement');
+    //       httpClient.saveTodo({
+    //         'user_id': element,
+    //         'todo': "You have a gym session!",
+    //         'notes': notes,
+    //         'endDate': stTime
+    //       }, null);
+    //     });
+    //     httpClient.sendNotification(
+    //         element,
+    //         'You have new booking!',
+    //         'Your trainer has booked a gym for you.',
+    //         NSNotificationTypes.GymAppointment, {});
+    //   });
+    // }
 
     void confirmAndPay(String package, int noOfDays, String startDate, double total) async{
 
@@ -209,9 +241,11 @@ class SelectedPlan extends StatelessWidget {
                       'type': types[selectedPlanType]
                     });
 
+
                     print(res);
                     if (res['code'] == 200) {
                       Get.offAll(() => Layout());
+                      print('Booking Success ---> $res');
                       showSnack('Booking Successful', 'Your booking has been successfully placed.');
                     } else {
                       showSnack('Booking Failed',
@@ -672,7 +706,7 @@ class SelectedPlan extends StatelessWidget {
                         Text("GST ( 6% )",
                           style: TypographyStyles.normalText(14, Get.isDarkMode ? Themes.mainThemeColorAccent.shade500 : colors.Colors().lightBlack(1),),
                         ),
-                        Text("MVR ${selectedAmount.value * gymObj[planCharges[selectedPlanType]] * 0.06}",
+                        Text("MVR ${(selectedAmount.value * gymObj[planCharges[selectedPlanType]] * 0.06).toStringAsFixed(2)}",
                           style: TypographyStyles.normalText(14, Get.isDarkMode ? Themes.mainThemeColorAccent.shade500 : colors.Colors().lightBlack(1),),
                         ),
                       ],

@@ -24,6 +24,18 @@ class _BloodPressureCalculatorState extends State<BloodPressureCalculator> {
     TextEditingController systolicController = TextEditingController();
     TextEditingController diastolicController = TextEditingController();
 
+    FocusNode resultFocus = FocusNode();
+    FocusNode systolicFocus = FocusNode();
+    FocusNode diastolicFocus = FocusNode();
+    FocusNode calculateFocus = FocusNode();
+    systolicFocus.requestFocus();
+    void clear() {
+      systolicController.clear();
+      diastolicController.clear();
+      systolicFocus.requestFocus();
+      result.value = {}.obs;
+    }
+
     void getBP() async {
       ready.value = true;
       Map res = await httpClient.healthServicesBP({
@@ -83,6 +95,7 @@ class _BloodPressureCalculatorState extends State<BloodPressureCalculator> {
                 Expanded(
                   child: TextField(
                     controller: systolicController,
+                    focusNode: systolicFocus,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       labelText: 'Systolic',
@@ -94,6 +107,11 @@ class _BloodPressureCalculatorState extends State<BloodPressureCalculator> {
                         borderRadius: BorderRadius.circular(12)
                       ),
                     ),
+                    onSubmitted: (value) {
+                      systolicController.text = value;
+                      systolicFocus.unfocus();
+                      diastolicFocus.requestFocus();
+                    },
                   ),
                 ),
                 Padding(
@@ -107,6 +125,7 @@ class _BloodPressureCalculatorState extends State<BloodPressureCalculator> {
                 Expanded(
                   child: TextField(
                     controller: diastolicController,
+                    focusNode: diastolicFocus,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       labelText: 'Diastolic',
@@ -118,33 +137,53 @@ class _BloodPressureCalculatorState extends State<BloodPressureCalculator> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
+                    onSubmitted: (value) {
+                      diastolicController.text = value;
+                      diastolicFocus.unfocus();
+                      calculateFocus.requestFocus();
+                      getBP();
+                    },
                   ),
                 ),
               ],
             ),
             SizedBox(height: 30),
 
-            Container(
-              width: Get.width,
-                child: Buttons.yellowFlatButton(onPressed:  (){getBP();},label: "calculae")),
-
+            Focus(
+              focusNode: calculateFocus,
+              child: Container(
+                width: Get.width,
+                  child: Buttons.yellowFlatButton(onPressed:  (){getBP();},label: "calculate")),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Buttons.outlineButton(
+                  onPressed: () {
+                    clear();
+                  },
+                  label: "Clear",
+                  width: Get.width),
+            ),
             SizedBox(height: 16),
             Obx(()=>result['success'] != null
-                ? Column(
+                ? Focus(
+              focusNode: resultFocus,
+                  child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 8),
-                cardHealth(
-                    result['Systolic']
-                        .toString() +
-                        '/' +
-                        result['Diastolic']
-                            .toString(),
-                    result['BloodPressureCategory'],
-                    'Blood Pressure'),
-                SizedBox(height: 8),
+                  SizedBox(height: 8),
+                  cardHealth(
+                      result['Systolic']
+                          .toString() +
+                          '/' +
+                          result['Diastolic']
+                              .toString(),
+                      result['BloodPressureCategory'],
+                      'Blood Pressure'),
+                  SizedBox(height: 8),
               ],
-            )
+            ),
+                )
                 : Container()),
           ],
         ),

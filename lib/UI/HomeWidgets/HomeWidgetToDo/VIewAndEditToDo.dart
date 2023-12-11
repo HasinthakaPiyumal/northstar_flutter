@@ -21,7 +21,7 @@ class ViewAndEditToDo extends StatelessWidget {
     final RenderBox box = context.findRenderObject() as RenderBox;
     print('${HttpClient.s3ResourcesBaseUrl}${selectedToDo["image"]}');
     try {
-      if (selectedToDo["image"] == null) {
+      if (selectedToDo["image"] == null || selectedToDo["image"] == '') {
         Share.share(
             '${selectedToDo["todo"]}\n\n${selectedToDo["notes"]}\n${DateFormat("yyyy-MM-dd hh:mm a").format(DateTime.parse(selectedToDo["endDate"]))}');
       } else {
@@ -53,7 +53,7 @@ class ViewAndEditToDo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('print(selectedToDo); --> $selectedToDo');
+    print('print(selectedToDo); --> ${selectedToDo['image']}');
     return Scaffold(
       appBar: AppBar(
         title: Text("View ToDo"),
@@ -112,7 +112,7 @@ class ViewAndEditToDo extends StatelessWidget {
                       ),
                     ),
                     Visibility(
-                        visible: selectedToDo["image"] != null,
+                        visible: selectedToDo["image"] != null && selectedToDo["image"]!='',
                         child: Container(
                             padding: EdgeInsets.only(bottom: 16),
                             width: Get.width,

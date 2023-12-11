@@ -27,7 +27,7 @@ class _CallView extends State<CallView> {
     print(AgoraCallController.callStatus);
     void agoraInIt() async {
       await AgoraCallController.initIncoming(widget.callData);
-      AgoraCallController.joinCall();
+      AgoraCallController.joinCall(widget.callData['channel']);
     }
 
     agoraInIt();

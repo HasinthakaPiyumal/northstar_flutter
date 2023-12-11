@@ -12,6 +12,7 @@ import 'package:north_star/Styles/TypographyStyles.dart';
 // import 'package:flutter_zoom_sdk/zoom_options.dart';
 // import 'package:flutter_zoom_sdk/zoom_view.dart';
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
+import 'package:north_star/UI/SharedWidgets/MeetingScreen.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 
 import 'CalenderView.dart';
@@ -285,9 +286,13 @@ class DoctorMeetings extends StatelessWidget {
                                                   .inMinutes;
 
                                               print(timeDif);
-
-                                              if (timeDif < 5 &&
+                                              if (timeDif <= 5 &&
                                                   timeDif > -120) {
+                                                Get.to(() => MeetingScreen(
+                                                    meetings[index]
+                                                            ['meeting_id'] +
+                                                        meetings[index]
+                                                            ['passcode']));
                                                 //joinMeeting(context, meetings[index]['meeting_id'], meetings[index]['passcode']);
                                               } else {
                                                 showDialog(

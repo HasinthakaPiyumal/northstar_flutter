@@ -169,7 +169,7 @@ class Home extends StatelessWidget {
                                   ),
                                 ),
                                 onTap: () {
-                                  Get.to(() => CompleteUserProfile())
+                                  Get.to(()=> CompleteUserProfile())
                                       ?.then((value) {
                                     getHomeData();
                                   });
@@ -205,13 +205,13 @@ class Home extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           homeWidgetButton(() {
-                            Get.to(() => HomeWidgetCalories());
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetCalories()));
                           }, 'dashboard', 'Dashboard'),
                           homeWidgetButton(() {
-                            Get.to(() => HomeWidgetWorkouts());
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetWorkouts()));
                           }, 'workouts', 'Exercise Bank'),
                           homeWidgetButton(() {
-                            Get.to(() => HomeWidgetToDos());
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetToDos()));
                           }, 'todo', 'Todo'),
                         ],
                       ))
@@ -223,13 +223,14 @@ class Home extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           homeWidgetButton(() {
-                            Get.to(() => HomeWidgetGym());
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetGym()));
                           }, 'gym', 'Facilities'),
                           homeWidgetButton(() {
-                            Get.to(() => Doctors());
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => Doctors()));
                           }, 'doctors', 'Medical Professionals'),
                           homeWidgetButton(() {
-                            Get.to(() => HomeWidgetVideoSessions());
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeWidgetVideoSessions()));
+                            // Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetVideoSessions());
                           }, 'sessions', 'Video Sessions'),
                         ],
                       ))
@@ -242,16 +243,16 @@ class Home extends StatelessWidget {
                         children: [
                           homeWidgetButton(() {
                             if (authUser.user['subscription'] == null) {
-                              Get.to(() => HomeWidgetPro());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetPro()));
                             } else {
-                              Get.to(() => HomeWidgetProActive());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetProActive()));
                             }
                           }, 'pro', 'Pro'),
                           homeWidgetButton(() {
-                            Get.to(() => HomeWidgetResources());
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetResources()));
                           }, 'resources', 'Resources'),
                           homeWidgetButton(() {
-                            Get.to(() => HomeWidgetServices());
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetServices()));
                           }, 'calculators', 'Fitness Calculator'),
                         ],
                       ))
@@ -263,13 +264,13 @@ class Home extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           homeWidgetButton(() {
-                            Get.to(() => HomeWidgetStore());
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetStore()));
                           }, 'shop', 'Stores'),
                           homeWidgetButton(() {
-                            Get.to(() => UserCalories());
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => UserCalories()));
                           }, 'calorie', 'Calories'),
                           homeWidgetButton(() {
-                            Get.to(() => HomeWidgetClientNotes());
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetClientNotes()));
                           }, 'notes', 'Income & Expense'),
                         ],
                       ))
@@ -281,13 +282,13 @@ class Home extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           homeWidgetButton(() {
-                            Get.to(() => HomeWidgetLabReports());
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetLabReports()));
                           }, 'labReports', 'Lab Reports'),
                           homeWidgetButton(() {
-                            Get.to(() => HomeWidgetFinance());
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetFinance()));
                           }, 'ewallet', 'Finance'),
                           homeWidgetButton(() {
-                            Get.to(() => Therapy());
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => Therapy()));
                           }, 'therapy', 'Physiotherapy'),
                         ],
                       ))
@@ -302,99 +303,99 @@ class Home extends StatelessWidget {
                         children: [
                           homeWidgetButton(() {
                             if (authUser.user['subscription'] == null) {
-                              Get.to(() => HomeWidgetPro());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetPro()));
                             } else {
-                              Get.to(() => HomeWidgetProActive());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetProActive()));
                             }
                           }, 'pro', 'Pro'),
                           homeWidgetButton(() {
                             if (authUser.user['subscription'] == null) {
-                              Get.to(() => HomeWidgetPro());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetPro()));
                             } else {
-                              Get.to(() => HomeWidgetWorkouts());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetWorkouts()));
                             }
                           }, 'workouts', 'Exercise Bank'),
                           homeWidgetButton(() {
                             if (authUser.user['subscription'] == null) {
-                              Get.to(() => Doctors());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => Doctors()));
                             } else {
-                              Get.to(() => Doctors());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => Doctors()));
                             }
                           }, 'doctors', 'Medical Professionals'),
                           homeWidgetButton(() {
                             if (authUser.user['subscription'] == null) {
-                              //Get.to(()=>HomeWidgetPro());
-                              Get.to(() => HomeWidgetLabReports());
+                              //Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeWidgetPro());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetLabReports()));
                             } else {
-                              Get.to(() => HomeWidgetLabReports());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetLabReports()));
                             }
                           }, 'labReports', 'Lab Reports'),
                           homeWidgetButton(() {
                             if (authUser.user['subscription'] == null) {
-                              Get.to(() => HomeWidgetPro());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetPro()));
                             } else {
-                              Get.to(() => HomeWidgetToDos());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetToDos()));
                             }
                           }, 'todo', 'Todo'),
                           homeWidgetButton(() {
                             if (authUser.user['subscription'] == null) {
-                              Get.to(() => HomeWidgetGym());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetGym()));
                             } else {
-                              Get.to(() => HomeWidgetGym());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetGym()));
                             }
                           }, 'gym', 'Facilities'),
                           homeWidgetButton(() {
                             if (authUser.user['subscription'] == null) {
-                              Get.to(() => HomeWidgetPro());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetPro()));
                             } else {
-                              Get.to(() => HomeWidgetVideoSessions());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetVideoSessions()));
                             }
                           }, 'sessions', 'Video Sessions'),
                           homeWidgetButton(() {
                             if (authUser.user['subscription'] == null) {
-                              // Get.to(()=>HomeWidgetPro());
-                              Get.to(() => HomeWidgetTrainers());
+                              // Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeWidgetPro());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetTrainers()));
                             } else {
-                              Get.to(() => HomeWidgetTrainers());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetTrainers()));
                             }
                           }, 'trainers', 'Trainers'),
                           homeWidgetButton(() {
                             if (authUser.user['subscription'] == null) {
-                              Get.to(() => HomeWidgetPro());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetPro()));
                             } else {
-                              Get.to(() => HomeWidgetResources());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetResources()));
                             }
                           }, 'resources', 'Resources'),
                           homeWidgetButton(() {
                             if (authUser.user['subscription'] == null) {
-                              // Get.to(()=>HomeWidgetPro());
-                              Get.to(() => FamilyLink());
+                              // Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeWidgetPro());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => FamilyLink()));
                             } else {
-                              Get.to(() => FamilyLink());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => FamilyLink()));
                             }
                           }, 'family', 'Family Link'),
                           homeWidgetButton(() {
                             if (authUser.user['subscription'] == null) {
-                              // Get.to(()=>HomeWidgetPro());
-                              Get.to(() => Wallet());
+                              // Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeWidgetPro());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => Wallet()));
                             } else {
-                              Get.to(() => Wallet());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => Wallet()));
                             }
                           }, 'ewallet', 'eWallet'),
                           homeWidgetButton(() {
                             if (authUser.user['subscription'] == null) {
-                              // Get.to(()=>HomeWidgetPro());
-                              Get.to(() => HomeWidgetStore());
+                              // Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeWidgetPro());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetStore()));
                             } else {
-                              Get.to(() => HomeWidgetStore());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetStore()));
                             }
                           }, 'shop', 'Store'),
                           homeWidgetButton(() {
                             if (authUser.user['subscription'] == null) {
-                              // Get.to(()=>HomeWidgetPro());
-                              Get.to(() => Therapy());
+                              // Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeWidgetPro());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => Therapy()));
                             } else {
-                              Get.to(() => Therapy());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => Therapy()));
                             }
                           }, 'therapy', 'Physiotherapy'),
                         ],

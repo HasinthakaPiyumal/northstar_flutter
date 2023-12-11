@@ -53,8 +53,8 @@ class ViewWorkoutFeedback extends StatelessWidget {
 
       await httpClient.sendNotification(
           data['trainer_id'],
-          '${authUser.user['name']} has completed a workout!',
-          '${authUser.user['name']} has completed the workout titled "${authUser.user['title']}"',
+          '${authUser.user['name']} has added feed back!',
+          '${authUser.user['name']} has added feed back to the workout titled "${authUser.user['title']}"',
           NSNotificationTypes.WorkoutCompleted,
           {
             'sender_id': authUser.id,

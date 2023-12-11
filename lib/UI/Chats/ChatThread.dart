@@ -17,6 +17,8 @@ import 'package:north_star/Utils/PopUps.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../Styles/AppColors.dart';
+
 class ChatThread extends StatelessWidget {
   const ChatThread(
       {Key? key,
@@ -32,6 +34,7 @@ class ChatThread extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     RxBool ready = true.obs;
+    RxBool sending = false.obs;
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     TextEditingController message = new TextEditingController();
 
@@ -62,6 +65,7 @@ class ChatThread extends StatelessWidget {
     }
 
     void sendMessage() async {
+      sending.value = true;
       firestore.collection('chats').doc(chatID).collection('messages').add({
         'message': message.text,
         'sender_id': authUser.id,
@@ -72,6 +76,7 @@ class ChatThread extends StatelessWidget {
       }).then((value) async {
         String tempMSG = message.text.toString();
         message.clear();
+        sending.value = false;
         List users = [];
         chatData['clients'].forEach((client) {
           if (client['client_id'].toString() != authUser.id.toString()) {
@@ -133,7 +138,7 @@ class ChatThread extends StatelessWidget {
     void deleteMessage(doc) async {
       CommonConfirmDialog.confirm('Delete').then((value) async {
         if (value) {
-          if (doc['is_file']){
+          if (doc['is_file']) {
             await FirebaseStorage.instance.refFromURL(doc['message']).delete();
           }
           await firestore
@@ -235,10 +240,10 @@ class ChatThread extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: Get.isDarkMode ? Color(0xFF232323) : Colors.white,
+      // backgroundColor: Get.isDarkMode ? Color(0xFF232323) : Colors.white,
       appBar: AppBar(
         toolbarHeight: 64,
-        backgroundColor: Get.isDarkMode ? Color(0xFF232323) : Colors.white,
+        // backgroundColor: Get.isDarkMode ? Color(0xFF232323) : Colors.white,
         actions: [
           Visibility(
             visible: authUser.role == 'trainer' && chatData['type'] == 'GROUP',
@@ -450,74 +455,94 @@ class ChatThread extends StatelessWidget {
             ),
           ),
           Container(
-            height: 96,
+            // height: 96,
             width: Get.width,
             child: Center(
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    height: 56,
-                    width: Get.width * 0.75,
+                    // height: 56,
+                    width: Get.width - 80,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(
+                          20.0), // Adjust the radius as needed
+                    ),
                     child: TextField(
                       controller: message,
+                      maxLines: null,
                       decoration: InputDecoration(
                         filled: true,
                         fillColor:
-                            Get.isDarkMode ? Color(0xFF333333) : Colors.white,
+                            Get.isDarkMode ? Color(0xFF272D38) : Colors.white,
                         focusColor: Color(0xFF333333),
-                        enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(12),
-                              topRight: Radius.circular(0),
-                              bottomLeft: Radius.circular(12),
-                              bottomRight: Radius.circular(0),
-                            ),
-                            borderSide: BorderSide(
-                              color: Color(0xFF333333),
-                            )),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.black, // Set the border color
+                            width: 0.0, // Set the border width
+                          ),
+                          borderRadius: BorderRadius.circular(
+                              5.0), // Adjust the radius as needed
+                        ),
                         focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(12),
-                              topRight: Radius.circular(0),
-                              bottomLeft: Radius.circular(12),
-                              bottomRight: Radius.circular(0),
-                            ),
-                            borderSide: BorderSide(
-                              color: Color(0xFF333333),
-                            )),
+                          borderSide: BorderSide(
+                            color: Colors.black, // Set the border color
+                            width: 0.0, // Set the border width
+                          ),
+                          borderRadius: BorderRadius.circular(
+                              5.0), // Adjust the radius as needed
+                        ),
                         hintText: 'Type your message...',
                       ),
                     ),
                   ),
-                  Container(
-                    height: 56,
-                    width: 56,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: Color(0xFF333333),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(12),
-                              topLeft: Radius.circular(0),
-                              bottomRight: Radius.circular(12),
-                              bottomLeft: Radius.circular(0),
-                            ),
-                          ),
-                          elevation: 0),
-                      onPressed: () {
-                        if (message.text.isNotEmpty) {
-                          sendMessage();
-                        }
-                      },
-                      child: Icon(Icons.send),
-                    ),
-                  )
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Obx(() => Container(
+                      height: 48,
+                      width: 48,
+                      child: sending.value
+                          ? Center(
+                            child: Container(
+                                height: 30,
+                                width: 30,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 4.0,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      AppColors.accentColor),
+                                ),
+                              ),
+                          )
+                          : Material(
+                              borderRadius: BorderRadius.circular(100),
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(100),
+                                onTap: () {
+                                  if (message.text.isNotEmpty) {
+                                    sendMessage();
+                                  }
+                                },
+                                child: Ink(
+                                  padding: EdgeInsets.all(10),
+                                  decoration: ShapeDecoration(
+                                    shape: CircleBorder(),
+                                    color: AppColors.accentColor,
+                                  ),
+                                  child: Icon(
+                                    Icons.send,
+                                    color: AppColors.primary2Color,
+                                  ),
+                                ),
+                              ),
+                            )))
                 ],
               ),
             ),
+          ),
+          SizedBox(
+            height: 10,
           )
         ],
       ),

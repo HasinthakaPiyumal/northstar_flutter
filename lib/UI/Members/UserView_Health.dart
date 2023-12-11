@@ -59,6 +59,21 @@ class UserViewHealth extends StatelessWidget {
     TextEditingController lArm = new TextEditingController();
     TextEditingController rArm = new TextEditingController();
 
+    void sendNotificationAfterChangingClientDataByTrainer(int clientId) {
+      print("Client updated");
+      if (clientId != authUser.id) {
+        print("Sending notification");
+        httpClient.sendNotification(
+            clientId,
+            'Your health profile updated!',
+            'Your Trainer ${authUser.name} has updated your profile.',
+            NSNotificationTypes.ClientProfileUpdated, {
+          'trainer_id': authUser.id,
+          'trainer_name': authUser.name,
+        });
+      }
+    }
+
     void getUserHealthData() async {
       Map res = await httpClient.getClientHealthData(userID);
       print('Printing res --> $res');
@@ -127,7 +142,7 @@ class UserViewHealth extends StatelessWidget {
         //print(res);
         readyButton.value = true;
         Get.back();
-        showSnack('Something Went Wrong!', res['data']);
+        showSnack('Something Went Wrong!', res['data']['error']);
       }
     }
 
@@ -137,6 +152,10 @@ class UserViewHealth extends StatelessWidget {
           {'weight': weightController.text, 'height': heightController.text},
           userID,
           'bmi-pi');
+      print(res);
+      if(res['code']==200){
+        sendNotificationAfterChangingClientDataByTrainer(userID);
+      }
       refreshAndClose(res);
     }
 
@@ -155,7 +174,9 @@ class UserViewHealth extends StatelessWidget {
         'gender': authUser.user['gender'],
         'weight': weightController.text,
       }, userID, 'fat-mm');
-
+      if(res['code']==200){
+        sendNotificationAfterChangingClientDataByTrainer(userID);
+      }
       refreshAndClose(res);
     }
 
@@ -165,6 +186,9 @@ class UserViewHealth extends StatelessWidget {
         'fbs': fbs.text,
         'rbs': rbs.text,
       }, userID, 'blood-sugar');
+      if(res['code']==200){
+        sendNotificationAfterChangingClientDataByTrainer(userID);
+      }
       refreshAndClose(res);
     }
 
@@ -174,6 +198,9 @@ class UserViewHealth extends StatelessWidget {
         'systolic': systolic.text,
         'diastolic': diastolic.text,
       }, userID, 'blood-pressure');
+      if(res['code']==200){
+        sendNotificationAfterChangingClientDataByTrainer(userID);
+      }
       refreshAndClose(res);
     }
 
@@ -191,6 +218,9 @@ class UserViewHealth extends StatelessWidget {
         'l_arm': lArm.text,
         'r_arm': rArm.text,
       }, userID, 'misc');
+      if(res['code']==200){
+        sendNotificationAfterChangingClientDataByTrainer(userID);
+      }
       refreshAndClose(res);
     }
 
@@ -206,15 +236,17 @@ class UserViewHealth extends StatelessWidget {
 
       print(res);
 
-      if (res['code'] == 200 ) {
-        httpClient.sendNotification(
-            userID,
-            'Macro Profile Updated!',
-            'Your Macro profile has been updated by your trainer.',
-            NSNotificationTypes.MarcoProfileUpdated, {
-          'trainer_id': authUser.id,
-          'trainer_name': authUser.name,
-        });
+      if (res['code'] == 200) {
+        if (authUser.role == "trainer") {
+          httpClient.sendNotification(
+              userID,
+              'Macro Profile Updated!',
+              'Your Macro profile has been updated by your trainer.',
+              NSNotificationTypes.MarcoProfileUpdated, {
+            'trainer_id': authUser.id,
+            'trainer_name': authUser.name,
+          });
+        }
         refreshAndClose(res);
       } else {
         showSnack('Error!', res['data']['info']['error']);
@@ -892,52 +924,50 @@ class UserViewHealth extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            healthData['macros'] != null
-                                ? Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text('Macros',
-                                                style:
-                                                    TypographyStyles.title(20)),
-                                            SizedBox(
-                                              height: 10,
-                                            ),
-                                            healthData['macros']['override']
-                                                ? Text('( Override Profile )')
-                                                : Text(
-                                                    'Weight ' +
-                                                        healthData['macros']
-                                                            ['fit_category'] +
-                                                        ' | ' +
-                                                        healthData['macros']
-                                                            ['fit_program'],
-                                                    style:
-                                                        TypographyStyles.text(
-                                                            16)),
-                                          ],
-                                        ),
+                                      Text('Macros',
+                                          style: TypographyStyles.title(20)),
+                                      SizedBox(
+                                        height: 10,
                                       ),
-                                      Container(
+                                      healthData['macros'] != null
+                                          ? healthData['macros']['override']
+                                              ? Text('( Override Profile )')
+                                              : Text(
+                                                  'Weight ' +
+                                                      healthData['macros']
+                                                          ['fit_category'] +
+                                                      ' | ' +
+                                                      healthData['macros']
+                                                          ['fit_program'],
+                                                  style:
+                                                      TypographyStyles.text(16))
+                                          : SizedBox(),
+                                    ],
+                                  ),
+                                ),
+                                healthData['macros'] != null
+                                    ? Container(
                                         height: 135,
                                         width: 135,
                                         child: ringsChartCalories(
                                             healthData['macros']),
-                                      ),
-                                    ],
-                                  )
-                                : SizedBox(),
-                            healthData['macros'] != null
-                                ? Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
+                                      )
+                                    : SizedBox(),
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                healthData['macros'] != null
+                                    ? Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
@@ -1047,13 +1077,17 @@ class UserViewHealth extends StatelessWidget {
                                             ),
                                           ),
                                         ],
-                                      ),
-                                      SizedBox(height: 12),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
+                                      )
+                                    : SizedBox(),
+                                healthData['macros'] != null
+                                    ? SizedBox(height: 12)
+                                    : SizedBox(),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    healthData['macros'] != null
+                                        ? Text(
                                             'Updated on : ' +
                                                 DateFormat("MMM dd,yyyy HH:mm")
                                                     .format(DateTime.parse(
@@ -1061,54 +1095,48 @@ class UserViewHealth extends StatelessWidget {
                                                                 'updated_at'] ??
                                                             "")),
                                             style: TypographyStyles.text(14),
+                                          )
+                                        : Text(
+                                            'No data found',
+                                            style: TypographyStyles.text(14),
                                           ),
-                                          Visibility(
-                                            visible: authUser.role ==
-                                                    'trainer' ||
-                                                (authUser.role == 'client' &&
-                                                    canIEditAsAClient.value),
-                                            child: canIEditD.value
-                                                ? ElevatedButton(
-                                                    style: ButtonStyles
-                                                        .bigFlatYellowButton(),
-                                                    onPressed: () {
-                                                      updateMacros();
-                                                    },
-                                                    child: Text(
-                                                      'Update',
-                                                      style: TextStyle(
-                                                        color: AppColors
-                                                            .textOnAccentColor,
-                                                        fontSize: 20,
-                                                        fontFamily:
-                                                            'Bebas Neue',
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                      ),
-                                                    ),
-                                                  )
-                                                : IconButton(
-                                                    onPressed: () {
-                                                      showSnack(
-                                                          'Client Has a Secondary Trainer!',
-                                                          'If a client has a secondary trainer, only they can edit the client\'s macros.');
-                                                    },
-                                                    icon: Icon(
-                                                      Icons.info_outline,
-                                                    ),
-                                                  ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  )
-                                : Container(
-                                    padding: EdgeInsets.only(top: 10),
-                                    child: Text(
-                                      "Data Unavailable, Contact Your Trainer",
-                                      style: TypographyStyles.text(12),
+                                    Visibility(
+                                      visible: authUser.role == 'trainer' ||
+                                          (authUser.role == 'client' &&
+                                              canIEditAsAClient.value),
+                                      child: canIEditD.value
+                                          ? ElevatedButton(
+                                              style: ButtonStyles
+                                                  .bigFlatYellowButton(),
+                                              onPressed: () {
+                                                updateMacros();
+                                              },
+                                              child: Text(
+                                                'Update',
+                                                style: TextStyle(
+                                                  color: AppColors
+                                                      .textOnAccentColor,
+                                                  fontSize: 20,
+                                                  fontFamily: 'Bebas Neue',
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                            )
+                                          : IconButton(
+                                              onPressed: () {
+                                                showSnack(
+                                                    'Client Has a Secondary Trainer!',
+                                                    'If a client has a secondary trainer, only they can edit the client\'s macros.');
+                                              },
+                                              icon: Icon(
+                                                Icons.info_outline,
+                                              ),
+                                            ),
                                     ),
-                                  ),
+                                  ],
+                                ),
+                              ],
+                            )
                           ],
                         ),
                       ),
@@ -1246,64 +1274,69 @@ class UserViewHealth extends StatelessWidget {
                             ),
                             healthData['body_fat'] != null
                                 ? Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
                                     children: [
-                                      SizedBox(height: 10),
-                                      cardHealth(
-                                          healthData['body_fat']['body_fat']
-                                                  .toString() +
-                                              '%',
-                                          healthData['body_fat']
-                                              ['body_fat_category'],
-                                          'Body Fat',
-                                          Color(0xFFFFC149)),
-                                      SizedBox(height: 8),
-                                      cardHealth(
-                                          healthData['body_fat']['muscle_mass']
-                                                  .toString() +
-                                              '%',
-                                          healthData['body_fat']
-                                              ['body_fat_category'],
-                                          'Muscle Mass',
-                                          Color(0xFFFFC149)),
-                                      SizedBox(height: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox(height: 10),
+                                            cardHealth(
+                                                healthData['body_fat']
+                                                            ['body_fat']
+                                                        .toString() +
+                                                    '%',
+                                                healthData['body_fat']
+                                                    ['body_fat_category'],
+                                                'Body Fat',
+                                                Color(0xFFFFC149)),
+                                            SizedBox(height: 8),
+                                            cardHealth(
+                                                healthData['body_fat']
+                                                            ['muscle_mass']
+                                                        .toString() +
+                                                    '%',
+                                                healthData['body_fat']
+                                                    ['body_fat_category'],
+                                                'Muscle Mass',
+                                                Color(0xFFFFC149)),
+                                            SizedBox(height: 12),
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        height: 180,
+                                        child: Image.asset(
+                                          bodyFatImage(healthData['body_fat']
+                                              ['body_fat_category']),
+                                          fit: BoxFit.contain,
+                                        ),
+                                      )
                                     ],
-                                  ),
-                                ),
-                                Container(
-                                  height: 180,
-                                  child: Image.asset(
-                                    bodyFatImage(healthData['body_fat']
-                                        ['body_fat_category']),
-                                    fit: BoxFit.contain,
-                                  ),
-                                )
-                              ],
-                            ):SizedBox(),
+                                  )
+                                : SizedBox(),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 healthData['body_fat'] != null
                                     ? Expanded(
-                                  child: Text(
-                                    (healthData['body_fat'] != null
-                                        ? 'Updated on : ' +
-                                            DateFormat("MMM dd, yyyy HH:mm")
-                                                .format(DateTime.parse(
-                                                    healthData['body_fat']
-                                                        ['updated_at']))
-                                        : ""),
-                                    style: TypographyStyles.textWithWeight(
-                                        14, FontWeight.w300),
-                                  ),
-                                ):Text("No data found",
-                                    style:
-                                    TypographyStyles.textWithWeight(
-                                        14, FontWeight.w300)),
+                                        child: Text(
+                                          (healthData['body_fat'] != null
+                                              ? 'Updated on : ' +
+                                                  DateFormat(
+                                                          "MMM dd, yyyy HH:mm")
+                                                      .format(DateTime.parse(
+                                                          healthData['body_fat']
+                                                              ['updated_at']))
+                                              : ""),
+                                          style:
+                                              TypographyStyles.textWithWeight(
+                                                  14, FontWeight.w300),
+                                        ),
+                                      )
+                                    : Text("No data found",
+                                        style: TypographyStyles.textWithWeight(
+                                            14, FontWeight.w300)),
                                 Visibility(
                                   visible: authUser.role == 'trainer' ||
                                       (authUser.role == 'client' &&

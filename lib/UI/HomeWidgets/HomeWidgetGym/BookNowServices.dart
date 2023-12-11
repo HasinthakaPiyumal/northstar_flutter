@@ -6,10 +6,9 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Styles/AppColors.dart';
-import 'package:north_star/Styles/ButtonStyles.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
-import 'package:north_star/UI/HomeWidgets/HomeWidgetGym/ExclusiveGymBooking/SelectGymBookingDates.dart';
+import 'package:north_star/UI/HomeWidgets/HomeWidgetGym/ServiceBooking.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 
 import '../../../components/Buttons.dart';
@@ -21,7 +20,6 @@ class BookNowServices extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     RxList selectedMembers = [].obs;
-
 
     Future<List> searchMembers(pattern) async {
       Map res = await httpClient.searchMembers(pattern);
@@ -51,14 +49,24 @@ class BookNowServices extends StatelessWidget {
                       'https://img.freepik.com/free-vector/fitness-logo_25327-145.jpg?w=2000',
                     ),
                   ),
-                  SizedBox(width: 16,),
+                  SizedBox(
+                    width: 16,
+                  ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(gymObj['gym_name'], style: TypographyStyles.title(22)),
-                      SizedBox(height: 5,),
-                      Text("${gymObj['gym_city']}, ${gymObj['gym_country']}",
-                        style: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
+                      Text(gymObj['gym_name'],
+                          style: TypographyStyles.title(22)),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        "${gymObj['gym_city']}, ${gymObj['gym_country']}",
+                        style: TypographyStyles.normalText(
+                            16,
+                            Get.isDarkMode
+                                ? Themes.mainThemeColorAccent.shade100
+                                : colors.Colors().lightBlack(1)),
                       ),
                     ],
                   ),
@@ -73,15 +81,14 @@ class BookNowServices extends StatelessWidget {
             ),
             SizedBox(height: 16),
             TypeAheadField(
-              suggestionsBoxDecoration: SuggestionsBoxDecoration(color: AppColors.primary2Color),
+              suggestionsBoxDecoration:
+                  SuggestionsBoxDecoration(color: AppColors.primary2Color),
               textFieldConfiguration: TextFieldConfiguration(
-
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.search),
-                    labelText: 'Search Members...',
-                    border: UnderlineInputBorder(),
-                  )
-              ),
+                prefixIcon: Icon(Icons.search),
+                labelText: 'Search Members...',
+                border: UnderlineInputBorder(),
+              )),
               suggestionsCallback: (pattern) async {
                 print(pattern);
                 return await searchMembers(pattern);
@@ -96,8 +103,9 @@ class BookNowServices extends StatelessWidget {
               },
               onSuggestionSelected: (suggestion) {
                 var jsonObj = jsonDecode(jsonEncode(suggestion));
-                var already = selectedMembers.firstWhereOrNull((element) => element['user_id'] == jsonObj['user_id']);
-                if (already == null){
+                var already = selectedMembers.firstWhereOrNull(
+                    (element) => element['user_id'] == jsonObj['user_id']);
+                if (already == null) {
                   selectedMembers.add(jsonObj);
                   print(jsonObj);
                 } else {
@@ -105,69 +113,87 @@ class BookNowServices extends StatelessWidget {
                 }
               },
             ),
-            SizedBox(height: 20,),
-            Obx(()=>Expanded(
-              child: ListView.builder(
-                itemCount: selectedMembers.length,
-                itemBuilder: (_,index){
-                  return Container(
-                    margin: EdgeInsets.only(top: 10),
-                    padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-                    decoration: BoxDecoration(
-                      color: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
-                      borderRadius: BorderRadius.circular(10)
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
+            SizedBox(
+              height: 20,
+            ),
+            Obx(() => Expanded(
+                  child: ListView.builder(
+                    itemCount: selectedMembers.length,
+                    itemBuilder: (_, index) {
+                      return Container(
+                        margin: EdgeInsets.only(top: 10),
+                        padding:
+                            EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                        decoration: BoxDecoration(
+                            color: Get.isDarkMode
+                                ? AppColors.primary2Color
+                                : Colors.white,
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            CircleAvatar(
-                              radius: 30,
-                              backgroundImage: CachedNetworkImageProvider(
-                                "${HttpClient.s3BaseUrl + selectedMembers[index]['user']['avatar_url']}",
-                              ),
-                            ),
-                            SizedBox(width: 20,),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            Row(
                               children: [
-                                Text(selectedMembers[index]['user']['name'],
-                                  style: TypographyStyles.boldText(18, Get.isDarkMode ? Color(0xffF1F1F1) : Color(0xff101010)),
+                                CircleAvatar(
+                                  radius: 30,
+                                  backgroundImage: CachedNetworkImageProvider(
+                                    "${HttpClient.s3BaseUrl + selectedMembers[index]['user']['avatar_url']}",
+                                  ),
                                 ),
-                                SizedBox(height: 5,),
-                                Text(selectedMembers[index]['user']['email'],
-                                  style: TypographyStyles.normalText(15, Themes.mainThemeColorAccent.shade300),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      selectedMembers[index]['user']['name'],
+                                      style: TypographyStyles.boldText(
+                                          18,
+                                          Get.isDarkMode
+                                              ? Color(0xffF1F1F1)
+                                              : Color(0xff101010)),
+                                    ),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text(
+                                      selectedMembers[index]['user']['email'],
+                                      style: TypographyStyles.normalText(15,
+                                          Themes.mainThemeColorAccent.shade300),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
+                            IconButton(
+                              icon: Icon(Icons.close),
+                              onPressed: () {
+                                selectedMembers.removeAt(index);
+                              },
+                            ),
                           ],
                         ),
-                        IconButton(
-                          icon:  Icon(Icons.close),
-                          onPressed: () {
-                            selectedMembers.removeAt(index);
-                          },
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            )),
-            SizedBox(height: 15,),
+                      );
+                    },
+                  ),
+                )),
+            SizedBox(
+              height: 15,
+            ),
             Container(
               width: Get.width,
-              child: Buttons.yellowFlatButton(label: 'continue',
-                onPressed: (){
+              child: Buttons.yellowFlatButton(
+                label: 'continue',
+                onPressed: () {
                   print(selectedMembers);
-                  List<int> selectedMemberIds = List.generate(selectedMembers.length, (index) => selectedMembers[index]['user_id']);
+                  List<int> selectedMemberIds = List.generate(
+                      selectedMembers.length,
+                      (index) => selectedMembers[index]['user_id']);
 
-                  Get.to(()=>SelectGymBookingDates(
-                    gymObj: gymObj,
-                    clientIds: selectedMemberIds,
-                  ));
-                 /* Get.to(()=>GymTimeAndPay(
+                  Get.to(() => ServiceBooking(
+                      gymObj: gymObj, clientIDs: selectedMemberIds));
+                  /* Get.to(()=>GymTimeAndPay(
                     gymObj: gymObj,
                     clientIds: selectedMemberIds,
                   ));*/

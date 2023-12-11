@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tzl;
 import 'package:timezone/standalone.dart' as tz;
@@ -84,5 +85,31 @@ class LocalNotificationsController {
   static Future getActive() async {
     List<ActiveNotification> active = await fLNP.getActiveNotifications();
     print(active);
+  }
+
+  static Future<void> showNonRemovableNotification() async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+    AndroidNotificationDetails(
+      'ongoing_call_channel_id',
+      'Ongoing Call',
+      channelDescription: 'Notification for ongoing call',
+      importance: Importance.high,
+      priority: Priority.high,
+      ongoing: false,
+      autoCancel: false,
+      color: Colors.green,
+      colorized:true,
+    );
+
+    const NotificationDetails platformChannelSpecifics =
+    NotificationDetails(android: androidPlatformChannelSpecifics);
+
+    await fLNP.show(
+      0, // Notification ID
+      'Your Notification Title',
+      'Your Notification Body',
+      platformChannelSpecifics,
+      payload: 'Ongoing Call Payload',
+    );
   }
 }

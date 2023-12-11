@@ -107,7 +107,7 @@ class Buttons {
     String label = 'Button',
     required VoidCallback onPressed,
     double width = 264,
-    double height = 44,
+    double height = 42,
     Color backgroundColor = AppColors.accentColor,
     bool buttonFit = false
   }) {
@@ -132,7 +132,7 @@ class Buttons {
               child: Text(
                 label,
                 textAlign: TextAlign.center,
-                style: TypographyStyles.title(20),
+                style: TypographyStyles.title(16),
               ),
             ),
           ),

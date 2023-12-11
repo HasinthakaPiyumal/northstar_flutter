@@ -450,15 +450,19 @@ class ScheduleForClient extends StatelessWidget {
               child: CircularProgressIndicator(),
             ),
             onPressed: () {
-              if (descriptionController.text.isNotEmpty) {
-                confirmAndPay(
-                    selectedDateTime,
-                    double.parse(
-                        doctor['doctor']['hourly_rate'].toString()));
-              } else {
-                showSnack('Description is empty!',
-                    'please add a description about the meeting');
-              }
+              confirmAndPay(
+                  selectedDateTime,
+                  double.parse(
+                      doctor['doctor']['hourly_rate'].toString()));
+              // if (descriptionController.text.isNotEmpty) {
+              //   confirmAndPay(
+              //       selectedDateTime,
+              //       double.parse(
+              //           doctor['doctor']['hourly_rate'].toString()));
+              // } else {
+              //   showSnack('Description is empty!',
+              //       'please add a description about the meeting');
+              // }
             },
           )),
         ),

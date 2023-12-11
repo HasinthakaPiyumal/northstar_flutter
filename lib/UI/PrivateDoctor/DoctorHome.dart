@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/IcoMoon.dart';
 import 'package:north_star/Styles/Themes.dart';
+import 'package:north_star/UI/HomeWidgets/HomeWidgetNotifications.dart';
 import 'package:north_star/UI/PrivateDoctor/DoctorPageController.dart';
 import 'package:north_star/UI/PrivateDoctor/DoctorPrivateProfile.dart';
 import 'package:north_star/UI/PrivateDoctor/FrontPage.dart';
@@ -54,10 +55,31 @@ class _DoctorHomeState extends State<DoctorHome> {
               ),
             ),
             actions: [
-              IconButton(
-                onPressed: (){},
-                icon: Icon(Icons.notifications, size: 28),
-              ),
+              Obx(() => IconButton(
+                splashRadius: 20,
+                onPressed: () {
+                  Get.to(() => HomeWidgetNotifications());
+                },
+                icon:
+                NotificationsController.getUnreadNotificationsCount() >
+                    0
+                    ? Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Icon(Icons.notifications,
+                        size: 24, color: Colors.red),
+                    Positioned(
+                      child: Text(
+                          NotificationsController
+                              .getUnreadNotificationsCount()
+                              .toString(),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold)),
+                    )
+                  ],
+                )
+                    : Icon(Icons.notifications, size: 24),
+              )),
             ],
           ),
           bottomNavigationBar: Container(

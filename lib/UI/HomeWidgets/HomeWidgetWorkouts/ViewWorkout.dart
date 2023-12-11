@@ -11,6 +11,8 @@ import 'package:north_star/Styles/TypographyStyles.dart';
 
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 
+import '../../../Models/NSNotification.dart';
+
 class ViewWorkout extends StatelessWidget {
   const ViewWorkout({Key? key, required this.workoutData}) : super(key: key);
 
@@ -47,6 +49,19 @@ class ViewWorkout extends StatelessWidget {
         'workout': json.encode(workoutData),
       });
       if (res['code'] == 200) {
+        print(workout);
+        await httpClient.sendNotification(
+            workout['trainer_id'],
+            '${authUser.user['name']} has completed a workout!',
+            '${authUser.user['name']} has completed the workout titled "${authUser.user['title']}"',
+            NSNotificationTypes.WorkoutCompleted,
+            {
+              'sender_id': authUser.id,
+              'sender_name': authUser.name,
+              'workout_plan_id': workout['id'],
+              'workout_plan_title': workout['title'],
+            }
+        );
         ready.value = true;
         await getWorkout();
       } else {

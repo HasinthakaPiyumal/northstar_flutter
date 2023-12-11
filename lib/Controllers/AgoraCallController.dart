@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Models/AuthUser.dart';
+import 'package:north_star/Models/CallData.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:uuid/uuid.dart';
 
@@ -21,7 +23,6 @@ class AgoraCallController {
   static Rx<Duration> duration = Duration(seconds: 0).obs;
   static late DateTime startTime;
   static late DateTime endTime;
-  static String channelName = 'defaultChannel';
   static late Timer timer;
 
   // static const String token = '983f2eee1a9a4d2f90c04e17b9694fea';
@@ -29,10 +30,8 @@ class AgoraCallController {
   //     '007eJxTYNhouCButkT3v5+rX32akKBl+jV3hdWhGXNzPz53f6YboVqlwJCaYm6ZnJhoaGhilGiSaG5oYWJmaG6ekpRmbmyeamSZKnv/X0pDICNDvI8cAyMUgvh8DCmpaYmlOSXOGYl5eak5DAwAbiUlPw==';
   // static const String appId = '0e76a00a008e418bb9074ccad44724de';
   // static const String appId = '717e3dfc72374428b1daa46b39e9145b'; // backend appId
-  static const String appId = 'ed79caa1142a4a71846177dbf737e29e'; // temporary appId
-  static const String token = "007eJxTYLBaOHnnnNJNjjrBn5eyfRUpS9erej6b+3GiR8P/3RNfKwQoMKSmmFsmJyYaGpoYJZokmhtamJgZmpunJKWZG5unGlmmpnUYpTYEMjIsv13IyMgAgSA+H0NKalpiaU6Jc0ZiXl5qDgMDAM0uI+o=";
-
-
+  static const String appId =
+      'ed79caa1142a4a71846177dbf737e29e'; // temporary appId
   static RxString callStatus =
       'Calling...'.obs; // Calling, Connected, Disconnected
   static String callConnectionStatus =
@@ -41,10 +40,16 @@ class AgoraCallController {
   static RxBool speakerPhone = false.obs;
   static RxBool mute = false.obs;
 
-  static Future<String> getToken() async{
-    dynamic res = await httpClient.getRtcToken();
-    print('rtc token ---> $res');
-    return res['data'][0]['data']['token'];
+  static Future<String> getToken(channelName) async {
+    var data = {
+      "channelName": channelName,
+      "uid": authUser.id,
+      "expirationTimeInSeconds": 3600
+    };
+    dynamic res = await httpClient.getRtcToken(data);
+    res['data'] = json.decode(res['data']);
+    print('rtc token ---> ${res['data']}');
+    return res['data']['token'];
   }
 
   static Future<bool> init(Map<String, dynamic> userData) async {
@@ -55,11 +60,6 @@ class AgoraCallController {
         appId: appId, logConfig: LogConfig(level: LogLevel.logLevelApiCall)));
 
     await agoraEngine.disableVideo();
-
-    // channelName = Uuid().v4();
-
-    print("agora Engine");
-    print(channelName);
 
     agoraEngine.registerEventHandler(
       RtcEngineEventHandler(
@@ -85,7 +85,7 @@ class AgoraCallController {
           remoteUID = 0;
           endTime = DateTime.now();
           timer.cancel();
-          duration = Duration(seconds: 0).obs;
+          duration.value = Duration(seconds: 0);
           // Get.back(closeOverlays: true, canPop: false);
           agoraEngine.leaveChannel();
         },
@@ -94,18 +94,12 @@ class AgoraCallController {
 
     await agoraEngine.enableAudio();
     await agoraEngine.enableLocalAudio(true);
-    invokeCall(user['id'],channelName);
-    // dynamic res = await httpClient.invokeCall({
-    //   'from': "${authUser.id}",
-    //   'to': "${user['id']}",
-    //   'channel': channelName,
-    // });
+    var channelName = Uuid().v4();
+    print(user);
+    callData.setCallData(id:'${user['id']}',callerName: user['name'], avatar: user['avatar_url'],channelName: channelName);
+    invokeCall(user['id'], channelName);
 
-    // print('--------------> $res');
-
-    print(channelName);
-
-    await joinCall();
+    await joinCall(channelName);
     ready.value = true;
     accepted.value = true;
     return true;
@@ -113,8 +107,6 @@ class AgoraCallController {
 
   static Future<bool> initIncoming(Map<String, dynamic> data) async {
     user = data['from'];
-    channelName = data['channel'];
-    print(channelName);
     agoraEngine = createAgoraRtcEngine();
     await agoraEngine.initialize(const RtcEngineContext(
       appId: appId,
@@ -135,10 +127,10 @@ class AgoraCallController {
         },
         onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
           print("Remote user uid:$remoteUid joined the channel");
+          startTime = DateTime.now();
           callStatus.value = 'Connected';
           callConnectionStatus = 'Connected';
           remoteUID = remoteUid;
-          startTime = DateTime.now();
           timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
             duration.value = DateTime.now().difference(startTime);
           });
@@ -146,13 +138,13 @@ class AgoraCallController {
         onUserOffline: (RtcConnection connection, int remoteUid,
             UserOfflineReasonType reason) {
           print("Remote user uid left the channel");
+          agoraEngine.leaveChannel();
           callStatus.value = 'Disconnected';
           remoteUID = 0;
           endTime = DateTime.now();
           timer.cancel();
-          duration = Duration(seconds: 0).obs;
+          duration.value = Duration(seconds: 0);
           // Get.back(closeOverlays: true, canPop: false);
-          agoraEngine.leaveChannel();
         },
       ),
     );
@@ -162,7 +154,7 @@ class AgoraCallController {
     return true;
   }
 
-  static Future<bool> joinCall() async {
+  static Future<bool> joinCall(channelName) async {
     accepted.value = true;
     isJoined = true;
     print("Joining call...");
@@ -170,13 +162,11 @@ class AgoraCallController {
       clientRoleType: ClientRoleType.clientRoleBroadcaster,
       channelProfile: ChannelProfileType.channelProfileCommunication,
     );
-    var crcToken = await getToken();
-    print('cr token ---? $crcToken');
+    var crcToken = await getToken(channelName);
+    print("Joining channel---> $channelName");
     try {
-      var crToken = await getToken();
-      print('cr token ---? $crToken');
       await agoraEngine.joinChannel(
-        token:token,
+        token: crcToken,
         channelId: channelName,
         options: options,
         uid: authUser.id,
@@ -191,12 +181,8 @@ class AgoraCallController {
   }
 
   static rejectCall() async {
+    print('rejecting call by agora');
     try {
-      // await httpClient.invokeCall({
-      //   'from': '${authUser.id}',
-      //   'to': '${user['id']}',
-      //   'channel': channelName,
-      // });
       timer.cancel();
     } catch (e) {
       print(e);
@@ -246,8 +232,11 @@ class AgoraCallController {
     await agoraEngine.leaveChannel();
     accepted.value = false;
     isJoined = false;
+    callStatus.value = 'End call';
+    callConnectionStatus = 'Not Connected';
     try {
       timer.cancel();
+      duration.value = Duration(seconds: 0);
     } catch (e) {
       print(e);
     }

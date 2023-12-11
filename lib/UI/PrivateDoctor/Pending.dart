@@ -37,7 +37,7 @@ class Pending extends StatelessWidget {
     void accept(int id, int clientID) async {
       ready.value = false;
       Map res = await httpClient.acceptDocMeetings(id);
-
+print('accepting-->$res');
       if (res['code'] == 200) {
         httpClient.sendNotification(
             clientID,

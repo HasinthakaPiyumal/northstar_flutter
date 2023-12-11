@@ -28,6 +28,18 @@ class BMICalculator extends StatelessWidget {
     TextEditingController weightController = new TextEditingController();
     TextEditingController heightController = new TextEditingController();
 
+    FocusNode resultFocus = FocusNode();
+    FocusNode weightFocus = FocusNode();
+    FocusNode heightFocus = FocusNode();
+    FocusNode calculateFocus = FocusNode();
+
+    void clear() {
+      weightController.clear();
+      heightController.clear();
+      heightFocus.requestFocus();
+      result.value = {}.obs;
+    }
+
     void getBMIPI(String weight, String height) async {
       ready.value = true;
       var request = http.Request(
@@ -45,6 +57,7 @@ class BMICalculator extends StatelessWidget {
         print(res);
         result.value = res;
         ready.value = true;
+        resultFocus.requestFocus();
       } else {
         var dt = jsonDecode(await response.stream.bytesToString());
         print(dt);
@@ -140,11 +153,17 @@ class BMICalculator extends StatelessWidget {
               Obx(()=>TextField(
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
                 controller: heightController,
+                focusNode: heightFocus,
                 decoration: InputDecoration(
                   suffix: Text(isMetric.value ? "cm" : 'in',
                     style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade500 : colors.Colors().lightBlack(1),),
                   ),
                 ),
+                onSubmitted: (value) {
+                  heightController.text = value;
+                  heightFocus.unfocus();
+                  weightFocus.requestFocus();
+                },
               ),),
               SizedBox(height: 20,),
               Obx(()=>Text(isMetric.value ? "WEIGHT (Kg)" : "WEIGHT (lbs)",
@@ -154,49 +173,79 @@ class BMICalculator extends StatelessWidget {
               Obx(()=>TextField(
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
                 controller: weightController,
+                focusNode: weightFocus,
                 decoration: InputDecoration(
                   suffix: Text(isMetric.value ? "Kg" : 'lbs',
                     style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade500 : colors.Colors().lightBlack(1),),
                   ),
                 ),
+                onSubmitted: (value) {
+                  weightController.text = value;
+                  weightFocus.unfocus();
+                  calculateFocus.requestFocus();
+                  if(weightController.text != "" && heightController.text != ""){
+                    if(isMetric.isTrue){
+                      getBMIPI(weightController.text, heightController.text);
+                    }else{
+                      getBMIPI((double.parse(weightController.text) * 0.45359237).toString(), (double.parse(heightController.text) * 2.54).toString());
+                    }
+                  }else{
+                    showSnack("No Inputs Found", "Please enter your weight and height");
+                  }
+                },
               ),),
               SizedBox(height: 50),
-              Container(
-                  width: Get.width,
-                  child: Buttons.yellowFlatButton(onPressed: () {
-                    print(isMetric);
-                    if(weightController.text != "" && heightController.text != ""){
-                      if(isMetric.isTrue){
-                        getBMIPI(weightController.text, heightController.text);
+              Focus(
+                focusNode: calculateFocus,
+                child: Container(
+                    width: Get.width,
+                    child: Buttons.yellowFlatButton(onPressed: () {
+                      print(isMetric);
+                      if(weightController.text != "" && heightController.text != ""){
+                        if(isMetric.isTrue){
+                          getBMIPI(weightController.text, heightController.text);
+                        }else{
+                          getBMIPI((double.parse(weightController.text) * 0.45359237).toString(), (double.parse(heightController.text) * 2.54).toString());
+                        }
                       }else{
-                        getBMIPI((double.parse(weightController.text) * 0.45359237).toString(), (double.parse(heightController.text) * 2.54).toString());
+                        showSnack("No Inputs Found", "Please enter your weight and height");
                       }
-                    }else{
-                      showSnack("No Inputs Found", "Please enter your weight and height");
-                    }
-                  },label: "calculate")),
+                    },label: "calculate")),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Buttons.outlineButton(
+                    onPressed: () {
+                      clear();
+                    },
+                    label: "Clear",
+                    width: Get.width),
+              ),
               SizedBox(height: 20),
               Obx(()=>result['success'] != null
-                  ? Column(
+                  ? Focus(
+                focusNode: resultFocus,
+                    child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 10),
-                  SizedBox(height: 8),
-                  cardHealth(
-                    result['BMI'],
-                    result['BMICat'],
-                    'Body Mass Index (BMI)',
-                    true,
-                  ),
-                  SizedBox(height: 8),
-                  cardHealth(
-                    result['PI'],
-                    result['PICat'],
-                    'Ponderal Index (PI)',
-                    false,
-                  ),
+                    SizedBox(height: 10),
+                    SizedBox(height: 8),
+                    cardHealth(
+                      result['BMI'],
+                      result['BMICat'],
+                      'Body Mass Index (BMI)',
+                      true,
+                    ),
+                    SizedBox(height: 8),
+                    cardHealth(
+                      result['PI'],
+                      result['PICat'],
+                      'Ponderal Index (PI)',
+                      false,
+                    ),
                 ],
-              )
+              ),
+                  )
                   : Container(),),
               SizedBox(height: 20),
             ],
@@ -206,3 +255,4 @@ class BMICalculator extends StatelessWidget {
     );
   }
 }
+

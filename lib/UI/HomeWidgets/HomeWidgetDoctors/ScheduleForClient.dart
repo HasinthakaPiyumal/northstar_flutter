@@ -19,6 +19,7 @@ import 'package:north_star/UI/Layout.dart';
 
 import '../../../Styles/AppColors.dart';
 import '../../../Styles/ThemeBdayaStyles.dart';
+import '../../../components/SessionTimePicker.dart';
 
 class ScheduleForClient extends StatelessWidget {
   const ScheduleForClient({Key? key, this.doctor}) : super(key: key);
@@ -32,10 +33,12 @@ class ScheduleForClient extends StatelessWidget {
     RxMap walletData = {}.obs;
 
     TextEditingController dateTime = new TextEditingController();
+    TextEditingController startTime = new TextEditingController();
     TextEditingController descriptionController = new TextEditingController();
     TextEditingController titleController = new TextEditingController();
 
-    late DateTime selectedDateTime;
+    DateTime now = DateTime.now();
+    late DateTime selectedDateTime = DateTime(now.year,now.month,now.day,0,0);
 
     void confirmAndPay(DateTime dateTimeOfBooking, double total) async{
 
@@ -156,7 +159,7 @@ class ScheduleForClient extends StatelessWidget {
                       'trainer_id': authUser.id.toString(),
                       'client_id': selectedClient.value['id'].toString(),
                       'title': titleController.text,
-                      'description': descriptionController.text,
+                      'description': descriptionController.text ?? "",
                       'start_time': dateTimeOfBooking.toString(),
                     });
                     if (res['code'] == 200) {
@@ -378,33 +381,103 @@ class ScheduleForClient extends StatelessWidget {
                     : Container(),
               ),
               SizedBox(height: 16),
-              TextField(
-                controller: dateTime,
-                readOnly: true,
-                decoration: InputDecoration(
-                  labelText: 'Approximate Meeting Start Time',
-                  prefixIcon: Icon(Icons.calendar_today),
-                  border: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
+              // TextField(
+              //   controller: dateTime,
+              //   readOnly: true,
+              //   decoration: InputDecoration(
+              //     labelText: 'Approximate Meeting Start Time',
+              //     prefixIcon: Icon(Icons.calendar_today),
+              //     border: UnderlineInputBorder(
+              //       borderSide: BorderSide(color: Colors.white),
+              //     ),
+              //   ),
+              //   onTap: () {
+              //     DatePickerBdaya.showDateTimePicker(
+              //       context,
+              //       theme: ThemeBdayaStyles.main(),
+              //       showTitleActions: true,
+              //       minTime: DateTime.now(),
+              //       currentTime: DateTime.now(),
+              //       onChanged: (date) {
+              //         print('change $date');
+              //       },
+              //       onConfirm: (date) {
+              //         print('confirm $date');
+              //         selectedDateTime = date;
+              //         dateTime.text = DateFormat("MMM dd,yyyy").format(date).toString() + " at " + DateFormat('HH:mm').format(date);
+              //       },
+              //     );
+              //   },
+              // ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: ((Get.width - 32) / 2) - 8,
+                    child: TextField(
+                      controller: dateTime,
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        labelText: 'Date',
+                        prefixIcon: Icon(Icons.calendar_today),
+                        border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                      ),
+                      onTap: () {
+                        DatePickerBdaya.showDatePicker(
+                          context,
+                          theme: ThemeBdayaStyles.main(),
+                          showTitleActions: true,
+                          minTime: DateTime.now(),
+                          currentTime: DateTime.now(),
+                          onChanged: (date) {
+                            print('change $date');
+                          },
+                          onConfirm: (date) {
+                            print('confirm $date');
+
+                            selectedDateTime = DateTime(
+                                date.year,
+                                date.month,
+                                date.day,
+                                selectedDateTime.hour,
+                                selectedDateTime.minute);
+                            dateTime.text = DateFormat("MMM dd,yyyy")
+                                .format(date)
+                                .toString();
+                          },
+                        );
+                      },
+                    ),
                   ),
-                ),
-                onTap: () {
-                  DatePickerBdaya.showDateTimePicker(
-                    context,
-                    theme: ThemeBdayaStyles.main(),
-                    showTitleActions: true,
-                    minTime: DateTime.now(),
-                    currentTime: DateTime.now(),
-                    onChanged: (date) {
-                      print('change $date');
-                    },
-                    onConfirm: (date) {
-                      print('confirm $date');
-                      selectedDateTime = date;
-                      dateTime.text = DateFormat("MMM dd,yyyy").format(date).toString() + " at " + DateFormat('HH:mm').format(date);
-                    },
-                  );
-                },
+                  Container(
+                    width: ((Get.width - 32) / 2) - 8,
+                    child: TextField(
+                      controller: startTime,
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        labelText: 'Start Time',
+                        prefixIcon: Icon(Icons.access_time_rounded),
+                        border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                      ),
+                      onTap: () {
+                        SessionTimePicker(
+                          initial: selectedDateTime,
+                          onConfirm: (date) {
+                            print('confirm $date');
+                            selectedDateTime = date;
+                            startTime.text =
+                            '${DateFormat("HH:mm").format(date).toString()}';
+                          },
+                        );
+
+                      },
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 16),
               TextField(
@@ -450,15 +523,19 @@ class ScheduleForClient extends StatelessWidget {
               child: CircularProgressIndicator(),
             ),
             onPressed: () {
-              if (descriptionController.text.isNotEmpty) {
-                confirmAndPay(
-                    selectedDateTime,
-                    double.parse(
-                        doctor['doctor']['hourly_rate'].toString()));
-              } else {
-                showSnack('Description is empty!',
-                    'please add a description about the meeting');
-              }
+              confirmAndPay(
+                  selectedDateTime,
+                  double.parse(
+                      doctor['doctor']['hourly_rate'].toString()));
+              // if (descriptionController.text.isNotEmpty) {
+              //   confirmAndPay(
+              //       selectedDateTime,
+              //       double.parse(
+              //           doctor['doctor']['hourly_rate'].toString()));
+              // } else {
+              //   showSnack('Description is empty!',
+              //       'please add a description about the meeting');
+              // }
             },
           )),
         ),

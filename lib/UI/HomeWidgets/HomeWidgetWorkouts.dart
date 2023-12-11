@@ -57,7 +57,7 @@ class HomeWidgetWorkouts extends StatelessWidget {
 
     return Scaffold(
       floatingActionButton: Obx(() {
-        if (authUser.role == 'trainer' || (authUser.role == 'client' && showAddWorkoutToClient.value)) {
+        if ( (showAddWorkoutToClient.value&&authUser.role == 'client') || authUser.role == 'trainer') {
           return Container(
             height: 44,
             child: FloatingActionButton.extended(
@@ -103,40 +103,44 @@ class HomeWidgetWorkouts extends StatelessWidget {
             Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Row(
-                      children: [Expanded(
-                          child: ElevatedButton(
-                            style: ButtonStyles.matRadButton(
-                                Get.isDarkMode
-                                    ? AppColors.primary2Color
-                                    : Colors.white,
-                                0,
-                                10),
-                            onPressed: () {
-                              Get.to(() => WorkoutPresets());
-                            },
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 20),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    height: 64,
-                                    child: Image.asset(
-                                        "assets/icons/my_workout.png"),
-                                  ),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    'My Workouts',
-                                    style: TypographyStyles.text(16),
-                                  )
-                                ],
+                      children: [
+                        Visibility(
+                          visible: (showAddWorkoutToClient.value&&authUser.role == 'client') || authUser.role == 'trainer',
+                          child: Expanded(
+                            child: ElevatedButton(
+                              style: ButtonStyles.matRadButton(
+                                  Get.isDarkMode
+                                      ? AppColors.primary2Color
+                                      : Colors.white,
+                                  0,
+                                  10),
+                              onPressed: () {
+                                Get.to(() => WorkoutPresets());
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 20),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      height: 64,
+                                      child: Image.asset(
+                                          "assets/icons/my_workout.png"),
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    Text(
+                                      'My Workouts',
+                                      style: TypographyStyles.text(16),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                           ),
                         ),
-                        SizedBox(width: 15),
+                        Visibility(visible: (showAddWorkoutToClient.value&&authUser.role == 'client') || authUser.role == 'trainer',child: SizedBox(width: 15)),
                         Expanded(
                           child: ElevatedButton(
                             style: ButtonStyles.matRadButton(

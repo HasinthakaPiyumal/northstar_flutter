@@ -19,7 +19,7 @@ class AddToDos extends StatefulWidget {
 }
 
 class _AddToDosState extends State<AddToDos> {
-  late dynamic _imageFile;
+  late dynamic _imageFile = false;
   TextEditingController todo = TextEditingController();
   TextEditingController notes = TextEditingController();
   TextEditingController endDate = TextEditingController();
@@ -52,7 +52,7 @@ class _AddToDosState extends State<AddToDos> {
         'todo': todo.text,
         'notes': notes.text,
         'endDate': endDate.text
-      }, _imageFile);
+      }, _imageFile!=false?_imageFile:null);
 
       if (res['code'] == 200) {
         Get.back();

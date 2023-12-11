@@ -27,6 +27,8 @@ class HomeWidgetToDos extends StatelessWidget {
     Rx<DateTime> selectedDay = DateTime.now().obs;
     Rx<DateTime> focusedDay = DateTime.now().obs;
 
+    RxList toHighlight = [].obs;
+
     final MyTabController tabController = Get.put(MyTabController());
 
     RxList upcomingTasksHaveDates = [].obs;
@@ -56,9 +58,9 @@ class HomeWidgetToDos extends StatelessWidget {
       completedTasksHaveDates.sort((b, a) {
         return Comparable.compare(DateTime.parse(b), DateTime.parse(a));
       });
-
-      print("upcoming todos have dates list : $upcomingTasksHaveDates");
-      print("completed todos have dates list : $completedTasksHaveDates");
+      //
+      // print("upcoming todos have dates list : $upcomingTasksHaveDates");
+      // print("completed todos have dates list : $completedTasksHaveDates");
     }
 
     RxList categorizedUpcomingTodosMapsList = [].obs;
@@ -98,6 +100,10 @@ class HomeWidgetToDos extends StatelessWidget {
       Map res = await httpClient.getTodo();
       if (res['code'] == 200) {
         todos.value = res['data'];
+        res['data'].forEach((element) {
+          toHighlight.add(DateTime.parse(element['endDate']));
+        });
+        print(toHighlight);
         await getDatesWithTasks();
         await categorizeTodos();
         ready.value = true;
@@ -130,7 +136,6 @@ class HomeWidgetToDos extends StatelessWidget {
         height: 44,
         width: 131,
         child: FloatingActionButton.extended(
-
           onPressed: () {
             Get.to(() => AddToDos())?.then((value) {
               getTODOs().then((value) async {
@@ -140,7 +145,9 @@ class HomeWidgetToDos extends StatelessWidget {
               });
             });
           },
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5),),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+          ),
           backgroundColor: AppColors.accentColor,
           label: Text('Add Item',
               style: TextStyle(
@@ -194,20 +201,22 @@ class HomeWidgetToDos extends StatelessWidget {
                             cellMargin: const EdgeInsets.all(0),
                             selectedTextStyle:
                                 TypographyStyles.title(12).copyWith(
-                              color: Colors.white,
+                              color:
+                                  Get.isDarkMode ? Colors.white : Colors.black,
                             ),
                             weekendTextStyle:
                                 TypographyStyles.title(12).copyWith(
-                              color: Colors.white,
+                              color:
+                                  Get.isDarkMode ? Colors.white : Colors.black,
                             ),
                             defaultTextStyle:
                                 TypographyStyles.title(12).copyWith(
-                              color: Colors.white,
+                              color:
+                                  Get.isDarkMode ? Colors.white : Colors.black,
                             ),
                           ),
                           daysOfWeekHeight: 30,
                           rowHeight: 25,
-
                           calendarFormat: CalendarFormat.month,
                           headerStyle: HeaderStyle(
                             formatButtonVisible: false,
@@ -215,7 +224,12 @@ class HomeWidgetToDos extends StatelessWidget {
                             titleTextStyle: Theme.of(context)
                                 .textTheme
                                 .bodyMedium!
-                                .copyWith(fontWeight: FontWeight.w600),
+                                .copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: Get.isDarkMode
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
                             headerMargin: EdgeInsets.zero,
                             headerPadding: EdgeInsets.only(bottom: 10),
                             leftChevronPadding: const EdgeInsets.symmetric(
@@ -224,14 +238,14 @@ class HomeWidgetToDos extends StatelessWidget {
                                 vertical: 5, horizontal: 10),
                           ),
                           daysOfWeekStyle: DaysOfWeekStyle(
-                            weekdayStyle: TypographyStyles.title(12).copyWith(
-                                color: colors.Colors().lightWhite(0.6)),
+                            weekdayStyle: TypographyStyles.title(12)
+                                .copyWith(color: AppColors.accentColor),
                             weekendStyle: TypographyStyles.title(12).copyWith(
-                                color: colors.Colors().lightWhite(0.6)),
+                                color: AppColors.accentColor.withOpacity(0.8)),
                           ),
                           startingDayOfWeek: StartingDayOfWeek.monday,
                           onDaySelected: (selected, focused) {
-                            selectedDay.value = selected;
+                            // selectedDay.value = selected;
                             focusedDay.value = focused;
                             Get.to(() => SelectedDayTodos(
                                   selectedDate: selected,
@@ -241,6 +255,34 @@ class HomeWidgetToDos extends StatelessWidget {
                           selectedDayPredicate: (day) {
                             return isSameDay(selectedDay.value, day);
                           },
+                          calendarBuilders: CalendarBuilders(
+                            defaultBuilder: (context, day, focusedDay) {
+                              for (DateTime d in toHighlight) {
+                                print(d);
+                                if (day.day == d.day &&
+                                    day.month == d.month &&
+                                    day.year == d.year) {
+                                  return Container(
+                                    decoration: const BoxDecoration(
+                                      // color: Colors.blue,
+                                      border: Border.fromBorderSide(
+                                          BorderSide(color: Colors.blue)),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(10.0),
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        '${day.day}',
+                                        style: TypographyStyles.text(16),
+                                      ),
+                                    ),
+                                  );
+                                }
+                              }
+                              return null;
+                            },
+                          ),
                         ),
                       ),
                     ),
@@ -256,12 +298,14 @@ class HomeWidgetToDos extends StatelessWidget {
                     tabs: tabController.myTabs,
                     isScrollable: false,
                     labelStyle: TypographyStyles.title(16),
-                    labelColor: Colors.white,
-                    unselectedLabelStyle: TypographyStyles.title(16)
-                        .copyWith(color: colors.Colors().darkGrey(1)),
-                    unselectedLabelColor:
-                        colors.Colors().lightCardBG.withOpacity(0.6),
-                    indicatorColor: colors.Colors().deepYellow(1),
+                    labelColor: Get.isDarkMode ? Colors.white : Colors.black,
+                    unselectedLabelStyle: TypographyStyles.title(16).copyWith(
+                        color: Get.isDarkMode
+                            ? colors.Colors().darkGrey(1)
+                            : Colors.black38),
+                    // unselectedLabelColor:
+                    //     colors.Colors().lightCardBG.withOpacity(0.6),
+                    indicatorColor: AppColors.accentColor,
                   ),
                 ),
                 SizedBox(
@@ -288,7 +332,10 @@ class HomeWidgetToDos extends StatelessWidget {
                                       child: Text(
                                         "${DateFormat("MMMM dd").format(DateTime.parse(categorizedUpcomingTodosMapsList[index]['date']))}",
                                         style: TypographyStyles.title(16)
-                                            .copyWith(color: Colors.white),
+                                            .copyWith(
+                                                color: Get.isDarkMode
+                                                    ? Colors.white
+                                                    : Colors.black),
                                       ),
                                     ),
                                     SizedBox(
@@ -531,7 +578,10 @@ class HomeWidgetToDos extends StatelessWidget {
                                       child: Text(
                                         "${DateFormat("MMMM dd").format(DateTime.parse(categorizedCompletedTodosMapsList[index]['date']))}",
                                         style: TypographyStyles.title(16)
-                                            .copyWith(color: Colors.white),
+                                            .copyWith(
+                                                color: Get.isDarkMode
+                                                    ? Colors.white
+                                                    : Colors.black),
                                       ),
                                     ),
                                     SizedBox(
@@ -570,8 +620,8 @@ class HomeWidgetToDos extends StatelessWidget {
                                                             10),
                                                   ),
                                                   color: Get.isDarkMode
-                                          ? AppColors.primary2Color
-                                              : Colors.white,
+                                                      ? AppColors.primary2Color
+                                                      : Colors.white,
                                                   child: Padding(
                                                     padding:
                                                         EdgeInsets.fromLTRB(
@@ -638,57 +688,53 @@ class HomeWidgetToDos extends StatelessWidget {
                                                                       .end,
                                                               children: [
                                                                 Container(
-                                                                  height: 28,
-                                                                  width: 73.85,
-                                                                  margin: EdgeInsets.only(bottom: 10),
-                                                                  child:
-                                                                  ElevatedButton(
-                                                                    style: ElevatedButton
-                                                                        .styleFrom(
-                                                                      foregroundColor:
-                                                                      Colors
-                                                                          .black,
-                                                                      backgroundColor:
-                                                                      Colors
-                                                                          .transparent,
-                                                                      elevation: 0,
-                                                                      shape:
-                                                                      RoundedRectangleBorder(
-                                                                        side: BorderSide(
-                                                                            color: AppColors
-                                                                                .accentColor),
-                                                                        borderRadius:
-                                                                        BorderRadius
-                                                                            .circular(5),
+                                                                    height: 28,
+                                                                    width:
+                                                                        73.85,
+                                                                    margin: EdgeInsets.only(
+                                                                        bottom:
+                                                                            10),
+                                                                    child:
+                                                                        ElevatedButton(
+                                                                      style: ElevatedButton
+                                                                          .styleFrom(
+                                                                        foregroundColor:
+                                                                            Colors.black,
+                                                                        backgroundColor:
+                                                                            Colors.transparent,
+                                                                        elevation:
+                                                                            0,
+                                                                        shape:
+                                                                            RoundedRectangleBorder(
+                                                                          side:
+                                                                              BorderSide(color: AppColors.accentColor),
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(5),
+                                                                        ),
                                                                       ),
-                                                                    ),
-                                                                    child: Icon(
-                                                                      Icons
-                                                                          .close_rounded,
-                                                                      color: AppColors.accentColor,
-                                                                      size: 24),
-                                                                  onPressed:
-                                                                      () async {
-                                                                    CommonConfirmDialog.confirm(
-                                                                            'Delete')
-                                                                        .then(
-                                                                            (value) async {
-                                                                      if (value) {
-                                                                        httpClient
-                                                                            .deleteTodo(thisTodo['id'])
-                                                                            .then((value) {
-                                                                          getTODOs().then(
-                                                                              (value) async {
-                                                                            await getDatesWithTasks();
-                                                                          }).then(
-                                                                              (value) async {
-                                                                            await categorizeTodos();
-                                                                          });
+                                                                      child: Icon(
+                                                                          Icons
+                                                                              .close_rounded,
+                                                                          color: AppColors
+                                                                              .accentColor,
+                                                                          size:
+                                                                              24),
+                                                                      onPressed:
+                                                                          () async {
+                                                                        CommonConfirmDialog.confirm('Delete')
+                                                                            .then((value) async {
+                                                                          if (value) {
+                                                                            httpClient.deleteTodo(thisTodo['id']).then((value) {
+                                                                              getTODOs().then((value) async {
+                                                                                await getDatesWithTasks();
+                                                                              }).then((value) async {
+                                                                                await categorizeTodos();
+                                                                              });
+                                                                            });
+                                                                          }
                                                                         });
-                                                                      }
-                                                                    });
-                                                                  },
-                                                                )),
+                                                                      },
+                                                                    )),
                                                                 Visibility(
                                                                   visible:
                                                                       !thisTodo[
@@ -735,7 +781,6 @@ class HomeWidgetToDos extends StatelessWidget {
                                                                       !thisTodo[
                                                                           'completed'],
                                                                 ),
-
                                                               ],
                                                             )
                                                           ],
@@ -838,7 +883,7 @@ class MyTabController extends GetxController
 // children: [
 // Visibility(
 // child: IconButton(
-// icon: Icon(Icons.check, color: Colors.white, size: 40),
+// icon: Icon(Icons.check, color: Get.isDarkMode?Colors.white:Colors.black, size: 40),
 // onPressed: () async {
 // CommonConfirmDialog.confirm('Complete').then((value) {
 // if(value){
@@ -857,7 +902,7 @@ class MyTabController extends GetxController
 // ),
 // SizedBox(width: 10,),
 // IconButton(
-// icon: Icon(Icons.close_rounded, color: Colors.white, size: 40),
+// icon: Icon(Icons.close_rounded, color: Get.isDarkMode?Colors.white:Colors.black, size: 40),
 // onPressed: () async {
 // CommonConfirmDialog.confirm('Delete').then((value) async {
 // if(value){

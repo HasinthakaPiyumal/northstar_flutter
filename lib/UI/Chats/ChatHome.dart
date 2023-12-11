@@ -54,6 +54,8 @@ class ChatHome extends StatelessWidget {
       Map res = await httpClient.getMyChats();
       if (res['code'] == 200) {
         chats.clear();
+        print("Chats list--->");
+        print(res['data']);
         tempChats.value = res['data'];
         print(tempChats.length);
         getFirebaseChats();
@@ -118,6 +120,7 @@ class ChatHome extends StatelessWidget {
                 ),
                 child: InkWell(
                   child: Obx(()=>ListTile(
+                    leading: Container(width:40,height: 40,child: Icon(chats[index]['type']=="SINGLE"?Icons.person:Icons.people)),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),

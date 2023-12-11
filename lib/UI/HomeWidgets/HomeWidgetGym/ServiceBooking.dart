@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker_bdaya/flutter_datetime_picker_bdaya.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:north_star/Models/HttpClient.dart';
@@ -12,12 +11,11 @@ import 'package:north_star/components/SessionTimePicker.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../../../../Styles/BoxStyles.dart';
-import '../../../../Styles/ThemeBdayaStyles.dart';
 import '../../../../components/Buttons.dart';
-import '../../../SharedWidgets/CommonConfirmDialog.dart';
+import '../../SharedWidgets/CommonConfirmDialog.dart';
 
-class GymDateAndTime extends StatelessWidget {
-  const GymDateAndTime(
+class ServiceBooking extends StatelessWidget {
+  const ServiceBooking(
       {Key? key, required this.gymObj, required this.clientIDs})
       : super(key: key);
   final gymObj;
@@ -25,6 +23,7 @@ class GymDateAndTime extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(gymObj);
     RxList<DateTime> dates = List.generate(
         7,
         (index) => DateUtils.dateOnly(
@@ -194,10 +193,6 @@ class GymDateAndTime extends StatelessWidget {
                       selectedDay.value = selected;
                       focusedDay.value = focused;
                       selectedDate.value = selected;
-                      // Get.to(() => SelectedDayTodos(
-                      //   selectedDate: selected,
-                      //   allTodos: todos,
-                      // ));
                     },
                     selectedDayPredicate: (day) {
                       return isSameDay(selectedDay.value, day);
@@ -206,106 +201,7 @@ class GymDateAndTime extends StatelessWidget {
                 ),
               ),
             ),
-            // Container(
-            //   height: 95,
-            //   child: Obx(()=>ListView.builder(
-            //     scrollDirection: Axis.horizontal,
-            //     itemCount: dates.length,
-            //     itemBuilder: (context, index) {
-            //       return Container(
-            //         margin: index == 0 ? EdgeInsets.only(left: 16) : EdgeInsets.only(left: 8),
-            //         child: Obx(()=>ElevatedButton(
-            //           style: selectedDate.value == dates[index] ? ButtonStyles.selectedBookingButton(12) : Get.isDarkMode ? ButtonStyles.notSelectedBookingButton(12) : ButtonStyles.notSelectedBookingButtonLightTheme(12),
-            //           onPressed: (){
-            //             selectedDate.value = dates[index];
-            //             generateTimes(dates[index]);
-            //           },
-            //           child: Padding(
-            //             padding: EdgeInsets.symmetric(horizontal: 10,),
-            //             child: Column(
-            //               mainAxisAlignment: MainAxisAlignment.center,
-            //               children: [
-            //                 Text("${(DateFormat('MMM').format(dates[index]).toUpperCase())}",
-            //                   style: TypographyStyles.normalText(14, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
-            //                 ),
-            //                 SizedBox(height: 2,),
-            //                 Text("${(DateFormat('dd').format(dates[index]).toUpperCase())}",
-            //                   style: TypographyStyles.boldText(28, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
-            //                 ),
-            //                 SizedBox(height: 4,),
-            //                 Text("${(DateFormat('EEE').format(dates[index]).toUpperCase())}",
-            //                   style: TypographyStyles.normalText(12, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
-            //                 ),
-            //               ],
-            //             ),
-            //           ),
-            //         )),
-            //       );
-            //     },
-            //   )),
-            // ),
 
-            //Start Time
-            // SizedBox(height: 30),
-            // Padding(
-            //   padding: const EdgeInsets.only(top:8,bottom: 0,left: 16,right: 16),
-            //   child: Row(
-            //     children: [
-            //       Text('SELECT START TIME',style: TypographyStyles.boldText(14, Themes.mainThemeColorAccent.shade300),),
-            //     ],
-            //   ),
-            // ),
-
-            // SizedBox(height: 16),
-            // Container(
-            //   height: 55,
-            //   child: Obx(()=>ListView.builder(
-            //     scrollDirection: Axis.horizontal,
-            //     itemCount: times.length-1,
-            //     itemBuilder: (context, index) {
-            //       return Container(
-            //         margin: index == 0 ? EdgeInsets.only(left: 16) : EdgeInsets.only(left: 8),
-            //         child: Obx(()=>ElevatedButton(
-            //           style: selectedStartTime.value == times[index] ?
-            //           ButtonStyles.selectedBookingButton(50) : Get.isDarkMode ? ButtonStyles.notSelectedBookingButton(50) : ButtonStyles.notSelectedBookingButtonLightTheme(50),
-            //           onPressed: availability[index] ? (){
-            //             selectedStartTime.value = times[index];
-            //             selectedEndTime.value = times[index+1];
-            //           }: null,
-            //           child: Padding(
-            //             padding: EdgeInsets.symmetric(horizontal: 5),
-            //             child: RichText(
-            //               text: TextSpan(
-            //                 text: '${DateFormat('hh:mm').format(times[index])}',
-            //                 style: TypographyStyles.boldText(20,
-            //                   availability[index] ? Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1) : Themes.mainThemeColorAccent.shade300,
-            //                 ),
-            //                 children: <TextSpan>[
-            //                   TextSpan(text: '${DateFormat(' a').format(times[index])}',
-            //                     style: TypographyStyles.normalText(12,
-            //                       availability[index] ? Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1) : Themes.mainThemeColorAccent.shade300,
-            //                     ),
-            //                   ),
-            //                 ],
-            //               ),
-            //             ),
-            //           )
-            //         )),
-            //       );
-            //     },
-            //   )),
-            // ),
-
-            //End Time
-            // SizedBox(height: 30),
-            // Padding(
-            //   padding: const EdgeInsets.only(top:8,bottom: 0,left: 16,right: 16),
-            //   child: Row(
-            //     children: [
-            //       Text('SELECT END TIME',style: TypographyStyles.boldText(14, Themes.mainThemeColorAccent.shade300),),
-            //     ],
-            //   ),
-            // ),
             Padding(
               padding: const EdgeInsets.only(left: 16.0),
               child: Text(
@@ -332,21 +228,6 @@ class GymDateAndTime extends StatelessWidget {
                         ),
                       ),
                       onTap: () {
-                        // DatePickerBdaya.showTimePicker(
-                        //   context,
-                        //   theme: ThemeBdayaStyles.main(),
-                        //   showTitleActions: true,
-                        //   showSecondsColumn: false,
-                        //   // minTime: DateTime.now(),
-                        //   // currentTime: DateTime.now(),
-                        //   onChanged: (date) {
-                        //     print('change $date');
-                        //   },
-                        //   onConfirm: (date) {
-                        //     selectedStartTime.value = date;
-                        //     startTime.text = DateFormat('HH:mm').format(date);
-                        //   },
-                        // );
                         SessionTimePicker(
                           initial: selectedStartTime.value,
                           onConfirm: (date) {
@@ -370,22 +251,6 @@ class GymDateAndTime extends StatelessWidget {
                         ),
                       ),
                       onTap: () {
-                        // DatePickerBdaya.showTimePicker(
-                        //   context,
-                        //   theme: ThemeBdayaStyles.main(),
-                        //   showTitleActions: true,
-                        //   showSecondsColumn: false,
-                        //   // minTime: DateTime.now(),
-                        //   // currentTime: DateTime.now(),
-                        //   onChanged: (date) {
-                        //     print('change $date');
-                        //   },
-                        //   onConfirm: (date) {
-                        //     print('confirm $date');
-                        //     selectedEndTime.value = date;
-                        //     endTime.text = DateFormat('HH:mm').format(date);
-                        //   },
-                        // );
                         SessionTimePicker(
                           initial: selectedEndTime.value,
                           onConfirm: (date) {
@@ -400,43 +265,6 @@ class GymDateAndTime extends StatelessWidget {
                 ],
               ),
             ),
-            // Container(
-            //   height: 55,
-            //   child: Obx(()=>ListView.builder(
-            //     scrollDirection: Axis.horizontal,
-            //     itemCount: times.length-1,
-            //     itemBuilder: (context, index) {
-            //       return Container(
-            //         margin: index == 0 ? EdgeInsets.only(left: 16) : EdgeInsets.only(left: 8),
-            //         child: Obx(()=>ElevatedButton(
-            //             style: selectedEndTime.value == times[index] ? ButtonStyles.selectedBookingButton(50) : Get.isDarkMode ? ButtonStyles.notSelectedBookingButton(50) : ButtonStyles.notSelectedBookingButtonLightTheme(50),
-            //             onPressed: checkEndTimeAvailability(selectedStartTime.value, times[index],index) ? (){
-            //               selectedEndTime.value = times[index];
-            //             } : null,
-            //             child: Padding(
-            //               padding: EdgeInsets.symmetric(horizontal: 5),
-            //               child: RichText(
-            //                 text: TextSpan(
-            //                   text: '${DateFormat('hh:mm').format(times[index])}',
-            //                   style: TypographyStyles.boldText(20,
-            //                     checkEndTimeAvailability(selectedStartTime.value, times[index],index) ? Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1) : Themes.mainThemeColorAccent.shade300,
-            //                   ),
-            //                   children: <TextSpan>[
-            //                     TextSpan(text: '${DateFormat(' a').format(times[index])}',
-            //                       style: TypographyStyles.normalText(12,
-            //                         checkEndTimeAvailability(selectedStartTime.value, times[index],index) ? Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1) : Themes.mainThemeColorAccent.shade300,
-            //                       ),
-            //                     ),
-            //                   ],
-            //                 ),
-            //               ),
-            //             )
-            //         )),
-            //       );
-            //     },
-            //   )),
-            // ),
-
             Padding(
               padding: EdgeInsets.fromLTRB(15, 40, 15, 15),
               child: Container(
@@ -593,11 +421,7 @@ class GymDateAndTime extends StatelessWidget {
             child: Buttons.yellowFlatButton(
               label: "confirm",
               onPressed: () {
-                CommonConfirmDialog.confirm('Confirm').then((value) {
-                  if (value) {
-                    makeASchedule();
-                  }
-                });
+
               },
             )));
   }

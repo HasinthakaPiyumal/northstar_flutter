@@ -172,7 +172,7 @@ class _IncomingVoiceCallUIState extends State<IncomingVoiceCallUI> {
                               onTap: () {
                                 FlutterRingtonePlayer.stop();
                                 Vibration.cancel();
-                                AgoraCallController.joinCall();
+                                AgoraCallController.joinCall(widget.callData['channelName']);
                               },
                               child: Lottie.asset(
                                 'assets/lotties/call_answer.json',
@@ -387,7 +387,7 @@ class IncomingVoiceCallUIs extends StatelessWidget {
                                   Container(
                                     child: MaterialButton(
                                       onPressed: () {
-                                        AgoraCallController.joinCall();
+                                        AgoraCallController.joinCall("noChannel");
                                       },
                                       shape: CircleBorder(),
                                       color: Colors.green,

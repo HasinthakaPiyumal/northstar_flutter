@@ -32,6 +32,7 @@
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
+            android:supportsPictureInPicture="true"
             android:exported="true"
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
@@ -53,7 +54,14 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-    </application>
+       <!-- Add android:stopWithTask option only when necessary. -->
+       <service
+           android:name="com.pravera.flutter_foreground_task.service.ForegroundService"
+           android:stopWithTask="true" />
+       <service android:name="com.ducdd.overlay_windows_plugin.OverlayService"
+           android:exported="false" />
+
+   </application>
 
     <queries>
         <package android:name="com.google.android.apps.healthdata" />

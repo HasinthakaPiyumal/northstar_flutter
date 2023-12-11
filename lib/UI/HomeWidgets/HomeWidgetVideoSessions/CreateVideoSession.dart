@@ -5,15 +5,14 @@ import 'package:flutter/material.dart' hide DatePickerTheme;
 import 'package:flutter_datetime_picker_bdaya/flutter_datetime_picker_bdaya.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
+import 'package:north_star/Models/NSNotification.dart';
 import 'package:north_star/Styles/AppColors.dart';
-import 'package:north_star/Styles/ButtonStyles.dart';
 import 'package:north_star/Styles/DatePickerThemes.dart';
-import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/Utils/PopUps.dart';
-import 'package:intl/intl.dart';
 
 import '../../../components/Buttons.dart';
 
@@ -30,6 +29,18 @@ class CreateVideoSession extends StatelessWidget {
     TextEditingController dateTime = TextEditingController();
 
     RxString meetingDateTime = "".obs;
+
+    String _formatMeetingDateTime(dynamic dateTime) {
+      // Assuming dateTime is a DateTime object or a string in a specific format
+      // Convert the dateTime to a formatted string
+      if (dateTime is DateTime) {
+        // Format DateTime object to desired format (e.g., "MM/dd/yyyy HH:mm")
+        return DateFormat('MMMM d, y - HH:mm').format(dateTime);
+      } else {
+        // If it's a string already in a desired format
+        return dateTime; // Or format it accordingly if it's in a different format
+      }
+    }
 
     void saveMeeting() async {
       ready.value = false;
@@ -48,6 +59,13 @@ class CreateVideoSession extends StatelessWidget {
 
       if (res['code'] == 200) {
         print(res);
+        idList.forEach((id) {
+          httpClient.sendNotification(
+              id,
+              "New meeting scheduled",
+              "You have a new meeting with ${authUser.name} on ${_formatMeetingDateTime(meetingDateTime.value)}",
+              NSNotificationTypes.Common, {});
+        });
         Get.back();
         showSnack('Success!', 'Meeting created successfully!');
       } else {
@@ -65,7 +83,6 @@ class CreateVideoSession extends StatelessWidget {
         return [];
       }
     }
-
 
     return Scaffold(
       appBar: AppBar(
@@ -86,14 +103,16 @@ class CreateVideoSession extends StatelessWidget {
                   ),
                   SizedBox(height: 16),
                   TypeAheadField(
-                    suggestionsBoxDecoration: SuggestionsBoxDecoration(color: Get.isDarkMode?AppColors.primary2Color:Colors.white),
+                    suggestionsBoxDecoration: SuggestionsBoxDecoration(
+                        color: Get.isDarkMode
+                            ? AppColors.primary2Color
+                            : Colors.white),
                     textFieldConfiguration: TextFieldConfiguration(
                         decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.search),
-                          labelText: 'Search Members...',
-                          border: UnderlineInputBorder(),
-                        )
-                    ),
+                      prefixIcon: Icon(Icons.search),
+                      labelText: 'Search Members...',
+                      border: UnderlineInputBorder(),
+                    )),
                     suggestionsCallback: (pattern) async {
                       print(pattern);
                       return await searchMembers(pattern);
@@ -106,12 +125,13 @@ class CreateVideoSession extends StatelessWidget {
                         subtitle: Text(jsonObj['user']['email']),
                       );
                     },
-
                     onSuggestionSelected: (suggestion) {
                       var jsonObj = jsonDecode(jsonEncode(suggestion));
 
-                      var already = selectedMembers.firstWhereOrNull((element) => element['user_id'] == jsonObj['user_id']);
-                      if (already == null){
+                      var already = selectedMembers.firstWhereOrNull(
+                          (element) =>
+                              element['user_id'] == jsonObj['user_id']);
+                      if (already == null) {
                         selectedMembers.add(jsonObj);
                         print(jsonObj);
                       } else {
@@ -130,18 +150,23 @@ class CreateVideoSession extends StatelessWidget {
                     ),
                     onTap: () {
                       DatePickerBdaya.showDateTimePicker(
-                          context,
-                          theme: DatePickerThemes.mainTheme(),
-                          showTitleActions: true,
-                          minTime: DateTime.now(),
-                          currentTime: DateTime.now(),
-                          onChanged: (date) {
-                            print('change $date');
-                          }, onConfirm: (date) {
-                            print('confirm $date');
-                            meetingDateTime.value = date.toLocal().toString();
-                            dateTime.text = DateFormat("dd MMM, yyyy").format(date).toString() + " at " + DateFormat("h:mm a").format(date).toString();
-                          },
+                        context,
+                        theme: DatePickerThemes.mainTheme(),
+                        showTitleActions: true,
+                        minTime: DateTime.now(),
+                        currentTime: DateTime.now(),
+                        onChanged: (date) {
+                          print('change $date');
+                        },
+                        onConfirm: (date) {
+                          print('confirm $date');
+                          meetingDateTime.value = date.toLocal().toString();
+                          dateTime.text = DateFormat("dd MMM, yyyy")
+                                  .format(date)
+                                  .toString() +
+                              " at " +
+                              DateFormat("h:mm a").format(date).toString();
+                        },
                       );
                     },
                   ),
@@ -165,56 +190,62 @@ class CreateVideoSession extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 16),
-
                 ],
               ),
             ),
           ),
-          Obx(()=>Expanded(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: ListView.builder(
-                itemCount: selectedMembers.length,
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return Container(
-                    margin: EdgeInsets.symmetric(vertical: 4),
-                    child: ListTile(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                      ),
-                      tileColor: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
-                      leading: ClipOval(
-                        child: CachedNetworkImage(
-                          imageUrl: HttpClient.s3BaseUrl + selectedMembers[index]['user']['avatar_url'],
-                          placeholder: (context, url) => CircularProgressIndicator(),
+          Obx(() => Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: ListView.builder(
+                    itemCount: selectedMembers.length,
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        margin: EdgeInsets.symmetric(vertical: 4),
+                        child: ListTile(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                          tileColor: Get.isDarkMode
+                              ? AppColors.primary2Color
+                              : Colors.white,
+                          leading: ClipOval(
+                            child: CachedNetworkImage(
+                              imageUrl: HttpClient.s3BaseUrl +
+                                  selectedMembers[index]['user']['avatar_url'],
+                              placeholder: (context, url) =>
+                                  CircularProgressIndicator(),
+                            ),
+                          ),
+                          title: Text(selectedMembers[index]['user']['name']),
+                          subtitle:
+                              Text(selectedMembers[index]['user']['email']),
+                          trailing: IconButton(
+                            icon: Icon(Icons.close),
+                            onPressed: () {
+                              selectedMembers.removeAt(index);
+                            },
+                          ),
                         ),
-                      ),
-                      title: Text(selectedMembers[index]['user']['name']),
-                      subtitle: Text(selectedMembers[index]['user']['email']),
-                      trailing: IconButton(
-                        icon:  Icon(Icons.close),
-                        onPressed: () {
-                          selectedMembers.removeAt(index);
-                        },
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          )),
+                      );
+                    },
+                  ),
+                ),
+              )),
         ],
       ),
       bottomNavigationBar: Padding(
-        padding: EdgeInsets.symmetric(vertical: 10,horizontal: 16),
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
         child: Container(
-          height: 44,
-          child: Buttons.yellowTextIconButton(onPressed: (){
-            saveMeeting();
-          }, icon: Icons.video_call_outlined,label: 'create session')
-        ),
+            height: 44,
+            child: Buttons.yellowTextIconButton(
+                onPressed: () {
+                  saveMeeting();
+                },
+                icon: Icons.video_call_outlined,
+                label: 'create session')),
       ),
     );
   }

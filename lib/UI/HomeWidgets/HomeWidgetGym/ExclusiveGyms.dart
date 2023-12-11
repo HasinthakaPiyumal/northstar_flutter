@@ -19,15 +19,33 @@ class ExclusiveGyms extends StatelessWidget {
   Widget build(BuildContext context) {
     RxBool ready = false.obs;
     RxList gyms = [].obs;
+    RxList allGyms = [].obs;
 
     RxString country = "".obs;
     RxString countryName = "".obs;
+    RxList countryList = [].obs;
 
     Future<List> searchGyms(String pattern) async {
       Map res = await httpClient.searchGyms(pattern, 'exclusive');
       gyms.value = res['data'];
-      ready.value = true;
       print(res['data']);
+      print('value----------');
+      if(pattern==''){
+        allGyms.value = res['data'];
+
+        List tempList = [];
+        res['data'].forEach((value) {
+          String isoCode = value["gym_country"];
+          if (tempList.contains(isoCode)) {
+            tempList.add(isoCode);
+          }
+        });
+        countryList.value = tempList;
+        print("setting country list");
+        print(tempList);
+      }
+
+      ready.value = true;
       return [];
     }
 
@@ -52,7 +70,9 @@ class ExclusiveGyms extends StatelessWidget {
       showDialog(
         context: context,
         builder: (context) => Theme(
-          data: Theme.of(context).copyWith(dialogBackgroundColor: Get.isDarkMode?AppColors.primary2Color:Colors.white),
+          data: Theme.of(context).copyWith(
+              dialogBackgroundColor:
+                  Get.isDarkMode ? AppColors.primary2Color : Colors.white),
           child: Container(
             height: Get.height / 2,
             child: CountryPickerDialog(
@@ -60,7 +80,16 @@ class ExclusiveGyms extends StatelessWidget {
               searchCursorColor: colors.Colors().deepYellow(1),
               searchInputDecoration: InputDecoration(hintText: 'Search...'),
               isSearchable: true,
-
+              itemFilter: (c) {
+                List tempList = [];
+                allGyms.forEach((value) {
+                  String isoCode = value["gym_country"];
+                  if (!tempList.contains(isoCode)) {
+                    tempList.add(isoCode);
+                  }
+                });
+                return tempList.contains(c.isoCode);
+              },
               title: Padding(
                 padding: EdgeInsets.only(bottom: 10),
                 child: Row(
@@ -81,10 +110,9 @@ class ExclusiveGyms extends StatelessWidget {
                 countryName.value = c.name!;
 
                 await searchGyms('');
-                gyms.value = gyms.value
+                gyms.value = gyms
                     .where((gym) => gym['gym_country'] == country.value)
                     .toList();
-                print(gyms.value);
               },
               itemBuilder: _buildDropdownItem,
             ),
@@ -194,7 +222,6 @@ class ExclusiveGyms extends StatelessWidget {
                 ? ListView.builder(
                     itemCount: gyms.length,
                     itemBuilder: (_, index) {
-                      print(gyms[index]);
                       return Container(
                         padding:
                             EdgeInsets.symmetric(horizontal: 16, vertical: 2),
@@ -203,7 +230,9 @@ class ExclusiveGyms extends StatelessWidget {
                           elevation: 0,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
-                          color: Get.isDarkMode?AppColors.primary2Color:Colors.white,
+                          color: Get.isDarkMode
+                              ? AppColors.primary2Color
+                              : Colors.white,
                           child: InkWell(
                               onTap: () {
                                 Get.to(() => GymView(gymObj: gyms[index]));

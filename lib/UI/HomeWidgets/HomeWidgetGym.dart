@@ -64,6 +64,7 @@ class HomeWidgetGym extends StatelessWidget {
       Map res = await httpClient.getComGymSchedules();
       if (res['code'] == 200) {
         myBookings.addAll(res['data']);
+        print(res);
       }
     }
 
