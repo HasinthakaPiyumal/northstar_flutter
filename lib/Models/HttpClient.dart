@@ -524,6 +524,18 @@ class HttpClient {
       "data": response.data,
     };
   }
+  //Get Exclusive Gym Unconfirmed Bookings for service
+  Future<Map> getUnconfirmedBookingsForService(gymID) async {
+    Response response =
+        await post('/fitness/exclusive-gyms/actions/get-unconfirmed-bookings', {
+      "user_id": authUser.id,
+      "service_id": gymID,
+    });
+    return {
+      "code": response.statusCode,
+      "data": response.data,
+    };
+  }
 
   Future<Map> deleteUnconfirmedBookings(id) async {
     Response response = await post(
@@ -534,10 +546,28 @@ class HttpClient {
       "data": response.data,
     };
   }
+  Future<Map> deleteUnconfirmedBookingsForService(id) async {
+    Response response = await post(
+        '/fitness/exclusive-gyms/actions/delete-unconfirmed-booking',
+        {"id": id});
+    return {
+      "code": response.statusCode,
+      "data": response.data,
+    };
+  }
 
   Future<Map> deleteAllUnconfirmedBookings() async {
     Response response = await post(
-        '/fitness/exclusive-gyms/actions/delete-all-unconfirmed-schedule',
+        '/fitness/exclusive-gyms/actions/delete-all-unconfirmed-booking',
+        {"user_id": authUser.id});
+    return {
+      "code": response.statusCode,
+      "data": response.data,
+    };
+  }
+  Future<Map> deleteAllUnconfirmedBookingsForService() async {
+    Response response = await post(
+        '/fitness/exclusive-gyms/actions/delete-all-unconfirmed-booking',
         {"user_id": authUser.id});
     return {
       "code": response.statusCode,
@@ -568,12 +598,44 @@ class HttpClient {
       "data": response.data,
     };
   }
+  Future<Map> makeAScheduleForService(
+      serviceID, clientIDs, DateTime startTime, endTime, int amount) async {
+    print({
+      "service_id": serviceID,
+      "trainer_id": authUser.id,
+      "client_ids": clientIDs,
+      "start_time": startTime.toString(),
+      "end_time": endTime.toString()
+    });
+    Response response =
+        await post('/fitness/exclusive-gyms/actions/new-booking', {
+      "gym_id": serviceID,
+      "client_ids": clientIDs,
+      "start_time": startTime.toString(),
+      // "end_time": endTime.toString()
+    });
+    return {
+      "code": response.statusCode,
+      "data": response.data,
+    };
+  }
 
   Future<Map> confirmSchedules(scheduleIds, num amount, int gymID) async {
     Response response = await post('/exclusive-gyms/pay-now', {
       "amount": amount,
       "trainer_id": authUser.id,
       "gym_id": gymID,
+      "schedule_ids": scheduleIds
+    });
+    return {
+      "code": response.statusCode,
+      "data": response.data,
+    };
+  }
+  Future<Map> confirmSchedulesForService(scheduleIds, num amount, int gymID) async {
+    Response response = await post('/gym-service/pay-now', {
+      "amount": amount,
+      "service_id": gymID,
       "schedule_ids": scheduleIds
     });
     return {

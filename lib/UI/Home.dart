@@ -36,6 +36,7 @@ import '../Styles/AppColors.dart';
 import 'HomeWidgets/HomeWidgetDoctors.dart';
 import 'HomeWidgets/HomeWidgetProActive.dart';
 import 'HomeWidgets/HomeWidgetTherapy.dart';
+import 'HomeWidgets/HomeWidgetVendingMachine.dart';
 import 'SharedWidgets/WatchDataWidget.dart';
 
 class Home extends StatelessWidget {
@@ -293,6 +294,18 @@ class Home extends StatelessWidget {
                         ],
                       ))
                   : SizedBox(),
+              authUser.role == 'trainer'
+                  ? Container(
+                      padding: const EdgeInsets.all(8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          homeWidgetButton(() {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetVendingMachine()));
+                          }, 'vending', 'Vending Machine'),
+                        ],
+                      ))
+                  : SizedBox(),
               authUser.role == 'client'
                   ? Container(
                       width: Get.width,
@@ -398,6 +411,9 @@ class Home extends StatelessWidget {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => Therapy()));
                             }
                           }, 'therapy', 'Physiotherapy'),
+                          homeWidgetButton(() {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetVendingMachine()));
+                          }, 'vending', 'Vending Machine'),
                         ],
                       ))
                   : SizedBox(),

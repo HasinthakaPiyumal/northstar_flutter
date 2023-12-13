@@ -10,6 +10,7 @@ import 'package:north_star/Styles/ButtonStyles.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetGym/GymView.dart';
+import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 
 class Services extends StatelessWidget {
@@ -38,11 +39,14 @@ class Services extends StatelessWidget {
       });
       print('gym services 1 $gyms');
       gyms.value = tempGyms;
+      print('gym services 1.5 $gyms');
+      print(pattern=='');
+      print(pattern);
       if (pattern == '') {
         allGyms.value = tempGyms;
       }
       ready.value = true;
-      print('gym services 2 $tempGyms');
+      print('gym services 2 $allGyms');
       return [];
     }
 
@@ -217,7 +221,7 @@ class Services extends StatelessWidget {
               )),
           Expanded(
             child: Obx(() => ready.value
-                ? ListView.builder(
+                ? gyms.length>0?ListView.builder(
                     itemCount: gyms.length,
                     itemBuilder: (_, index) {
                       print(gyms[index]);
@@ -272,9 +276,9 @@ class Services extends StatelessWidget {
                         ),
                       );
                     },
-                  )
-                : Center(child: CircularProgressIndicator())),
-          )
+                  ):LoadingAndEmptyWidgets.emptyWidget()
+                : LoadingAndEmptyWidgets.loadingWidget(),
+          ))
         ],
       ),
     );
