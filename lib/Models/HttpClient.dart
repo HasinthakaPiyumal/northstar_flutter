@@ -15,15 +15,15 @@ class HttpClient {
   static String buildInfo = '9.0.0 Build 1';
 
   static String s3BaseUrl =
-      'https://north-star-storage.s3.ap-southeast-1.amazonaws.com/avatars/';
+      'https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/avatars/';
   static String s3DocSealBaseUrl =
-      'https://north-star-storage.s3.ap-southeast-1.amazonaws.com/seals/';
+      'https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/seals/';
   static String s3DocSignatureBaseUrl =
-      'https://north-star-storage.s3.ap-southeast-1.amazonaws.com/signatures/';
+      'https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/signatures/';
   static String s3LabReportsBaseUrl =
-      'https://north-star-storage.s3.ap-southeast-1.amazonaws.com/lab-reports/';
+      'https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/lab-reports/';
   static String s3GymGalleriesBaseUrl =
-      'https://north-star-storage.s3.ap-southeast-1.amazonaws.com/gym-galleries/';
+      'https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/gym-galleries/';
   // static String s3ResourcesBaseUrl =
   //     'https://north-star-storage.s3.ap-southeast-1.amazonaws.com/';
       static String s3ResourcesBaseUrl =
@@ -599,17 +599,16 @@ class HttpClient {
     };
   }
   Future<Map> makeAScheduleForService(
-      serviceID, clientIDs, DateTime startTime, endTime, int amount) async {
+      serviceID, clientIDs, DateTime startTime) async {
     print({
       "service_id": serviceID,
       "trainer_id": authUser.id,
       "client_ids": clientIDs,
       "start_time": startTime.toString(),
-      "end_time": endTime.toString()
     });
     Response response =
         await post('/fitness/exclusive-gyms/actions/new-booking', {
-      "gym_id": serviceID,
+      "service_id": serviceID,
       "client_ids": clientIDs,
       "start_time": startTime.toString(),
       // "end_time": endTime.toString()
@@ -636,7 +635,7 @@ class HttpClient {
     Response response = await post('/gym-service/pay-now', {
       "amount": amount,
       "service_id": gymID,
-      "schedule_ids": scheduleIds
+      "booking_ids": scheduleIds
     });
     return {
       "code": response.statusCode,
@@ -829,6 +828,14 @@ class HttpClient {
   //Payments.
   Future<Map> subscribeNow(Map data) async {
     Response response = await post('/payments/subscribe-now', data);
+    return {
+      "code": response.statusCode,
+      "data": response.data,
+    };
+  }
+  //Payments.
+  Future<Map> proMemberActivate(Map data) async {
+    Response response = await post('/pro-member/activate', data);
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -1419,6 +1426,22 @@ class HttpClient {
   }
 
   //ECOM Related
+  Future<Map> purchaseCart() async {
+    Response response = await get('/cart/pay-now');
+    return {
+      "code": response.statusCode,
+      "data": response.data,
+    };
+  }
+  //ECOM Related
+  Future<Map> getOrderHistory() async {
+    Response response = await get('/ecom/products/get/user/order');
+    return {
+      "code": response.statusCode,
+      "data": response.data,
+    };
+  }
+  //ECOM Related
   Future<Map> getMyCart() async {
     Response response = await get('/ecom/cart/actions/get');
     return {
@@ -1655,6 +1678,10 @@ class HttpClient {
 
   Future<Map> createFamilyLink(dynamic data) async {
     Response response = await post('/family-link/actions/add', data);
+    return {"code": response.statusCode, "data": response.data};
+  }
+  Future<Map> getFaqs() async {
+    Response response = await get('/faq/get/all');
     return {"code": response.statusCode, "data": response.data};
   }
 }

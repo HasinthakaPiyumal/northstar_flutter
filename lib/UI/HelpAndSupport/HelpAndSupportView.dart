@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class HelpAndSupportView extends StatelessWidget {
-  const HelpAndSupportView({Key? key}) : super(key: key);
+  final subFaq;
+  HelpAndSupportView(this.subFaq, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

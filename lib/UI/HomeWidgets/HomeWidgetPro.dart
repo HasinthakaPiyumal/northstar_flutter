@@ -36,24 +36,7 @@ class HomeWidgetPro extends StatelessWidget {
     RxInt selectedPackage = 0.obs;
 
     RxDouble couponValue = 0.0.obs;
-    RxInt couponPercentage = 0.obs;
-
-    TextEditingController couponController = new TextEditingController();
-    void applyCoupon() async {
-      if (couponPercentage.value > 0) {
-        couponPercentage.value = 0;
-        return;
-      }
-      const data = {
-        "code": "Hello test",
-        "coupon_type": 2,
-        "coupon_type_id": 18
-      };
-      var res = await httpClient.couponApply(data);
-      if (couponController.text.toLowerCase() == "excode") {
-        couponPercentage.value = 10;
-      }
-    }
+    RxString couponCode = "--".obs;
 
     void getPlansList() async {
       ready.value = false;
@@ -89,7 +72,7 @@ class HomeWidgetPro extends StatelessWidget {
       Map res = await httpClient.subscribeNow({
         'months': months,
         'user_id': authUser.id,
-        'amount': getPlanPrice(plan)
+        'amount': getPlanPrice(plan) - couponValue.value
       });
       print('printing price ${getPlanPrice(plan)}');
       print(res);
@@ -106,6 +89,7 @@ class HomeWidgetPro extends StatelessWidget {
 
     void confirmAndPay(Map plan) async {
       Map res = await httpClient.getWallet();
+      print(plan);
 
       if (res['code'] == 200) {
         print(res);
@@ -164,6 +148,31 @@ class HomeWidgetPro extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
+                        'Discount',
+                        style: TypographyStyles.normalText(
+                            16, Themes.mainThemeColorAccent.shade300),
+                      ),
+                      Text(
+                        'MVR ${couponValue.value}',
+                        style: TypographyStyles.boldText(
+                          16,
+                          Get.isDarkMode
+                              ? Themes.mainThemeColorAccent.shade100
+                              : colors.Colors().lightBlack(1),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 4),
+                  Divider(
+                    thickness: 1,
+                    color:
+                        Themes.mainThemeColorAccent.shade300.withOpacity(0.2),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
                         'Total To be Paid',
                         style: TypographyStyles.normalText(
                             16, Themes.mainThemeColorAccent.shade300),
@@ -180,12 +189,6 @@ class HomeWidgetPro extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 8),
-                  Divider(
-                    thickness: 1,
-                    color:
-                        Themes.mainThemeColorAccent.shade300.withOpacity(0.2),
-                  ),
-
                   SizedBox(height: 30),
                   RichText(
                     textAlign: TextAlign.center,
@@ -229,31 +232,12 @@ class HomeWidgetPro extends StatelessWidget {
                   SizedBox(
                     height: 10,
                   ),
-                  // Row(
-                  //   children: [
-                  //     Expanded(
-                  //       child: TextField(
-                  //         readOnly: couponPercentage.value>0,
-                  //         controller: couponController,
-                  //         decoration: InputDecoration(
-                  //           label: Text("Coupon Code"),
-                  //           hintText: "EXCODE",
-                  //         ),
-                  //
-                  //       ),
-                  //     ),
-                  //     SizedBox(width: 10,),
-                  //     Container(height:48,child: ElevatedButton(onPressed: applyCoupon, child: Text(couponPercentage.value>0?"clear":"apply",style: TextStyle(
-                  //       color: Color(0xFF1B1F24),
-                  //       fontSize: 20,
-                  //       fontFamily: 'Bebas Neue',
-                  //       fontWeight: FontWeight.w400,
-                  //       height: 0,
-                  //     ),),))
-                  //   ],
-                  // ),
                   CouponApply(
-                      type: 1, typeId: plan['id'], couponValue: couponValue)
+                      type: 1,
+                      typeId: plan['id'],
+                      couponCode: couponCode,
+                      couponValue: couponValue,
+                      payingAmount: plan['price'])
                 ],
               )),
           actions: [
@@ -263,9 +247,23 @@ class HomeWidgetPro extends StatelessWidget {
                 onPressed: () async {
                   print(_current.value);
                   print(plansList[_current.value]);
-                  if (plansList[_current.value]['real_price'] / 100 <=
+                  if (plansList[_current.value]['real_price'] <=
                       walletData['balance']) {
-                    List temp = [];
+                    var data = {
+                      'planId':plansList[_current.value]['id'],
+                      'couponCode': '${couponCode.value}',
+                      'paymentType':1
+                    };
+                    Map res = await httpClient.proMemberActivate(data);
+                    print(res);
+                    if(res['code']==200){
+                      Get.to(()=>Layout());
+                      showSnack('Successfully Subscribed',
+                          'You have successfully upgraded your membership plan.');
+                    }else{
+                      showSnack('Error',
+                          'Something went wrong.');
+                    }
                   } else {
                     showSnack('Insufficient Balance',
                         'You do not have sufficient balance to pay for this booking.');
@@ -707,24 +705,6 @@ class HomeWidgetPro extends StatelessWidget {
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Visibility(
-                                  visible: couponPercentage.value > 0,
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 8.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "Coupon Applied",
-                                          style: TypographyStyles.text(16),
-                                        ),
-                                        Text("10% Discount",
-                                            style: TypographyStyles.title(16)),
-                                      ],
-                                    ),
-                                  )),
                               SizedBox(
                                 height: 10,
                               ),
@@ -789,11 +769,6 @@ class HomeWidgetPro extends StatelessWidget {
                                     if (plansList[selectedPackage.value]
                                             ['price'] >
                                         0) {
-                                      couponValue.value = getPlanPrice(
-                                              plansList[
-                                                  selectedPackage.value]) *
-                                          couponPercentage.value /
-                                          100;
                                       confirmAndPay(
                                           plansList[selectedPackage.value]);
                                     } else {

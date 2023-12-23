@@ -288,7 +288,7 @@ class _LayoutState extends State<Layout> {
                   authUser.role == 'trainer' ? Members() : UserCalories(),
                   authUser.role == 'trainer'
                       ? Wallet()
-                      : UserViewHealth(userID: authUser.id),
+                      : UserViewHealth(userID: authUser.id,data:{}),
                   authUser.role == 'trainer'
                       ? TrainerProfile()
                       : ClientProfile(),

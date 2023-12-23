@@ -83,7 +83,7 @@ class Buttons {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(icon,color:AppColors.textOnAccentColor),
+                  Icon(icon,color:textColor),//AppColors.textOnAccentColor),
                   SizedBox(width: 5,),
                   Text(
                     label,

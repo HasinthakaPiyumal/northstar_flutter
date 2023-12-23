@@ -54,7 +54,8 @@ class StoreItemView extends StatelessWidget {
                   children: [
                     Text(product['name'], style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),),
                     SizedBox(height: 16,),
-                    Text(authUser.user['currency'] + '. ' + product['price'].toString(),style: TypographyStyles.boldText(20, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),),
+                    // Text(authUser.user['currency'] + '. ' + product['price'].toString(),style: TypographyStyles.boldText(20, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),),
+                    Text( 'MVR ' + product['price'].toString(),style: TypographyStyles.boldText(20, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),),
                   ],
                 ),
               ),

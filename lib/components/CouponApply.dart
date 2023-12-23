@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Models/HttpClient.dart';
+import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Utils/PopUps.dart';
 import 'package:north_star/components/MaterialBottomSheet.dart';
 
@@ -9,8 +10,16 @@ import 'Buttons.dart';
 class CouponApply extends StatelessWidget {
   int type = 1;
   int typeId = 0;
+  RxString couponCode = "".obs;
   RxDouble couponValue = 0.0.obs;
-  CouponApply({required this.type,required this.typeId,required this.couponValue});
+  dynamic payingAmount = 0;
+
+  CouponApply(
+      {required this.type,
+      required this.typeId,
+      required this.couponValue,
+      required this.payingAmount, required this.couponCode});
+
   TextEditingController coupon = new TextEditingController();
 
   FocusNode couponFn = FocusNode();
@@ -19,17 +28,29 @@ class CouponApply extends StatelessWidget {
     var data = {
       "code": coupon.text,
       "coupon_type": type,
-      "coupon_type_id":typeId
+      "coupon_type_id": typeId
     };
     dynamic response = await httpClient.couponApply(data);
 
     print(data);
     print(response);
-    if(response['code']==200){
-      if(response['data'][0]['status']){
+    if (response['code'] == 200) {
+      if (response['data'] != null) {
+        double couponPercentage = double.parse(
+            (response['data']['discount_percentage']).toStringAsFixed(2));
+        double maximumSaving = double.parse(
+            (response['data']['max_value']).toStringAsFixed(2));
+        double saving = double.parse((payingAmount * couponPercentage/100).toStringAsFixed(2));
+        if(saving>maximumSaving){
+          saving = maximumSaving;
+        }
+        couponValue.value = saving;
+        couponCode.value = response['data']['code'];
+        print(couponValue.value);
+        Get.back();
         showSnack("Success", 'Successfully applied coupon');
       }
-    }else{
+    } else {
       showSnack("Coupon Error", '${response['data'][0]['message']}');
       return;
     }
@@ -44,11 +65,12 @@ class CouponApply extends StatelessWidget {
             controller: coupon,
             focusNode: couponFn,
             decoration: InputDecoration(
-              labelText: 'Coupon',
-              prefixIcon: Icon(Icons.confirmation_number)
-            ),
+                labelText: 'Coupon',
+                prefixIcon: Icon(Icons.confirmation_number)),
           ),
-          SizedBox(height: 20,),
+          SizedBox(
+            height: 20,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -77,17 +99,18 @@ class CouponApply extends StatelessWidget {
     Future.delayed(Duration(milliseconds: 100), () {
       couponFn.requestFocus();
     });
-
   }
 
   @override
   Widget build(BuildContext context) {
     return Buttons.yellowTextIconButton(
-        icon: Icons.confirmation_number,
+        icon: couponValue.value > 0 ?Icons.clear:Icons.confirmation_number,
+        backgroundColor: couponValue.value > 0 ?Colors.redAccent:AppColors.accentColor ,
+        textColor: couponValue.value > 0 ?Colors.white:AppColors.textOnAccentColor,
         onPressed: () {
-          open();
+          couponValue.value > 0 ? couponValue.value = 0:open() ;
         },
-        label: "Apply Coupon",
+        label: couponValue.value > 0 ? "Remove coupon" : "Apply Coupon",
         width: Get.width);
   }
 }

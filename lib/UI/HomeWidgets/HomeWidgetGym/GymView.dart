@@ -94,16 +94,17 @@ class GymView extends StatelessWidget {
                         SizedBox(height: 20),
                         Row(
                           children: [
-                            Text(gymObj["gym_services"]["name"],
+                            Text('${gymObj["gym_services"]["name"].toString().capitalizeFirst}',
                                 style: TypographyStyles.title(20)),
                           ],
                         ),
                         Row(
                           children: [
-                            Text(gymObj["gym_services"]["description"],
+                            Text('${gymObj["gym_services"]["description"].toString().capitalizeFirst}',
                                 style: TypographyStyles.text(16)),
                           ],
                         ),
+                        SizedBox(height: 8),
                         Container(
                           width: Get.width,
                           height: 200, // Optionally set the height if needed

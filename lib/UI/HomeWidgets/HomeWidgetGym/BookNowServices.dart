@@ -10,6 +10,7 @@ import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetGym/ServiceBooking.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetGym/ServiceBooking/GymDateAndTime.dart';
+import 'package:north_star/UI/HomeWidgets/HomeWidgetGym/ServiceBooking/SelectGymBookingDates.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 
 import '../../../components/Buttons.dart';
@@ -192,8 +193,8 @@ class BookNowServices extends StatelessWidget {
                       selectedMembers.length,
                       (index) => selectedMembers[index]['user_id']);
 
-                  Get.to(() => GymDateAndTime(
-                      gymObj: gymObj, clientIDs: selectedMemberIds));
+                  Get.to(() => SelectGymBookingDates(
+                      gymObj: gymObj, clientIds: selectedMemberIds));
                   /* Get.to(()=>GymTimeAndPay(
                     gymObj: gymObj,
                     clientIds: selectedMemberIds,

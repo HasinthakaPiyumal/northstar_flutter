@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -14,6 +15,7 @@ import 'package:north_star/UI/HomeWidgets/HomeWidgetStore/StoreCart.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetStore/StoreItemView.dart';
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../Styles/AppColors.dart';
 
@@ -25,7 +27,6 @@ class HomeWidgetStore extends StatelessWidget {
     RxList<dynamic> cat = RxList<dynamic>([
       {'id': 0, 'name': 'All','image_path':'all'}
     ]);
-
     RxBool ready = false.obs;
     RxList products = [].obs;
 
@@ -68,7 +69,7 @@ class HomeWidgetStore extends StatelessWidget {
               onPressed: () {
                 Get.to(MyOrders());
               },
-              child: Text('My Orders'))
+              child: Text('History'))
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -342,8 +343,8 @@ class HomeWidgetStore extends StatelessWidget {
                                                 padding:
                                                     EdgeInsets.only(bottom: 10),
                                                 child: Text(
-                                                  authUser.user['currency'] +
-                                                      ' ' +
+                                                  // authUser.user['currency'] +
+                                                      'MVR ' +
                                                       products[index]['price']
                                                           .toString(),
                                                   style: TypographyStyles.title(

@@ -7,7 +7,7 @@ import 'package:north_star/Models/NSNotification.dart';
 import 'package:north_star/Styles/SignUpStyles.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
-import 'package:north_star/UI/HomeWidgets/HomeWidgetGym/ExclusiveGymBooking/GymDateAndTime.dart';
+import 'package:north_star/UI/HomeWidgets/HomeWidgetGym/ServiceBooking/GymDateAndTime.dart';
 import 'package:north_star/UI/Layout.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/Utils/PopUps.dart';
@@ -30,31 +30,23 @@ class SelectGymBookingDates extends StatelessWidget {
     RxMap walletData = {}.obs;
     RxList bookings = [].obs;
     RxBool ready = true.obs;
-    RxInt totalHours = 0.obs;
-
-    void getTotalHours() {
-      int temp = 0;
-      bookings.forEach((element) {
-        temp += DateTime.parse(element['end_time'])
-            .difference(DateTime.parse(element['start_time']))
-            .inHours;
-      });
-      totalHours.value = temp;
-    }
+    RxDouble totalPrice = 0.0.obs;
 
     void getUnconfirmedBookings() async {
       print('GYM obj ==> $gymObj');
-      Map res = await httpClient.getUnconfirmedBookingsForService(gymObj['user_id']);
+      Map res = await httpClient.getUnconfirmedBookingsForService(gymObj['gym_services']['id']);
       if (res['code'] == 200) {
         print(res['data']);
         bookings.value = res['data'];
-        getTotalHours();
+        totalPrice.value = double.parse((bookings.length  *clientIds.length * gymObj['gym_services']['price']).toStringAsFixed(2));
+        print(gymObj['gym_services']);
+        print("(gymObj['gym_services']['price']).toStringAsFixed(2)");
       } else {
         print(res);
       }
     }
 
-    void payByCard(int amount) async {
+    void payByCard(double amount) async {
       ready.value = false;
       Map res = await httpClient.topUpWallet({
         'amount': amount,
@@ -76,15 +68,12 @@ class SelectGymBookingDates extends StatelessWidget {
 
         bookings.forEach((bookingElement) {
           DateTime stTime = DateTime.parse(bookingElement['start_time']);
-          DateTime enTime = DateTime.parse(bookingElement['end_time']);
 
-          Duration duration = enTime.difference(stTime);
-          int totalHours = duration.inHours;
 
           String formattedStartTime = DateFormat('h:mm a').format(stTime); // Format the start time as '12:11 AM'
           String formattedDate = DateFormat('EEEE, MMM d').format(stTime); // Format the date as 'Saturday, Oct 27'
 
-          String notes = "Your $totalHours-hour gym session starts at $formattedStartTime on $formattedDate.";
+          String notes = "New Service booked for you at $formattedStartTime on $formattedDate.";
           print('bookingElement-->$bookingElement');
           httpClient.saveTodo({
             'user_id': element,
@@ -161,7 +150,7 @@ class SelectGymBookingDates extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Total Hours',
+                    'For',
                     style: TypographyStyles.normalText(
                       16,
                       Get.isDarkMode
@@ -170,7 +159,7 @@ class SelectGymBookingDates extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '${totalHours.value}',
+                    '${clientIds.length} person',
                     style: TypographyStyles.boldText(
                       16,
                       Get.isDarkMode
@@ -203,7 +192,7 @@ class SelectGymBookingDates extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'MVR ${totalHours.value * gymObj['hourly_rate']}',
+                    'MVR ${totalPrice.value}',
                     style: TypographyStyles.boldText(
                       20,
                       Get.isDarkMode
@@ -260,7 +249,7 @@ class SelectGymBookingDates extends StatelessWidget {
               width: Get.width,
               child: ElevatedButton(
                 onPressed: () async {
-                  if (totalHours.value * gymObj['hourly_rate'] <=
+                  if (totalPrice.value <=
                       walletData.value['balance']) {
                     List temp = [];
                     bookings.forEach((element) {
@@ -268,7 +257,7 @@ class SelectGymBookingDates extends StatelessWidget {
                     });
                     Map res = await httpClient.confirmSchedulesForService(
                       temp,
-                      totalHours.value * gymObj['hourly_rate'],
+                      totalPrice.value,
                       gymObj['user_id'],
                     );
                     if (res['code'] == 200) {
@@ -317,8 +306,7 @@ class SelectGymBookingDates extends StatelessWidget {
               padding: EdgeInsets.only(top: 3),
               child: ElevatedButton(
                 onPressed: () {
-                  payByCard(int.parse(
-                      '${totalHours.value * gymObj['hourly_rate'] * 100}'));
+                  payByCard(totalPrice.value);
                 },
                 style: SignUpStyles.selectedButton(),
                 child: Obx(() => ready.value
@@ -507,7 +495,7 @@ class SelectGymBookingDates extends StatelessWidget {
                                         height: 8,
                                       ),
                                       Text(
-                                        "${DateFormat('HH:mm').format(DateTime.parse(bookings[index]['start_time']))} to ${DateFormat('HH:mm').format(DateTime.parse(bookings[index]['end_time']))}",
+                                        "${DateFormat('HH:mm').format(DateTime.parse(bookings[index]['start_time']))}",
                                         style: TypographyStyles.boldText(
                                             16,
                                             Get.isDarkMode
@@ -581,7 +569,7 @@ class SelectGymBookingDates extends StatelessWidget {
                               children: <TextSpan>[
                                 TextSpan(
                                   text:
-                                      ' ${(totalHours.value * gymObj['hourly_rate']).toStringAsFixed(2)}',
+                                      ' ${totalPrice.value}',
                                   style: TypographyStyles.boldText(
                                       24,
                                       Get.isDarkMode

@@ -182,7 +182,7 @@ class UserView extends StatelessWidget {
                     Expanded(
                       child: TabBarView(
                         children: [
-                          UserViewHealth(userID: data['user']['id']),
+                          UserViewHealth(userID: data['user']['id'],data: data['user']),
                           UserViewBio(data: data['user']),
                           UserViewDiet(data: data['user']),
                           UserViewProgress(userId: data['user']['id']),

@@ -15,7 +15,8 @@ import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/Utils/PopUps.dart';
 
 class UserViewHealth extends StatelessWidget {
-  const UserViewHealth({Key? key, required this.userID}) : super(key: key);
+late Map data = {};
+  UserViewHealth({Key? key, required this.userID, required this.data}) : super(key: key);
   final int userID;
 
   @override
@@ -76,7 +77,6 @@ class UserViewHealth extends StatelessWidget {
 
     void getUserHealthData() async {
       Map res = await httpClient.getClientHealthData(userID);
-      print('Printing res --> $res');
       try {
         if (res['code'] == 200) {
           healthData.value = res['data'];
@@ -815,9 +815,10 @@ class UserViewHealth extends StatelessWidget {
       );
     }
 
-    print('Health data state-->${healthData.isEmpty}');
     String bodyFatImage(String bodyFatType) {
-      if (authUser.user['gender'] == 'male') {
+      dynamic gender = healthData.isNotEmpty?data['gender']:authUser.user['gender'];
+
+      if ( gender== 'male') {
         if (bodyFatType == 'Above Average') {
           return 'assets/images/men-body-type-3.png';
         } else if (bodyFatType == 'Good') {
