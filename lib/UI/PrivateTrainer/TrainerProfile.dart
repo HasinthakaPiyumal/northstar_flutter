@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:country_currency_pickers/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:north_star/Controllers/WatchDataController.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
@@ -44,7 +45,6 @@ class _TrainerProfileState extends State<TrainerProfile> {
     void getProfile() async {
       ready.value = false;
       Map res = await httpClient.getMyProfile();
-
       if (res['code'] == 200) {
         data.value = res['data'];
         ready.value = true;
@@ -679,6 +679,9 @@ class _TrainerProfileState extends State<TrainerProfile> {
                                       SizedBox(height: 26),
                                       Text('Has Insurance',
                                           style: TypographyStyles.title(16)),
+                                      SizedBox(height: 26),
+                                      Text('Registered Date',
+                                          style: TypographyStyles.title(16)),
                                     ],
                                   ),
                                   Column(
@@ -734,6 +737,14 @@ class _TrainerProfileState extends State<TrainerProfile> {
                                           style:
                                               TypographyStyles.textWithWeight(
                                                   14, FontWeight.w400)),
+                                      SizedBox(height: 28),
+                                      Text(
+                                        DateFormat('yyyy-MM-dd').format(
+                                          DateTime.parse(data.value['trainer']['created_at']),
+                                        ),
+                                        style: TypographyStyles.textWithWeight(14, FontWeight.w400),
+                                      )
+
                                     ],
                                   ),
                                 ],

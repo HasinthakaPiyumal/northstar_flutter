@@ -16,8 +16,8 @@ class ButtonStyles {
   static ButtonStyle homeBtn() {
     return ElevatedButton.styleFrom(
       foregroundColor: Themes.mainThemeColor,
-      backgroundColor: Get.isDarkMode ? Color(0xff1E2630) : Colors.white,
-      shadowColor: Colors.black.withOpacity(0.6),
+      backgroundColor: Get.isDarkMode ? Color(0xFF1E2630) : Colors.white,
+      // shadowColor: Colors.black.withOpacity(0.6),
       elevation: 6,
       shape: RoundedRectangleBorder(
         side: BorderSide(width: 0.50, color: Colors.white),
@@ -44,7 +44,7 @@ class ButtonStyles {
 
   static ButtonStyle bigBlackButton() {
     return ElevatedButton.styleFrom(
-        // foregroundColor: Colors.white,
+        foregroundColor: Colors.white,
         // backgroundColor: Colors.black,
         backgroundColor: AppColors.accentColor,
         textStyle: TextStyle(

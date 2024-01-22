@@ -14,6 +14,8 @@ class NotificationsController {
   static RxList<NSNotification> notifications = RxList<NSNotification>([]);
   static RxBool ready = false.obs;
 
+  static int lastNotificationId = 0;
+
   static List<NSNotificationTypes> requestTypes = [
     NSNotificationTypes.ClientRequest,
     NSNotificationTypes.ClientRequestWeb,
@@ -119,7 +121,9 @@ class NotificationsController {
   }
 
   static void showNotificationsPrompt() {
-    if (getUnreadNotificationsCount() > 0) {
+    int currentLastNotificationId = notifications.first.id;
+    if (getUnreadNotificationsCount() > 0 && lastNotificationId!=currentLastNotificationId) {
+      lastNotificationId = currentLastNotificationId;
       Get.dialog(AlertDialog(
         titlePadding: EdgeInsets.zero,
         contentPadding: EdgeInsets.zero,

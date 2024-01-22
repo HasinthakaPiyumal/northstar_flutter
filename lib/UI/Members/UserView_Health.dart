@@ -816,6 +816,7 @@ late Map data = {};
     }
 
     String bodyFatImage(String bodyFatType) {
+
       dynamic gender = healthData.isNotEmpty?data['gender']:authUser.user['gender'];
 
       if ( gender== 'male') {

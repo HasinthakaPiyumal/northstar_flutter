@@ -5,6 +5,7 @@ import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:get/get_utils/src/extensions/string_extensions.dart';
+import 'package:intl/intl.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Styles/Themes.dart';
@@ -86,6 +87,8 @@ class ClientAccountInfo extends StatelessWidget {
                           SizedBox(height: 24),
                           Text('Country', style: TypographyStyles.text(16).copyWith(color: Themes.mainThemeColorAccent.shade300)),
                           SizedBox(height: 24),
+                          Text('Registered Date', style: TypographyStyles.text(16).copyWith(color: Themes.mainThemeColorAccent.shade300)),
+                          SizedBox(height: 24),
                         ],
                       ),
                       Column(
@@ -103,6 +106,10 @@ class ClientAccountInfo extends StatelessWidget {
                           SizedBox(height: 24),
                           Text(CountryPickerUtils.getCountryByIsoCode(data['user']['country_code']).name! , style: TypographyStyles.title(16)),
                           // Text(CountryPickerUtils.getCountryByIsoCode("ad").name! , style: TypographyStyles.title(16)),
+                          SizedBox(height: 24),
+                          Text( DateFormat('yyyy-MM-dd').format(
+                            DateTime.parse(data['user']['created_at']),
+                          ) , style: TypographyStyles.title(16)),
                           SizedBox(height: 24),
                         ],
                       ),

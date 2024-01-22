@@ -13,6 +13,7 @@ import 'package:get/get.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Plugins/HttpClient.dart';
+import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/UI/Members/IncomingVoiceCallUI.dart';
 import 'package:north_star/UI/SplashScreen.dart';
@@ -25,7 +26,7 @@ import 'package:uuid/uuid.dart';
 
 import 'Controllers/CallConrtoller.dart';
 import 'Controllers/FirebaseMessageController.dart';
-import 'Styles/AppColors.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 bool isLoggedIn = false;
 bool isDarkMode = true;
@@ -42,6 +43,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('en_US', null);
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitDown,
@@ -145,6 +147,9 @@ class NorthStar extends StatelessWidget {
 
     final themeProvider = Provider.of<ThemeProvider>(context);
     final themeData = themeProvider.getTheme();
+
+    print("Primary Color: ${ThemeAll().lightTheme.primaryColor}");
+    print("Scaffold Background Color: ${ThemeAll().lightTheme.scaffoldBackgroundColor}");
 
 
     return GetMaterialApp(

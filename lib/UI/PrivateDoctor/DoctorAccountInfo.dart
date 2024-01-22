@@ -4,6 +4,7 @@ import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:get/get_utils/src/extensions/string_extensions.dart';
+import 'package:intl/intl.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Styles/Themes.dart';
@@ -81,6 +82,8 @@ class DoctorAccountInfo extends StatelessWidget {
                           SizedBox(height: 24),
                           Text('Country', style: TypographyStyles.text(16).copyWith(color: Themes.mainThemeColorAccent.shade300)),
                           SizedBox(height: 24),
+                          Text('Registered Date', style: TypographyStyles.text(16).copyWith(color: Themes.mainThemeColorAccent.shade300)),
+                          SizedBox(height: 24),
                         ],
                       ),
                       Column(
@@ -99,6 +102,10 @@ class DoctorAccountInfo extends StatelessWidget {
                           Text(data['nic'], style: TypographyStyles.title(16)),
                           SizedBox(height: 24),
                           Text(data['country_code'], style: TypographyStyles.title(16)),
+                          SizedBox(height: 24),
+                          Text( DateFormat('yyyy-MM-dd').format(
+                            DateTime.parse(data['created_at']),
+                          ), style: TypographyStyles.title(16)),
                           SizedBox(height: 24),
                         ],
                       ),

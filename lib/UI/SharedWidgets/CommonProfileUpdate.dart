@@ -83,6 +83,8 @@ class CommonProfileUpdate extends StatelessWidget {
             ready.value = true;
             showSnack('Something went wrong!', 'please try again');
           }
+        }else{
+          showSnack('Profile Updated', 'Profile updated successfully');
         }
       } else {
         ready.value = true;
