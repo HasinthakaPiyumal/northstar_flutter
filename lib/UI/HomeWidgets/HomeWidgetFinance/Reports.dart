@@ -365,7 +365,7 @@ class Reports extends StatelessWidget {
                       Colors.green,
                       Colors.teal,
                     ],
-                    series: <ChartSeries>[
+                    series: [
                       SplineSeries<IncomeData, DateTime>(
                         dataSource: incomeChartData,
                         xValueMapper: (IncomeData data, _) => data.date,
@@ -477,7 +477,7 @@ class Reports extends StatelessWidget {
                     palette: const [
                       Colors.yellow,
                     ],
-                    series: <ChartSeries>[
+                    series: [
                       SplineSeries<TaxData, DateTime>(
                         dataSource: taxChartData,
                         xValueMapper: (TaxData data, _) => data.date,

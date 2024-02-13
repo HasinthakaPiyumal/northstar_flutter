@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:north_star/Styles/AppColors.dart';
 
 class Themes {
 

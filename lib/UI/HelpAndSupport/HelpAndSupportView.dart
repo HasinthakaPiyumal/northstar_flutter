@@ -1,27 +1,78 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:north_star/Models/HttpClient.dart';
+import 'package:north_star/Utils/PopUps.dart';
+import 'package:north_star/components/Buttons.dart';
 
-class HelpAndSupportView extends StatelessWidget {
+import '../../components/ImageUploader.dart';
+
+class HelpAndSupportView extends StatefulWidget {
   final subFaq;
   HelpAndSupportView(this.subFaq, {Key? key}) : super(key: key);
 
   @override
+  State<HelpAndSupportView> createState() => _HelpAndSupportViewState();
+}
+
+class _HelpAndSupportViewState extends State<HelpAndSupportView> {
+  late dynamic _imageFile = false;
+  TextEditingController descriptionController = TextEditingController();
+  @override
   Widget build(BuildContext context) {
+    print(widget.subFaq);
+    void addComplain() async{
+      dynamic data = {
+      'description': descriptionController.value,
+      'main_faqId': widget.subFaq['mainfaq_id'],
+      'sub_faqId': widget.subFaq['id'],
+      };
+      if(descriptionController.value ==""){
+        showSnack("Failed","Description can not be empty" );
+        return;
+      }
+
+      dynamic res = await httpClient.addHelpContact(data, _imageFile!=false?_imageFile:null);
+      print(res);
+      if(res['code']==200){
+        showSnack("Success", "Your submission recorded successfully");
+      }else{
+        showSnack("Failed","Something went wrong");
+      }
+
+    }
     return Scaffold(
       appBar: AppBar(
-        title: Text("Payment Method"),
+        title: Text('${widget.subFaq["title"]}'.capitalizeFirst.toString()),
       ),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(22),
-          child: Text(
-            "Payment methods are the channels through which customers can make transactions and complete purchases. In today's digital age, various payment options are available to cater to diverse preferences and needs. Common payment methods include credit and debit cards, bank transfers, mobile wallets, and digital payment platforms like PayPal and Venmo.\n\nThese methods offer flexibility and security, allowing users to choose the most convenient way to pay for products and services. Users can also store payment information securely for quicker and more efficient future transactions. Choosing the right payment method ensures a seamless and hassle-free shopping experience, making it essential for both businesses and consumers.",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w400,
-              height: 0,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children:[ Text(
+              widget.subFaq["description"],
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w400,
+                height: 0,
+              ),
             ),
+              SizedBox(height: 60,),
+              TextField(
+                maxLines: 6,
+                controller: descriptionController,
+              ),
+              SizedBox(height: 20,),
+              ImageUploader(handler: (img) {
+                setState(() {
+                  _imageFile = img;
+                });
+              }),
+              SizedBox(height: 20,),
+              Center(child: Buttons.yellowFlatButton(onPressed: addComplain,label: "Submit"))
+            ],
           ),
         ),
       ),

@@ -179,7 +179,7 @@ class UserViewProgress extends StatelessWidget {
                           legend: Legend(isVisible: true, position: LegendPosition.top),
                           primaryXAxis: CategoryAxis(),
                           tooltipBehavior: TooltipBehavior(enable: true),
-                          series: <ChartSeries>[
+                          series: [
                             LineSeries<BMIPIData, String>(
                               color: Colors.blue,
                               name: 'Height  (cm)',
@@ -236,7 +236,7 @@ class UserViewProgress extends StatelessWidget {
                           legend: Legend(isVisible: true, position: LegendPosition.top),
                           primaryXAxis: CategoryAxis(),
                           tooltipBehavior: TooltipBehavior(enable: true),
-                          series: <ChartSeries>[
+                          series: [
                             LineSeries<BMIPIData, String>(
                               color: Color(0xFF62e998),
                               name: 'BMI',
@@ -293,7 +293,7 @@ class UserViewProgress extends StatelessWidget {
                           legend: Legend(isVisible: true, position: LegendPosition.top),
                           primaryXAxis: CategoryAxis(),
                           tooltipBehavior: TooltipBehavior(enable: true),
-                          series: <ChartSeries>[
+                          series: [
                             LineSeries<MacroData, String>(
                               name: 'Calories (kcal)',
                               color: Color(0xFF5576E3),
@@ -343,7 +343,7 @@ class UserViewProgress extends StatelessWidget {
                           legend: Legend(isVisible: true, position: LegendPosition.top),
                           primaryXAxis: CategoryAxis(),
                           tooltipBehavior: TooltipBehavior(enable: true),
-                          series: <ChartSeries>[
+                          series: [
                             LineSeries<MacroData, String>(
                               name: 'Carbs (g)',
                               color: Color(0xFFF5BB1D),
@@ -408,7 +408,7 @@ class UserViewProgress extends StatelessWidget {
                           legend: Legend(isVisible: true, position: LegendPosition.top, height: "50%",),
                           primaryXAxis: CategoryAxis(),
                           tooltipBehavior: TooltipBehavior(enable: true),
-                          series: <ChartSeries>[
+                          series: [
                             LineSeries<MiscData, String>(
                               color: Colors.green,
                               width: 3,

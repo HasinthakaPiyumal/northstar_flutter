@@ -96,8 +96,8 @@ class HomeWidgetLabReports extends StatelessWidget {
             getLabReports();
           });
         },
-        label: Text("Add New"),
-        icon: Icon(Icons.add),
+        label: Text("Add New",style: TextStyle(color: AppColors.textOnAccentColor),),
+        icon: Icon(Icons.add,color: AppColors.textOnAccentColor,),
         backgroundColor: AppColors.accentColor,
         extendedPadding: EdgeInsets.symmetric(horizontal: 15,),
       ):null,
@@ -108,6 +108,7 @@ class HomeWidgetLabReports extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: InkWell(
+
                 borderRadius: BorderRadius.circular(12),
                 onTap: (){
                   showDialog(
@@ -176,7 +177,7 @@ class HomeWidgetLabReports extends StatelessWidget {
                 child: Card(
                   elevation: 0,
                   margin: EdgeInsets.zero,
-                  color: colors.Colors().darkGrey(1),
+                  color: AppColors.primary2Color,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -215,6 +216,7 @@ class HomeWidgetLabReports extends StatelessWidget {
                     itemCount: labReports.length,
                     itemBuilder: (context, index) {
                       return Card(
+                        color: Get.isDarkMode?AppColors.primary1Color:Colors.white,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8)
                         ),

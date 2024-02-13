@@ -44,7 +44,7 @@ class ButtonStyles {
 
   static ButtonStyle bigBlackButton() {
     return ElevatedButton.styleFrom(
-        foregroundColor: Colors.white,
+        foregroundColor: AppColors.textOnAccentColor,
         // backgroundColor: Colors.black,
         backgroundColor: AppColors.accentColor,
         textStyle: TextStyle(

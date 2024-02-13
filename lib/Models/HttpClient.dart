@@ -491,6 +491,17 @@ class HttpClient {
     };
   }
 
+  //Get Commercial gym Plans
+  Future<Map> getGymPlans(int id) async {
+    Response response =
+        await post('/commercial-gym/plan/list',{"id":id});
+    return {
+      "code": response.statusCode,
+      "data": response.data,
+    };
+  }
+
+
   Future<Map> searchGymServices(data) async {
     Response response =
         await post('/gyms/exclusive-services/search', {"search": ''});
@@ -1683,6 +1694,34 @@ class HttpClient {
   Future<Map> getFaqs() async {
     Response response = await get('/faq/get/all');
     return {"code": response.statusCode, "data": response.data};
+  }
+  Future<Map> addHelpContact(dynamic data, XFile? file) async {
+    late FormData form;
+    if (file != null) {
+      form = FormData.fromMap({
+        'description': data['description'],
+        'main_faqId': data['main_faqId'],
+        'sub_faqId': data['sub_faqId'],
+        "image": await MultipartFile.fromFile(file.path, filename: file.name),
+      });
+    } else {
+      print("object");
+      form = FormData.fromMap({
+        'description': data['description'],
+        'main_faqId': data['main_faqId'],
+        'sub_faqId': data['sub_faqId'],
+      });
+    }
+    print(form.fields);
+    try {
+      var response =
+      await dio.post('/faq/user/contact', data: form);
+      return {"code": response.statusCode, "data": response.data};
+    } on DioError catch (e) {
+      print('=====e.message');
+      print(e.response.toString());
+      return {"code": -1, "data": "Something went wrong",'error':e.response};
+    }
   }
 }
 

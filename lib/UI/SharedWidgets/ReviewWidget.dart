@@ -228,7 +228,7 @@ Widget reviewWidget(Map reviews, RxMap data) {
                   children: [
                     CircleAvatar(
                       radius: 18,
-                      backgroundImage : CachedNetworkImageProvider(HttpClient.s3BaseUrl + data.value['avatar_url']),
+                      backgroundImage : CachedNetworkImageProvider(HttpClient.s3BaseUrl + reviews['reviews'][index]['reviewer']['avatar_url']),
                     ),
                     SizedBox(width: 10,),
                     Text( reviews['reviews'][index]['reviewer']['name'],

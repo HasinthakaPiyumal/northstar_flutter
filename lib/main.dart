@@ -151,13 +151,16 @@ class NorthStar extends StatelessWidget {
     print("Primary Color: ${ThemeAll().lightTheme.primaryColor}");
     print("Scaffold Background Color: ${ThemeAll().lightTheme.scaffoldBackgroundColor}");
 
-
     return GetMaterialApp(
         title: 'North Star',
         defaultTransition: Transition.rightToLeftWithFade,
         transitionDuration: Duration(milliseconds: 200),
         debugShowCheckedModeBanner: false,
-        theme: themeData,
+        theme: themeData.copyWith(
+          colorScheme:  themeData.colorScheme.copyWith(
+            primary: AppColors.accentColor,
+          ),
+        ),
         supportedLocales: [
           const Locale('en'),
         ],
@@ -170,7 +173,6 @@ class ThemeAll {
       checkboxTheme: CheckboxThemeData(
         fillColor: MaterialStateProperty.all(Colors.white),
         checkColor: MaterialStateProperty.all(Colors.black),
-
         /// Change to your desired color
       ),
       inputDecorationTheme: InputDecorationTheme(
@@ -184,10 +186,11 @@ class ThemeAll {
         //   borderRadius: BorderRadius.circular(5),
         //   borderSide: BorderSide(color: AppColors.accentColor, width: 1),
         // ),
+
         contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       ),
+      buttonTheme: ButtonThemeData(buttonColor: AppColors.accentColor),
       brightness: Brightness.light,
-      primarySwatch: Themes.mainThemeColor,
       scaffoldBackgroundColor: Color(0xFFF2F2F2),
       appBarTheme: AppBarTheme(
           elevation: 0,
@@ -206,7 +209,8 @@ class ThemeAll {
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: Colors.white,
       ),
-      listTileTheme: ListTileThemeData(tileColor: Colors.white));
+      listTileTheme: ListTileThemeData(tileColor: Colors.white),
+      );
 
   final darkTheme = ThemeData(
       checkboxTheme: CheckboxThemeData(
@@ -216,7 +220,7 @@ class ThemeAll {
             Colors.black), // Change to your desired color
       ),
       brightness: Brightness.dark,
-      primarySwatch: Themes.mainThemeColor,
+      // primarySwatch: Themes.mainThemeColor,
       scaffoldBackgroundColor: AppColors.primary1Color,
       appBarTheme: AppBarTheme(
           elevation: 0,
@@ -237,8 +241,9 @@ class ThemeAll {
           // ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(5),
-            borderSide: BorderSide(color: Colors.white, width: 1),
+            borderSide: BorderSide(color: Colors.red, width: 1),
           ),
+          activeIndicatorBorder: BorderSide(color: AppColors.accentColor, width: 1),
           hintStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
           labelStyle: TextStyle(color: Colors.white),
           contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10)),
@@ -248,9 +253,13 @@ class ThemeAll {
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: AppColors.primary2Color,
       ),
+      focusColor: AppColors.accentColor,
       tabBarTheme: TabBarTheme(
         labelColor: Colors.white,
         unselectedLabelColor: Colors.white.withOpacity(0.7),
+      ),
+      buttonTheme: ButtonThemeData(
+        buttonColor: AppColors.accentColor
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
           selectedItemColor: AppColors.accentColor),

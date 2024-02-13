@@ -135,7 +135,7 @@ class WatchData extends StatelessWidget {
                                                 );
                                               }
                                               ),
-                                        series: <ChartSeries>[
+                                        series: [
                                           LineSeries<HeartData, String>(
                                             color: Colors.red,
                                             name: 'Heart Rate',
@@ -263,7 +263,7 @@ class WatchData extends StatelessWidget {
                                                 );
                                               }
                                               ),
-                                        series: <ChartSeries>[
+                                        series: [
                                           LineSeries<TempData, String>(
                                             color: Colors.orange,
                                             name: 'Body Temperature',
@@ -390,7 +390,7 @@ class WatchData extends StatelessWidget {
                                                 );
                                               }
                                               ),
-                                        series: <ChartSeries>[
+                                        series: [
                                           LineSeries<StepsData, String>(
                                             color: Colors.green,
                                             name: 'Body Temperature',

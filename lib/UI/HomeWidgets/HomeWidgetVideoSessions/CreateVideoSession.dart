@@ -12,6 +12,7 @@ import 'package:north_star/Models/NSNotification.dart';
 import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/DatePickerThemes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
+import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:north_star/Utils/PopUps.dart';
 
 import '../../../components/Buttons.dart';
@@ -22,6 +23,8 @@ class CreateVideoSession extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     RxBool ready = true.obs;
+
+    RxBool isCreating = false.obs;
     RxList selectedMembers = [].obs;
 
     TextEditingController title = TextEditingController();
@@ -29,6 +32,8 @@ class CreateVideoSession extends StatelessWidget {
     TextEditingController dateTime = TextEditingController();
 
     RxString meetingDateTime = "".obs;
+
+
 
     String _formatMeetingDateTime(dynamic dateTime) {
       // Assuming dateTime is a DateTime object or a string in a specific format
@@ -44,6 +49,7 @@ class CreateVideoSession extends StatelessWidget {
 
     void saveMeeting() async {
       ready.value = false;
+      isCreating.value = true;
       List idList = [];
       selectedMembers.forEach((element) {
         idList.add(element['user_id']);
@@ -69,6 +75,7 @@ class CreateVideoSession extends StatelessWidget {
         Get.back();
         showSnack('Success!', 'Meeting created successfully!');
       } else {
+        isCreating.value = false;
         ready.value = true;
         print(res);
         showSnack('Error!', 'Something went wrong!');
@@ -236,16 +243,18 @@ class CreateVideoSession extends StatelessWidget {
               )),
         ],
       ),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-        child: Container(
-            height: 44,
-            child: Buttons.yellowTextIconButton(
-                onPressed: () {
-                  saveMeeting();
-                },
-                icon: Icons.video_call_outlined,
-                label: 'create session')),
+      bottomNavigationBar: Obx(()=> Padding(
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+          child: Container(
+              height: 44,
+              child: Buttons.yellowTextIconButton(
+                  onPressed: () {
+                    saveMeeting();
+                  },
+                  icon: Icons.video_call_outlined,
+                  label: 'create session',
+              isLoading:isCreating.value)),
+        ),
       ),
     );
   }

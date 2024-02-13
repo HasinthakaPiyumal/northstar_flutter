@@ -23,16 +23,21 @@ class SelectedPlan extends StatelessWidget {
 
 
 
-  const SelectedPlan({Key? key, required this.selectedPlanID, required this.gymObj, required this.selectedPlanType}) : super(key: key);
+  const SelectedPlan({Key? key, required this.selectedPlanID, required this.gymObj, required this.plan, required this.selectedPlanType}) : super(key: key);
   final int selectedPlanID;
   final Map gymObj;
   final int selectedPlanType;
+  final dynamic plan;
+
 
   @override
   Widget build(BuildContext context) {
     List planCharges = ['monthly_charge', 'weekly_charge', 'daily_charge'];
     List types = ['monthly', 'weekly', 'daily'];
     TextEditingController startDateText = TextEditingController();
+
+    print("palnn======");
+    print(plan);
 
     RxString start = "".obs;
     RxString end = "".obs;
@@ -194,7 +199,7 @@ class SelectedPlan extends StatelessWidget {
                     style: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
                   ),
                   Text(
-                    'MVR ${(selectedAmount.value * gymObj[planCharges[selectedPlanType]]) + (selectedAmount.value * gymObj[planCharges[selectedPlanType]] * 0.06)}',
+                    'MVR ${(selectedAmount.value * plan["real_price"]) + (selectedAmount.value * plan["real_price"] * 0.06)}',
                     style: TypographyStyles.boldText(20, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
                   ),
                 ],
@@ -231,15 +236,16 @@ class SelectedPlan extends StatelessWidget {
               width: Get.width,
               child: ElevatedButton(
                 onPressed: () async {
-                  if (walletData.value['balance'] >= selectedAmount.value * gymObj[planCharges[selectedPlanType]]) {
+                  if (walletData.value['balance'] >= selectedAmount.value * plan["real_price"]) {
                     Map res = await httpClient.newComGymBooking({
-                      'amount': (selectedAmount.value * gymObj[planCharges[selectedPlanType]]) + (selectedAmount.value * gymObj[planCharges[selectedPlanType]] * 0.06),
+                      'amount': (selectedAmount.value * plan["real_price"]) + (selectedAmount.value * plan["real_price"] * 0.06),
                       'user_id': authUser.id,
                       'gym_id': gymObj['user_id'],
                       'start_date': startDateText.text,
-                      'quantity': selectedAmount.value,
-                      'type': types[selectedPlanType]
+                      'plan_id':plan['id'],
+                      'quantity': selectedAmount.value
                     });
+
 
 
                     print(res);
@@ -280,7 +286,7 @@ class SelectedPlan extends StatelessWidget {
               padding: EdgeInsets.only(top: 3),
               child: ElevatedButton(
                 onPressed: (){
-                  num amt = (selectedAmount.value * gymObj[planCharges[selectedPlanType]]) + (selectedAmount.value * gymObj[planCharges[selectedPlanType]] * 0.06);
+                  num amt = (selectedAmount.value * plan["real_price"]) + (selectedAmount.value * plan["real_price"] * 0.06);
                   int payAmt = (amt * 100).toInt();
                   payByCard(payAmt);
                 },
@@ -355,12 +361,13 @@ class SelectedPlan extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(selectedPlanID == 0 ? "Monthly Plan" : selectedPlanID == 1 ? "Weekly Plan" : "Daily Plan",
+                          Text(plan['name'],
                             style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
                           ),
                           Row(
                             children: [
-                              Text("MVR ${gymObj[planCharges[selectedPlanID]]}",
+                              Text("MVR ${plan["real_price"]}",
+
                                 style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
                               ),
                               Text("  +  GST",
@@ -374,25 +381,25 @@ class SelectedPlan extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              color: AppColors.accentColor,
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                vertical: 10,
-                                horizontal: 20,
+                          Visibility(
+                            visible: plan["discounted"],
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50),
+                                color: AppColors.accentColor,
                               ),
-                              child: Text(
-                                "SAVE MVR 120.00",
-                                style: TypographyStyles.boldText(
-                                    12, AppColors.textOnAccentColor),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 10,
+                                  horizontal: 20,
+                                ),
+                                child: Text(
+                                  "SAVE MVR ${(plan['price']*plan['discounted_percentage']/100).toStringAsFixed(2)}",
+                                  style: TypographyStyles.boldText(
+                                      12, AppColors.textOnAccentColor),
+                                ),
                               ),
                             ),
-                          ),
-                          Text(selectedPlanID == 0 ? "Per Month" : selectedPlanID == 1 ? "Per Week" : "Per Day",
-                            style: TypographyStyles.normalText(14, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
                           ),
                         ],
                       ),
@@ -403,11 +410,11 @@ class SelectedPlan extends StatelessWidget {
 
               SizedBox(height: 25,),
 
-              Text(selectedPlanID == 0 ? "No. of Months" : selectedPlanID == 0 ? "No. of Weeks" : "No. of Days",
-                style: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade500 : colors.Colors().lightBlack(1),),
-              ),
+              // Text(selectedPlanID == 0 ? "No. of Months" : selectedPlanID == 0 ? "No. of Weeks" : "No. of Days",
+              //   style: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade500 : colors.Colors().lightBlack(1),),
+              // ),
 
-              SizedBox(height: 15,),
+              // SizedBox(height: 15,),
 
               Visibility(
                 child: DropdownButtonFormField(
@@ -542,76 +549,41 @@ class SelectedPlan extends StatelessWidget {
                     builder: (BuildContext bc){
                       return Padding(
                         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                        child: (selectedPlanID == 2 && selectedAmount.value == 1) ? SfDateRangePicker(
-                          controller: _controller2,
-                          onSelectionChanged: (DateRangePickerSelectionChangedArgs args){
+                        child: Center(
+                          child: Container(width: Get.width /1.2,
+                            child: SfDateRangePicker(
+                              controller: _controller2,
+                              onSelectionChanged: (DateRangePickerSelectionChangedArgs args){
 
-                            DateTime date = args.value;
+                                DateTime date = args.value;
 
-                            duration.value = date.difference(date).inDays + 1;
+                                duration.value = date.difference(date).inDays + 1;
 
-                            _controller2.selectedDate = date;
+                                _controller2.selectedDate = date;
 
-                            startDateText.text = DateFormat("dd-MM-yyyy").format(date);
+                                startDateText.text = DateFormat("dd-MM-yyyy").format(date);
 
-                            start.value = DateFormat("MMM dd, yyyy").format(date).toString();
-                            end.value = DateFormat("MMM dd, yyyy").format(date).toString();
-                          },
-                          monthCellStyle: DateRangePickerMonthCellStyle(
-                              textStyle: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : AppColors.primary2Color,),
-                              disabledDatesTextStyle: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100.withOpacity(0.5) : AppColors.primary2Color,),
-                              todayTextStyle: TypographyStyles.normalText(16, Themes.mainThemeColor.shade500)
-                          ),
-                          selectionMode: DateRangePickerSelectionMode.single,
-                          showNavigationArrow: true,
-                          minDate: DateTime(min.year, min.month, min.day),
-                          headerStyle: DateRangePickerHeaderStyle(
-                            textStyle: TypographyStyles.boldText(20, Themes.mainThemeColorAccent.shade100),
-                          ),
-                          monthViewSettings: DateRangePickerMonthViewSettings(
-                              dayFormat: 'EEE',
-                          ),
-                          headerHeight: 80,
-                        ) : SfDateRangePicker(
-                          controller: _controller,
-                          onSelectionChanged: (DateRangePickerSelectionChangedArgs args){
-
-                            PickerDateRange ranges = args.value;
-
-                            DateTime startDate = ranges.startDate!;
-                            DateTime endDate = ranges.startDate!.add(
-                              Duration(
-                                days: selectedPlanID == 0 ?
-                                selectedAmount.value*30 : selectedPlanID == 1 ?
-                                selectedAmount.value*6 : selectedAmount.value-1,
+                                start.value = DateFormat("MMM dd, yyyy").format(date).toString();
+                                end.value = DateFormat("MMM dd, yyyy").format(date).toString();
+                              },
+                              monthCellStyle: DateRangePickerMonthCellStyle(
+                                  textStyle: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : AppColors.primary2Color,),
+                                  disabledDatesTextStyle: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100.withOpacity(0.5) : AppColors.primary2Color,),
+                                  todayTextStyle: TypographyStyles.normalText(16, Themes.mainThemeColor.shade500)
                               ),
-                            );
-
-                            duration.value = endDate.difference(startDate).inDays + 1;
-
-                            _controller.selectedRange = PickerDateRange(startDate, endDate);
-
-                            startDateText.text = DateFormat("dd-MM-yyyy").format(startDate);
-
-                            start.value = DateFormat("MMM dd, yyyy").format(startDate).toString();
-                            end.value = DateFormat("MMM dd, yyyy").format(endDate).toString();
-                          },
-                          monthCellStyle: DateRangePickerMonthCellStyle(
-                              textStyle: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
-                              disabledDatesTextStyle: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100.withOpacity(0.5) : colors.Colors().darkGrey(0.5),),
-                              todayTextStyle: TypographyStyles.normalText(16, Themes.mainThemeColor.shade500)
+                              selectionMode: DateRangePickerSelectionMode.single,
+                              showNavigationArrow: true,
+                              minDate: DateTime(min.year, min.month, min.day),
+                              headerStyle: DateRangePickerHeaderStyle(
+                                textStyle: TypographyStyles.boldText(20, Themes.mainThemeColorAccent.shade100),
+                              ),
+                              monthViewSettings: DateRangePickerMonthViewSettings(
+                                  dayFormat: 'EEE',
+                              ),
+                              headerHeight: 80,
+                            ),
                           ),
-                          selectionMode: DateRangePickerSelectionMode.range,
-                          showNavigationArrow: true,
-                          minDate: DateTime(min.year, min.month, min.day),
-                          headerStyle: DateRangePickerHeaderStyle(
-                            textStyle: TypographyStyles.boldText(20, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
-                          ),
-                          monthViewSettings: DateRangePickerMonthViewSettings(
-                              dayFormat: 'EEE'
-                          ),
-                          headerHeight: 80,
-                        ),
+                        )
                       );
                     }
                   );
@@ -706,7 +678,7 @@ class SelectedPlan extends StatelessWidget {
                         Text("GST ( 6% )",
                           style: TypographyStyles.normalText(14, Get.isDarkMode ? Themes.mainThemeColorAccent.shade500 : colors.Colors().lightBlack(1),),
                         ),
-                        Text("MVR ${(selectedAmount.value * gymObj[planCharges[selectedPlanType]] * 0.06).toStringAsFixed(2)}",
+                        Text("MVR ${(selectedAmount.value * plan["real_price"] * 0.06).toStringAsFixed(2)}",
                           style: TypographyStyles.normalText(14, Get.isDarkMode ? Themes.mainThemeColorAccent.shade500 : colors.Colors().lightBlack(1),),
                         ),
                       ],
@@ -720,7 +692,7 @@ class SelectedPlan extends StatelessWidget {
                         Text("Total Amount",
                           style: TypographyStyles.normalText(14, Get.isDarkMode ? Themes.mainThemeColorAccent.shade500 : colors.Colors().lightBlack(1),),
                         ),
-                        Text("MVR ${(selectedAmount.value * gymObj[planCharges[selectedPlanType]]) + (selectedAmount.value * gymObj[planCharges[selectedPlanType]] * 0.06)}",
+                        Text("MVR ${(selectedAmount.value * plan["real_price"]) + (selectedAmount.value * plan["real_price"] * 0.06)}",
                           style: TypographyStyles.boldText(16, Themes.mainThemeColor.shade500),
                         ),
                       ],

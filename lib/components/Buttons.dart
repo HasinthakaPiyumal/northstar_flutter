@@ -61,6 +61,7 @@ class Buttons {
     Color backgroundColor = AppColors.accentColor,
     Color textColor = AppColors.textOnAccentColor,
     bool buttonFit = false,
+    bool isLoading = false,
     required IconData icon
   }) {
     return Material(
@@ -83,9 +84,9 @@ class Buttons {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(icon,color:textColor),//AppColors.textOnAccentColor),
-                  SizedBox(width: 5,),
-                  Text(
+                  isLoading?SizedBox():Icon(icon,color:textColor),//AppColors.textOnAccentColor),
+                  isLoading?SizedBox():SizedBox(width: 5,),
+                  isLoading?Container(width:25,height:25,child: CircularProgressIndicator(color: AppColors.textOnAccentColor,)):Text(
                     label,
                     textAlign: TextAlign.center,
                     style: TextStyle(

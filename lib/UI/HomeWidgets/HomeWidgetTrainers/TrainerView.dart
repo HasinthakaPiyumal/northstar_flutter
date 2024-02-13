@@ -101,7 +101,7 @@ class TrainerView extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 32,
-                    backgroundImage : CachedNetworkImageProvider('https://north-star-storage.s3.ap-southeast-1.amazonaws.com/avatars/' + trainerObj['avatar_url']),
+                    backgroundImage : CachedNetworkImageProvider(HttpClient.s3BaseUrl + trainerObj['avatar_url']),
                   ),
                   SizedBox(width: 10,),
                   Expanded(

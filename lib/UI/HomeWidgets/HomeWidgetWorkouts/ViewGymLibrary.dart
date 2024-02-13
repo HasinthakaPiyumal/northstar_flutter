@@ -55,7 +55,7 @@ class ViewGymLibrary extends StatelessWidget {
                 itemBuilder: ((context, index) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 2),
-                    child: Chip(backgroundColor: Get.isDarkMode?AppColors.primary2Color:Colors.white,label: Text(workout['categories'][index],style: TypographyStyles.textWithWeight(13, FontWeight.w300),)),
+                    child: Chip(padding: EdgeInsets.all(4),backgroundColor: Get.isDarkMode?AppColors.primary2Color:Colors.white,label: Text(workout['categories'][index],style: TypographyStyles.textWithWeight(13, FontWeight.w300),),),
                   );
                 }),
               ),
