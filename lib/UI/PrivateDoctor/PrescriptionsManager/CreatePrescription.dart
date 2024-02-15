@@ -87,7 +87,7 @@ class CreatePrescription extends StatelessWidget {
                   CircleAvatar(
                     radius: 28,
                     backgroundImage: CachedNetworkImageProvider(
-                      'https://north-star-storage.s3.ap-southeast-1.amazonaws.com/avatars/' + userData['avatar_url'],
+                      'https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/avatars/' + userData['avatar_url'],
                     ),
                   ),
                   SizedBox(width: 10,),

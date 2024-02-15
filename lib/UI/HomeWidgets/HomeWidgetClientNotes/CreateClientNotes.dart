@@ -7,11 +7,13 @@ import 'package:north_star/Controllers/LocalNotificationsController.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Models/NSNotification.dart';
+import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/ButtonStyles.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/Utils/PopUps.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
+import 'package:north_star/components/CheckButton.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class CreateClientNotes extends StatelessWidget {
@@ -21,6 +23,7 @@ class CreateClientNotes extends StatelessWidget {
   Widget build(BuildContext context) {
 
     RxBool ready = true.obs;
+    RxBool isIncome = true.obs;
     RxMap selectedClient = {}.obs;
     RxString selectedServiceValue = "service".obs;
     RxString selectedPaymentTerm = "Onetime".obs;
@@ -49,6 +52,7 @@ class CreateClientNotes extends StatelessWidget {
         'amount': double.parse(amount.text.toString()),
         'payment_term': selectedPaymentTerm.value,
         'start_date': date.text,
+        'type':isIncome.value?1:2
       });
       print(res);
       if (res['code'] == 200) {
@@ -179,7 +183,23 @@ class CreateClientNotes extends StatelessWidget {
                 style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
               ),
 
-              SizedBox(height: 15),
+              Obx(()=> GestureDetector(
+                  onTap: (){isIncome.value = !isIncome.value;},
+                  child: Container(
+                    color:Colors.transparent,
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                      Text('Is income note?',
+                        style: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
+                      ),
+                      CheckButton(isChecked: isIncome.value,)
+                    ],),
+                  ),
+                ),
+              ),
+
 
               Obx(()=>DropdownButtonFormField(
                 decoration: InputDecoration(

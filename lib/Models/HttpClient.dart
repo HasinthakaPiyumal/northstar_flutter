@@ -25,7 +25,7 @@ class HttpClient {
   static String s3GymGalleriesBaseUrl =
       'https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/gym-galleries/';
   // static String s3ResourcesBaseUrl =
-  //     'https://north-star-storage.s3.ap-southeast-1.amazonaws.com/';
+  //     'https://north-star-storage.s3.ap-southeast-1.amazonaws.c om/';
       static String s3ResourcesBaseUrl =
       'https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/';
 

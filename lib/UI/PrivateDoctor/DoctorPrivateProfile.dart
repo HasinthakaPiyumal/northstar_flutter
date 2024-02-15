@@ -83,7 +83,7 @@ class _DoctorPrivateProfileState extends State<DoctorPrivateProfile> {
                             CircleAvatar(
                               radius: 30,
                               backgroundImage: CachedNetworkImageProvider(
-                                'https://north-star-storage.s3.ap-southeast-1.amazonaws.com/avatars/' + doctor['avatar_url'],
+                                'https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/avatars/' + doctor['avatar_url'],
                               ),
                             ),
                             SizedBox(width: 15,),

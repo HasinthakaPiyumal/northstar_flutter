@@ -136,7 +136,7 @@ class NewChat extends StatelessWidget {
                   return Card(
                     child: ListTile(
                       leading: CircleAvatar(
-                        backgroundImage: CachedNetworkImageProvider('https://north-star-storage.s3.ap-southeast-1.amazonaws.com/avatars/' + jsonObj['user']['avatar_url']),
+                        backgroundImage: CachedNetworkImageProvider('https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/avatars/' + jsonObj['user']['avatar_url']),
                       ),
                       title: Text(jsonObj['user']['name']),
                       subtitle: Text(jsonObj['user']['email']),

@@ -224,7 +224,7 @@ class Upcoming extends StatelessWidget {
                                     CircleAvatar(
                                       radius: 26,
                                       backgroundImage: CachedNetworkImageProvider(
-                                          'https://north-star-storage.s3.ap-southeast-1.amazonaws.com/avatars/' + list[index]['client']['avatar_url']
+                                          'https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/avatars/' + list[index]['client']['avatar_url']
                                       ),
                                     ),
                                     SizedBox(width: 20),

@@ -122,7 +122,7 @@ class ViewResourceDoc extends StatelessWidget {
                     children: [
                       CircleAvatar(
                           minRadius: 25,
-                          backgroundImage: CachedNetworkImageProvider('https://north-star-storage.s3.ap-southeast-1.amazonaws.com/avatars/newsletter.png')
+                          backgroundImage: CachedNetworkImageProvider('https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/avatars/newsletter.png')
                       ),
                       SizedBox(width: 10,),
                       Column(

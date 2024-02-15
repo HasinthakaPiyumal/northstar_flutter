@@ -64,8 +64,6 @@ class WatchDataController {
   }
 
   void formatData() async {
-
-
     Map<dynamic, dynamic>? hasHeartElement =
         jsonData.firstWhereOrNull((element) => element['type'] == 'HEART_RATE');
 
@@ -128,7 +126,8 @@ class WatchDataController {
     }
     Map<dynamic, dynamic>? hasTempElement = jsonData
         .firstWhereOrNull((element) => element['type'] == 'BODY_TEMPERATURE');
-
+    print("===========hasTempElement");
+    print(jsonData);
     if (hasTempElement == null) {
       tempDataStatus.value = 'No Temperature Data Found.';
     } else {
@@ -188,12 +187,14 @@ class WatchDataController {
   }
 
   void setupSync() async {
+    print("=====setup inner");
     if (authUser.id == userId) {
+      print("Fetching new Data...");
       statusText.value = 'Fetching New Data...';
       DateTime to = DateTime.now();
       DateTime from = to.subtract(Duration(days: daysToGet));
       healthData.value = await health.getHealthDataFromTypes(from, to, types);
-
+      print(healthData.value);
       if (healthData.isEmpty) {
         statusText.value = 'Connected: No Data Found.';
         heartDataStatus.value = 'No Data Found.';
@@ -206,10 +207,14 @@ class WatchDataController {
         startSync();
       }
     } else {
+      print("Fetching Saved Data...");
       statusText.value = 'Fetching Saved Data...';
       print(statusText.value);
 
       Map res = await httpClient.getUserWatchData(userId);
+      print("=====userId");
+      print(userId);
+
       if (res['code'] == 200) {
         List resData = res['data']['data'];
 
@@ -277,6 +282,7 @@ class WatchDataController {
         statusText.value = 'Health Data Permission Granted';
         FirebaseCrashlytics.instance.log("Health Data Permission Granted");
       }
+      print("====syncing health data");
       setupSync();
     } else {
       ready.value = true;

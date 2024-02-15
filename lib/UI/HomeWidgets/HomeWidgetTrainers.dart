@@ -5,6 +5,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:north_star/Models/HttpClient.dart' as HttpWidget;
 import 'package:north_star/Plugins/HttpClient.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
@@ -125,7 +126,7 @@ class HomeWidgetTrainers extends StatelessWidget {
                                   child: CircleAvatar(
                                     radius: 36,
                                     backgroundImage: CachedNetworkImageProvider(
-                                      "https://north-star-storage.s3.ap-southeast-1.amazonaws.com/avatars/${trainers[index]['avatar_url']}",
+                                      "${HttpWidget.HttpClient.s3ResourcesBaseUrl}avatars/${trainers[index]['avatar_url']}",
                                     ),
                                   ),
                                 ),

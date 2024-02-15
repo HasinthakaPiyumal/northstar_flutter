@@ -108,7 +108,7 @@ class NewSingleChat extends StatelessWidget {
               Obx(()=> selectedClient.isNotEmpty ? Card(
                 child: ListTile(
                   leading: CircleAvatar(
-                    backgroundImage: CachedNetworkImageProvider('https://north-star-storage.s3.ap-southeast-1.amazonaws.com/avatars/' + selectedClient.value['user']['avatar_url']),
+                    backgroundImage: CachedNetworkImageProvider('https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/avatars/' + selectedClient.value['user']['avatar_url']),
                   ),
                   title: Text(selectedClient.value['user']['name']),
                   subtitle: Text(selectedClient.value['user']['email']),
