@@ -416,36 +416,36 @@ class SelectedPlan extends StatelessWidget {
 
               // SizedBox(height: 15,),
 
-              Visibility(
-                child: DropdownButtonFormField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(
-                        color: Get.isDarkMode ? AppColors.primary2Color : colors.Colors().lightCardBG,
-                      ),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 17, horizontal: 20),
-                    labelStyle: TypographyStyles.normalText(14, Themes.mainThemeColorAccent.shade100)
-                  ),
-                  icon: Icon(Icons.keyboard_arrow_down_rounded,
-                    color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),
-                  ),
-                  iconSize: 30,
-                  iconEnabledColor: Themes.mainThemeColorAccent.shade100,
-                  dropdownColor: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
-                  value: selectedAmount.value.toString(),
-                  validator: (value) => value == null || value == 'select' ? "Select no. of Months" : null,
-                  items: menuItemsMonths,
-                  onChanged: (newValue){
-                    selectedAmount.value = int.parse(newValue.toString());
-                    startDateText.clear();
-                    start.value = "";
-                    end.value = "";
-                  },
-                ),
-                visible: selectedPlanID == 0,
-              ),
+              // Visibility(
+              //   child: DropdownButtonFormField(
+              //     decoration: InputDecoration(
+              //       border: OutlineInputBorder(
+              //         borderRadius: BorderRadius.circular(10.0),
+              //         borderSide: BorderSide(
+              //           color: Get.isDarkMode ? AppColors.primary2Color : colors.Colors().lightCardBG,
+              //         ),
+              //       ),
+              //       contentPadding: const EdgeInsets.symmetric(vertical: 17, horizontal: 20),
+              //       labelStyle: TypographyStyles.normalText(14, Themes.mainThemeColorAccent.shade100)
+              //     ),
+              //     icon: Icon(Icons.keyboard_arrow_down_rounded,
+              //       color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),
+              //     ),
+              //     iconSize: 30,
+              //     iconEnabledColor: Themes.mainThemeColorAccent.shade100,
+              //     dropdownColor: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
+              //     value: selectedAmount.value.toString(),
+              //     validator: (value) => value == null || value == 'select' ? "Select no. of Months" : null,
+              //     items: menuItemsMonths,
+              //     onChanged: (newValue){
+              //       selectedAmount.value = int.parse(newValue.toString());
+              //       startDateText.clear();
+              //       start.value = "";
+              //       end.value = "";
+              //     },
+              //   ),
+              //   visible: selectedPlanID == 0,
+              // ),
 
               Visibility(
                 child: DropdownButtonFormField(
