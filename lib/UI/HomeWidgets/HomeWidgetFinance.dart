@@ -7,6 +7,7 @@ import 'package:north_star/Controllers/ClientNotesController.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Plugins/Utils.dart';
+import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/ButtonStyles.dart';
 import 'package:north_star/Styles/SignUpStyles.dart';
 import 'package:north_star/Styles/Themes.dart';
@@ -27,6 +28,8 @@ class HomeWidgetFinance extends StatelessWidget {
 
     RxBool ready = false.obs;
     RxList transactions = [].obs;
+    RxInt income = 0.obs;
+    RxInt expense = 0.obs;
     TextEditingController topUpAmount = TextEditingController(text: '99');
     RxList clientNotes = [].obs;
 
@@ -41,6 +44,18 @@ class HomeWidgetFinance extends StatelessWidget {
         print(res);
         ready.value = true;
       }
+    }
+
+    void getSummary()async {
+      ready.value = false;
+      Map res = await httpClient.getFinanceSummary();
+      print("=========Summary");
+      print(res);
+      income.value = res['income'];
+      expense.value = res['expense'];
+      print('income.value');
+      print(income.value);
+      ready.value = true;
     }
 
     void topUp(String amount) async{
@@ -107,6 +122,7 @@ class HomeWidgetFinance extends StatelessWidget {
     }
 
     getTransactions();
+    getSummary();
 
     return Scaffold(
       appBar: AppBar(),
@@ -135,16 +151,17 @@ class HomeWidgetFinance extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              RichText(
-                                text: TextSpan(
-                                    text: "MVR",
-                                    style: TypographyStyles.normalText(22, Get.isDarkMode ? Colors.white : Colors.black),
-                                    children: [
-                                      TextSpan(
-                                        text: Utils.currencyFmt.format(1275),
-                                        style: TypographyStyles.title(48),
-                                      ),
-                                    ]
+                              Obx(()=>RichText(
+                                  text: TextSpan(
+                                      text: "MVR ",
+                                      style: TypographyStyles.normalText(22, Get.isDarkMode ? Colors.white : Colors.black),
+                                      children: [
+                                        TextSpan(
+                                          text: Utils.currencyFmt.format(income.value-expense.value),
+                                          style: TypographyStyles.title(48),
+                                        ),
+                                      ]
+                                  ),
                                 ),
                               ),
                             ],
@@ -153,7 +170,7 @@ class HomeWidgetFinance extends StatelessWidget {
                               child: CircularProgressIndicator()),
                           )),
                           SizedBox(height: 4),
-                          Obx(()=> ready.value ? Text('Tax - MVR15,920.00', style: TypographyStyles.boldText(16, Colors.white, )):Container(),),
+                          // Obx(()=> ready.value ? Text('Tax - MVR15,920.00', style: TypographyStyles.boldText(16, Colors.white, )):Container(),),
                           SizedBox(height: 15),
                           SizedBox(
                             width: Get.width,
@@ -165,7 +182,7 @@ class HomeWidgetFinance extends StatelessWidget {
 
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.black,
+                                      backgroundColor: Get.isDarkMode?AppColors.primary2Color:Colors.white,
                                       foregroundColor: Colors.white,
                                       shape: Themes().roundedBorder(12),
                                     ),
@@ -189,11 +206,11 @@ class HomeWidgetFinance extends StatelessWidget {
                                           SizedBox(height: 4,),
                                           RichText(
                                             text: TextSpan(
-                                                text: "MVR",
+                                                text: "MVR ",
                                                 style: TypographyStyles.normalText(14, Get.isDarkMode ? Colors.white : Colors.black),
                                                 children: [
                                                   TextSpan(
-                                                    text: Utils.currencyFmt.format(1275),
+                                                    text: Utils.currencyFmt.format(income.value),
                                                     style: TypographyStyles.title(18),
                                                   ),
                                                 ]
@@ -211,7 +228,7 @@ class HomeWidgetFinance extends StatelessWidget {
 
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.black,
+                                      backgroundColor: Get.isDarkMode?AppColors.primary2Color:Colors.white,
                                       foregroundColor: Colors.white,
                                       shape: Themes().roundedBorder(12),
                                     ),
@@ -235,11 +252,11 @@ class HomeWidgetFinance extends StatelessWidget {
                                           SizedBox(height: 4,),
                                           RichText(
                                             text: TextSpan(
-                                                text: "MVR",
+                                                text: "MVR ",
                                                 style: TypographyStyles.normalText(14, Get.isDarkMode ? Colors.white : Colors.black),
                                                 children: [
                                                   TextSpan(
-                                                    text: Utils.currencyFmt.format(1275),
+                                                    text: Utils.currencyFmt.format(expense.value),
                                                     style: TypographyStyles.title(18),
                                                   ),
                                                 ]

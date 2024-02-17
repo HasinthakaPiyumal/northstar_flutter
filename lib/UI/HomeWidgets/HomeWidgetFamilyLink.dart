@@ -87,51 +87,52 @@ class _FamilyLinkState extends State<FamilyLink> {
                           SizedBox(
                             height: 10,
                           ),
-                          Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                              child:Container(
-                                width: double.infinity,
-                                child: Stack(
-                                  children: [
-                                    Positioned(
-                                      left: 60,
-                                      child: ClipOval(
-                                        child: CachedNetworkImage(
-                                          imageUrl: "https://fastly.picsum.photos/id/679/200/200.jpg?hmac=sPsw4YJPQkWFqo2k5UycejGhY4UXvaDXStGmvJEhFBA",
-                                          width: 36,
-                                          height: 36,
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      left: 30,
-                                      child: ClipOval(
-                                        child: CachedNetworkImage(
-                                          imageUrl: "https://fastly.picsum.photos/id/976/200/200.jpg?hmac=xz9CTpScnLHQm_wNTcJmz8bQM6-ApTQnof5-4LGtu-s",
-                                          width: 36,
-                                          height: 36,
-                                        ),
-                                      ),
-                                    ),Positioned(
-                                      child: ClipOval(
-                                        child: CachedNetworkImage(
-                                          imageUrl: "https://fastly.picsum.photos/id/318/200/200.jpg?hmac=bXfpcSpOySqXMIev1AISKO15vvxPgau4JEA36kuhG1Y",
-                                          width: 36,
-                                          height: 36,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-
-                          ),
+                          // Padding(
+                          //     padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          //     child:Container(
+                          //       width: double.infinity,
+                          //       child: Stack(
+                          //         children: [
+                          //           Positioned(
+                          //             left: 60,
+                          //             child: ClipOval(
+                          //               child: CachedNetworkImage(
+                          //                 imageUrl: "https://fastly.picsum.photos/id/679/200/200.jpg?hmac=sPsw4YJPQkWFqo2k5UycejGhY4UXvaDXStGmvJEhFBA",
+                          //                 width: 36,
+                          //                 height: 36,
+                          //               ),
+                          //             ),
+                          //           ),
+                          //           Positioned(
+                          //             left: 30,
+                          //             child: ClipOval(
+                          //               child: CachedNetworkImage(
+                          //                 imageUrl: "https://fastly.picsum.photos/id/976/200/200.jpg?hmac=xz9CTpScnLHQm_wNTcJmz8bQM6-ApTQnof5-4LGtu-s",
+                          //                 width: 36,
+                          //                 height: 36,
+                          //               ),
+                          //             ),
+                          //           ),Positioned(
+                          //             child: ClipOval(
+                          //               child: CachedNetworkImage(
+                          //                 imageUrl: "https://fastly.picsum.photos/id/318/200/200.jpg?hmac=bXfpcSpOySqXMIev1AISKO15vvxPgau4JEA36kuhG1Y",
+                          //                 width: 36,
+                          //                 height: 36,
+                          //               ),
+                          //             ),
+                          //           ),
+                          //         ],
+                          //       ),
+                          //     )
+                          //
+                          // ),
                           SizedBox(
                             height: 24,
                           ),
                           Buttons.yellowFlatButton(
                               onPressed: () {
-                                Get.to(FamilyView());
+                                print(familyLinkList[index]);
+                                Get.to(FamilyView(familyLink:familyLinkList[index]));
                               }, label: "View", width: Get.width - 72),
                         ],
                       ),

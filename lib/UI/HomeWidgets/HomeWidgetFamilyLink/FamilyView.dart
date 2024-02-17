@@ -11,11 +11,16 @@ import '../../../components/DropDownButtonWithBorder.dart';
 import '../../../components/MaterialBottomSheet.dart';
 
 class FamilyView extends StatelessWidget {
+  final dynamic familyLink;
+  const FamilyView({Key? key, this.familyLink}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     RxInt _currentTab = 0.obs;
     RxString _assignFilterDropdown = 'All'.obs;
     String preferenceName = "familyViewTabIndex";
+
+    print("familyLinkfamilyLink");
+    print(familyLink);
     Future<int?> retrieveSelectedTabIndex() async {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       int val = prefs.getInt(preferenceName)!;
@@ -403,6 +408,7 @@ void confirmAssignEnd(){
     return Scaffold(
       body: Obx(() => CustomScrollView(
             slivers: <Widget>[
+
               SliverAppBar(
                 pinned: true,
                 expandedHeight: 110.0,
@@ -410,7 +416,7 @@ void confirmAssignEnd(){
                   centerTitle: true,
                   expandedTitleScale: 1.3,
                   title: Text(
-                    "andrew’s family".capitalize as String,
+                    '${familyLink['title']}'.capitalize as String,
                     textAlign: TextAlign.center,
                     style: TypographyStyles.title(20),
                   ),
@@ -425,7 +431,7 @@ void confirmAssignEnd(){
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Text(
-                            "Our bond strengthens with each passing moment together."
+                            '${familyLink['description']}'
                                 .capitalize as String,
                             textAlign: TextAlign.center,
                             style: TypographyStyles.text(16),

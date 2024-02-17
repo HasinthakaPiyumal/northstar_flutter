@@ -18,6 +18,8 @@ import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 
+import '../Utils/PopUps.dart';
+
 class Wallet extends StatelessWidget {
   const Wallet({Key? key}) : super(key: key);
 
@@ -28,7 +30,7 @@ class Wallet extends StatelessWidget {
 
     RxMap data = {}.obs;
     RxList transactions = [].obs;
-    TextEditingController topUpAmount = TextEditingController(text: '99');
+    TextEditingController topUpAmount = TextEditingController();
     RxList clientNotes = [].obs;
 
     void getTransactions() async{
@@ -46,11 +48,20 @@ class Wallet extends StatelessWidget {
     }
 
     void topUp(String amount) async{
-      ready.value = false;
+      if(amount.isEmpty){
+        showSnack("Invalid amount","TopUp amount must be greater that 0");
+        return;
+      }
       int amountInt = int.parse(amount.toString());
+      print(amountInt);
+      if(amountInt<=0){
+        showSnack("Invalid amount","TopUp amount must be greater that 0");
+        return;
+      }
       Map res = await httpClient.topUpWallet({
-        'amount': amountInt * 100,
+        'amount': amountInt,
       });
+      ready.value = false;
       if(res['code'] == 200){
         await launchUrl(Uri.parse(res['data']['url']));
       } else {

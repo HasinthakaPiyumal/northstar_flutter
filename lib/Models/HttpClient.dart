@@ -11,6 +11,7 @@ class HttpClient {
 
   // static String baseURL = 'https://api.northstar.mv/api';
   static String baseURL = 'http://175.41.184.146:8081/api';
+  // static String baseURL = 'https://api.northstar.mv/api';
 
   static String buildInfo = '9.0.0 Build 1';
 
@@ -1626,6 +1627,20 @@ class HttpClient {
   Future<Map> getDietConsults(int userId) async {
     Response response =
         await get('/fitness/diet-consultation/actions/get/$userId');
+    return response.data;
+  }
+  Future<Map> getFinanceSummary() async {
+    Response response =
+        await get('/fitness/trainer-finance/summery');
+    return response.data;
+  }
+
+  Future<Map> getFinanceReport(dynamic data) async {
+    Response response = await post('/fitness/trainer-finance/report', data);
+    print('printing reserved time data--->$data');
+    if (response.statusCode == 200) {
+      return {"code": 200, "data": response.data};
+    }
     return response.data;
   }
 

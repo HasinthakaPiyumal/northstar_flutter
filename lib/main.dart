@@ -114,6 +114,7 @@ Future checkAuth() async {
       print('Printing token inner 1');
       isLoggedIn = true;
       httpClient.setToken(token);
+      print(res['data']['token']);
       client.changeToken(res['data']['token']);
       print('Printing token inner 2');
       Map<String, dynamic> userData = res['data']['user'];
@@ -249,6 +250,9 @@ class ThemeAll {
           contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10)),
       dialogBackgroundColor: AppColors.primary2Color,
       cardColor: AppColors.primary2Color,
+      cardTheme: CardTheme(
+        color: AppColors.primary2Color,
+      ),
       primaryColor: AppColors.accentColor,
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: AppColors.primary2Color,

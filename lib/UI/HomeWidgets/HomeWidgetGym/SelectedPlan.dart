@@ -447,87 +447,87 @@ class SelectedPlan extends StatelessWidget {
               //   visible: selectedPlanID == 0,
               // ),
 
-              Visibility(
-                child: DropdownButtonFormField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(
-                        color: AppColors.primary2Color,
-                      ),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 17, horizontal: 20),
-                    labelStyle: TypographyStyles.normalText(14, Themes.mainThemeColorAccent.shade100),
-                  ),
-                  icon: const Icon(Icons.keyboard_arrow_down_rounded,),
-                  iconSize: 30,
-                  iconEnabledColor: Get.isDarkMode ? Themes.mainThemeColorAccent.shade500 : colors.Colors().lightBlack(1),
-                  dropdownColor: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
-                  value: selectedAmount.value.toString(),
-                  validator: (value) => value == null || value == 'select' ? "Select no. of Weeks" : null,
-                  items: menuItemsWeeks,
-                  onChanged: (newValue){
-                    selectedAmount.value = int.parse(newValue.toString());
-                    startDateText.clear();
-                    start.value = "";
-                    end.value = "";
-                  },
-                ),
-                visible: selectedPlanID == 1,
-              ),
+              // Visibility(
+              //   child: DropdownButtonFormField(
+              //     decoration: InputDecoration(
+              //       border: OutlineInputBorder(
+              //         borderRadius: BorderRadius.circular(10.0),
+              //         borderSide: BorderSide(
+              //           color: AppColors.primary2Color,
+              //         ),
+              //       ),
+              //       contentPadding: const EdgeInsets.symmetric(vertical: 17, horizontal: 20),
+              //       labelStyle: TypographyStyles.normalText(14, Themes.mainThemeColorAccent.shade100),
+              //     ),
+              //     icon: const Icon(Icons.keyboard_arrow_down_rounded,),
+              //     iconSize: 30,
+              //     iconEnabledColor: Get.isDarkMode ? Themes.mainThemeColorAccent.shade500 : colors.Colors().lightBlack(1),
+              //     dropdownColor: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
+              //     value: selectedAmount.value.toString(),
+              //     validator: (value) => value == null || value == 'select' ? "Select no. of Weeks" : null,
+              //     items: menuItemsWeeks,
+              //     onChanged: (newValue){
+              //       selectedAmount.value = int.parse(newValue.toString());
+              //       startDateText.clear();
+              //       start.value = "";
+              //       end.value = "";
+              //     },
+              //   ),
+              //   visible: selectedPlanID == 1,
+              // ),
 
-              Visibility(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              if(selectedAmount.value > 1){
-                                selectedAmount.value -= 1;
-                                startDateText.clear();
-                                start.value = "";
-                                end.value = "";
-                              }
-                            },
-                            child: Icon(Icons.remove, color: Colors.white),
-                            style: ElevatedButton.styleFrom(
-                              shape: CircleBorder(),
-                              padding: EdgeInsets.all(10),
-                              backgroundColor: Colors.black,
-                              foregroundColor: colors.Colors().deepYellow(1),
-                            ),
-                          ),
-                          SizedBox(width: 16),
-                          Obx(()=>Text("${selectedAmount.value}", style: TypographyStyles.title(30).copyWith(color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),)),),
-                          SizedBox(width: 16),
-                          ElevatedButton(
-                            onPressed: () {
-                              selectedAmount.value += 1;
-                              startDateText.clear();
-                              start.value = "";
-                              end.value = "";
-                            },
-                            child: Icon(Icons.add, color: Colors.white),
-                            style: ElevatedButton.styleFrom(
-                              shape: CircleBorder(),
-                              padding: EdgeInsets.all(10),
-                              backgroundColor: Colors.black, // <-- Button color
-                              foregroundColor: colors.Colors().deepYellow(1), // <-- Splash color
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                visible: selectedPlanID == 2,
-              ),
+              // Visibility(
+              //   child: Padding(
+              //     padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              //     child: Column(
+              //       mainAxisSize: MainAxisSize.min,
+              //       crossAxisAlignment: CrossAxisAlignment.center,
+              //       children: [
+              //         Row(
+              //           mainAxisAlignment: MainAxisAlignment.center,
+              //           children: [
+              //             ElevatedButton(
+              //               onPressed: () {
+              //                 if(selectedAmount.value > 1){
+              //                   selectedAmount.value -= 1;
+              //                   startDateText.clear();
+              //                   start.value = "";
+              //                   end.value = "";
+              //                 }
+              //               },
+              //               child: Icon(Icons.remove, color: Colors.white),
+              //               style: ElevatedButton.styleFrom(
+              //                 shape: CircleBorder(),
+              //                 padding: EdgeInsets.all(10),
+              //                 backgroundColor: Colors.black,
+              //                 foregroundColor: colors.Colors().deepYellow(1),
+              //               ),
+              //             ),
+              //             SizedBox(width: 16),
+              //             Obx(()=>Text("${selectedAmount.value}", style: TypographyStyles.title(30).copyWith(color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),)),),
+              //             SizedBox(width: 16),
+              //             ElevatedButton(
+              //               onPressed: () {
+              //                 selectedAmount.value += 1;
+              //                 startDateText.clear();
+              //                 start.value = "";
+              //                 end.value = "";
+              //               },
+              //               child: Icon(Icons.add, color: Colors.white),
+              //               style: ElevatedButton.styleFrom(
+              //                 shape: CircleBorder(),
+              //                 padding: EdgeInsets.all(10),
+              //                 backgroundColor: Colors.black, // <-- Button color
+              //                 foregroundColor: colors.Colors().deepYellow(1), // <-- Splash color
+              //               ),
+              //             ),
+              //           ],
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              //   visible: selectedPlanID == 2,
+              // ),
 
               SizedBox(height: 20,),
 
@@ -564,7 +564,7 @@ class SelectedPlan extends StatelessWidget {
                                 startDateText.text = DateFormat("dd-MM-yyyy").format(date);
 
                                 start.value = DateFormat("MMM dd, yyyy").format(date).toString();
-                                end.value = DateFormat("MMM dd, yyyy").format(date).toString();
+                                end.value = DateFormat("MMM dd, yyyy").format(date.add(Duration(days: plan['duration_amount']))).toString();
                               },
                               monthCellStyle: DateRangePickerMonthCellStyle(
                                   textStyle: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : AppColors.primary2Color,),
