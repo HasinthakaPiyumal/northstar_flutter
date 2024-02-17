@@ -10,8 +10,8 @@ class HttpClient {
   Dio dio = Dio();
 
   // static String baseURL = 'https://api.northstar.mv/api';
-  static String baseURL = 'http://175.41.184.146:8081/api';
-  // static String baseURL = 'https://api.northstar.mv/api';
+  // static String baseURL = 'http://175.41.184.146:8081/api';
+  static String baseURL = 'https://api.northstar.mv/api';
 
   static String buildInfo = '9.0.0 Build 1';
 
@@ -1697,6 +1697,8 @@ class HttpClient {
     }
   }
 
+  // Family Link APIS ======================================================== Start
+
   Future<Map> getFamiliLinks(dynamic data) async {
     Response response = await post('/family-link/actions/search', data);
     return {"code": response.statusCode, "data": response.data};
@@ -1706,6 +1708,14 @@ class HttpClient {
     Response response = await post('/family-link/actions/add', data);
     return {"code": response.statusCode, "data": response.data};
   }
+
+  Future<Map> inviteFamilyMember(dynamic data) async {
+    Response response = await post('/family-link/actions/invite', data);
+    return {"code": response.statusCode, "data": response.data};
+  }
+
+  // Family Link APIS ======================================================== End
+
   Future<Map> getFaqs() async {
     Response response = await get('/faq/get/all');
     return {"code": response.statusCode, "data": response.data};

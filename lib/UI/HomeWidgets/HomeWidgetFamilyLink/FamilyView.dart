@@ -412,13 +412,22 @@ void confirmAssignEnd(){
               SliverAppBar(
                 pinned: true,
                 expandedHeight: 110.0,
-                flexibleSpace: FlexibleSpaceBar(
-                  centerTitle: true,
-                  expandedTitleScale: 1.3,
-                  title: Text(
-                    '${familyLink['title']}'.capitalize as String,
-                    textAlign: TextAlign.center,
-                    style: TypographyStyles.title(20),
+                centerTitle: true,
+                // title: Text(
+                //   '${familyLink['title']} hhhhh'.capitalize as String,
+                //   textAlign: TextAlign.center,
+                //   style: TypographyStyles.title(20),
+                // ),
+                flexibleSpace: Padding(
+                  padding: const EdgeInsets.only(right:74.0),
+                  child: FlexibleSpaceBar(
+                    centerTitle: true,
+                    expandedTitleScale: 1.3,
+                    title: Text(
+                      '${familyLink['title']} hhhhh'.capitalize as String,
+                      textAlign: TextAlign.center,
+                      style: TypographyStyles.title(20),
+                    ),
                   ),
                 ),
               ),
