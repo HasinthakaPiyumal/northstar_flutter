@@ -10,8 +10,8 @@ class HttpClient {
   Dio dio = Dio();
 
   // static String baseURL = 'https://api.northstar.mv/api';
-  // static String baseURL = 'http://175.41.184.146:8081/api';
-  static String baseURL = 'https://api.northstar.mv/api';
+  static String baseURL = 'http://175.41.184.146:8081/api';
+  // static String baseURL = 'https://api.northstar.mv/api';
 
   static String buildInfo = '9.0.0 Build 1';
 
@@ -1708,9 +1708,34 @@ class HttpClient {
     Response response = await post('/family-link/actions/add', data);
     return {"code": response.statusCode, "data": response.data};
   }
+  Future<Map> updateFamilyLink(dynamic data) async {
+    Response response = await post('/family-link/actions/update', data);
+    return {"code": response.statusCode, "data": response.data};
+  }
 
   Future<Map> inviteFamilyMember(dynamic data) async {
     Response response = await post('/family-link/actions/invite', data);
+    return {"code": response.statusCode, "data": response.data};
+  }
+  Future<Map> getFamilyMembers(int id) async {
+    Response response = await post('/family-link/actions/member/search', {
+      "family_id":id
+    });
+    return {"code": response.statusCode, "data": response.data};
+  }
+
+  Future<Map> createAssignFamilyLink(dynamic data) async {
+    Response response = await post('/family-link/actions/create/assign', data);
+    return {"code": response.statusCode, "data": response.data};
+  }
+  Future<Map> updateAssignFamilyLink(dynamic data) async {
+    Response response = await post('/family-link/actions/update/assign', data);
+    return {"code": response.statusCode, "data": response.data};
+  }
+  Future<Map> getAssignListFamilyLink(int id) async {
+    Response response = await post('/family-link/actions/create/list', {
+      "family_id":id
+    });
     return {"code": response.statusCode, "data": response.data};
   }
 

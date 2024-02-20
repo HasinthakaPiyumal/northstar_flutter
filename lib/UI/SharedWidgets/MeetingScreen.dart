@@ -2,6 +2,7 @@ import 'package:agora_uikit/agora_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Models/AuthUser.dart';
+import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/UI/Layout.dart' as ScreenLayout;
 import 'package:north_star/UI/SharedWidgets/CommonConfirmDialog.dart';
 import 'package:pip_view/pip_view.dart';
@@ -40,7 +41,8 @@ class _MeetingScreenState extends State<MeetingScreen>
             appId: 'ed79caa1142a4a71846177dbf737e29e',
             channelName: widget.channelName,
             uid: authUser.id,
-            tokenUrl: "https://nodejs--hasinthakapiyum.repl.co",
+            // tokenUrl: "https://nodejs--hasinthakapiyum.repl.co",
+            tokenUrl: HttpClient.baseURL+"/meeting",
             username: authUser.name),
         enabledPermission: [
           Permission.camera,

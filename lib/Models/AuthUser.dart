@@ -34,10 +34,13 @@ class AuthUser {
     return true;
   }
 
+
   Future checkAuth() async {
     Map res = await httpClient.authCheckWithoutTokenRefresh();
     if (res['code'] == 200) {
       Map<String, dynamic> userData = res['data']['user'];
+      print("====userData");
+      print(userData);
       authUser.saveUser(userData);
     }
   }

@@ -4,14 +4,20 @@ import '../Styles/AppColors.dart';
 
 class DropdownButtonWithBorder extends StatefulWidget {
   final List<String> items;
-  final String selectedValue;
+  final String? selectedValue;
   final double width;
   final Function(String) onChanged;
 
+  final List<DropdownMenuItem<String>>? preBuildItems;
+
+  final bool isPreBuildItems;
+
   DropdownButtonWithBorder({
     required this.items,
-    required this.selectedValue,
+    this.selectedValue,
     required this.onChanged,
+    this.preBuildItems,
+    this.isPreBuildItems = false,
     this.width  = 160
   });
 
@@ -46,7 +52,7 @@ class _DropdownButtonWithBorderState extends State<DropdownButtonWithBorder> {
               },
               dropdownColor: AppColors.primary2Color,
               elevation: 2,
-              items: widget.items.map<DropdownMenuItem<String>>((String value) {
+              items:widget.isPreBuildItems? widget.preBuildItems: widget.items.map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
                   child: Text(value),

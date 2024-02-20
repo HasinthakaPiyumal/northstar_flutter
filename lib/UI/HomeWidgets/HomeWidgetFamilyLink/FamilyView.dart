@@ -1,8 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
+import 'package:north_star/Utils/PopUps.dart';
 import 'package:north_star/components/Buttons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -18,6 +20,22 @@ class FamilyView extends StatelessWidget {
     RxInt _currentTab = 0.obs;
     RxString _assignFilterDropdown = 'All'.obs;
     String preferenceName = "familyViewTabIndex";
+
+    RxList members = [].obs;
+    RxList assigns = [].obs;
+
+    TextEditingController _addMemberName = TextEditingController();
+    TextEditingController _addMemberNickName = TextEditingController();
+    TextEditingController _addMemberEmail = TextEditingController();
+
+    TextEditingController _addAssignTitle = TextEditingController();
+    TextEditingController _addAssignDescription = TextEditingController();
+    RxString _addAssignWho = "0".obs;
+    RxString _addAssignTo = "0".obs;
+
+    TextEditingController _updateFamilyName = TextEditingController(text: familyLink['title']);
+    TextEditingController _updateFamilyDescription = TextEditingController(text: familyLink['description']);
+    RxBool isChangedFamilySettings = (!(_updateFamilyDescription.text == familyLink['description'] && _updateFamilyName==familyLink['title'])).obs;
 
     print("familyLinkfamilyLink");
     print(familyLink);
@@ -35,12 +53,30 @@ class FamilyView extends StatelessWidget {
       prefs.setInt(preferenceName, index);
     }
 
+    void getMembers() async {
+      Map res = await httpClient.getFamilyMembers(familyLink['family_id']);
+      if (res['code'] == 200) {
+        members.value = res['data'];
+      } else {
+        showSnack("Error", res['data']['message']);
+      }
+    }
+    void getAssigns() async {
+      Map res = await httpClient.getAssignListFamilyLink(familyLink['family_id']);
+      if (res['code'] == 200) {
+        assigns.value = res['data'];
+      } else {
+        showSnack("Error", res['data']['message']);
+      }
+    }
+
     void addNewMember() async {
       MaterialBottomSheet("add new member",
           child: Column(
             children: [
               TextField(
                 maxLength: 50,
+                controller: _addMemberName,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: "Name",
@@ -51,6 +87,7 @@ class FamilyView extends StatelessWidget {
               ),
               TextField(
                 maxLength: 50,
+                controller: _addMemberNickName,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: "Nick Name",
@@ -61,6 +98,7 @@ class FamilyView extends StatelessWidget {
               ),
               TextField(
                 maxLength: 50,
+                controller: _addMemberEmail,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: "Email",
@@ -70,74 +108,47 @@ class FamilyView extends StatelessWidget {
                 height: 20,
               ),
               Buttons.yellowFlatButton(
-                  onPressed: () {}, label: "Invite", width: Get.width * 0.6),
+                  onPressed: ()async {
+                    Map res = await httpClient.inviteFamilyMember({
+                      "name":_addMemberName.text,
+                      "nick_name":_addMemberNickName.text,
+                      "email":_addMemberEmail.text,
+                      "family_id":familyLink['family_id']
+                    });
+                    print(res);
+                    if(res['code']==200){
+                      getMembers();
+                      Get.back();
+                    }else{
+                      showSnack("Failed", res['data']['message']);
+                    }
+                  }, label: "Invite", width: Get.width * 0.6),
             ],
           ));
-      // Get.bottomSheet(
-      //     SingleChildScrollView(
-      //       physics: BouncingScrollPhysics(),
-      //       child: Container(
-      //         padding: const EdgeInsets.only(top:10.0),
-      //         decoration:BoxDecoration(color: AppColors.primary2Color,borderRadius: BorderRadius.vertical(top: Radius.circular(20.0))),
-      //         child: Column(
-      //           children: [
-      //             Container(
-      //               decoration: BoxDecoration(borderRadius:BorderRadius.circular(10),color: AppColors.accentColor),width: 60,height: 5,),
-      //             SizedBox(height: 20,),
-      //             Text("Add New Member",style: TypographyStyles.title(20),),
-      //             Container(
-      //               padding: const EdgeInsets.all(16.0),
-      //               child: Column(
-      //                 children: [
-      //                   TextField(
-      //                     decoration: InputDecoration(
-      //                       border: OutlineInputBorder(),
-      //                       labelText: "Name", // Use labelText instead of label
-      //                     ),
-      //                   ),
-      //                   SizedBox(
-      //                     height: 10,
-      //                   ),
-      //                   TextField(
-      //                     decoration: InputDecoration(
-      //                       border: OutlineInputBorder(),
-      //                       labelText: "Nick Name", // Use labelText instead of label
-      //                     ),
-      //                   ),
-      //                   SizedBox(
-      //                     height: 10,
-      //                   ),
-      //                   TextField(
-      //                     decoration: InputDecoration(
-      //                       border: OutlineInputBorder(),
-      //                       labelText: "Email", // Use labelText instead of label
-      //                     ),
-      //                   ),
-      //                   SizedBox(
-      //                     height: 20,
-      //                   ),
-      //                   Buttons.yellowFlatButton(
-      //                       onPressed: () {}, label: "Invite", width: Get.width * 0.6),
-      //                 ],
-      //               ),
-      //             ),
-      //             SizedBox(height: 20,),
-      //           ],
-      //         ),
-      //       ),
-      //     ),
-      //     isScrollControlled: true,
-      //     // backgroundColor: AppColors.primary2Color,
-      //   ignoreSafeArea: true,
-      //   persistent: false
-      // );
     }
 
     void createNewAssign() {
+      List<DropdownMenuItem<String>> memberDropDown = members.value.map<DropdownMenuItem<String>>((dynamic member) {
+        return DropdownMenuItem<String>(
+          value: '${member['userID']}',
+          child: Text('${member['user_name']}${member['userID']}'),
+        );
+      }).toList();
+      List<DropdownMenuItem<String>> assignWhoDropDown = memberDropDown.toList();
+      List<DropdownMenuItem<String>> assignToDropDown = memberDropDown.toList();
+      assignWhoDropDown.insert(0, DropdownMenuItem<String>(
+        value: "0",
+        child: Text('Assign Who'),
+      ));
+      assignToDropDown.insert(0, DropdownMenuItem<String>(
+        value: "0",
+        child: Text('Assign To'),
+      ));
       MaterialBottomSheet("create new assign",
           child: Column(
             children: [
               TextField(
+                controller: _addAssignTitle,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: "Assign What?",
@@ -149,6 +160,7 @@ class FamilyView extends StatelessWidget {
               TextField(
                 maxLength: 500,
                 maxLines: 3,
+                controller: _addAssignDescription,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: "Description",
@@ -157,27 +169,53 @@ class FamilyView extends StatelessWidget {
               SizedBox(
                 height: 10,
               ),
-              DropdownButtonWithBorder(
-                items: ["Assign who"],
-                selectedValue: 'Assign who',
-                onChanged: (String) {},
-                width: Get.width,
+              Obx(()=> DropdownButtonWithBorder(
+                  items: [],
+                  preBuildItems:assignWhoDropDown,
+                  selectedValue: _addAssignWho.value,
+                  isPreBuildItems:true,
+                  onChanged:(String val) {
+                    _addAssignWho.value = val;
+                  },
+                  width: Get.width,
+                ),
               ),
               SizedBox(height: 20),
-              DropdownButtonWithBorder(
-                items: ["Assign to"],
-                selectedValue: 'Assign to',
-                onChanged: (String) {},
-                width: Get.width,
+              Obx(()=> DropdownButtonWithBorder(
+                  items: [],
+                  preBuildItems:assignToDropDown,
+                  selectedValue: _addAssignTo.value,
+                  isPreBuildItems:true,
+                  onChanged: (String val) {
+                    _addAssignTo.value = val;
+                  },
+                  width: Get.width,
+                ),
               ),
               SizedBox(
                 height: 30,
               ),
               Buttons.yellowFlatButton(
-                  onPressed: () {}, label: "Invite", width: Get.width * 0.6),
+                  onPressed: () async{
+                    Map res = await httpClient.createAssignFamilyLink({
+                      "family_id":familyLink['family_id'],
+                      "title":_addAssignTitle.text,
+                      "description":_addAssignDescription.text,
+                      "asin_who":_addAssignWho.value,
+                      "asin_to":_addAssignTo.value
+                    });
+                    if(res['code']==200){
+                      Get.back();
+                      getAssigns();
+                      showSnack("Success", "Successfully created assign");
+                    }else{
+                      showSnack("Failed", res['data']['message']);
+                    }
+                  }, label: "Assign", width: Get.width * 0.6),
             ],
           ));
     }
+
     void editAssign() {
       MaterialBottomSheet("edit assigning",
           child: Column(
@@ -224,191 +262,215 @@ class FamilyView extends StatelessWidget {
           ));
     }
 
-    void viewAssign(){
+    void viewAssign() {
       String title = "manage father schedules";
-      String description = "Lorem ipsum dolor sit amet consectetur. Amet gravida ut senectus tortor ut. Molestie libero et nulla a consequat viverra molestie quis. Bibendum nec tincidunt in sed imperdiet purus nulla orci suscipit.";
+      String description =
+          "Lorem ipsum dolor sit amet consectetur. Amet gravida ut senectus tortor ut. Molestie libero et nulla a consequat viverra molestie quis. Bibendum nec tincidunt in sed imperdiet purus nulla orci suscipit.";
       String assignee = "jason andrew";
       String date = "2023/04/05";
 
-      MaterialBottomSheet("Manage father schedule",child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Container(
-            width: double.infinity,
-            // height: 119,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: double.infinity,
-                  // height: 84,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Container(
-                                // height: 34,
-                                padding:
-                                const EdgeInsets.symmetric(vertical: 5),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Expanded(
-                                      child: SizedBox(
-                                        child: Text(
-                                          "Ongoing",
-                                          style: TypographyStyles.textWithWeight(16,FontWeight.w400),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 22),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 5),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: SizedBox(
-                                child: Text(
-                                  description.capitalizeFirst as String,
-                                  style: TypographyStyles.textWithWeight(
-                                      12, FontWeight.w300),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Container(
-                  width: double.infinity,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Container(
-                          height: 31,
-                          padding: const EdgeInsets.symmetric(vertical: 5),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: SizedBox(
-                                  child: Text.rich(
-                                    TextSpan(
+      MaterialBottomSheet("Manage father schedule",
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Container(
+                width: double.infinity,
+                // height: 119,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      // height: 84,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    // height: 34,
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 5),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
-                                        TextSpan(
-                                          text: 'Assign to : ',
-                                          style:
-                                          TypographyStyles.textWithWeight(
-                                              14, FontWeight.w300),
-                                        ),
-                                        TextSpan(
-                                          text: assignee.capitalize as String,
-                                          style:
-                                          TypographyStyles.textWithWeight(
-                                              14, FontWeight.w500),
+                                        Expanded(
+                                          child: SizedBox(
+                                            child: Text(
+                                              "Ongoing",
+                                              style: TypographyStyles
+                                                  .textWithWeight(
+                                                      16, FontWeight.w400),
+                                            ),
+                                          ),
                                         ),
                                       ],
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 5),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Date : $date',
-                              style: TypographyStyles.textWithWeight(
-                                  14, FontWeight.w300),
+                                const SizedBox(width: 22),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                          const SizedBox(height: 4),
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(vertical: 5),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: SizedBox(
+                                    child: Text(
+                                      description.capitalizeFirst as String,
+                                      style: TypographyStyles.textWithWeight(
+                                          12, FontWeight.w300),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 4),
+                    Container(
+                      width: double.infinity,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              height: 31,
+                              padding: const EdgeInsets.symmetric(vertical: 5),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: SizedBox(
+                                      child: Text.rich(
+                                        TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text: 'Assign to : ',
+                                              style: TypographyStyles
+                                                  .textWithWeight(
+                                                      14, FontWeight.w300),
+                                            ),
+                                            TextSpan(
+                                              text:
+                                                  assignee.capitalize as String,
+                                              style: TypographyStyles
+                                                  .textWithWeight(
+                                                      14, FontWeight.w500),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 5),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Date : $date',
+                                  style: TypographyStyles.textWithWeight(
+                                      14, FontWeight.w300),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: Buttons.yellowFlatButton(
-                    onPressed: editAssign, label: "Edit"),
               ),
-              SizedBox(width:10),
-              Expanded(
-                child: Buttons.outlineButton(
-                    onPressed: (){}, label: "End Assign"),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: Buttons.yellowFlatButton(
+                        onPressed: editAssign, label: "Edit"),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Buttons.outlineButton(
+                        onPressed: () {}, label: "End Assign"),
+                  ),
+                ],
               ),
             ],
-          ),
-        ],
-      ));
+          ));
     }
 
-    void callConfirmVoice(){
-      ConfirmDialogs(buttonLabel: 'make a voice call',action:'make a voice call',onPressed: (){});
+    void callConfirmVoice() {
+      ConfirmDialogs(
+          buttonLabel: 'make a voice call',
+          action: 'make a voice call',
+          onPressed: () {});
     }
-    void callConfirmVideo(){
-      ConfirmDialogs(buttonLabel: 'make a video call',action:'make a voice call',onPressed: (){});
+
+    void callConfirmVideo() {
+      ConfirmDialogs(
+          buttonLabel: 'make a video call',
+          action: 'make a voice call',
+          onPressed: () {});
     }
-void confirmAssignEnd(){
-      ConfirmDialogs(buttonLabel: 'end assign',action:'end assign',onPressed: (){});
+
+    void confirmAssignEnd() {
+      ConfirmDialogs(
+          buttonLabel: 'end assign', action: 'end assign', onPressed: () {});
     }
-    void confirmDeleteFamilyLink(){
-      ConfirmDialogs(buttonLabel: 'delete family link',action:'delete',onPressed: (){});
+
+    void confirmDeleteFamilyLink() {
+      ConfirmDialogs(
+          buttonLabel: 'delete family link',
+          action: 'delete',
+          onPressed: () async {
+            // await httpClient.
+          });
     }
+
+    getMembers();
+    getAssigns();
 
     retrieveSelectedTabIndex();
     return Scaffold(
       body: Obx(() => CustomScrollView(
             slivers: <Widget>[
-
               SliverAppBar(
                 pinned: true,
                 expandedHeight: 110.0,
@@ -419,12 +481,12 @@ void confirmAssignEnd(){
                 //   style: TypographyStyles.title(20),
                 // ),
                 flexibleSpace: Padding(
-                  padding: const EdgeInsets.only(right:74.0),
+                  padding: const EdgeInsets.only(right: 74.0),
                   child: FlexibleSpaceBar(
                     centerTitle: true,
                     expandedTitleScale: 1.3,
                     title: Text(
-                      '${familyLink['title']} hhhhh'.capitalize as String,
+                      '${familyLink['title']}'.capitalize as String,
                       textAlign: TextAlign.center,
                       style: TypographyStyles.title(20),
                     ),
@@ -440,53 +502,50 @@ void confirmAssignEnd(){
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Text(
-                            '${familyLink['description']}'
-                                .capitalize as String,
+                            '${familyLink['description']}'.capitalize as String,
                             textAlign: TextAlign.center,
                             style: TypographyStyles.text(16),
                           ),
                           SizedBox(
                             height: 10,
                           ),
-                          Container(
-                            width: 36 * 3 - 12,
-                            child: Stack(
-                              children: [
-                                Positioned(
-                                  left: 60,
-                                  child: ClipOval(
-                                    child: CachedNetworkImage(
-                                      imageUrl:
-                                          "https://fastly.picsum.photos/id/679/200/200.jpg?hmac=sPsw4YJPQkWFqo2k5UycejGhY4UXvaDXStGmvJEhFBA",
-                                      width: 36,
-                                      height: 36,
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  left: 30,
-                                  child: ClipOval(
-                                    child: CachedNetworkImage(
-                                      imageUrl:
-                                          "https://fastly.picsum.photos/id/976/200/200.jpg?hmac=xz9CTpScnLHQm_wNTcJmz8bQM6-ApTQnof5-4LGtu-s",
-                                      width: 36,
-                                      height: 36,
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  child: ClipOval(
-                                    child: CachedNetworkImage(
-                                      imageUrl:
-                                          "https://fastly.picsum.photos/id/318/200/200.jpg?hmac=bXfpcSpOySqXMIev1AISKO15vvxPgau4JEA36kuhG1Y",
-                                      width: 36,
-                                      height: 36,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                          // Container(
+                          //   width: 36 * 3 - 12,
+                          //   child: Stack(
+                          //     children: [
+                          //       SizedBox(
+                          //         width:100,
+                          //         child: ListView.builder(
+                          //           shrinkWrap: true,
+                          //           itemCount:members.length>3?3:members.length,
+                          //           // scrollDirection: Axis.horizontal,
+                          //           itemBuilder: (context,index) {
+                          //             return Positioned(
+                          //               left: 60,
+                          //               child: Container(
+                          //                 width: 36,
+                          //                 height: 36,
+                          //                 decoration: BoxDecoration(
+                          //                   shape: BoxShape.circle,
+                          //                 ),
+                          //                 child: CircleAvatar(
+                          //                   child: ClipOval(
+                          //                     child: CachedNetworkImage(
+                          //                       imageUrl:
+                          //                       HttpClient.s3ResourcesBaseUrl+"avatars/"+members[index]["avatar_url"],
+                          //                       width: 36,
+                          //                       height: 36,
+                          //                     ),
+                          //                   ),
+                          //                 ),
+                          //               ),
+                          //             );
+                          //           }
+                          //         ),
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
                           SizedBox(
                             height: 20,
                           )
@@ -549,69 +608,77 @@ void confirmAssignEnd(){
                     child: Column(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          padding: const EdgeInsets.symmetric(vertical: 5.0),
                           child: Column(
                             children: [
                               Visibility(
                                   visible: _currentTab.value == 0,
                                   child: Container(
-                                      child: Column(
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
+                                      // child: ListView.builder(
+                                      //   shrinkWrap: true,
+                                      //     physics: NeverScrollableScrollPhysics(),
+                                      //     itemCount: 40,
+                                      //     itemBuilder: (context, index) {
+                                      //       return CustomProfileContainer(
+                                      //         imageUrl:
+                                      //             "https://fastly.picsum.photos/id/679/200/200.jpg?hmac=sPsw4YJPQkWFqo2k5UycejGhY4UXvaDXStGmvJEhFBA",
+                                      //         name: "Mark Andrew",
+                                      //         description:
+                                      //             "Adventurous spirit seeking life's wonders",
+                                      //         isAdmin: true,
+                                      //       );
+                                      //     })
+
+                                          child: Column(
                                         children: [
-                                          Buttons.iconButton(
-                                              icon: Icons.call,
-                                              onPressed: callConfirmVoice),
+                                          // Row(
+                                          //   mainAxisAlignment:
+                                          //       MainAxisAlignment.end,
+                                          //   children: [
+                                          //     Buttons.iconButton(
+                                          //         icon: Icons.call,
+                                          //         onPressed: callConfirmVoice),
+                                          //     SizedBox(
+                                          //       width: 8,
+                                          //     ),
+                                          //     Buttons.iconButton(
+                                          //         icon: Icons.video_call_rounded,
+                                          //         onPressed: callConfirmVideo),
+                                          //   ],
+                                          // ),
+                                          ListView.builder(
+                                            shrinkWrap: true,
+                                              physics: NeverScrollableScrollPhysics(),
+                                                itemCount: members.length,
+                                              itemBuilder: (context,index) {
+                                              print(members[index]);
+                                                return CustomProfileContainer(
+                                                  imageUrl:
+                                                      HttpClient.s3ResourcesBaseUrl+"avatars/"+members[index]["avatar_url"],
+                                                  name: members[index]["user_name"],
+                                                  description:
+                                                  members[index]["email"],
+                                                  isAdmin: members[index]["admin"]=="1",
+                                                );
+                                              }
+                                            ),
+
                                           SizedBox(
-                                            width: 8,
+                                            height: 20,
                                           ),
-                                          Buttons.iconButton(
-                                              icon: Icons.video_call_rounded,
-                                              onPressed: callConfirmVideo),
+                                          // Modal(),
+                                          Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                Buttons.yellowFlatButton(
+                                                    onPressed: addNewMember,
+                                                    label: "Add New Member",
+                                                    width: 171),
+                                              ])
                                         ],
-                                      ),
-                                      SizedBox(
-                                        height: 8,
-                                      ),
-                                      CustomProfileContainer(
-                                        imageUrl:
-                                            "https://fastly.picsum.photos/id/679/200/200.jpg?hmac=sPsw4YJPQkWFqo2k5UycejGhY4UXvaDXStGmvJEhFBA",
-                                        name: "Mark Andrew",
-                                        description:
-                                            "Adventurous spirit seeking life's wonders",
-                                        isAdmin: true,
-                                      ),
-                                      CustomProfileContainer(
-                                        imageUrl:
-                                            "https://fastly.picsum.photos/id/976/200/200.jpg?hmac=xz9CTpScnLHQm_wNTcJmz8bQM6-ApTQnof5-4LGtu-s",
-                                        name: "Shark Andrew",
-                                        description:
-                                            "Adventurous spirit seeking life's wonders",
-                                      ),
-                                      CustomProfileContainer(
-                                        imageUrl:
-                                            "https://fastly.picsum.photos/id/976/200/200.jpg?hmac=xz9CTpScnLHQm_wNTcJmz8bQM6-ApTQnof5-4LGtu-s",
-                                        name: "Shark Andrew",
-                                        description:
-                                            "Adventurous spirit seeking life's wonders",
-                                      ),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      // Modal(),
-                                      Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          children: [
-                                            Buttons.yellowFlatButton(
-                                                onPressed: addNewMember,
-                                                label: "Add New Member",
-                                                width: 171),
-                                          ])
-                                    ],
-                                  ))),
+                                      )
+                                      )),
                               Visibility(
                                   visible: _currentTab.value == 1,
                                   child: Column(
@@ -643,17 +710,23 @@ void confirmAssignEnd(){
                                       SizedBox(
                                         height: 20,
                                       ),
-                                      TaskCard(
-                                        title: 'manage father schedules',
-                                        status: 'pending',
-                                        description:
-                                            'Lorem ipsum dolor sit amet consectetur. Neque feugiat pellentesque nibh in in id nec.',
-                                        assignee: 'jason andrew',
-                                        date: '2023/04/05',
-                                        onButtonPress: () {
-                                          // Handle cancel button press
-                                        },
-                                        actionButtonLabel: "Cancel",
+                                      ListView.builder(
+                                        itemCount: assigns.length,
+                                        physics: NeverScrollableScrollPhysics(),
+                                        shrinkWrap: true,
+                                        itemBuilder: (context,index) {
+                                          return TaskCard(
+                                            title: assigns[index]['title'],
+                                            status: assigns[index]['status'],
+                                            description: assigns[index]['description'],
+                                            assignee: assigns[index]['description'],
+                                            date: assigns[index]['date'],
+                                            onButtonPress: () {
+                                              // Handle cancel button press
+                                            },
+                                            actionButtonLabel: "Cancel",
+                                          );
+                                        }
                                       ),
                                       TaskCard(
                                         title: 'manage father schedules',
@@ -678,61 +751,84 @@ void confirmAssignEnd(){
                               Visibility(
                                   visible: _currentTab.value == 2,
                                   child: Column(
-                                    children: [
-                                      Container(
-                                          padding: EdgeInsets.all(16),
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              color: Get.isDarkMode
-                                                  ? AppColors.primary2Color
-                                                  : Colors.white),
-                                          child: Column(
-                                            children: [
-                                              TextField(
-                                                decoration: InputDecoration(
-                                                  border: OutlineInputBorder(),
-                                                  label: Text("Name of family"),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 20,
-                                              ),
-                                              TextField(
-                                                maxLength: 500,
-                                                maxLines: 2,
-                                                decoration: InputDecoration(
-                                                  border: OutlineInputBorder(),
-                                                  label: Text("Name"),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 20,
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                children: [
-                                                  Buttons.yellowFlatButton(
-                                                      onPressed: () {},
-                                                      width: 120,
-                                                      label: "Save"),
-                                                  SizedBox(
-                                                    width: 10,
+                                    children: [Container(
+                                            padding: EdgeInsets.all(16),
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                color: Get.isDarkMode
+                                                    ? AppColors.primary2Color
+                                                    : Colors.white),
+                                            child: Column(
+                                              children: [
+                                                TextField(
+                                                  onChanged: (val){
+                                                    if(_updateFamilyDescription.text == familyLink['description'] && _updateFamilyName==familyLink['title']){
+                                                      isChangedFamilySettings.value = false;
+                                                    }else{
+                                                      isChangedFamilySettings.value = true;
+                                                    }
+                                                    print(isChangedFamilySettings.value);
+                                                  },
+                                                  controller:_updateFamilyName,
+                                                  decoration: InputDecoration(
+                                                    border: OutlineInputBorder(),
+                                                    label: Text("Name of family"),
                                                   ),
-                                                  Buttons.outlineButton(
-                                                      onPressed: () {},
-                                                      width: 120,
-                                                      label: "Edit")
-                                                ],
-                                              ),
-                                            ],
-                                          )),
+                                                ),
+                                                SizedBox(
+                                                  height: 20,
+                                                ),
+                                                TextField(
+                                                  maxLength: 500,
+                                                  maxLines: 2,
+                                                  onChanged: (val){
+                                                    print(_updateFamilyDescription.text == familyLink['description']);
+                                                    if(_updateFamilyDescription.text == familyLink['description'] && _updateFamilyName==familyLink['title']){
+                                                      isChangedFamilySettings.value = false;
+                                                    }else{
+                                                      isChangedFamilySettings.value = true;
+                                                    }
+                                                  },
+                                                  controller:_updateFamilyDescription,
+                                                  decoration: InputDecoration(
+                                                    border: OutlineInputBorder(),
+                                                    label: Text("Name"),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 20,
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    Buttons.yellowFlatButton(
+                                                          onPressed: () async{
+                                                            Map res = await httpClient.updateFamilyLink({
+                                                              "title":_updateFamilyName.text,
+                                                              "description":_updateFamilyDescription.text,
+                                                              "family_id":familyLink['family_id']
+                                                            });
+                                                            if(res['code']==200){
+                                                              showSnack("Success", "Successfully saved family settings");
+                                                            }else{
+                                                              showSnack("Failed", res['data']['message']);
+                                                            }
+                                                          },
+                                                          width: 120,
+                                                          label: "Save"),
+
+                                                  ],
+                                                ),
+                                              ],
+                                            )),
+
                                       SizedBox(
                                         height: 40,
                                       ),
                                       Buttons.outlineTextIconButton(
-                                          onPressed: () {},
+                                          onPressed: confirmDeleteFamilyLink,
                                           width: Get.width,
                                           label: "Delete Family Link",
                                           icon: Icons.delete_outline_rounded)

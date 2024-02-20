@@ -97,6 +97,8 @@ class WatchDataController {
       stepsDataStatus.value = 'No Steps Data Found.';
     } else {
       try {
+        print("steps adding======");
+        print(jsonData);
 
         jsonData
             .where((element) => element['type'] == 'STEPS').forEach((element) {
@@ -104,6 +106,7 @@ class WatchDataController {
               print(element);
               if(date.day == DateTime.now().day){
                 lastSteps.value += double.parse(element['value'].toString()).round();
+                print(lastSteps.value);
               }
 
 
@@ -150,7 +153,6 @@ class WatchDataController {
         tempDataStatus.value = 'Temperature Sync Error occured.';
       }
     }
-
     ready.value = true;
   }
 
@@ -194,6 +196,14 @@ class WatchDataController {
       DateTime to = DateTime.now();
       DateTime from = to.subtract(Duration(days: daysToGet));
       healthData.value = await health.getHealthDataFromTypes(from, to, types);
+      var now = DateTime.now();
+      List result = await health.getHealthDataFromTypes(
+          now.subtract(Duration(days: 1)), now.add(Duration(days: 1)),
+          [HealthDataType.STEPS]);
+      print('===result');
+      print('===result.length => ${result.length}');
+      print('===healthData.length => ${healthData.length}');
+      print(result);
       print(healthData.value);
       if (healthData.isEmpty) {
         statusText.value = 'Connected: No Data Found.';
@@ -256,6 +266,7 @@ class WatchDataController {
     emptyAll();
 
     if(authUser.id == userId){
+      print(authUser.user['health_data'] && (authUser.id == userId));
       enabled = authUser.user['health_data'] && (authUser.id == userId);
     } else {
       enabled = true;

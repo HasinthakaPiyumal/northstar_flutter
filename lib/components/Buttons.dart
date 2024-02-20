@@ -15,17 +15,18 @@ class Buttons {
     FontWeight fontWeight = FontWeight.w400,
     Color backgroundColor = AppColors.accentColor,
     Color textColor = AppColors.textOnAccentColor,
-    bool buttonFit = false
+    bool buttonFit = false,
+    bool disabled = false
   }) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: onPressed,
-        splashColor: Colors.yellow,
+        onTap: disabled?(){}:onPressed,
+        splashColor: disabled?Colors.transparent:Colors.yellow,
         borderRadius: BorderRadius.circular(5),
         child: Ink(
           decoration: ShapeDecoration(
-            color: backgroundColor,
+            color: disabled? backgroundColor.withOpacity(0.3):backgroundColor,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
           ),
