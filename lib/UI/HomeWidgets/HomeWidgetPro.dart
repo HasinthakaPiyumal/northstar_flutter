@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:north_star/Controllers/TaxController.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Models/ProModel.dart';
@@ -35,6 +36,8 @@ class HomeWidgetPro extends StatelessWidget {
     ProList _proList = ProList();
     RxInt selectedPackage = 0.obs;
 
+    RxString currentTransactionId = "".obs;
+
     RxDouble couponValue = 0.0.obs;
     RxString couponCode = "--".obs;
 
@@ -64,6 +67,7 @@ class HomeWidgetPro extends StatelessWidget {
     }
 
     void subscribeNow(Map plan) async {
+      print("subscribeNow calling");
       ready.value = false;
       Map durationsMap = {'month': 1, 'year': 12, 'lifetime': 9999};
       int durationAmountMultiplier = durationsMap[plan['duration_unit']];
@@ -72,12 +76,14 @@ class HomeWidgetPro extends StatelessWidget {
       Map res = await httpClient.subscribeNow({
         'months': months,
         'user_id': authUser.id,
-        'amount': getPlanPrice(plan) - couponValue.value
+        'planId':plansList[_current.value]['id'],
+        'amount': getPlanPrice(plan) - couponValue.value + taxController.getCalculatedTax(getPlanPrice(plan) - couponValue.value)
       });
       print('printing price ${getPlanPrice(plan)}');
       print(res);
       if (res['code'] == 200) {
         print(res['data']['url']);
+        currentTransactionId.value = res['data']['id'];
         await launchUrl(Uri.parse(res['data']['url']),
             mode: LaunchMode.externalApplication);
         check.value = true;
@@ -321,15 +327,23 @@ class HomeWidgetPro extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(width: 16),
-                              Text(
-                                'Pay with Card',
-                                style: TextStyle(
-                                  color: AppColors.accentColor,
-                                  fontSize: 20,
-                                  fontFamily: 'Bebas Neue',
-                                  fontWeight: FontWeight.w400,
-                                  height: 0,
-                                ),
+                              Column(
+                                children: [
+                                  Text(
+                                    'Pay with Card',
+                                    style: TextStyle(
+                                      color: AppColors.accentColor,
+                                      fontSize: 20,
+                                      fontFamily: 'Bebas Neue',
+                                      fontWeight: FontWeight.w400,
+                                      height: 0,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Tax amount: MVR ${(taxController.getCalculatedTax(getPlanPrice(plan) - couponValue.value)).toStringAsFixed(2)}',
+                                    style: TypographyStyles.text(10),
+                                  )
+                                ],
                               )
                             ]),
                       )
@@ -355,8 +369,25 @@ class HomeWidgetPro extends StatelessWidget {
           ]);
     }
 
-    void verifyAndGoHome() async {
+    void verifyAndGoHome({bool trial = false}) async {
       ready.value = false;
+      print("paymentStatus out");
+      if(!trial){
+        Map paymentStatus = await httpClient.paymentVerify(currentTransactionId.value);
+        print("paymentStatus");
+        print(paymentStatus);
+        if(paymentStatus['code']!=200){
+          showSnack('Payment Not Verified Yet!',
+              'If you just purchased the Pro Version please await for the Bank to Verify the Payment!');
+          return;
+        }else{
+          if(!paymentStatus['data']['confirmed']) {
+            showSnack('Payment Not Verified Yet!',
+                'If you just purchased the Pro Version please await for the Bank to Verify the Payment!');
+            return;
+          }
+        }
+      }
       Map res = await httpClient.getMyProfile();
       if (res['code'] == 200) {
         print(res['data']['subscription']);
@@ -408,7 +439,7 @@ class HomeWidgetPro extends StatelessWidget {
       ready.value = false;
       Map res = await httpClient.activateFreeTrail();
       if (res['code'] == 200) {
-        verifyAndGoHome();
+        verifyAndGoHome(trial:true);
       } else {
         print(res);
       }

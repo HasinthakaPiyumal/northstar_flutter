@@ -2,12 +2,15 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:north_star/Controllers/FirebaseMessageController.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/CallData.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:uuid/uuid.dart';
 
+import '../Models/Enums.dart';
 import 'CallConrtoller.dart';
 
 class AgoraCallController {
@@ -47,9 +50,10 @@ class AgoraCallController {
       "expirationTimeInSeconds": 3600
     };
     dynamic res = await httpClient.getRtcToken(data);
-    res['data'] = json.decode(res['data']);
-    print('rtc token ---> ${res['data']}');
-    return res['data']['token'];
+    print('rtcToken');
+    print(res);
+    Map rctData = json.decode(res['data']);
+    return rctData['rtcToken'];
   }
 
   static Future<bool> init(Map<String, dynamic> userData) async {
@@ -229,6 +233,7 @@ class AgoraCallController {
   //   Get.back();
   // }
   static void leaveCall() async {
+    callMessage(CallData().id, CallData().channelName, CallEvents.DisconnectCall);
     await agoraEngine.leaveChannel();
     accepted.value = false;
     isJoined = false;
@@ -243,4 +248,40 @@ class AgoraCallController {
     print("calling end");
     Get.back(closeOverlays: true, canPop: false);
   }
+}
+
+
+
+void callMessage(int userId, String channelName,CallEvents callEvent) async {
+  String deviceToken = await getTokenByUser(userId);
+  Map res = await httpClient.getMyProfile();
+  dynamic avatar = res["data"]["avatar_url"] ?? "default.jpg";
+  dynamic data = {
+    "channel": MessageChannel.Call.index.toString(),
+    "method": callEvent.index.toString(),
+    "caller": authUser.id.toString(),
+    "caller_name": authUser.name,
+    "caller_avatar": avatar,
+    "callee": userId.toString(),
+    "currentTime": DateTime.now().toUtc().toString(),
+    "channel_name": channelName,
+  };
+  if (deviceToken == "") {
+    return;
+  }
+  sendFCMMessage(deviceToken, data);
+}
+
+Future<String> getTokenByUser(int id) async {
+  dynamic currentToken = await FirebaseFirestore.instance
+      .collection("UserTokens")
+      .doc(id.toString())
+      .get();
+  print("token $currentToken");
+  if (currentToken.exists) {
+    currentToken = currentToken.data()['token'];
+  } else {
+    currentToken = "";
+  }
+  return currentToken;
 }

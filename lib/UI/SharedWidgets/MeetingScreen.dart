@@ -36,13 +36,15 @@ class _MeetingScreenState extends State<MeetingScreen>
 
   void initAgora() async {
     // LocalNotificationsController.showNonRemovableNotification();
+    print(HttpClient.baseURL+"/rtcToken");
     _client = AgoraClient(
         agoraConnectionData: AgoraConnectionData(
             appId: 'ed79caa1142a4a71846177dbf737e29e',
             channelName: widget.channelName,
             uid: authUser.id,
-            // tokenUrl: "https://nodejs--hasinthakapiyum.repl.co",
-            tokenUrl: HttpClient.baseURL+"/meeting",
+            tokenUrl: "https://token.northstar.mv",
+            // tokenUrl: "https://4050bade-f098-48ad-8e62-690a7885b77a-00-19wik6yvqe8gh.sisko.replit.dev",
+            // tokenUrl: HttpClient.baseURL+"/rtcToken",
             username: authUser.name),
         enabledPermission: [
           Permission.camera,

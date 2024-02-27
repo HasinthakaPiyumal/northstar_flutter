@@ -90,7 +90,7 @@ class VoiceCallUI extends StatelessWidget {
                     () => Text(
                   AgoraCallController.callStatus.value == 'Connected'
                       ? '${AgoraCallController.duration.value.inMinutes.toString().padLeft(2, '0')}:${AgoraCallController.duration.value.inSeconds.remainder(60).toString().padLeft(2, '0')}'
-                      : 'Calling...',
+                      : AgoraCallController.callStatus.value=="Disconnected"?"Disconnected":'Calling...',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white,
@@ -124,17 +124,17 @@ class VoiceCallUI extends StatelessWidget {
                         child: Icon(Icons.volume_up_outlined, size: 32),
                       ),
                     )),
-                    MaterialButton(
-                      onPressed: () async {
-                        // AgoraCallController.switchMute();
-                      },
-                      shape: CircleBorder(),
-                      elevation: 0,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Icon(Icons.video_call_rounded, size: 32),
-                      ),
-                    ),
+                    // MaterialButton(
+                    //   onPressed: () async {
+                    //     // AgoraCallController.switchMute();
+                    //   },
+                    //   shape: CircleBorder(),
+                    //   elevation: 0,
+                    //   child: Padding(
+                    //     padding: const EdgeInsets.all(8.0),
+                    //     child: Icon(Icons.video_call_rounded, size: 32),
+                    //   ),
+                    // ),
                     Obx(() => MaterialButton(
                       onPressed: () async {
                         AgoraCallController.switchMute();

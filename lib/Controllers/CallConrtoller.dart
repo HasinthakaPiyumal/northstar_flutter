@@ -131,7 +131,7 @@ void setupNotificationAction() async{
         break;
       case Event.actionCallAccept:
       // TODO: Handle this case.
-        print("answer clicked");
+        print("answer clicked 00");
         FlutterCallkitIncoming.endAllCalls();
         Get.to(()=>CallView(callData: {"channel":callData.channelName,"from":{"avatar_url":callData.avatar,"name":callData.callerName}},));
         break;

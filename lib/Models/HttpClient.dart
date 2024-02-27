@@ -10,8 +10,8 @@ class HttpClient {
   Dio dio = Dio();
 
   // static String baseURL = 'https://api.northstar.mv/api';
-  static String baseURL = 'http://175.41.184.146:8081/api';
-  // static String baseURL = 'https://api.northstar.mv/api';
+  // static String baseURL = 'http://175.41.184.146:8081/api';
+  static String baseURL = 'https://api.northstar.mv/api';
 
   static String buildInfo = '9.0.0 Build 1';
 
@@ -839,6 +839,8 @@ class HttpClient {
 
   //Payments.
   Future<Map> subscribeNow(Map data) async {
+    print("======subscribeNow");
+    print(data);
     Response response = await post('/payments/subscribe-now', data);
     return {
       "code": response.statusCode,
@@ -918,13 +920,12 @@ class HttpClient {
     var headers = {
       'Content-Type': 'application/json'
     };
-    var request = http.Request('POST', Uri.parse('https://nodejs--hasinthakapiyum.repl.co/generateToken'));
+    print(data);
+    var request = http.Request('GET', Uri.parse('https://token.northstar.mv/rtc/${data['channelName']}/publisher/uid/${data['uid']}'));
     request.body = json.encode(data);
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
-
-    print('response.data');
     return {
       "code": response.statusCode,
       "data": await response.stream.bytesToString(),
@@ -1298,6 +1299,7 @@ class HttpClient {
   Future<Map> getPrescriptions(int id) async {
     Response response =
         await get('/fitness/prescriptions/actions/get/' + id.toString());
+
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -1728,10 +1730,17 @@ class HttpClient {
     Response response = await post('/family-link/actions/create/assign', data);
     return {"code": response.statusCode, "data": response.data};
   }
+
   Future<Map> updateAssignFamilyLink(dynamic data) async {
     Response response = await post('/family-link/actions/update/assign', data);
     return {"code": response.statusCode, "data": response.data};
   }
+
+  Future<Map> endAssignFamilyLink(dynamic data) async {
+    Response response = await post('/family-link/actions/end/assign', data);
+    return {"code": response.statusCode, "data": response.data};
+  }
+
   Future<Map> getAssignListFamilyLink(int id) async {
     Response response = await post('/family-link/actions/create/list', {
       "family_id":id
@@ -1739,7 +1748,30 @@ class HttpClient {
     return {"code": response.statusCode, "data": response.data};
   }
 
+  Future<Map> acceptOrRejectListFamilyLink(int id,int status) async {
+    Response response = await post('/family-link/actions/assign/acceptOrReject', {
+      "assign_id":id,
+      "status" : status
+    });
+    return {"code": response.statusCode, "data": response.data};
+  }
+
+  Future<Map> deleteFamilyLink(int id) async {
+    Response response = await post('/delete', {
+    "tableId": 18, "resultId":id
+    });
+    print({
+      "tableId": 18, "resultId":id
+    });
+    return {"code": response.statusCode, "data": response.data};
+  }
+
   // Family Link APIS ======================================================== End
+
+  Future<Map> getTax() async {
+    Response response = await get('/tax-master/actions/list');
+    return {"code": response.statusCode, "data": response.data};
+  }
 
   Future<Map> getFaqs() async {
     Response response = await get('/faq/get/all');
@@ -1772,6 +1804,13 @@ class HttpClient {
       print(e.response.toString());
       return {"code": -1, "data": "Something went wrong",'error':e.response};
     }
+  }
+
+  Future<Map> paymentVerify(String id) async {
+    Response response = await post('/payments/verify', {
+      "transaction_id": id
+    });
+    return {"code": response.statusCode, "data": response.data};
   }
 }
 

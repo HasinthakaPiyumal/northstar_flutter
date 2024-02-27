@@ -536,7 +536,7 @@ class HomeWidgetFinance extends StatelessWidget {
                                     Row(
                                       crossAxisAlignment: CrossAxisAlignment.end,
                                       children: [
-                                        Text("Rf",
+                                        Text("MVR",
                                           style: TypographyStyles.normalText(12, Get.isDarkMode ? Colors.white : Colors.black),
                                         ),
                                         SizedBox(width: 3,),

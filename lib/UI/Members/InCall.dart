@@ -94,17 +94,17 @@ class InCall extends StatelessWidget {
                           child: Icon(Icons.volume_up_outlined, size: 32),
                         ),
                       )),
-                  MaterialButton(
-                    onPressed: () async {
-                      // AgoraCallController.switchMute();
-                    },
-                    shape: CircleBorder(),
-                    elevation: 0,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Icon(Icons.video_call_rounded, size: 32),
-                    ),
-                  ),
+                  // MaterialButton(
+                  //   onPressed: () async {
+                  //     // AgoraCallController.switchMute();
+                  //   },
+                  //   shape: CircleBorder(),
+                  //   elevation: 0,
+                  //   child: Padding(
+                  //     padding: const EdgeInsets.all(8.0),
+                  //     child: Icon(Icons.video_call_rounded, size: 32),
+                  //   ),
+                  // ),
                   Obx(() => MaterialButton(
                         onPressed: () async {
                           AgoraCallController.switchMute();

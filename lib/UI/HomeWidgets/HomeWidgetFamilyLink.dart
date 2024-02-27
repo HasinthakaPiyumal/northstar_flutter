@@ -132,7 +132,7 @@ class _FamilyLinkState extends State<FamilyLink> {
                           Buttons.yellowFlatButton(
                               onPressed: () {
                                 print(familyLinkList[index]);
-                                Get.to(FamilyView(familyLink:familyLinkList[index]));
+                                Get.to(FamilyView(familyLink:familyLinkList[index]))?.then((value) =>getFamilyLinks() );
                               }, label: "View", width: Get.width - 72),
                         ],
                       ),
@@ -147,7 +147,7 @@ class _FamilyLinkState extends State<FamilyLink> {
               ),
               Buttons.yellowFlatButton(
                   onPressed: () {
-                    Get.to(CreateNewFamilyLink());
+                    Get.to(CreateNewFamilyLink())?.then((value) =>getFamilyLinks() );
                   }, label: "Create New Family Link"),
             ],
           ),

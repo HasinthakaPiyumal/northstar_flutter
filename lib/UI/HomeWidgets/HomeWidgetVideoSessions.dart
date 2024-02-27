@@ -31,6 +31,7 @@ class HomeWidgetVideoSessions extends StatelessWidget {
     late Timer timer;
 
     void joinMeeting(meeting) {
+      print("meeting['meeting_id'] + meeting['passcode']");
       print(meeting['meeting_id'] + meeting['passcode']);
       Get.to(() => MeetingScreen(
             meeting['meeting_id'] + meeting['passcode'],

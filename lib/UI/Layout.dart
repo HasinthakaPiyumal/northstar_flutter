@@ -3,6 +3,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Controllers/LocalNotificationsController.dart';
 import 'package:north_star/Controllers/NotificationsController.dart';
+import 'package:north_star/Controllers/TaxController.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/IcoMoon.dart';
@@ -66,7 +67,7 @@ class _LayoutState extends State<Layout> {
       print('$preferenceName $index ------> Setting');
       prefs.setInt(preferenceName, index);
     }
-
+    taxController.refresh();
     retrieveSelectedTabIndex();
 
     void checkPermissions() async {
