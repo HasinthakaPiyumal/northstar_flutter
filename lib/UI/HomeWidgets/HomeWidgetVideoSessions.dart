@@ -218,6 +218,8 @@ class HomeWidgetVideoSessions extends StatelessWidget {
 
       if (response.statusCode == 200) {
         var res = jsonDecode(await response.stream.bytesToString());
+        print("===Home widget video sessin");
+        print(res);
         meetings.value = res;
         ready.value = true;
       } else {

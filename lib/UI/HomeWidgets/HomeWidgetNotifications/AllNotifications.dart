@@ -42,6 +42,8 @@ class _AllNotificationsState extends State<AllNotifications> {
         element.deleteSelectedNotification();
       });
     }
+    print(NotificationsController.notifications);
+    print('NotificationsController.notifications');
 
     return Scaffold(
       body: NotificationsController.notifications.length > 0

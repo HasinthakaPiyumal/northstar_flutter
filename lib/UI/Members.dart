@@ -94,7 +94,12 @@ class Members extends StatelessWidget {
                                   )
                                 ),
                                 isThreeLine: members[index]['health_conditions'] != null,
-                                title: Text(members[index]['user']['name']),
+                                title: Row(
+                                  children: [
+                                    Text(members[index]['user']['name']),
+                                    Tooltip(message: members[index]['physical_trainer_id']==authUser.id?"Physical Trainer":"Secondary Trainer",child:Text(members[index]['physical_trainer_id']==authUser.id?" (P)":" (S)")),
+                                  ],
+                                ),
                                 subtitle: members[index]['health_conditions'] != null ? Text(
                                     members[index]['user']['email'] + '\n' +
                                         'Has '+ members[index]['health_conditions'].length.toString() + ' Health Conditions'

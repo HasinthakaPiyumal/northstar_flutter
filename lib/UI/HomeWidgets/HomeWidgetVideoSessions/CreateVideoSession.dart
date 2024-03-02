@@ -62,6 +62,13 @@ class CreateVideoSession extends StatelessWidget {
         'clients': idList,
         'start_time': meetingDateTime.value,
       });
+      print({
+        'title': title.text,
+        'description': description.text,
+        'trainer_id': authUser.id,
+        'clients': idList,
+        'start_time': meetingDateTime.value,
+      });
 
       if (res['code'] == 200) {
         print(res);

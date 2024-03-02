@@ -87,14 +87,17 @@ class Buttons {
                 children: [
                   isLoading?SizedBox():Icon(icon,color:textColor),//AppColors.textOnAccentColor),
                   isLoading?SizedBox():SizedBox(width: 5,),
-                  isLoading?Container(width:25,height:25,child: CircularProgressIndicator(color: AppColors.textOnAccentColor,)):Text(
-                    label,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: textColor,
-                      fontSize: fontSize,
-                      fontFamily: fontFamily,
-                      fontWeight: fontWeight,
+                  isLoading?Container(width:25,height:25,child: CircularProgressIndicator(color: AppColors.textOnAccentColor,)):Container(
+                    margin: EdgeInsets.only(top: 5),
+                    child: Text(
+                      label,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: textColor,
+                        fontSize: fontSize,
+                        fontFamily: fontFamily,
+                        fontWeight: fontWeight,
+                      ),
                     ),
                   ),
                 ],

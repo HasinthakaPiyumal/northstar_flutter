@@ -34,7 +34,8 @@ class SelectedUserWorkouts extends StatelessWidget {
       Map res = await httpClient.getWorkoutsClient(clientID);
       if (res['code'] == 200) {
         workouts.value = res['data'];
-
+print("---workouts");
+print(workouts);
         workouts.removeWhere((element) => element['user_id'] != clientID);
 
         ready.value = true;
@@ -170,7 +171,7 @@ class SelectedUserWorkouts extends StatelessWidget {
                                         Text(
                                           "Last Update - " +
                                               Utils.dateFormat(workouts[index]
-                                                      ['created_at'])
+                                                      ['updated_at'])
                                                   .toString()
                                                   .split(' ')[0],
                                           style: TypographyStyles.normalText(

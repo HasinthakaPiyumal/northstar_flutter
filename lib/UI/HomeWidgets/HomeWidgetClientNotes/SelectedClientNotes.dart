@@ -166,8 +166,8 @@ class _SelectedClientNoteState extends State<SelectedClientNote> {
                                         children: [
                                           Text("Amount:"),
                                           Text(
-                                            authUser.user['currency'] +
-                                                "  " +
+                                            // authUser.user['currency'] +
+                                                "MVR  " +
                                                 clientNote.amount
                                                     .toStringAsFixed(2),
                                             style: TypographyStyles.title(16),
@@ -384,8 +384,8 @@ class _SelectedClientNoteState extends State<SelectedClientNote> {
                                         children: [
                                           Text("Amount:"),
                                           Text(
-                                            authUser.user['currency'] +
-                                                "  " +
+                                            // authUser.user['currency'] +
+                                                "MVR  " +
                                                 clientNote.amount
                                                     .toStringAsFixed(2),
                                             style: TypographyStyles.title(16),

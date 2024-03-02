@@ -817,8 +817,9 @@ late Map data = {};
 
     String bodyFatImage(String bodyFatType) {
 
-      dynamic gender = healthData.isNotEmpty?data['gender']:authUser.user['gender'];
-
+      dynamic gender = healthData.isNotEmpty && healthData['gender']!=null?data['gender']:authUser.user['gender'];
+      print('==gender');
+      print(authUser.user);
       if ( gender== 'male') {
         if (bodyFatType == 'Above Average') {
           return 'assets/images/men-body-type-3.png';

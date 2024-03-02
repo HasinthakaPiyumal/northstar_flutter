@@ -96,6 +96,7 @@ class CommercialGyms extends StatelessWidget {
               gyms.value = gyms.value
                   .where((gym) => gym['gym_country'] == country.value)
                   .toList();
+              print('gyms.value');
               print(gyms.value);
             },
             itemBuilder: _buildDropdownItem,
@@ -231,12 +232,15 @@ class CommercialGyms extends StatelessWidget {
                                   child: ClipOval(
                                     child: CachedNetworkImage(
                                       imageUrl:
-                                          HttpClient.s3BaseUrl + 'default.jpg',
+                                          HttpClient.s3BaseUrl + gyms[index]['user']['avatar_url'],// 'default.jpg',
                                       placeholder: (context, url) => Container(
                                         height: 28,
                                         width: 28,
                                         child: CircularProgressIndicator(),
                                       ),
+                                      height: 56,
+                                      width: 56,
+                                      fit: BoxFit.fill,
                                       errorWidget: (context, url, error) =>
                                           Icon(Icons.error),
                                     ),

@@ -250,14 +250,15 @@ class Services extends StatelessWidget {
                                     radius: 28,
                                     child: ClipOval(
                                       child: CachedNetworkImage(
-                                        imageUrl: HttpClient.s3BaseUrl +
-                                            'default.jpg',
+                                        imageUrl: HttpClient.s3BaseUrl +gyms[index]['user']['avatar_url'],
                                         placeholder: (context, url) =>
                                             Container(
-                                          height: 28,
-                                          width: 28,
-                                          child: CircularProgressIndicator(),
-                                        ),
+                                              height: 28,
+                                              width: 28,
+                                              child: CircularProgressIndicator(),
+                                            ),
+                                        width: 56,
+                                        height: 56,
                                         errorWidget: (context, url, error) =>
                                             Icon(Icons.error),
                                       ),

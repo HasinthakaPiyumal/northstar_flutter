@@ -12,6 +12,8 @@ class AuthUser {
   late Map user;
 
   void _setUser(Map<String, dynamic> userObj) {
+    print('====userObj');
+    print(userObj);
     id = userObj['id'];
     name = userObj['name'];
     email = userObj['email'];

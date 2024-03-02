@@ -61,7 +61,7 @@ class NSNotification {
       description: json['description'],
       type: NSNotificationTypes.values.byName(json['type']),
       data: json['data'],
-      createdAt: DateTime.parse(json['created_at']),
+      createdAt: DateTime.parse(json['created_at']).toLocal(),
     );
   }
 

@@ -60,7 +60,7 @@ class GymView extends StatelessWidget {
               CircleAvatar(
                 radius: 20,
                 backgroundImage: CachedNetworkImageProvider(
-                  HttpClient.s3BaseUrl + 'default.jpg',
+                  HttpClient.s3BaseUrl + gymObj['user']['avatar_url'],
                 ),
               ),
               SizedBox(
