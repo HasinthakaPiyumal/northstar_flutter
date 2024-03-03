@@ -25,7 +25,7 @@ class HomeWidgetTrainers extends StatelessWidget {
       print('PATTERN: ' +pattern);
       var request = http.Request('GET',
           Uri.parse(HttpClient.baseURL + '/api/trainer/search/' + pattern.toString()));
-
+      print(HttpClient.baseURL);
       request.headers.addAll(client.headers);
 
       http.StreamedResponse response = await request.send();

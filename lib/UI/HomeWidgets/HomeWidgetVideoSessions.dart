@@ -213,6 +213,8 @@ class HomeWidgetVideoSessions extends StatelessWidget {
                 authUser.id.toString()));
       }
       request.headers.addAll(client.getHeader());
+print(HttpClient.baseURL);
+print('HttpClient.baseURL');
 
       http.StreamedResponse response = await request.send();
 
@@ -249,6 +251,9 @@ class HomeWidgetVideoSessions extends StatelessWidget {
               ? ListView.builder(
                   itemCount: meetings.length,
                   itemBuilder: (context, index) {
+                    print("DateTime.parse(meetings[index]['start_time'])");
+                    print(DateTime.parse(meetings[index]['start_time']));
+                    print(DateTime.parse(meetings[index]['start_time']).toLocal());
                     return Container(
                       padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
                       width: Get.width,
@@ -272,10 +277,14 @@ class HomeWidgetVideoSessions extends StatelessWidget {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                          DateFormat.d().format(DateTime.parse(
-                                              meetings[index]['start_time'])),
-                                          style: TypographyStyles.title(30)),
+                                      Expanded(
+                                        child: Text(
+                                            // DateFormat.MMMMEEEEd().format(DateTime.parse(
+                                            //     meetings[index]['start_time'])),
+                                            meetings[index]['title'],
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TypographyStyles.title(20)),
+                                      ),
                                       ElevatedButton(
                                           style: ButtonStyles.bigBlackButton(),
                                           onPressed: () {
@@ -293,15 +302,15 @@ class HomeWidgetVideoSessions extends StatelessWidget {
                                       Text(
                                           DateFormat.EEEE().format(
                                                   DateTime.parse(meetings[index]
-                                                      ['start_time'])) +
+                                                      ['start_time']).toLocal()) +
                                               ', ' +
                                               DateFormat.MMMM().format(
                                                   DateTime.parse(meetings[index]
-                                                      ['start_time'])) +
+                                                      ['start_time']).toLocal()) +
                                               ' ' +
                                               DateFormat.y().format(
                                                   DateTime.parse(meetings[index]
-                                                      ['start_time'])),
+                                                      ['start_time']).toLocal()),
                                           style: TypographyStyles.text(16)),
                                     ],
                                   ),

@@ -25,9 +25,11 @@ void processCall(dynamic data,String uuid) async {
       showCallkitIncoming(uuid,
           nameCaller: data["caller_name"], avatar: data["caller_avatar"]);
     }else if(data["method"]==CallEvents.RejectCall.index.toString()){
+      print('===Call reject');
+      print(callData.id==int.parse(data["caller"]));
       if(callData.id==int.parse(data["caller"])){
         AgoraCallController.rejectCall();
-        FlutterCallkitIncoming.endAllCalls();
+        await FlutterCallkitIncoming.endAllCalls();
       }
     }else if(data["method"]==CallEvents.DisconnectCall.index.toString()){
       if(callData.id==int.parse(data["caller"])){

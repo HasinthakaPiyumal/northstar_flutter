@@ -7,6 +7,9 @@ class StoreHelper{
 
   Future refreshCart() async{
     Map res = await httpClient.getMyCart();
+
+    print('cart====');
+    print(res);
     if(res['code'] == 200){
       cart.value = res['data'];
     }

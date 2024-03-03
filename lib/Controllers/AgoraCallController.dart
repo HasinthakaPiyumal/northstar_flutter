@@ -233,7 +233,9 @@ class AgoraCallController {
   //   Get.back();
   // }
   static void leaveCall() async {
-    callMessage(CallData().id, CallData().channelName, CallEvents.DisconnectCall);
+    print('call data ${callData.id}');
+    print('Call Data ${CallData().id}');
+    callMessage(callData.id, callData.channelName, CallEvents.DisconnectCall);
     await agoraEngine.leaveChannel();
     accepted.value = false;
     isJoined = false;
@@ -246,6 +248,7 @@ class AgoraCallController {
       print(e);
     }
     print("calling end");
+    callData.clearCall();
     Get.back(closeOverlays: true, canPop: false);
   }
 }
@@ -266,6 +269,9 @@ void callMessage(int userId, String channelName,CallEvents callEvent) async {
     "currentTime": DateTime.now().toUtc().toString(),
     "channel_name": channelName,
   };
+
+  print("call message sending Agora Call controller");
+  print(data);
   if (deviceToken == "") {
     return;
   }

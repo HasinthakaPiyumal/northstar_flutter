@@ -9,8 +9,8 @@ class HttpClient{
   int id = 0;
 
 
-  static String baseURL = 'http://175.41.184.146:8081';
-  // static String baseURL = 'https://api.northstar.mv';
+  // static String baseURL = 'http://175.41.184.146:8081';
+  static String baseURL = 'https://api.northstar.mv';
 
   var headers;
 

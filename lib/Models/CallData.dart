@@ -12,6 +12,12 @@ class CallData {
     this.avatar = avatar;
     this.channelName = channelName;
   }
+  void clearCall(){
+    this.id = 0;
+    this.callerName = "";
+    this.avatar = "default.png";
+    this.channelName = "defaultChannel";
+  }
 }
 
 CallData callData = new CallData();

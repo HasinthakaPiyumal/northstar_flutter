@@ -174,7 +174,9 @@ class CreateVideoSession extends StatelessWidget {
                         },
                         onConfirm: (date) {
                           print('confirm $date');
-                          meetingDateTime.value = date.toLocal().toString();
+                          meetingDateTime.value = date.toUtc().toString();
+                          print(date.isUtc);
+                          print(date.timeZoneOffset);
                           dateTime.text = DateFormat("dd MMM, yyyy")
                                   .format(date)
                                   .toString() +

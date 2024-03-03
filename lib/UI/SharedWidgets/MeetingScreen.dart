@@ -1,3 +1,4 @@
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:agora_uikit/agora_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -36,7 +37,7 @@ class _MeetingScreenState extends State<MeetingScreen>
 
   void initAgora() async {
     // LocalNotificationsController.showNonRemovableNotification();
-    print(HttpClient.baseURL+"/rtcToken");
+    print(HttpClient.baseURL + "/rtcToken");
     _client = AgoraClient(
         agoraConnectionData: AgoraConnectionData(
             appId: 'ed79caa1142a4a71846177dbf737e29e',
@@ -49,7 +50,16 @@ class _MeetingScreenState extends State<MeetingScreen>
         enabledPermission: [
           Permission.camera,
           Permission.microphone,
-        ]);
+        ],
+      agoraChannelData: AgoraChannelData(
+        enableDualStreamMode: true,
+        channelProfileType: ChannelProfileType.channelProfileCloudGaming,
+        // videoEncoderConfiguration: VideoEncoderConfiguration(
+        //   bitrate: 100,
+        //   dimensions: VideoDimensions(height:320,width: 240)
+        // )
+      )
+        );
     await _client.initialize();
   }
 
@@ -106,7 +116,7 @@ class _MeetingScreenState extends State<MeetingScreen>
                           Container(
                             width: 40,
                             height: 40,
-                            margin: EdgeInsets.only(top:50,right: 10),
+                            margin: EdgeInsets.only(top: 50, right: 10),
                             child: Material(
                               borderRadius: BorderRadius.circular(100),
                               color: AppColors.primary2Color.withOpacity(0.6),
@@ -120,7 +130,8 @@ class _MeetingScreenState extends State<MeetingScreen>
                                   padding: EdgeInsets.only(bottom: 10),
                                   decoration: ShapeDecoration(
                                     shape: CircleBorder(),
-                                    color: AppColors.primary2Color.withOpacity(0.6),
+                                    color: AppColors.primary2Color
+                                        .withOpacity(0.6),
                                   ),
                                   child: Icon(
                                     Icons.minimize,

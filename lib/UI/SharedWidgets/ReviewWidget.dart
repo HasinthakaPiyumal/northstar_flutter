@@ -8,6 +8,8 @@ import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 
 Widget reviewWidget(Map reviews, RxMap data) {
+  print('===reviews');
+  print(reviews);
   return Column(
     children: [
       Row(

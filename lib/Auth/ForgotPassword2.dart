@@ -6,6 +6,7 @@ import 'package:north_star/Styles/ButtonStyles.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/Utils/PopUps.dart';
 import 'package:north_star/components/Buttons.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
 
 import '../Styles/AppColors.dart';
 
@@ -26,6 +27,7 @@ class _ForgotPassword2State extends State<ForgotPassword2> {
   final TextEditingController code5 = TextEditingController();
   final TextEditingController code6 = TextEditingController();
 
+  String pin = "";
   late FocusNode focusNode1;
   late FocusNode focusNode2;
   late FocusNode focusNode3;
@@ -96,20 +98,24 @@ class _ForgotPassword2State extends State<ForgotPassword2> {
     focusNode6.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     RxBool loading = false.obs;
     RxBool passVisibility = true.obs;
     RxBool passVisibilityR = true.obs;
+
+    TextEditingController pinController = new TextEditingController();
     TextEditingController password = new TextEditingController();
     TextEditingController rPassword = new TextEditingController();
 
-
     void resetAndGoHome() async {
       Map res = await httpClient.forgotPasswordStepTwo(
-          '${code1.text}${code2.text}${code3.text}${code4.text}${code5.text}${code6.text}', password.text, rPassword.text);
+          // '${code1.text}${code2.text}${code3.text}${code4.text}${code5.text}${code6.text}',
+          pin,
+          password.text,
+          rPassword.text);
 
-      print(res);
       if (res['code'] == 200) {
         Get.offAll(() => AuthHome());
         showSnack('Password Reset is Successful!',
@@ -121,8 +127,8 @@ class _ForgotPassword2State extends State<ForgotPassword2> {
 
     return Scaffold(
       appBar: AppBar(
-        // title: Text('Reset Password'),
-      ),
+          // title: Text('Reset Password'),
+          ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -134,16 +140,18 @@ class _ForgotPassword2State extends State<ForgotPassword2> {
                   Container(
                     decoration: BoxDecoration(
                         color: AppColors.accentColor,
-                        borderRadius: BorderRadius.circular(5)
-                    ),
+                        borderRadius: BorderRadius.circular(5)),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Text(
                       'OTP',
                       textAlign: TextAlign.center,
-                      style: TypographyStyles.title(20).copyWith(color: AppColors.textColorLight),
+                      style: TypographyStyles.title(20)
+                          .copyWith(color: AppColors.textColorLight),
                     ),
                   ),
-                  SizedBox(width: 10,),
+                  SizedBox(
+                    width: 10,
+                  ),
                   Text(
                     'Verification',
                     textAlign: TextAlign.center,
@@ -158,24 +166,49 @@ class _ForgotPassword2State extends State<ForgotPassword2> {
                   Text('Enter the OTP Sent to ',
                       style: TypographyStyles.text(16)),
                   Text('${widget.mail.toLowerCase()}',
-                      style: TypographyStyles.text(16).copyWith(decoration: TextDecoration.underline)),
+                      style: TypographyStyles.text(16)
+                          .copyWith(decoration: TextDecoration.underline)),
                 ],
               ),
               SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [buildTextField(code1, focusNode1),
-                  SizedBox(width: 10),
-                  buildTextField(code2, focusNode2),
-                  SizedBox(width: 10),
-                  buildTextField(code3, focusNode3),
-                  SizedBox(width: 10),
-                  buildTextField(code4, focusNode4),
-                  SizedBox(width: 10),
-                  buildTextField(code5, focusNode5),
-                  SizedBox(width: 10),
-                  buildTextField(code6, focusNode6),],
+              Container(
+                width:290,
+                child: PinCodeTextField(
+                  appContext: context,
+                  length: 6,
+                  animationType: AnimationType.fade,
+                  cursorColor: Get.isDarkMode ? Colors.white : Colors.black,
+                  keyboardType: TextInputType.number,
+                  controller: pinController,
+                  enablePinAutofill: false,
+                  pinTheme: PinTheme(
+                    activeFillColor: AppColors.accentColor,
+                    activeColor: AppColors.accentColor,
+                    inactiveColor: Get.isDarkMode?Colors.white.withOpacity(0.5):Colors.black
+                  ),
+                  onChanged: (value) {
+                    print(value);
+                    setState(() {
+                      pin = value;
+                    });
+                  },                ),
               ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              //     buildTextField(code1, focusNode1),
+              //     SizedBox(width: 10),
+              //     buildTextField(code2, focusNode2),
+              //     SizedBox(width: 10),
+              //     buildTextField(code3, focusNode3),
+              //     SizedBox(width: 10),
+              //     buildTextField(code4, focusNode4),
+              //     SizedBox(width: 10),
+              //     buildTextField(code5, focusNode5),
+              //     SizedBox(width: 10),
+              //     buildTextField(code6, focusNode6),
+              //   ],
+              // ),
               SizedBox(height: 46),
               Obx(() => Stack(
                     children: [
@@ -264,6 +297,7 @@ class _ForgotPassword2State extends State<ForgotPassword2> {
       ),
     );
   }
+
   Widget buildTextField(TextEditingController controller, FocusNode focusNode) {
     return Container(
       width: 40,
@@ -278,9 +312,14 @@ class _ForgotPassword2State extends State<ForgotPassword2> {
         ),
         focusNode: focusNode,
         onChanged: (value) {
+          controller.text = value;
           if (value.isNotEmpty) {
             if (focusNode != focusNode6) {
               focusNode.nextFocus();
+            }
+          } else {
+            if (focusNode != focusNode1) {
+              focusNode.previousFocus();
             }
           }
         },
@@ -288,5 +327,3 @@ class _ForgotPassword2State extends State<ForgotPassword2> {
     );
   }
 }
-
-
