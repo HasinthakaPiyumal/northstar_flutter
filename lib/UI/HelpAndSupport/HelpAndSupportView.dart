@@ -19,14 +19,16 @@ class _HelpAndSupportViewState extends State<HelpAndSupportView> {
   TextEditingController descriptionController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    print(widget.subFaq);
+    RxBool ready = true.obs;
     void addComplain() async{
+      ready.value = false;
       dynamic data = {
       'description': descriptionController.value,
       'main_faqId': widget.subFaq['mainfaq_id'],
       'sub_faqId': widget.subFaq['id'],
       };
       if(descriptionController.value ==""){
+        ready.value = true;
         showSnack("Failed","Description can not be empty" );
         return;
       }
@@ -34,8 +36,11 @@ class _HelpAndSupportViewState extends State<HelpAndSupportView> {
       dynamic res = await httpClient.addHelpContact(data, _imageFile!=false?_imageFile:null);
       print(res);
       if(res['code']==200){
+        ready.value = true;
+        Get.back();
         showSnack("Success", "Your submission recorded successfully");
       }else{
+        ready.value = true;
         showSnack("Failed","Something went wrong");
       }
 
@@ -71,7 +76,7 @@ class _HelpAndSupportViewState extends State<HelpAndSupportView> {
                 });
               }),
               SizedBox(height: 20,),
-              Center(child: Buttons.yellowFlatButton(onPressed: addComplain,label: "Submit"))
+              Obx(()=> Center(child: Buttons.yellowFlatButton(onPressed: addComplain,label: "Submit",isLoading: !ready.value)))
             ],
           ),
         ),

@@ -48,6 +48,8 @@ class GymView extends StatelessWidget {
     void testValues() {
       print(jsonDecode(gymObj['gym_gallery']));
     }
+    print('===gymObj');
+    print(gymObj);
 
     testValues();
 

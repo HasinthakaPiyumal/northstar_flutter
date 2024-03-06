@@ -14,6 +14,11 @@ import '../../../components/DropDownButtonWithBorder.dart';
 import '../../../components/MaterialBottomSheet.dart';
 import '../../Members/UserView.dart';
 
+// 1 pending
+// 2 ongoing
+// 3 finished
+// 4 rejected
+
 class FamilyView extends StatelessWidget {
   final dynamic familyLink;
   const FamilyView({Key? key, this.familyLink}) : super(key: key);
@@ -140,6 +145,9 @@ class FamilyView extends StatelessWidget {
                     print(res);
                     if (res['code'] == 200) {
                       getMembers();
+                      _addMemberName.clear();
+                      _addMemberNickName.clear();
+                      _addMemberEmail.clear();
                       Get.back();
                     } else {
                       showSnack("Failed", res['data']['message']);
@@ -154,9 +162,11 @@ class FamilyView extends StatelessWidget {
     void createNewAssign() {
       List<DropdownMenuItem<String>> memberDropDown =
           members.value.map<DropdownMenuItem<String>>((dynamic member) {
+            print('create assign member');
+            print(member);
         return DropdownMenuItem<String>(
           value: '${member['userID']}',
-          child: Text('${member['user_name']}${member['userID']}'),
+          child: Text('${member['user_name'].toString().capitalize} - ${member['email']}',style: TypographyStyles.text(14),),
         );
       }).toList();
       List<DropdownMenuItem<String>> assignWhoDropDown =
@@ -166,13 +176,15 @@ class FamilyView extends StatelessWidget {
           0,
           DropdownMenuItem<String>(
             value: "0",
-            child: Text('Assign Who'),
+            enabled: false,
+            child: Text('Assign Who',style: TypographyStyles.text(14)),
           ));
       assignToDropDown.insert(
           0,
           DropdownMenuItem<String>(
             value: "0",
-            child: Text('Assign To'),
+            enabled: false,
+            child: Text('Assign To',style: TypographyStyles.text(14),),
           ));
       MaterialBottomSheet("create new assign",
           child: Column(
@@ -239,9 +251,14 @@ class FamilyView extends StatelessWidget {
                     if (res['code'] == 200) {
                       Get.back();
                       getAssigns();
+                      _addAssignTitle.clear();
+                      _addAssignDescription.clear();
+                      _addAssignWho.value = "0";
+                      _addAssignTo.value = "0";
                       showSnack("Success", "Successfully created assign");
                     } else {
-                      showSnack("Failed", res['data']['message']);
+                      print(res);
+                      showSnack("Failed", res['data']['error']);
                     }
                   },
                   label: "Assign",
@@ -289,6 +306,15 @@ class FamilyView extends StatelessWidget {
       } else {
         showSnack("Failed", res['data']['message']);
       }
+    }
+
+
+    bool checkStatus(item) {
+      if(_assignFilterDropdown.value=="All")return true;
+      else if(_assignFilterDropdown.value=="Pending")return item['status']=='1';
+      else if(_assignFilterDropdown.value=="Ongoing")return item['status']=='2';
+      else if(_assignFilterDropdown.value=="Rejected")return item['status']=='4';
+      return false;
     }
 
     void callConfirmVoice() {
@@ -588,25 +614,28 @@ class FamilyView extends StatelessWidget {
                                           height: 20,
                                         ),
                                         ListView.builder(
-                                            itemCount: assigns.length,
+                                            itemCount: assigns.where((p0) => checkStatus(p0)).length,
                                             physics:
                                                 NeverScrollableScrollPhysics(),
                                             shrinkWrap: true,
                                             itemBuilder: (context, index) {
+                                              dynamic assignsTemp = assigns.where((p0) => checkStatus(p0)).toList();
+                                              print('assignsTemp');
+                                              print(assignsTemp);
                                               return TaskCard(
-                                                  title: assigns[index]['title'],
-                                                  id: assigns[index]['assignId'],
-                                                  assigneeId: assigns[index]
+                                                  title: assignsTemp[index]['title'],
+                                                  id: assignsTemp[index]['assignId'],
+                                                  assigneeId: assignsTemp[index]
                                                       ['assign_to'],
-                                                  assignerId: assigns[index]
+                                                  assignerId: assignsTemp[index]
                                                       ['assign_who'],
-                                                  status: assigns[index]
+                                                  status: assignsTemp[index]
                                                       ['status'],
-                                                  description: assigns[index]
+                                                  description: assignsTemp[index]
                                                       ['description'],
-                                                  assignee: assigns[index]
+                                                  assignee: assignsTemp[index]
                                                       ['assignTo_username'],
-                                                  date: assigns[index]['date'],
+                                                  date: assignsTemp[index]['date'],
                                                   isAdmin: isAdmin,
                                                   updateFamilyLinkAssign:updateFamilyLinkAssign,
                                                   endFamilyLinkAssign:endFamilyLinkAssign,
@@ -778,6 +807,7 @@ class FamilyView extends StatelessWidget {
   }
 }
 
+
 class CustomProfileContainer extends StatelessWidget {
   final String imageUrl;
   final String name;
@@ -914,7 +944,7 @@ class TaskCard extends StatelessWidget {
   final String description;
   final String assignee;
   final String date;
-  final Color statusColor;
+  late final Color statusColor;
   final int assigneeId;
   final int assignerId;
   final int id;
@@ -928,7 +958,7 @@ class TaskCard extends StatelessWidget {
   TaskCard({
     required this.title,
     required this.status,
-    this.statusColor = const Color(0xFFFDF4AA),
+    // this.statusColor = const Color(0xFFFDF4AA),
     required this.description,
     required this.assignee,
     required this.date,
@@ -1175,12 +1205,10 @@ class TaskCard extends StatelessWidget {
 
     Widget actionRow = Buttons.yellowFlatButton(
         onPressed: viewAssign, label: "view", width: 100);
+    Color statusColor = Color(0xFFFDF4AA);
     switch (status) {
       case "1":
         status = "pending";
-        print("authUser.id == assigneeId");
-
-        print('${myIdInFamily} $assignerId');
         if (myIdInFamily == assignerId) {
           actionRow = Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -1207,12 +1235,14 @@ class TaskCard extends StatelessWidget {
         break;
       case "2":
         status = "ongoing";
+        statusColor = Color(0xFF68FC80);
         break;
       case "3":
         status = "finished";
         break;
       case "4":
         status = "rejected";
+        statusColor = Color(0xFFFFC5C5);
         break;
     }
     return Container(

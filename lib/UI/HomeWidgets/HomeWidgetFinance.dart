@@ -499,7 +499,7 @@ class HomeWidgetFinance extends StatelessWidget {
                       ),
                       SizedBox(height: 5),
                       SizedBox(
-                          height: Get.height/100*16,
+                          height: ClientNotesController.clientNotes.length > 0?Get.height/100*16:230,
                           width: Get.width,
                           child: Obx(() => ClientNotesController.clientNotes.length > 0 ? ListView.separated(
                             shrinkWrap: true,
@@ -576,23 +576,26 @@ class HomeWidgetFinance extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                child: Text('${transactions[index]['type']} - ${transactions[index]['description']}',
-                                  style: TypographyStyles.normalText(16, Get.isDarkMode ? Colors.white : Colors.black),
+                          Expanded(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  child: Text('${transactions[index]['type']} - ${transactions[index]['description']}',
+                                    style: TypographyStyles.normalText(16, Get.isDarkMode ? Colors.white : Colors.black),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  width: Get.width/100*70,
                                 ),
-                                width: Get.width/100*70,
-                              ),
-                              SizedBox(height: 2,),
-                              Text("${DateFormat("MMM dd,yyyy - HH:mm").format(DateTime.parse(transactions[index]['created_at']))}",
-                                style: TypographyStyles.normalText(12, Get.isDarkMode ? colors.Colors().lightCardBG.withOpacity(0.6) : colors.Colors().darkGrey(0.7),),
-                              )
-                            ],
+                                SizedBox(height: 2,),
+                                Text("${DateFormat("MMM dd,yyyy - HH:mm").format(DateTime.parse(transactions[index]['created_at']))}",
+                                  style: TypographyStyles.normalText(12, Get.isDarkMode ? colors.Colors().lightCardBG.withOpacity(0.6) : colors.Colors().darkGrey(0.7),),
+                                )
+                              ],
+                            ),
                           ),
-                          Text((Utils.formatCurrency.format(transactions[index]['amount']/100)).toString(),style: TypographyStyles.walletTransactions(16, transactions[index]['type']),),
+                          Text((Utils.formatCurrency.format(transactions[index]['amount'])).toString(),style: TypographyStyles.walletTransactions(16, transactions[index]['type']),),
                         ],
                       ),
                     );

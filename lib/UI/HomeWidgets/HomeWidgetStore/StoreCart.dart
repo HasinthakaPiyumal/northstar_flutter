@@ -35,6 +35,7 @@ class StoreCart extends StatelessWidget {
 
     void payByCard(int amount) async{
       ready.value = false;
+      print({'amount': amount});
       Map res = await httpClient.topUpWallet({
         'amount': amount,
       });
@@ -175,7 +176,7 @@ class StoreCart extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: (){
                   num amt = storeHelper.getCartTotal();
-                  int payAmt = (amt * 100).toInt();
+                  int payAmt = (amt).toInt();
                   payByCard(payAmt);
                 },
                 style: SignUpStyles.selectedButton(),

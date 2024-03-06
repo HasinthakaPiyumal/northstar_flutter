@@ -21,9 +21,10 @@ void processCall(dynamic data,String uuid) async {
     print("Calling------<,,");
     if(data["method"]==CallEvents.StartCall.index.toString()){
       print("Incoming call ==");
+      print(data);
       callData.setCallData(id:data["caller"],callerName: data["caller_name"], avatar: data["caller_avatar"],channelName: data["channel_name"]);
       showCallkitIncoming(uuid,
-          nameCaller: data["caller_name"], avatar: data["caller_avatar"]);
+          nameCaller: data["caller_name"], avatar: data["caller_avatar"],channel: data["channel_name"],id:int.parse(data["caller"]) );
     }else if(data["method"]==CallEvents.RejectCall.index.toString()){
       print('===Call reject');
       print(callData.id==int.parse(data["caller"]));
@@ -91,6 +92,8 @@ Future<String> getTokenByUser(int id) async {
 void setupNotificationAction() async{
   print("calling callkit listner");
   FlutterCallkitIncoming.onEvent.listen((CallEvent? event) async {
+    print("callkit action print==========");
+    print(event!.event);
     switch (event!.event) {
       case Event.actionDidUpdateDevicePushTokenVoip:
       // TODO: Handle this case.
@@ -102,7 +105,9 @@ void setupNotificationAction() async{
       // TODO: Handle this case.
         break;
       case Event.actionCallDecline:
-        rejectCall(callData.id,callData.channelName);
+        print('callData.id,callData.channelName');
+        print('${callData}');
+        rejectCall(event.body['extra']['id'],event.body['extra']['channel']);
         break;
       case Event.actionCallEnded:
       // TODO: Handle this case.
@@ -134,8 +139,8 @@ void setupNotificationAction() async{
       case Event.actionCallAccept:
       // TODO: Handle this case.
         print("answer clicked 00");
-        FlutterCallkitIncoming.endAllCalls();
-        Get.to(()=>CallView(callData: {"channel":callData.channelName,"from":{"avatar_url":callData.avatar,"name":callData.callerName}},));
+        await FlutterCallkitIncoming.endAllCalls();
+        Get.to(()=>CallView(callData: {"channel":event.body['extra']['channel'],"from":{"avatar_url":event.body['extra']['avatar'],"name":event.body['extra']['name']}},));
         break;
     }
   });

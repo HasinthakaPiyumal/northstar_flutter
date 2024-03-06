@@ -1013,6 +1013,15 @@ class HttpClient {
 
   Future<Map> saveCallLog(var data) async {
     Response response = await post('/calls/actions/new', data);
+    print(response);
+    return {
+      "code": response.statusCode,
+      "data": response.data,
+    };
+  }
+  Future<Map> updateCallLog(var data) async {
+    Response response = await post('/calls/actions/update', data);
+    print(response);
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -1209,6 +1218,13 @@ class HttpClient {
         authUser.role.toString() +
         '/' +
         authUser.id.toString());
+    return {
+      "code": response.statusCode,
+      "data": response.data,
+    };
+  }
+  Future<Map> doctorMeeting(Map data) async {
+    Response response = await post('/payments/doctor-meeting-payment/pay-now',data);
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -1626,14 +1642,18 @@ class HttpClient {
     };
   }
 
-  Future<Map> getDietConsults(int userId) async {
+  Future<dynamic> getDietConsults(int userId) async {
     Response response =
         await get('/fitness/diet-consultation/actions/get/$userId');
-    return response.data;
+    return {
+      "code": response.statusCode,
+      "data": response.data,
+    };
   }
   Future<Map> getFinanceSummary() async {
     Response response =
         await get('/fitness/trainer-finance/summery');
+    print(response);
     return response.data;
   }
 

@@ -29,6 +29,7 @@ class HomeWidgetCalories extends StatelessWidget {
         macrosData.value = res['data'];
         macrosData.removeWhere((element) => element['user_id'] == authUser.id);
         ready.value = true;
+        print('==Macros data');
         print(res['data']);
       } else {
         print(res);
@@ -336,15 +337,15 @@ class HomeWidgetCalories extends StatelessWidget {
                               ),
                             );
 
-                            if (index != macrosData.length - 1) {
-                              return mainItem;
-                            }
+                            // if (index != macrosData.length - 1) {
+                            //   return mainItem;
+                            // }
                             return Column(
                               children: [
                                 mainItem,
-                                Container(
+                                macrosData[index]["today_workout"]!=null?Container(
                                   padding: EdgeInsets.symmetric(vertical: 16),
-                                  margin: EdgeInsets.all(16),
+                                  margin: EdgeInsets.only(bottom: 16,left: 16,right: 16),
                                   decoration: BoxDecoration(
                                       color: Get.isDarkMode
                                           ? AppColors.primary2Color
@@ -363,7 +364,7 @@ class HomeWidgetCalories extends StatelessWidget {
                                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                         children: [
                                           CircularProgressBar(
-                                            progress: 0.1,
+                                            progress: macrosData[index]["today_workout"]['progress']/100,
                                             radius: 50,
                                             strokeWidth: 6,
                                             fontSize: 20,
@@ -383,8 +384,8 @@ class HomeWidgetCalories extends StatelessWidget {
                                                         BorderRadius.circular(
                                                             10)),
                                                 child: Column(children: [
-                                                  Text("Excercise",style: TypographyStyles.textWithWeight(14, FontWeight.w300),),
-                                                  Text("02",style: TypographyStyles.title(20),),
+                                                  Text("Exercise",style: TypographyStyles.textWithWeight(14, FontWeight.w300),),
+                                                  Text(macrosData[index]["today_workout"]['exercisesCount'].toString(),style: TypographyStyles.title(20),),
                                                 ],),
                                               ),
                                               SizedBox(height: 8,),
@@ -402,7 +403,7 @@ class HomeWidgetCalories extends StatelessWidget {
                                                 child: Column(children: [
                                                   Text("Remaining",style: TypographyStyles.textWithWeight(14, FontWeight.w300),),
 
-                                                  Text("02",style: TypographyStyles.title(20),),
+                                                  Text(macrosData[index]["today_workout"]['remainingCount'].toString(),style: TypographyStyles.title(20),),
                                                 ],),
                                               )
                                             ],
@@ -411,7 +412,7 @@ class HomeWidgetCalories extends StatelessWidget {
                                       )
                                     ],
                                   ),
-                                )
+                                ):Container()
                               ],
                             );
                           },

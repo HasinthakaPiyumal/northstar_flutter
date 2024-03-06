@@ -328,7 +328,7 @@ class GymDateAndTime extends StatelessWidget {
             ),
 
             Padding(
-              padding: EdgeInsets.fromLTRB(15, 40, 15, 15),
+              padding: EdgeInsets.fromLTRB(15, 40, 15, 90),
               child: Container(
                 width: Get.width,
                 decoration: BoxDecoration(

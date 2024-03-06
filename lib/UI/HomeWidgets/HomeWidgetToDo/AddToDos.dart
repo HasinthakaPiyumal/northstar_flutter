@@ -55,14 +55,17 @@ class _AddToDosState extends State<AddToDos> {
       }, _imageFile!=false?_imageFile:null);
 
       if (res['code'] == 200) {
-        Get.back();
         Random random = Random();
+
+        print('Scheduled Time');
+        print(DateTime.parse(endDate.text).toLocal());
         await LocalNotificationsController.showLocalNotification(
             id: random.nextInt(1000000),
             title: todo.text,
             body: notes.text,
             scheduledDate: DateTime.parse(endDate.text));
 
+        Get.back();
         showSnack('TODO Saved!', 'Your Todo has been saved!');
       } else {
         print(res);

@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Controllers/FirebaseMessageController.dart';
 import 'package:north_star/Models/AuthUser.dart';
@@ -27,6 +28,8 @@ class AgoraCallController {
   static late DateTime startTime;
   static late DateTime endTime;
   static late Timer timer;
+  static late Timer callUpdater;
+  static late int callId;
 
   // static const String token = '983f2eee1a9a4d2f90c04e17b9694fea';
   // static var String token =
@@ -67,12 +70,19 @@ class AgoraCallController {
 
     agoraEngine.registerEventHandler(
       RtcEngineEventHandler(
-        onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
+        onJoinChannelSuccess: (RtcConnection connection, int elapsed) async{
           print("Local user uid:${connection.localUid} joined the channel");
           isJoined = true;
           callStatus.value = 'Calling...';
+          Map res = await httpClient.saveCallLog({'receiver_id':user['id'],'duration':0,'status':"Outgoing"});
+          print("-----Calling log");
+          if(res['code']==200){
+            callId = res['data']['id'];
+            print("-----Calling log");
+            print(res);
+          }
         },
-        onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
+        onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) async{
           print("Remote user uid joined the channel");
           callStatus.value = 'Connected';
           callConnectionStatus = 'Connected';
@@ -80,6 +90,10 @@ class AgoraCallController {
           startTime = DateTime.now();
           timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
             duration.value = DateTime.now().difference(startTime);
+          });
+          callUpdater = Timer(Duration(seconds: 10), () {
+            print('updating call duration ${duration.value.inSeconds}');
+            httpClient.updateCallLog({'call_id':callId,'duration':duration.value.inSeconds,'status':"Connected"});
           });
         },
         onUserOffline: (RtcConnection connection, int remoteUid,
@@ -92,6 +106,8 @@ class AgoraCallController {
           duration.value = Duration(seconds: 0);
           // Get.back(closeOverlays: true, canPop: false);
           agoraEngine.leaveChannel();
+          print('Finish ${duration.value.inSeconds}');
+          httpClient.updateCallLog({'call_id':callId,'duration':duration.value.inSeconds,'status':"Finished"});
         },
       ),
     );

@@ -17,6 +17,7 @@ class NotificationsController {
   static int lastNotificationId = 0;
 
   static List<NSNotificationTypes> requestTypes = [
+    NSNotificationTypes.DietConsultationRequest,
     NSNotificationTypes.ClientRequest,
     NSNotificationTypes.ClientRequestWeb,
     NSNotificationTypes.TrainerRequest,
@@ -61,6 +62,12 @@ class NotificationsController {
   }
 
   static List<NSNotification> getRequestNotifications() {
+    notifications.forEach((element) {
+      print("====notification");
+      print(element.type == NSNotificationTypes.DietConsultationRequest );
+      print(requestTypes.contains(element.type) );
+      print(element.type );
+    });
     return notifications
         .where((element) => requestTypes.contains(element.type))
         .toList();
@@ -124,13 +131,15 @@ class NotificationsController {
     int currentLastNotificationId = notifications.first.id;
     if (getUnreadNotificationsCount() > 0 && lastNotificationId!=currentLastNotificationId) {
       lastNotificationId = currentLastNotificationId;
-      Get.dialog(AlertDialog(
+      Get.dialog(
+          AlertDialog(
         titlePadding: EdgeInsets.zero,
         contentPadding: EdgeInsets.zero,
         actionsPadding: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
         ),
+        elevation: 0,
         backgroundColor: Colors.transparent,
         content: Container(
           height: 240,
@@ -271,7 +280,7 @@ class NotificationsController {
             ],
           ),
         ),
-      ));
+      ),);
     }
   }
 }

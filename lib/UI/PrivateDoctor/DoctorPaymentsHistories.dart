@@ -28,9 +28,7 @@ class DoctorPaymentHistories extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Payment Histories',
-          style: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
-        ),
+        title: Text('Payment Histories'),
       ),
       body: Obx(()=> payments.length > 0 ? ListView.builder(
         itemCount: payments.length,
@@ -57,7 +55,7 @@ class DoctorPaymentHistories extends StatelessWidget {
                               style: TypographyStyles.boldText(18, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
                             ),
                             SizedBox(height: 5,),
-                            Text("${DateFormat("dd-MM-yyyy h:mma").format(DateTime.parse(payments[index]['created_at']))}",
+                            Text("${DateFormat("dd-MM-yyyy h:mma").format(DateTime.parse(payments[index]['created_at']).toLocal())}",
                               style: TypographyStyles.normalText(14, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100.withOpacity(0.5) : colors.Colors().lightBlack(0.7),),
                             ),
                           ],

@@ -52,7 +52,9 @@ class UnlockDoorQR extends StatelessWidget {
               child: MobileScanner(
                 controller: cameraController,
                 onDetect: (barcode) {
-                  int gymID = int.parse(barcode.raw.toString());
+                  print('detected barcode');
+                  print(barcode.barcodes[0].rawValue);
+                  int gymID = int.parse(barcode.barcodes[0].rawValue!);
                   unlockGym(gymID);
                 },
               ),

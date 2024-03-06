@@ -16,7 +16,8 @@ class Buttons {
     Color backgroundColor = AppColors.accentColor,
     Color textColor = AppColors.textOnAccentColor,
     bool buttonFit = false,
-    bool disabled = false
+    bool disabled = false,
+    bool isLoading = false
   }) {
     return Material(
       color: Colors.transparent,
@@ -35,7 +36,7 @@ class Buttons {
             height: height,
             padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
             child: Center(
-              child: Text(
+              child: isLoading?CircularProgressIndicator(color: AppColors.textOnAccentColor,):Text(
                 label,
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -112,7 +113,7 @@ class Buttons {
     String label = 'Button',
     required VoidCallback onPressed,
     double width = 264,
-    double height = 42,
+    double height = 40,
     Color backgroundColor = AppColors.accentColor,
     bool buttonFit = false
   }) {
@@ -149,7 +150,7 @@ class Buttons {
     String label = 'Button',
     required VoidCallback onPressed,
     double width = 264,
-    double height = 44,
+    double height = 40,
     Color backgroundColor = AppColors.accentColor,
     bool buttonFit = false,
     required IconData icon,

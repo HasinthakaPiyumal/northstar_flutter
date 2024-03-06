@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
+import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetGym.dart';
@@ -209,8 +210,8 @@ class HomeWidgetProActive extends StatelessWidget{
 
               myBookings.length > 0 ? SizedBox(height: 15,) : SizedBox(),
 
-              myBookings.length > 0 ? Text("Gym Bookings",
-                style: TypographyStyles.boldText(20, Get.isDarkMode ? colors.Colors().lightWhite(0.6) : colors.Colors().lightBlack(1)),
+              myBookings.length > 0 ? Text("Gym Subscriptions",
+                style: TypographyStyles.boldText(20, Get.isDarkMode ? colors.Colors().lightWhite(0.95) : colors.Colors().lightBlack(1)),
               ) : SizedBox(),
 
               myBookings.length > 0 ? SizedBox(height: 15,) : SizedBox(),
@@ -337,11 +338,13 @@ class HomeWidgetProActive extends StatelessWidget{
                     return InkWell(
                       borderRadius: BorderRadius.circular(8),
                       onTap: () {
+                        Map obj = myBookings[index]['gym_data'];
+                        obj.addIf(!obj.keys.contains('user'), 'user', {'avatar_url':myBookings[index]['gym']['avatar_url']});
                         Get.to(() => GymView(gymObj: myBookings[index]['gym_data'], viewOnly: true,),);
                       },
                       child: Card(
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                        color: Get.isDarkMode ? colors.Colors().lightBlack(1) : colors.Colors().selectedCardBG,
+                        color: Get.isDarkMode ?AppColors.primary2Color : colors.Colors().selectedCardBG,
                         margin: EdgeInsets.zero,
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 25),

@@ -11,10 +11,14 @@ import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/Layout.dart';
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
+import 'package:north_star/UI/SharedWidgets/PaymentVerification.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/Utils/PopUps.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../Controllers/TaxController.dart';
 import '../../../Styles/AppColors.dart';
+import '../../../Styles/SignUpStyles.dart';
 import '../../../components/SessionTimePicker.dart';
 
 class ScheduleForMe extends StatelessWidget {
@@ -37,8 +41,56 @@ class ScheduleForMe extends StatelessWidget {
     DateTime now = DateTime.now();
     late DateTime selectedDateTime = DateTime(now.year,now.month,now.day,0,0);
 
+
+    void payWithCard(DateTime dateTimeOfBooking,double total)async {
+      Map res = await httpClient.doctorMeeting({
+        'doctor_id': doctor['id'].toString(),
+        'trainer_id': authUser.id.toString(),
+        'client_id': authUser.id.toString(),
+        'seconds': 3600,
+        'role': authUser.role,
+        'title': titleController.text,
+        'description': descriptionController.text,
+        'start_time': dateTimeOfBooking.toString(),
+        'payment_type': 1,
+      });
+      if(res['code']==200){
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString("lastTransactionId", res['data']['id']);
+        await prefs.setString("lastTransactionUrl", res['data']['url']);
+        Get.to(()=>PaymentVerification());
+      }else{
+        showSnack("Booking Failed",res['data']['description'][0] );
+      }
+      print('===res');
+      print(res);
+    }
+    void payWithEWallet(DateTime dateTimeOfBooking,double total)async {
+      Map res = await httpClient.doctorMeeting({
+        'doctor_id': doctor['id'].toString(),
+        'trainer_id': authUser.id.toString(),
+        'client_id': authUser.id.toString(),
+        'seconds': 3600,
+        'role': authUser.role,
+        'title': titleController.text,
+        'description': descriptionController.text,
+        'start_time': dateTimeOfBooking.toString(),
+        'payment_type': 2,
+      });
+      if (res['code'] == 200) {
+        Get.offAll(() => Layout());
+        showSnack('Booking Successful',
+            'Your booking has been successfully placed.');
+      } else {
+        showSnack('Booking Failed',
+            'Something went wrong. Please try again later.');
+      }
+    }
+
     void confirmAndPay(DateTime dateTimeOfBooking, double total) async {
+      ready.value = false;
       Map res = await httpClient.getWallet();
+      ready.value = true;
 
       if (res['code'] == 200) {
         print(res);
@@ -154,23 +206,7 @@ class ScheduleForMe extends StatelessWidget {
                   if (walletData.value['balance'] >=
                       double.parse(
                           doctor['doctor']['hourly_rate'].toString())) {
-                    Map res = await httpClient.newTrainerDoctorMeeting({
-                      'doctor_id': doctor['id'].toString(),
-                      'trainer_id': authUser.id.toString(),
-                      'role': authUser.role,
-                      'title': titleController.text,
-                      'description': descriptionController.text,
-                      'start_time': dateTimeOfBooking.toString(),
-                    });
-                    print(res);
-                    if (res['code'] == 200) {
-                      Get.offAll(() => Layout());
-                      showSnack('Booking Successful',
-                          'Your booking has been successfully placed.');
-                    } else {
-                      showSnack('Booking Failed',
-                          'Something went wrong. Please try again later.');
-                    }
+                    payWithEWallet(dateTimeOfBooking, total);
                   } else {
                     showSnack('Not Enough Balance',
                         'You do not have enough balance to pay for this booking');
@@ -201,6 +237,55 @@ class ScheduleForMe extends StatelessWidget {
                           ],
                         ),
                       )
+                    : LoadingAndEmptyWidgets.loadingWidget()),
+              ),
+            ),
+
+            Container(
+              width: Get.width,
+              padding: EdgeInsets.only(top: 3),
+              child: ElevatedButton(
+                onPressed: () {
+                  Get.back();
+                  payWithCard(dateTimeOfBooking,total);
+                },
+                style: SignUpStyles.selectedButton(),
+                child: Obx(() => ready.value
+                    ? Padding(
+                  padding: EdgeInsets.symmetric(vertical: 15),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 32,
+                          height: 32,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(2),
+                            child: Image.asset('assets/BMLLogo.jpeg'),
+                          ),
+                        ),
+                        SizedBox(width: 16),
+                        Column(
+                          children: [
+                            Text(
+                              'Pay with Card',
+                              style: TextStyle(
+                                color: AppColors.accentColor,
+                                fontSize: 20,
+                                fontFamily: 'Bebas Neue',
+                                fontWeight: FontWeight.w400,
+                                height: 0,
+                              ),
+                            ),
+                            Text(
+                              'Tax amount: MVR ${(taxController.getCalculatedTax(double.parse(
+                                  doctor['doctor']['hourly_rate'].toString()))).toStringAsFixed(2)}',
+                              style: TypographyStyles.text(10),
+                            )
+                          ],
+                        )
+                      ]),
+                )
                     : LoadingAndEmptyWidgets.loadingWidget()),
               ),
             ),
@@ -444,6 +529,7 @@ class ScheduleForMe extends StatelessWidget {
                         child: CircularProgressIndicator(),
                       ),
                 onPressed: () {
+                  if(ready.value)
                   confirmAndPay(selectedDateTime,
                       double.parse(doctor['doctor']['hourly_rate'].toString()));
                   // if (descriptionController.text.isNotEmpty) {

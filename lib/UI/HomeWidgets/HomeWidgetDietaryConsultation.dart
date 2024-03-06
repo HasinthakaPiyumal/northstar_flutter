@@ -11,8 +11,9 @@ import 'package:north_star/UI/SharedWidgets/CommonConfirmDialog.dart';
 import 'package:north_star/Utils/PopUps.dart';
 
 class HomeWidgetDietaryConsultation extends StatelessWidget {
-  const HomeWidgetDietaryConsultation({Key? key, required this.userId}) : super(key: key);
+  const HomeWidgetDietaryConsultation({Key? key, required this.userId,this.trainerId = 0}) : super(key: key);
   final int userId;
+  final int trainerId;
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +55,7 @@ class HomeWidgetDietaryConsultation extends StatelessWidget {
       ),
       floatingActionButton: authUser.role !='trainer' ? FloatingActionButton(
         onPressed: (){
-          Get.to(() => AddNewDietaryConsultation(userId: userId,editMode: false,data:{}))?.then((value) {
+          Get.to(() => AddNewDietaryConsultation(userId: userId,trainerId: trainerId,editMode: false,data:{}))?.then((value) {
             getDietConsultations();
           });
         },
@@ -102,6 +103,7 @@ class HomeWidgetDietaryConsultation extends StatelessWidget {
                               userId: userId,
                               editMode: true,
                               data: dietConsultations.value[index],
+                              trainerId:trainerId
                           ));
                         },
                         borderRadius: BorderRadius.circular(12),

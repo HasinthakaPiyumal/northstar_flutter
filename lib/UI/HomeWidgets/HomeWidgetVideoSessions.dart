@@ -220,8 +220,6 @@ print('HttpClient.baseURL');
 
       if (response.statusCode == 200) {
         var res = jsonDecode(await response.stream.bytesToString());
-        print("===Home widget video sessin");
-        print(res);
         meetings.value = res;
         ready.value = true;
       } else {
@@ -337,7 +335,7 @@ print('HttpClient.baseURL');
                                           Text(
                                               DateFormat.jm().format(
                                                   DateTime.parse(meetings[index]
-                                                      ['start_time'])),
+                                                      ['start_time']).toLocal()),
                                               style:
                                                   TypographyStyles.title(14)),
                                         ],

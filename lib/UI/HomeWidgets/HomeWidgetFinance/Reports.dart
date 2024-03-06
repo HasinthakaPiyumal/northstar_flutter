@@ -9,6 +9,7 @@ import 'package:north_star/Plugins/Utils.dart';
 import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
+import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/main.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -22,6 +23,8 @@ class Reports extends StatelessWidget {
 
     Rx<DateTime> selectedStartDate = DateTime(DateTime.now().year, 1, 1).obs;
     Rx<DateTime> selectedEndDate = DateTime(DateTime.now().year, 12, 31).obs;
+
+    RxBool isReady = false.obs;
 
     RxInt totalIncome = 0.obs;
     RxInt totalExpense = 0.obs;
@@ -37,20 +40,24 @@ class Reports extends StatelessWidget {
     ];
 
     void getFinanceReport()async{
+      isReady.value = false;
       String formattedStartDate = DateFormat('yyyy/MM/dd').format(selectedStartDate.value);
       String formattedEndDate = DateFormat('yyyy/MM/dd').format(selectedEndDate.value);
       dynamic data = {'from':formattedStartDate,'to':formattedEndDate};
       Map res = await httpClient.getFinanceReport(data);
       print("====finance data report");
-      print(authUser.id);
+      print(data);
       if(res['code']==200){
         print(res['data']);
         totalIncome.value = res['data']['total_income'];
         totalExpense.value = res['data']['total_expense'];
+        incomeChartData.clear();
+        expensesChartData.clear();
         res['data']['report_data'].forEach((report){
           incomeChartData.add(IncomeData(DateTime.parse(report['start_date']), report['total_income'].toDouble()));
           expensesChartData.add(ExpensesData(DateTime.parse(report['start_date']), report['total_expense'].toDouble()));
         });
+        isReady.value = true;
       }else{
         print(res);
       }
@@ -114,6 +121,7 @@ class Reports extends StatelessWidget {
                           padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
                           child: MaterialButton(
                             onPressed: (){
+                              getFinanceReport();
                               Get.back();
                             },
                             shape: RoundedRectangleBorder(
@@ -304,14 +312,15 @@ class Reports extends StatelessWidget {
 
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Text("Income and Expenses",
-              style: TypographyStyles.boldText(16, Get.isDarkMode ? colors.Colors().lightWhite(0.6) : Colors.black),
+            child: Obx(()=> Text("Income and Expenses",
+                style: TypographyStyles.boldText(16, Get.isDarkMode ? colors.Colors().lightWhite(0.6) : Colors.black),
+              ),
             ),
           ),
 
           SizedBox(height: 15,),
 
-         Obx(()=> SizedBox(
+         Obx(()=> isReady.value?SizedBox(
                 height: Get.height/100*40,
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
@@ -412,7 +421,7 @@ class Reports extends StatelessWidget {
                     ),
                   ),
                 ),
-              ),
+              ):Container(height:Get.height/100*40,child: Center(child: LoadingAndEmptyWidgets.loadingWidget())),
          ),
 
 

@@ -5,14 +5,18 @@ import 'package:north_star/Controllers/NotificationsController.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Models/NSNotification.dart';
+import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/ButtonStyles.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
+import 'package:north_star/UI/HomeWidgets/HomeWidgetDietaryConsultation.dart';
 import 'package:north_star/UI/SharedWidgets/CommonConfirmDialog.dart';
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/Utils/PopUps.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../../components/Buttons.dart';
 
 class RequestsNotifications extends StatelessWidget {
   const RequestsNotifications({Key? key}) : super(key: key);
@@ -54,7 +58,7 @@ class RequestsNotifications extends StatelessWidget {
           return Container(
             margin: EdgeInsets.all(5),
             decoration: BoxDecoration(
-              color: notification.hasSeen ? Get.isDarkMode ? colors.Colors().deepGrey(1) : colors.Colors().lightCardBG : Get.isDarkMode ? Color(0xFF6D5D4A) : colors.Colors().selectedCardBG,
+              color: notification.hasSeen ? Get.isDarkMode ? AppColors.primary2Color : colors.Colors().lightCardBG : Get.isDarkMode ? Color(0xFF6D5D4A) : colors.Colors().selectedCardBG,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Padding(
@@ -90,71 +94,80 @@ class RequestsNotifications extends StatelessWidget {
                         Divider(
                           color: Get.isDarkMode ? colors.Colors().darkGrey(1) : colors.Colors().darkGrey(1).withOpacity(0.6),
                         ),
-                        Row(
+                        Visibility(visible: NSNotificationTypes.DietConsultationRequest==notification.type,child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            ElevatedButton(
-                              onPressed: (){
-                                String phone = notification.data['sender_phone'];
-                                launchUrl(Uri.parse('tel:'+ phone.toString()));
-                              },
-                              style: ButtonStyles.matButton(Colors.transparent, 0),
-                              child: Row(
-                                children: [
-                                  Icon(Icons.call,
-                                    color: Get.isDarkMode ? Colors.white : colors.Colors().lightBlack(1),
-                                  ),
-                                  SizedBox(width: 7,),
-                                  Text("Call",
-                                    style: TextStyle(
+                            Buttons.outlineButton(width: 120,label: "Add Plan",onPressed: (){Get.to(()=>HomeWidgetDietaryConsultation(userId: authUser.id,trainerId: notification.senderId,));}),
+                          ],
+                        )),
+                        Visibility(
+                          visible: ![NSNotificationTypes.DietConsultationRequest].contains(notification.type),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              ElevatedButton(
+                                onPressed: (){
+                                  String phone = notification.data['sender_phone'];
+                                  launchUrl(Uri.parse('tel:'+ phone.toString()));
+                                },
+                                style: ButtonStyles.matButton(Colors.transparent, 0),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.call,
                                       color: Get.isDarkMode ? Colors.white : colors.Colors().lightBlack(1),
                                     ),
-                                  ),
-                                ],
+                                    SizedBox(width: 7,),
+                                    Text("Call",
+                                      style: TextStyle(
+                                        color: Get.isDarkMode ? Colors.white : colors.Colors().lightBlack(1),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            SizedBox(width: 5,),
-                            ElevatedButton(
-                              onPressed: (){
-                                String email = notification.data['sender_email'];
-                                launchUrl(Uri.parse('mailto:'+ email.toString()));
-                              },
-                              style: ButtonStyles.matButton(Colors.transparent, 0),
-                              child: Row(
-                                children: [
-                                  Icon(Icons.email,
-                                    color: Get.isDarkMode ? Colors.white : colors.Colors().lightBlack(1),
-                                  ),
-                                  SizedBox(width: 7,),
-                                  Text("Email",
-                                    style: TextStyle(
+                              SizedBox(width: 5,),
+                              ElevatedButton(
+                                onPressed: (){
+                                  String email = notification.data['sender_email'];
+                                  launchUrl(Uri.parse('mailto:'+ email.toString()));
+                                },
+                                style: ButtonStyles.matButton(Colors.transparent, 0),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.email,
                                       color: Get.isDarkMode ? Colors.white : colors.Colors().lightBlack(1),
                                     ),
-                                  ),
-                                ],
+                                    SizedBox(width: 7,),
+                                    Text("Email",
+                                      style: TextStyle(
+                                        color: Get.isDarkMode ? Colors.white : colors.Colors().lightBlack(1),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            SizedBox(width: 5,),
-                            ElevatedButton(
-                              onPressed: notification.type != NSNotificationTypes.ClientRequestWeb ? (){
-                                sendInvite(notification);
-                              }: null,
-                              style: ButtonStyles.matButton(Themes.mainThemeColor.shade500, 3),
-                              child: Row(
-                                children: [
-                                  Icon(Icons.person_add_alt_rounded,
-                                    color: colors.Colors().lightBlack(1),
-                                  ),
-                                  SizedBox(width: 7,),
-                                  Text("Invite",
-                                    style: TextStyle(
+                              SizedBox(width: 5,),
+                              ElevatedButton(
+                                onPressed: notification.type != NSNotificationTypes.ClientRequestWeb ? (){
+                                  sendInvite(notification);
+                                }: null,
+                                style: ButtonStyles.matButton(Themes.mainThemeColor.shade500, 3),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.person_add_alt_rounded,
                                       color: colors.Colors().lightBlack(1),
                                     ),
-                                  ),
-                                ],
+                                    SizedBox(width: 7,),
+                                    Text("Invite",
+                                      style: TextStyle(
+                                        color: colors.Colors().lightBlack(1),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ],
                     ),

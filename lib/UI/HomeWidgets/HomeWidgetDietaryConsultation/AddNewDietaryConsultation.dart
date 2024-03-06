@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -10,10 +11,13 @@ import 'package:north_star/Utils/PopUps.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 
+import '../../../Models/NSNotification.dart';
+
 class AddNewDietaryConsultation extends StatelessWidget {
-  const AddNewDietaryConsultation({Key? key, required this.userId, required this.editMode, required this.data})
+  const AddNewDietaryConsultation({Key? key, required this.userId, required this.editMode, required this.data,this.trainerId = 0 })
       : super(key: key);
   final int userId;
+  final int trainerId;
   final bool editMode;
   final Map data;
 
@@ -51,6 +55,18 @@ class AddNewDietaryConsultation extends StatelessWidget {
       });
       print(res);
       if (res['code'] == 200) {
+        print('trainerId');
+        print(trainerId);
+        if(trainerId!=0) {
+          await httpClient.sendNotification(
+              trainerId,
+              'Dietary Consultation Form',
+              'Your Client ${authUser.name} has accepted your request and added a dietary consultation form',
+              NSNotificationTypes.Common, {
+            'client_id': authUser.id,
+            'client_name': authUser.name,
+          });
+        }
         Get.back();
         showSnack('Dietary Consultation Added',
             'Your dietary consultation has been added');

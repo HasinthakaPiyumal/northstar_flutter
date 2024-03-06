@@ -28,7 +28,7 @@ class Utils {
     return Get.isDarkMode;
   }
 
-  static final NumberFormat formatCurrency = NumberFormat.currency(locale: 'en_US', name: 'MVR', symbol: "Rf");
+  static final NumberFormat formatCurrency = NumberFormat.currency(locale: 'en_US', name: 'MVR', symbol: "MVR ");
   static final NumberFormat currencyFmt = NumberFormat("###,###,##0.00");
 
 }

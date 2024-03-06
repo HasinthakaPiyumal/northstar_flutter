@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Controllers/NotificationsController.dart';
@@ -54,6 +55,10 @@ class Home extends StatelessWidget {
     RxList<Widget> carouselItems = <Widget>[].obs;
     RxList carouselList = [].obs;
     RxInt carouselTime = 6.obs;
+
+    print("home loading===");
+
+    // if()
 
     void getCarouselItems() async {
       Map res = await httpClient.getCarouselItems();
@@ -303,11 +308,15 @@ class Home extends StatelessWidget {
                     ? Container(
                         padding: const EdgeInsets.all(8),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             homeWidgetButton(() {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetVendingMachine()));
                             }, 'vending', 'Vending Machine'),
+                            SizedBox(width: 5,),
+                            homeWidgetButton(() {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => FamilyLink()));
+                            }, 'family', 'Family Link'),
                           ],
                         ))
                     : SizedBox(),

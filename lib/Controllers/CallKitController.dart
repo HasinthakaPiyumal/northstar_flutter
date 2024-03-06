@@ -9,8 +9,10 @@ import 'package:north_star/Models/HttpClient.dart';
 
 Future<void> showCallkitIncoming(String uuid,
 {
-  String nameCaller = "",
-  String avatar = "default.jpg",
+  required String nameCaller,
+  required String avatar,
+  required String  channel,
+  required int id
 }
 ) async {
   final params = CallKitParams(
@@ -27,8 +29,8 @@ Future<void> showCallkitIncoming(String uuid,
       isShowCallback: false,
       subtitle: 'Missed call',
     ),
-    extra: <String, dynamic>{'userId': '1a2b3c4d'},
-    headers: <String, dynamic>{'apiKey': 'Abc@123!', 'platform': 'flutter'},
+    extra: <String, dynamic>{'id': id,'channel':channel,'avatar':avatar,'name':nameCaller},
+    headers: <String, dynamic>{'apiKey': 'Abc@123!', 'platform': 'flutter',},
     android: const AndroidParams(
       isCustomNotification: true,
       isShowLogo: false,
@@ -54,6 +56,8 @@ Future<void> showCallkitIncoming(String uuid,
       ringtonePath: 'system_ringtone_default',
     ),
   );
+  print('call kit params===');
+  print(params.extra);
   await FlutterCallkitIncoming.showCallkitIncoming(params);
 }
 

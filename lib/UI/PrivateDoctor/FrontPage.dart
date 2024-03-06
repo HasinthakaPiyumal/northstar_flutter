@@ -25,6 +25,7 @@ import 'package:north_star/UI/Wallet.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 
 import '../../Models/AuthUser.dart';
+import '../../components/Buttons.dart';
 import '../SharedWidgets/MeetingScreen.dart';
 
 class FrontPage extends StatelessWidget {
@@ -92,7 +93,7 @@ class FrontPage extends StatelessWidget {
       }
     }
 
-    void askIfFinished(int seconds, Map meetingData) {
+    void askIfFinished( Map meetingData) {
       joining.value = false;
       Get.defaultDialog(
         radius: 8,
@@ -103,7 +104,7 @@ class FrontPage extends StatelessWidget {
           TextButton(
             child: Text('Yes'),
             onPressed: () {
-              payNow(seconds, meetingData);
+              // payNow(seconds, meetingData);
               finish(meetingData['id']);
             },
           ),
@@ -432,42 +433,9 @@ class FrontPage extends StatelessWidget {
                                         mainAxisAlignment:
                                             MainAxisAlignment.end,
                                         children: [
-                                          ElevatedButton(
-                                            child: Padding(
-                                              padding: EdgeInsets.fromLTRB(
-                                                  0, 5, 5, 5),
-                                              child: Row(
-                                                children: [
-                                                  Icon(
-                                                    Icons.videocam_rounded,
-                                                    color: Colors.black,
-                                                  ),
-                                                  SizedBox(
-                                                    width: 5,
-                                                  ),
-                                                  Text(
-                                                    'JOIN',
-                                                    style: TypographyStyles
-                                                        .boldText(
-                                                            15, Colors.black),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            style: ButtonStyles.matRadButton(
-                                                Themes.mainThemeColor.shade500,
-                                                5,
-                                                12),
-                                            onPressed: () {
-                                              print(list[index]['meeting_id']);
-                                              print(list[index]['passcode']);
-                                              print(list[index]['id']);
-                                              print(list[index]);
-                                              joinMeeting(list[index]);
-                                              // Get.to(()=>MeetingScreen(list[index]));
-                                              //joinMeeting(context, list[index]['meeting_id'], list[index]['passcode'], list[index]['id'], list[index]);
-                                            },
-                                          ),
+                                          Buttons.outlineButton(onPressed: (){askIfFinished( list[index]);},width: 120, label: "Finish"),
+                                          SizedBox(width: 10,),
+                                          Buttons.yellowFlatButton(onPressed: (){joinMeeting(list[index]);},width: 120,label:"Join"),
                                         ],
                                       ),
                                     ],

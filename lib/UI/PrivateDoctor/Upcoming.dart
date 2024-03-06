@@ -17,6 +17,9 @@ import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 //import 'package:flutter_zoom_sdk/zoom_view.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 
+import '../../components/Buttons.dart';
+import '../SharedWidgets/MeetingScreen.dart';
+
 class Upcoming extends StatelessWidget {
   const Upcoming({Key? key}) : super(key: key);
 
@@ -73,7 +76,7 @@ class Upcoming extends StatelessWidget {
       }
     }
 
-    void askIfFinished(int seconds, Map meetingData){
+    void askIfFinished( Map meetingData){
       joining.value = false;
       Get.defaultDialog(
         radius: 8,
@@ -84,7 +87,7 @@ class Upcoming extends StatelessWidget {
           TextButton(
             child: Text('Yes'),
             onPressed: (){
-              payNow(seconds, meetingData);
+              // payNow(seconds, meetingData);
               finish(meetingData['id']);
             },
           ),
@@ -154,7 +157,9 @@ class Upcoming extends StatelessWidget {
 
 
     // }
-
+    joinMeeting(meeting) async {
+      Get.to(() => MeetingScreen(meeting['meeting_id'] + meeting['passcode']));
+    }
     getUpcoming();
 
     return Scaffold(
@@ -284,26 +289,30 @@ class Upcoming extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              ElevatedButton(
-                                child: Padding(
-                                  padding: EdgeInsets.fromLTRB(0, 5, 5, 5),
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.videocam_rounded,
-                                        color: Colors.black,
-                                      ),
-                                      SizedBox(width: 5,),
-                                      Text('JOIN',
-                                        style: TypographyStyles.boldText(15, Colors.black),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                style: ButtonStyles.matRadButton(Themes.mainThemeColor.shade500, 5, 12),
-                                onPressed: (){
-                                  //joinMeeting(context, list[index]['meeting_id'], list[index]['passcode'], list[index]['id'], list[index]);
-                                },
-                              ),
+                              Buttons.outlineButton(onPressed: (){askIfFinished( list[index]);},width: 120, label: "Finish"),
+                              SizedBox(width: 10,),
+                              Buttons.yellowFlatButton(onPressed: (){joinMeeting(list[index]);},width: 120,label:"Join"),
+                              // ElevatedButton(
+                              //   child: Padding(
+                              //     padding: EdgeInsets.fromLTRB(0, 5, 5, 5),
+                              //     child: Row(
+                              //       children: [
+                              //         Icon(Icons.videocam_rounded,
+                              //           color: Colors.black,
+                              //         ),
+                              //         SizedBox(width: 5,),
+                              //         Text('JOIN',
+                              //           style: TypographyStyles.boldText(15, Colors.black),
+                              //         ),
+                              //       ],
+                              //     ),
+                              //   ),
+                              //   style: ButtonStyles.matRadButton(Themes.mainThemeColor.shade500, 5, 12),
+                              //   onPressed: (){
+                              //     joinMeeting(list[index]);
+                              //     //joinMeeting(context, list[index]['meeting_id'], list[index]['passcode'], list[index]['id'], list[index]);
+                              //   },
+                              // ),
                             ],
                           ),
                         ],

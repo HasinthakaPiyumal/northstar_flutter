@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Styles/ButtonStyles.dart';
+import 'package:north_star/Styles/ThemeBdayaStyles.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetLabReports/ReportTypesList.dart';
@@ -128,10 +129,7 @@ class CreateLabReport extends StatelessWidget {
                   onTap: (){
                     DatePickerBdaya.showDatePicker(
                       context,
-                      theme: DatePickerThemeBdaya(
-                        backgroundColor: Color(0xffF1F1F1),
-                        containerHeight: Get.height/3,
-                      ),
+                      theme: ThemeBdayaStyles.main(),
                       showTitleActions: true,
                       onChanged: (date) {
                         print('change $date');

@@ -54,6 +54,8 @@ class DoctorAccountInfo extends StatelessWidget {
                       IconButton(
                         icon: Icon(Icons.edit, color: Themes.mainThemeColor,),
                         onPressed: (){
+                          print('data===');
+                          print(data);
                           Get.to(CommonProfileUpdate(userObj: authUser.role == 'client' ? data['user']: data))?.then((value){
                             getProfile();
                           });

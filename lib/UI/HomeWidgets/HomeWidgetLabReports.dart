@@ -177,7 +177,7 @@ class HomeWidgetLabReports extends StatelessWidget {
                 child: Card(
                   elevation: 0,
                   margin: EdgeInsets.zero,
-                  color: AppColors.primary2Color,
+                  color: Get.isDarkMode?AppColors.primary2Color:Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -191,11 +191,11 @@ class HomeWidgetLabReports extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text("Date Range",
-                              style: TypographyStyles.normalText(14, Colors.white),
+                              style: TypographyStyles.normalText(14,Get.isDarkMode?Colors.white:Colors.black),
                             ),
                             SizedBox(height: 5,),
                             Obx(() => Text("${DateFormat("yyyy/MM/dd").format(selectedStartDate.value)}  to  ${DateFormat("yyyy/MM/dd").format(selectedEndDate.value)}",
-                              style: TypographyStyles.boldText(16, Colors.white),
+                              style: TypographyStyles.boldText(16,Get.isDarkMode?Colors.white:Colors.black),
                             ),),
                           ],
                         ),
