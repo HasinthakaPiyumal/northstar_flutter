@@ -34,6 +34,7 @@ target 'Runner' do
   pod 'MLKitVision', :podspec => 'MLKitVision.podspec.json'
   pod 'MLKitNaturalLanguage', :podspec => 'MLKitNaturalLanguage.podspec.json'
   pod 'FirebaseFirestore', :git => 'https://github.com/invertase/firestore-ios-sdk-frameworks.git', :tag => '10.10.0'
+  $FirebaseSDKVersion = '10.22.0'
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
 
