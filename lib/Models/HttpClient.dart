@@ -1021,6 +1021,8 @@ class HttpClient {
   }
   Future<Map> updateCallLog(var data) async {
     Response response = await post('/calls/actions/update', data);
+    print('Updating response');
+    print(data);
     print(response);
     return {
       "code": response.statusCode,
@@ -1723,6 +1725,13 @@ class HttpClient {
 
   Future<Map> getFamiliLinks(dynamic data) async {
     Response response = await post('/family-link/actions/search', data);
+    print("Family link list ==");
+    print(response.data);
+    return {"code": response.statusCode, "data": response.data};
+  }
+  Future<Map> acceptOrRejectFamilyLink(dynamic data) async {
+    print(data);
+    Response response = await post('/family-link/actions/accept/invite', data);
     return {"code": response.statusCode, "data": response.data};
   }
 

@@ -312,10 +312,9 @@ class Reports extends StatelessWidget {
 
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Obx(()=> Text("Income and Expenses",
+            child:Text("Income and Expenses",
                 style: TypographyStyles.boldText(16, Get.isDarkMode ? colors.Colors().lightWhite(0.6) : Colors.black),
               ),
-            ),
           ),
 
           SizedBox(height: 15,),

@@ -357,26 +357,26 @@ class _TrainerRegisterFirstState extends State<TrainerRegisterFirst> {
                       initialDate: DateTime(2000),
                       firstDate: DateTime(1900),
                       lastDate: DateTime.now(),
-                      builder: (BuildContext context, Widget? child) {
-                        return Theme(
-                          data: isDark
-                              ? ThemeData.dark().copyWith(
-                            primaryColor:
-                            isDark ? Colors.white : Colors.black,
-                            colorScheme: ColorScheme.dark(
-                                primary: Color(0xFFFFB700),
-                                onSecondary: Color(0xFFFFB700)),
-                            dialogBackgroundColor: Color(0xFF1B1F24),
-                          )
-                              : ThemeData.light().copyWith(
-                            primaryColor:
-                            isDark ? Colors.white : Colors.black,
-                            colorScheme: ColorScheme.light(
-                                primary: Color(0xFFFFB700)),
-                          ),
-                          child: child!,
-                        );
-                      },
+                      // builder: (BuildContext context, Widget? child) {
+                      //   return Theme(
+                      //     data: isDark
+                      //         ? ThemeData.dark().copyWith(
+                      //       primaryColor:
+                      //       isDark ? Colors.white : Colors.black,
+                      //       colorScheme: ColorScheme.dark(
+                      //           primary: Color(0xFFFFB700),
+                      //           onSecondary: Color(0xFFFFB700)),
+                      //       dialogBackgroundColor: Color(0xFF1B1F24),
+                      //     )
+                      //         : ThemeData.light().copyWith(
+                      //       primaryColor:
+                      //       isDark ? Colors.white : Colors.black,
+                      //       colorScheme: ColorScheme.light(
+                      //           primary: Color(0xFFFFB700)),
+                      //     ),
+                      //     child: child!,
+                      //   );
+                      // },
                     );
 
                     if (pickedDate != null) {

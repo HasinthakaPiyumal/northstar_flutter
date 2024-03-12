@@ -6,6 +6,7 @@ import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/components/Buttons.dart';
 
 import '../../Styles/TypographyStyles.dart';
+import '../../Utils/PopUps.dart';
 import '../SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'HomeWidgetFamilyLink/CreateNewFamilyLink.dart';
 import 'HomeWidgetFamilyLink/FamilyView.dart';
@@ -28,6 +29,24 @@ class _FamilyLinkState extends State<FamilyLink> {
     var res = await httpClient.getFamiliLinks(data);
     if(res['code'] ==200){
       familyLinkList.value = res['data'];
+    }
+    ready.value = true;
+  }
+  void acceptRejectFamilyLink(int id,int status) async{
+    ready.value= false;
+    dynamic data = {
+      "family_id":id,
+      "status":status
+    };
+    var rejectStatus = await httpClient.acceptOrRejectFamilyLink(data);
+    if(rejectStatus['code']==200){
+      showSnack("Success", status==1?"Family link Accepted successfully":"Family link Rejected successfully");
+      var res = await httpClient.getFamiliLinks(data);
+      if(res['code'] ==200){
+        familyLinkList.value = res['data'];
+      }
+    }else{
+      showSnack("Update Failed", "Something went wrong");
     }
     ready.value = true;
   }
@@ -129,6 +148,22 @@ class _FamilyLinkState extends State<FamilyLink> {
                           SizedBox(
                             height: 24,
                           ),
+                          familyLinkList[index]['invited']==1?
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                Buttons.outlineButton(
+                                    onPressed: () {
+                                      print(familyLinkList[index]);
+                                      acceptRejectFamilyLink(familyLinkList[index]['family_id'], 2);
+                                    }, label: "Reject", width: 100),
+                                SizedBox(width: 10,),
+                                Buttons.yellowFlatButton(
+                                    onPressed: () {
+                                      print(familyLinkList[index]);
+                                      acceptRejectFamilyLink(familyLinkList[index]['family_id'], 1);
+                                    }, label: "Accept", width: 100),
+                              ],):
                           Buttons.yellowFlatButton(
                               onPressed: () {
                                 print(familyLinkList[index]);

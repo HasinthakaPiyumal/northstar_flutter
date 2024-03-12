@@ -149,6 +149,7 @@ class FamilyView extends StatelessWidget {
                       _addMemberNickName.clear();
                       _addMemberEmail.clear();
                       Get.back();
+                      showSnack("Success", "Successfully invited to member");
                     } else {
                       showSnack("Failed", res['data']['message']);
                     }
@@ -721,7 +722,7 @@ class FamilyView extends StatelessWidget {
                                                       _updateFamilyDescription,
                                                   decoration: InputDecoration(
                                                     border: OutlineInputBorder(),
-                                                    label: Text("Name"),
+                                                    label: Text("Description"),
                                                   ),
                                                 ),
                                                 SizedBox(

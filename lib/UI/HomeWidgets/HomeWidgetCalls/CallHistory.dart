@@ -86,7 +86,7 @@ class CallHistory extends StatelessWidget {
                                 //     .split('T')[1].split('.')[0]),
                                 Text(DateFormat('d MMM, y H:mm').format(
                                     DateTime.parse(
-                                        callHistory[index]['created_at'])),style:TypographyStyles.textWithWeight(14, FontWeight.w400)),
+                                        callHistory[index]['created_at']).toLocal()),style:TypographyStyles.textWithWeight(14, FontWeight.w400)),
                                 Text(callHistory[index]['duration'].toString() +
                                     ' sec',style:TypographyStyles.textWithWeight(14, FontWeight.w400)),
                               ],
@@ -108,6 +108,7 @@ class CallHistory extends StatelessWidget {
                               Get.to(() => VoiceCallUI(
                                       user: callHistory[index]['receiver']))
                                   ?.then((value) {
+                                    getCallHistory();
                                 // Get.back();
                                 // print(value);
                               });

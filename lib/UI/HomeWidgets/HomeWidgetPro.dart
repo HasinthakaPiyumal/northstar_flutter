@@ -28,6 +28,7 @@ class HomeWidgetPro extends StatelessWidget {
   Widget build(BuildContext context) {
     print(extend);
     RxList plansList = [].obs;
+    final ScrollController scrollController = ScrollController();
 
     RxInt _current = 0.obs;
     RxBool ready = true.obs;
@@ -35,11 +36,22 @@ class HomeWidgetPro extends StatelessWidget {
     RxBool check = false.obs;
     ProList _proList = ProList();
     RxInt selectedPackage = 0.obs;
+    RxBool isAgree = false.obs;
 
     RxString currentTransactionId = "".obs;
 
     RxDouble couponValue = 0.0.obs;
     RxString couponCode = "--".obs;
+
+    void scrollTOBottom(){
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        scrollController.animateTo(
+          scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      });
+    }
 
     void getPlansList() async {
       ready.value = false;
@@ -196,41 +208,57 @@ class HomeWidgetPro extends StatelessWidget {
                   ),
                   SizedBox(height: 8),
                   SizedBox(height: 30),
-                  RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      text:
-                          'By clicking Pay with Card, you are agreeing to our ',
-                      style: TypographyStyles.normalText(
-                        12,
-                        Get.isDarkMode
-                            ? Themes.mainThemeColorAccent.shade100
-                            : colors.Colors().lightBlack(1),
-                      ),
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: 'Terms & Conditions',
-                          style: TypographyStyles.normalText(
-                              12, Themes.mainThemeColor),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () => launchUrl(Uri.parse(
-                                'https://northstar.mv/terms-conditions/')),
-                        ),
-                        TextSpan(
-                          text: " & ",
-                          style: TypographyStyles.normalText(
-                              12,
-                              Get.isDarkMode
-                                  ? Themes.mainThemeColorAccent.shade100
-                                  : colors.Colors().lightBlack(1)),
-                        ),
-                        TextSpan(
-                          text: 'Privacy Policy',
-                          style: TypographyStyles.normalText(
-                              12, Themes.mainThemeColor),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () => launchUrl(Uri.parse(
-                                'https://northstar.mv/privacy-policy')),
+                  GestureDetector(
+                    onTap: (){
+                      isAgree.value = !isAgree.value;
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Checkbox(value: isAgree.value, onChanged: (val){
+                          isAgree.value = val!;
+                        },splashRadius: 20,),
+                        Expanded(
+                          child: RichText(
+                            textAlign: TextAlign.left,
+                            text: TextSpan(
+                              text:
+                                  'You are agreeing to our ',
+                              style: TypographyStyles.normalText(
+                                12,
+                                Get.isDarkMode
+                                    ? Themes.mainThemeColorAccent.shade100
+                                    : colors.Colors().lightBlack(1),
+                              ),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: 'Terms & Conditions',
+                                  style: TypographyStyles.normalText(
+                                      12, Themes.mainThemeColor),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () => launchUrl(Uri.parse(
+                                        'https://northstar.mv/terms-conditions/')),
+                                ),
+                                TextSpan(
+                                  text: " & ",
+                                  style: TypographyStyles.normalText(
+                                      12,
+                                      Get.isDarkMode
+                                          ? Themes.mainThemeColorAccent.shade100
+                                          : colors.Colors().lightBlack(1)),
+                                ),
+                                TextSpan(
+                                  text: 'Privacy Policy',
+                                  style: TypographyStyles.normalText(
+                                      12, Themes.mainThemeColor),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () => launchUrl(Uri.parse(
+                                        'https://northstar.mv/privacy-policy')),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -253,6 +281,10 @@ class HomeWidgetPro extends StatelessWidget {
                 onPressed: () async {
                   print(_current.value);
                   print(plansList[_current.value]);
+                  if(!isAgree.value){
+                    showSnack('Terms and Conditions','Please accept the terms and conditions.');
+                    return;
+                  }
                   if (plansList[_current.value]['real_price'] <=
                       walletData['balance']) {
                     var data = {
@@ -308,6 +340,10 @@ class HomeWidgetPro extends StatelessWidget {
               padding: EdgeInsets.only(top: 3),
               child: ElevatedButton(
                 onPressed: () {
+                  if(!isAgree.value){
+                    showSnack('Terms and Conditions','Please accept the terms and conditions.');
+                    return;
+                  }
                   Get.back();
                   subscribeNow(plan);
                 },
@@ -453,6 +489,7 @@ class HomeWidgetPro extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
+        controller: scrollController,
         child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 25),
             child: Obx(() => check.value
@@ -714,6 +751,7 @@ class HomeWidgetPro extends StatelessWidget {
                                           ),
                                           onPressed: () {
                                             selectedPackage.value = index;
+                                            scrollTOBottom();
                                           },
                                         )),
                                     SizedBox(

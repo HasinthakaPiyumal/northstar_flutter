@@ -11,6 +11,7 @@ import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/ButtonStyles.dart';
 import 'package:north_star/Styles/ThemeBdayaStyles.dart';
+import 'package:north_star/UI/HelpAndSupport/HelpAndSupportHome.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/Utils/PopUps.dart';
 
@@ -187,72 +188,73 @@ class CommonProfileUpdate extends StatelessWidget {
                       decoration: InputDecoration(
                         labelText: 'Phone Number',
                         prefixIcon: Icon(Icons.call_outlined),
+                        suffixIcon: IconButton(onPressed: () {  Get.to(()=>HelpAndSupportHome());}, icon: Icon(Icons.info_outlined),),
                         border: UnderlineInputBorder(),
                       ),
-                      onTap: () {
-                        Get.defaultDialog(
-                          radius: 5,
-                          titlePadding: EdgeInsets.only(top: 20),
-                          contentPadding: EdgeInsets.fromLTRB(20, 25, 20, 20),
-                          title: 'Change Phone Number',
-                          backgroundColor: Get.isDarkMode
-                              ? AppColors.primary2Color
-                              : Colors.white,
-                          content: Container(
-                            width: Get.width,
-                            child: IntlPhoneField(
-                              decoration: InputDecoration(
-                                labelText: 'Phone Number',
-                                border: UnderlineInputBorder(),
-                              ),
-                              initialCountryCode: userCountry.isoCode,
-                              onChanged: (PhoneNumber value) {
-                                tempPhone = value.completeNumber.toString();
-                              },
-                            ),
-                          ),
-                          actions: [
-                            ElevatedButton(
-                              style: ButtonStyles.bigFlatYellowButton(),
-                              child: Container(
-                                width: Get.width / 4,
-                                child: Center(
-                                    child: Text('Save',
-                                        style: TextStyle(
-                                          color: AppColors.textOnAccentColor,
-                                          fontSize: 20,
-                                          fontFamily: 'Bebas Neue',
-                                          fontWeight: FontWeight.w400,
-                                        ))),
-                              ),
-                              onPressed: () {
-                                phone.text = tempPhone;
-                                Get.back();
-                              },
-                            ),
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  foregroundColor: Colors.transparent,
-                                  backgroundColor: Colors.transparent,
-                                  elevation: 0,
-                                  shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                          color: AppColors.accentColor),
-                                      borderRadius: BorderRadius.circular(5))),
-                              child: Container(
-                                  width: Get.width / 4,
-                                  child: Center(
-                                      child: Text(
-                                    'Cancel',
-                                    style: TypographyStyles.smallBoldTitle(20),
-                                  ))),
-                              onPressed: () {
-                                Get.back();
-                              },
-                            ),
-                          ],
-                        );
-                      },
+                      // onTap: () {
+                      //   Get.defaultDialog(
+                      //     radius: 5,
+                      //     titlePadding: EdgeInsets.only(top: 20),
+                      //     contentPadding: EdgeInsets.fromLTRB(20, 25, 20, 20),
+                      //     title: 'Change Phone Number',
+                      //     backgroundColor: Get.isDarkMode
+                      //         ? AppColors.primary2Color
+                      //         : Colors.white,
+                      //     content: Container(
+                      //       width: Get.width,
+                      //       child: IntlPhoneField(
+                      //         decoration: InputDecoration(
+                      //           labelText: 'Phone Number',
+                      //           border: UnderlineInputBorder(),
+                      //         ),
+                      //         initialCountryCode: userCountry.isoCode,
+                      //         onChanged: (PhoneNumber value) {
+                      //           tempPhone = value.completeNumber.toString();
+                      //         },
+                      //       ),
+                      //     ),
+                      //     actions: [
+                      //       ElevatedButton(
+                      //         style: ButtonStyles.bigFlatYellowButton(),
+                      //         child: Container(
+                      //           width: Get.width / 4,
+                      //           child: Center(
+                      //               child: Text('Save',
+                      //                   style: TextStyle(
+                      //                     color: AppColors.textOnAccentColor,
+                      //                     fontSize: 20,
+                      //                     fontFamily: 'Bebas Neue',
+                      //                     fontWeight: FontWeight.w400,
+                      //                   ))),
+                      //         ),
+                      //         onPressed: () {
+                      //           phone.text = tempPhone;
+                      //           Get.back();
+                      //         },
+                      //       ),
+                      //       ElevatedButton(
+                      //         style: ElevatedButton.styleFrom(
+                      //             foregroundColor: Colors.transparent,
+                      //             backgroundColor: Colors.transparent,
+                      //             elevation: 0,
+                      //             shape: RoundedRectangleBorder(
+                      //                 side: BorderSide(
+                      //                     color: AppColors.accentColor),
+                      //                 borderRadius: BorderRadius.circular(5))),
+                      //         child: Container(
+                      //             width: Get.width / 4,
+                      //             child: Center(
+                      //                 child: Text(
+                      //               'Cancel',
+                      //               style: TypographyStyles.smallBoldTitle(20),
+                      //             ))),
+                      //         onPressed: () {
+                      //           Get.back();
+                      //         },
+                      //       ),
+                      //     ],
+                      //   );
+                      // },
                     ),
                     SizedBox(
                       height: 16,
@@ -260,9 +262,11 @@ class CommonProfileUpdate extends StatelessWidget {
                     TextField(
                       controller: email,
                       keyboardType: TextInputType.emailAddress,
+                      readOnly: true,
                       decoration: InputDecoration(
                         labelText: 'Email',
                         prefixIcon: Icon(Icons.email_outlined),
+                        suffixIcon: IconButton(onPressed: () {  Get.to(()=>HelpAndSupportHome());}, icon: Icon(Icons.info_outlined),),
                         border: UnderlineInputBorder(),
                       ),
                     ),

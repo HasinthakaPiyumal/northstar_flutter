@@ -153,7 +153,7 @@ class VoiceCallUI extends StatelessWidget {
                     )),
                     MaterialButton(
                       onPressed: () async {
-                        AgoraCallController.leaveCall();
+                        AgoraCallController.leaveCall(back: true);
                       },
                       shape: CircleBorder(),
                       elevation: 0,

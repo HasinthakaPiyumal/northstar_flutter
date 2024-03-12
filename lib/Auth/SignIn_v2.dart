@@ -15,15 +15,17 @@ class SignIn extends StatelessWidget {
 
   RxBool passVisibility = true.obs;
 
-  RxBool rememberMe = false.obs;
+  RxBool rememberMe = true.obs;
 
   void toggle() {
     passVisibility.value = !passVisibility.value;
   }
 
   TextEditingController userName = TextEditingController();
-
   TextEditingController password = TextEditingController();
+
+  FocusNode userNameFocusNode = FocusNode();
+  FocusNode passwordFocusNode = FocusNode();
 
   void signIn() async {
     if (!userName.text.isEmail) {
@@ -31,7 +33,6 @@ class SignIn extends StatelessWidget {
     } else if (password.text.isEmpty) {
       showSnack('Incorrect Password', 'Please use the correct password');
     } else {
-      toggle();
       Map res = await httpClient.signIn({
         'email': userName.text,
         'password': password.text,
@@ -44,7 +45,6 @@ class SignIn extends StatelessWidget {
           'Incorrect Email and/or Password',
           'Please use the correct password and email',
         );
-        toggle();
       }
     }
   }
@@ -150,6 +150,7 @@ class SignIn extends StatelessWidget {
                           SizedBox(height: Get.height / 100 * 4),
                           TextField(
                             controller: userName,
+                            focusNode: userNameFocusNode,
                             autofillHints: [AutofillHints.email],
                             decoration: InputDecoration(
                               prefixIcon: Icon(
@@ -163,10 +164,14 @@ class SignIn extends StatelessWidget {
                               border: UnderlineInputBorder(),
                               contentPadding: EdgeInsets.only(top: 15.0),
                             ),
+                            onSubmitted: (data){
+                              passwordFocusNode.requestFocus();
+                            },
                           ),
                           SizedBox(height: 10),
                           Obx(()=> TextField(
                               controller: password,
+                              focusNode: passwordFocusNode,
                               obscureText: passVisibility.value,
                               autofillHints: [AutofillHints.password,AutofillHints.newPassword],
                               onEditingComplete: ()=>TextInput.finishAutofillContext(),
@@ -193,6 +198,11 @@ class SignIn extends StatelessWidget {
                                   ),
                                 ),
                               ),
+                              onSubmitted: (data){
+                                if(password.text.isNotEmpty && userName.text.isNotEmpty){
+                                  signIn();
+                                }
+                              },
                             ),
                           ),
                           Row(

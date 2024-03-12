@@ -42,6 +42,9 @@ void processCall(dynamic data,String uuid) async {
 }
 
 void invokeCall(int userId, String channelName) async {
+  // if(callData.channelName != "defaultChannel" && callData.id!=0){
+  //   callMessage(callData.id, callData.channelName, CallEvents.DisconnectCall);
+  // }
   callMessage(userId, channelName, CallEvents.StartCall);
 }
 void rejectCall(int userId, String channelName) async {
