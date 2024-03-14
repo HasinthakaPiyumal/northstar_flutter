@@ -74,7 +74,7 @@ class GymDateAndTime extends StatelessWidget {
         clientIDs,
         selectedStartTime.value,
         selectedEndTime.value,
-        hourlyRate * 100,
+        hourlyRate,
       );
       print(res);
       if (res['code'] == 422) {

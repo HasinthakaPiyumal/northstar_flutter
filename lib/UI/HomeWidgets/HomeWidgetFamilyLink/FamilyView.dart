@@ -563,6 +563,8 @@ class FamilyView extends StatelessWidget {
                                                     "1",
                                                 haveAccess: members[index]
                                                         ["assigned"] ==1,
+                                                viewAccess: members[index]
+                                                        ["can_view"] ==1,
                                                 userId: members[index]
                                                 ["real_id"],
                                               );
@@ -816,6 +818,7 @@ class CustomProfileContainer extends StatelessWidget {
   final bool isAdmin;
   final int userId;
   final bool haveAccess;
+  final bool viewAccess;
 
   CustomProfileContainer({
     required this.imageUrl,
@@ -823,6 +826,7 @@ class CustomProfileContainer extends StatelessWidget {
     required this.description,
     this.isAdmin = false,
     this.haveAccess = false,
+    this.viewAccess = false,
     required this.userId
   });
 
@@ -839,6 +843,8 @@ class CustomProfileContainer extends StatelessWidget {
         child: InkWell(
           onTap: (){
             if(haveAccess){
+              Get.to(() => UserView(userID: userId));
+            }else if(viewAccess){
               Get.to(() => UserView(userID: userId));
             }
             },
@@ -892,6 +898,21 @@ class CustomProfileContainer extends StatelessWidget {
                               ),
                               child: Text(
                                 "Manageable",
+                                style: TypographyStyles.textWithWeight(
+                                    10, FontWeight.w300).copyWith(color: AppColors.textOnAccentColor),
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                            visible: !haveAccess && viewAccess,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 6,vertical: 2),
+                              decoration: BoxDecoration(
+                                color: Color(0xFF68FC80),
+                                borderRadius: BorderRadius.circular(2)
+                              ),
+                              child: Text(
+                                "Only View",
                                 style: TypographyStyles.textWithWeight(
                                     10, FontWeight.w300).copyWith(color: AppColors.textOnAccentColor),
                               ),
