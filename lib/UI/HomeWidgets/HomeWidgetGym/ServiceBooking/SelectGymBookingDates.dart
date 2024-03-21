@@ -11,13 +11,17 @@ import 'package:north_star/UI/HomeWidgets/HomeWidgetGym/ServiceBooking/GymDateAn
 import 'package:north_star/UI/Layout.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/Utils/PopUps.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../Controllers/TaxController.dart';
 import '../../../../Styles/AppColors.dart';
 import '../../../../Styles/ButtonStyles.dart';
 import '../../../../components/Buttons.dart';
+import '../../../../components/CouponApply.dart';
 import '../../../SharedWidgets/CommonConfirmDialog.dart';
 import '../../../SharedWidgets/LoadingAndEmptyWidgets.dart';
+import '../../../SharedWidgets/PaymentVerification.dart';
 
 class SelectGymBookingDates extends StatelessWidget {
   const SelectGymBookingDates({Key? key, this.gymObj, required this.clientIds})
@@ -31,6 +35,10 @@ class SelectGymBookingDates extends StatelessWidget {
     RxList bookings = [].obs;
     RxBool ready = true.obs;
     RxDouble totalPrice = 0.0.obs;
+
+
+    RxString couponCode = "".obs;
+    RxDouble couponValue = 0.0.obs;
 
     void getUnconfirmedBookings() async {
       print('GYM obj ==> $gymObj');
@@ -48,15 +56,25 @@ class SelectGymBookingDates extends StatelessWidget {
 
     void payByCard(double amount) async {
       ready.value = false;
-      Map res = await httpClient.topUpWallet({
-        'amount': amount,
+      List ids = [];
+      bookings.forEach((element) {
+        ids.add(element['id']);
       });
+      Map res = await httpClient.confirmSchedulesForService({
+        'booking_ids':ids,
+        'service_id':gymObj['user_id'],
+        'couponCode':couponCode.value,
+        'paymentType':1
+      });
+
       print(res);
       if (res['code'] == 200) {
-        print(res['data']['url']);
-        await launchUrl(Uri.parse(res['data']['url']));
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString("lastTransactionId", res['data']['id']);
+        await prefs.setString("lastTransactionUrl", res['data']['url']);
+        Get.to(()=>PaymentVerification());
       } else {
-        print(res);
+        showSnack("Booking Failed",res['data']['description'][0] );
       }
       ready.value = true;
     }
@@ -192,7 +210,7 @@ class SelectGymBookingDates extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'MVR ${totalPrice.value}',
+                    'MVR ${totalPrice.value - couponValue.value}',
                     style: TypographyStyles.boldText(
                       20,
                       Get.isDarkMode
@@ -242,6 +260,12 @@ class SelectGymBookingDates extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 10),
+              CouponApply(
+                  type: 3,
+                  typeId: gymObj['user_id'],
+                  couponCode: couponCode,
+                  couponValue: couponValue,
+                  payingAmount: totalPrice.value)
             ],
           ),
           actions: [
@@ -249,17 +273,18 @@ class SelectGymBookingDates extends StatelessWidget {
               width: Get.width,
               child: ElevatedButton(
                 onPressed: () async {
-                  if (totalPrice.value <=
+                  if ((totalPrice.value -  couponValue.value) <=
                       walletData.value['balance']) {
                     List temp = [];
                     bookings.forEach((element) {
                       temp.add(element['id']);
                     });
-                    Map res = await httpClient.confirmSchedulesForService(
-                      temp,
-                      totalPrice.value,
-                      gymObj['user_id'],
-                    );
+                    Map res = await httpClient.confirmSchedulesForService({
+                      'booking_ids':temp,
+                      'service_id':gymObj['user_id'],
+                      'couponCode':couponCode.value,
+                      'paymentType':2
+                    });
                     if (res['code'] == 200) {
                       informUser();
                       Get.offAll(() => Layout());
@@ -324,10 +349,23 @@ class SelectGymBookingDates extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(width: 16),
-                              Text(
-                                'Pay with Card',
-                                style: TypographyStyles.boldText(
-                                    15, Themes.mainThemeColor.shade500),
+                              Column(
+                                children: [
+                                  Text(
+                                    'Pay with Card',
+                                    style: TextStyle(
+                                      color: AppColors.accentColor,
+                                      fontSize: 20,
+                                      fontFamily: 'Bebas Neue',
+                                      fontWeight: FontWeight.w400,
+                                      height: 0,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Tax amount: MVR ${(taxController.getCalculatedTax( totalPrice.value - couponValue.value)).toStringAsFixed(2)}',
+                                    style: TypographyStyles.text(10),
+                                  )
+                                ],
                               )
                             ]),
                       )

@@ -101,7 +101,11 @@ class HomeWidgetToDos extends StatelessWidget {
       if (res['code'] == 200) {
         todos.value = res['data'];
         res['data'].forEach((element) {
-          toHighlight.add(DateTime.parse(element['endDate']));
+          try{
+            toHighlight.add(DateTime.parse(element['endDate']));
+          }catch(e){
+            toHighlight.add(DateFormat('dd-MM-yyyy').parse(element['endDate']).toLocal());
+          }
         });
         print(toHighlight);
         await getDatesWithTasks();

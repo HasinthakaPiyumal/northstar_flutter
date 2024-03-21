@@ -125,6 +125,7 @@ class HttpClient {
   //SignIn
   Future<Map> signIn(Map data) async {
     Response response = await post('/login', data);
+    print(response);
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -631,24 +632,22 @@ class HttpClient {
     };
   }
 
-  Future<Map> confirmSchedules(scheduleIds, num amount, int gymID) async {
+  Future<Map> confirmSchedules(scheduleIds, num amount, int gymID,String coupon,int type) async {
     Response response = await post('/exclusive-gyms/pay-now', {
       "amount": amount,
       "trainer_id": authUser.id,
       "gym_id": gymID,
-      "schedule_ids": scheduleIds
+      "schedule_ids": scheduleIds,
+      "couponCode": coupon,
+      "paymentType":type
     });
     return {
       "code": response.statusCode,
       "data": response.data,
     };
   }
-  Future<Map> confirmSchedulesForService(scheduleIds, num amount, int gymID) async {
-    Response response = await post('/gym-service/pay-now', {
-      "amount": amount,
-      "service_id": gymID,
-      "booking_ids": scheduleIds
-    });
+  Future<Map> confirmSchedulesForService(Map data) async {
+    Response response = await post('/gym-service/pay-now', data);
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -850,6 +849,8 @@ class HttpClient {
   //Payments.
   Future<Map> proMemberActivate(Map data) async {
     Response response = await post('/pro-member/activate', data);
+    print('proMemberActivate data');
+    print(data);
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -1458,8 +1459,8 @@ class HttpClient {
   }
 
   //ECOM Related
-  Future<Map> purchaseCart() async {
-    Response response = await get('/cart/pay-now');
+  Future<Map> purchaseCart(Map data) async {
+    Response response = await post('/cart/pay-now',data);
     return {
       "code": response.statusCode,
       "data": response.data,

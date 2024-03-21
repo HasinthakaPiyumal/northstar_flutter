@@ -11,13 +11,17 @@ import 'package:north_star/UI/HomeWidgets/HomeWidgetGym/ExclusiveGymBooking/GymD
 import 'package:north_star/UI/Layout.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/Utils/PopUps.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../Controllers/TaxController.dart';
 import '../../../../Styles/AppColors.dart';
 import '../../../../Styles/ButtonStyles.dart';
 import '../../../../components/Buttons.dart';
+import '../../../../components/CouponApply.dart';
 import '../../../SharedWidgets/CommonConfirmDialog.dart';
 import '../../../SharedWidgets/LoadingAndEmptyWidgets.dart';
+import '../../../SharedWidgets/PaymentVerification.dart';
 
 class SelectGymBookingDates extends StatelessWidget {
   const SelectGymBookingDates({Key? key, this.gymObj, required this.clientIds})
@@ -31,6 +35,8 @@ class SelectGymBookingDates extends StatelessWidget {
     RxList bookings = [].obs;
     RxBool ready = true.obs;
     RxInt totalHours = 0.obs;
+    RxString couponCode = "".obs;
+    RxDouble couponValue = 0.0.obs;
 
     void getTotalHours() {
       int temp = 0;
@@ -54,19 +60,26 @@ class SelectGymBookingDates extends StatelessWidget {
       }
     }
 
-    void payByCard(int amount) async {
-      ready.value = false;
-      Map res = await httpClient.topUpWallet({
-        'amount': amount,
+    void payByCard() async {
+      List ids = [];
+      bookings.forEach((element) {
+        ids.add(element['id']);
       });
-      print(res);
-      if (res['code'] == 200) {
-        print(res['data']['url']);
-        await launchUrl(Uri.parse(res['data']['url']));
-      } else {
-        print(res);
+      Map res = await httpClient.confirmSchedules(
+          ids,
+          totalHours.value * gymObj['hourly_rate'] - couponValue.value,
+          gymObj['user_id'],
+          couponCode.value,
+          1
+      );
+      if(res['code']==200){
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString("lastTransactionId", res['data']['id']);
+        await prefs.setString("lastTransactionUrl", res['data']['url']);
+        Get.to(()=>PaymentVerification());
+      }else{
+        showSnack("Booking Failed",res['data']['description'][0] );
       }
-      ready.value = true;
     }
 
     void informUser(){
@@ -203,7 +216,7 @@ class SelectGymBookingDates extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'MVR ${totalHours.value * gymObj['hourly_rate']}',
+                    'MVR ${totalHours.value * gymObj['hourly_rate'] - couponValue.value}',
                     style: TypographyStyles.boldText(
                       20,
                       Get.isDarkMode
@@ -253,6 +266,12 @@ class SelectGymBookingDates extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 10),
+              CouponApply(
+                  type: 2,
+                  typeId: gymObj['user_id'],
+                  couponCode: couponCode,
+                  couponValue: couponValue,
+                  payingAmount: totalHours.value * gymObj['hourly_rate'])
             ],
           ),
           actions: [
@@ -260,7 +279,7 @@ class SelectGymBookingDates extends StatelessWidget {
               width: Get.width,
               child: ElevatedButton(
                 onPressed: () async {
-                  if (totalHours.value * gymObj['hourly_rate'] <=
+                  if (totalHours.value * gymObj['hourly_rate'] - couponValue.value <=
                       walletData.value['balance']) {
                     List temp = [];
                     bookings.forEach((element) {
@@ -268,8 +287,10 @@ class SelectGymBookingDates extends StatelessWidget {
                     });
                     Map res = await httpClient.confirmSchedules(
                       temp,
-                      totalHours.value * gymObj['hourly_rate'],
+                      totalHours.value * gymObj['hourly_rate'] - couponValue.value,
                       gymObj['user_id'],
+                      couponCode.value,
+                      2
                     );
                     if (res['code'] == 200) {
                       informUser();
@@ -317,8 +338,7 @@ class SelectGymBookingDates extends StatelessWidget {
               padding: EdgeInsets.only(top: 3),
               child: ElevatedButton(
                 onPressed: () {
-                  payByCard(int.parse(
-                      '${totalHours.value * gymObj['hourly_rate'] * 100}'));
+                  payByCard();
                 },
                 style: SignUpStyles.selectedButton(),
                 child: Obx(() => ready.value
@@ -336,10 +356,23 @@ class SelectGymBookingDates extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(width: 16),
-                              Text(
-                                'Pay with Card',
-                                style: TypographyStyles.boldText(
-                                    15, Themes.mainThemeColor.shade500),
+                              Column(
+                                children: [
+                                  Text(
+                                    'Pay with Card',
+                                    style: TextStyle(
+                                      color: AppColors.accentColor,
+                                      fontSize: 20,
+                                      fontFamily: 'Bebas Neue',
+                                      fontWeight: FontWeight.w400,
+                                      height: 0,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Tax amount: MVR ${(taxController.getCalculatedTax( totalHours.value * gymObj['hourly_rate'] - couponValue.value)).toStringAsFixed(2)}',
+                                    style: TypographyStyles.text(10),
+                                  )
+                                ],
                               )
                             ]),
                       )

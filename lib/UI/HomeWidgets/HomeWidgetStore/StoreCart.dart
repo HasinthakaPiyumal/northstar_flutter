@@ -10,6 +10,7 @@ import 'package:north_star/UI/HomeWidgets/HomeWidgetStore/MyOrders.dart';
 import 'package:north_star/UI/SharedWidgets/CommonConfirmDialog.dart';
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:north_star/components/Buttons.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../Models/HttpClient.dart';
@@ -20,6 +21,7 @@ import 'package:north_star/Utils/CustomColors.dart' as colors;
 
 import '../../../Utils/PopUps.dart';
 import '../../Layout.dart';
+import '../../SharedWidgets/PaymentVerification.dart';
 class StoreCart extends StatelessWidget {
   const StoreCart({Key? key}) : super(key: key);
 
@@ -33,20 +35,18 @@ class StoreCart extends StatelessWidget {
       ready.value = true;
     }
 
-    void payByCard(int amount) async{
-      ready.value = false;
-      print({'amount': amount});
-      Map res = await httpClient.topUpWallet({
-        'amount': amount,
-      });
-      print(res);
-      if(res['code'] == 200){
-        print(res['data']['url']);
-        await launchUrl(Uri.parse(res['data']['url']));
-      } else {
-        print(res);
+    void payByCard()async {
+      Map res = await httpClient.purchaseCart({'payment_type':1});
+      if(res['code']==200){
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString("lastTransactionId", res['data']['id']);
+        await prefs.setString("lastTransactionUrl", res['data']['url']);
+        Get.to(()=>PaymentVerification());
+      }else{
+        showSnack("Booking Failed",res['data']['description'][0] );
       }
-      ready.value = true;
+      print('===res');
+      print(res);
     }
 
     void confirmAndPay() async{
@@ -136,7 +136,7 @@ class StoreCart extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () async {
                   if (walletData.value['balance'] >= storeHelper.getCartTotal()) {
-                    Map res = await httpClient.purchaseCart();
+                    Map res = await httpClient.purchaseCart({'payment_type':2});
                     print(res);
                     if (res['code'] == 200) {
                       Get.offAll(() => MyOrders());
@@ -177,7 +177,7 @@ class StoreCart extends StatelessWidget {
                 onPressed: (){
                   num amt = storeHelper.getCartTotal();
                   int payAmt = (amt).toInt();
-                  payByCard(payAmt);
+                  payByCard();
                 },
                 style: SignUpStyles.selectedButton(),
                 child: Obx(() => ready.value ? Padding(

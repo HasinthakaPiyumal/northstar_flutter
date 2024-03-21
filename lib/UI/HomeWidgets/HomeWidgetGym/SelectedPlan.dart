@@ -12,12 +12,16 @@ import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/Layout.dart';
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:north_star/Utils/PopUps.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../Controllers/TaxController.dart';
 import '../../../components/Buttons.dart';
+import '../../../components/CouponApply.dart';
+import '../../SharedWidgets/PaymentVerification.dart';
 
 class SelectedPlan extends StatelessWidget {
 
@@ -43,6 +47,9 @@ class SelectedPlan extends StatelessWidget {
     RxString end = "".obs;
     RxInt duration = 0.obs;
 
+    RxString couponCode = "".obs;
+    RxDouble couponValue = 0.0.obs;
+
     RxInt selectedAmount = 1.obs;
 
     RxMap walletData = {}.obs;
@@ -65,17 +72,42 @@ class SelectedPlan extends StatelessWidget {
 
     DateTime min = DateTime.now();
 
+    void informMe(){
+      String notes = "Your gym session starts - ${startDateText.text}.";
+      httpClient.sendNotification(
+          authUser.id,
+          'You have new booking!',
+          'You have booked a gym for you.',
+          NSNotificationTypes.GymAppointment, {});
+      httpClient.saveTodo({
+        'user_id': authUser.id,
+        'todo': "You have a gym session!",
+        'notes': notes,
+        'endDate': DateFormat('dd-MM-yyyy').parse(startDateText.text).add(Duration(hours: 23,minutes: 59))
+      }, null);
+    }
+
     void payByCard(int amount) async{
       ready.value = false;
-      Map res = await httpClient.topUpWallet({
-        'amount': amount,
+      Map res = await httpClient.newComGymBooking({
+        // 'amount': (selectedAmount.value * plan["real_price"]) + (selectedAmount.value * plan["real_price"] * 0.06),
+        // 'user_id': authUser.id,
+        'gym_id': gymObj['user_id'],
+        'start_date': startDateText.text,
+        'plan_id':plan['id'],
+        // 'quantity': selectedAmount.value,
+        'paymentType':1,
+        'couponCode':couponCode.value
       });
       print(res);
       if(res['code'] == 200){
-        print(res['data']['url']);
-        await launchUrl(Uri.parse(res['data']['url']));
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString("lastTransactionId", res['data']['id']);
+        await prefs.setString("lastTransactionUrl", res['data']['url']);
+        Get.to(()=>PaymentVerification());
       } else {
         print(res);
+        showSnack("Booking Failed",res['data']['description'][0] );
       }
       ready.value = true;
     }
@@ -134,44 +166,44 @@ class SelectedPlan extends StatelessWidget {
                 style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
               ),
               SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Package',
-                    style: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade300 : colors.Colors().lightBlack(1)),
-                  ),
-                  Text(
-                    '$package',
-                    style: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade300 : colors.Colors().lightBlack(1)),
-                  ),
-                ],
-              ),
-              SizedBox(height: 4),
-              Divider(
-                thickness: 1,
-                color: Themes.mainThemeColorAccent.shade300.withOpacity(0.2),
-              ),
-              SizedBox(height: 4),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'No of Days',
-                    style: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade300 : colors.Colors().lightBlack(1),),
-                  ),
-                  Text(
-                    '$noOfDays',
-                    style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
-                  ),
-                ],
-              ),
-              SizedBox(height: 4),
-              Divider(
-                thickness: 1,
-                color: Themes.mainThemeColorAccent.shade300.withOpacity(0.2),
-              ),
-              SizedBox(height: 4),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     Text(
+              //       'Package',
+              //       style: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade300 : colors.Colors().lightBlack(1)),
+              //     ),
+              //     Text(
+              //       '$package',
+              //       style: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade300 : colors.Colors().lightBlack(1)),
+              //     ),
+              //   ],
+              // ),
+              // SizedBox(height: 4),
+              // Divider(
+              //   thickness: 1,
+              //   color: Themes.mainThemeColorAccent.shade300.withOpacity(0.2),
+              // ),
+              // SizedBox(height: 4),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     Text(
+              //       'No of Days',
+              //       style: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade300 : colors.Colors().lightBlack(1),),
+              //     ),
+              //     Text(
+              //       '$noOfDays',
+              //       style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
+              //     ),
+              //   ],
+              // ),
+              // SizedBox(height: 4),
+              // Divider(
+              //   thickness: 1,
+              //   color: Themes.mainThemeColorAccent.shade300.withOpacity(0.2),
+              // ),
+              // SizedBox(height: 4),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -199,7 +231,7 @@ class SelectedPlan extends StatelessWidget {
                     style: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
                   ),
                   Text(
-                    'MVR ${(selectedAmount.value * plan["real_price"]) + (selectedAmount.value * plan["real_price"] * 0.06)}',
+                    'MVR ${plan["real_price"] - couponValue.value}',
                     style: TypographyStyles.boldText(20, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
                   ),
                 ],
@@ -229,6 +261,17 @@ class SelectedPlan extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 10),
+              CouponApply(
+                  type: 2,
+                  typeId: gymObj['user_id'],
+                  couponCode: couponCode,
+                  couponValue: couponValue,
+                  payingAmount: CouponApply(
+                      type: 2,
+                      typeId: gymObj['user_id'],
+                      couponCode: couponCode,
+                      couponValue: couponValue,
+                      payingAmount: plan["real_price"]))
             ],
           ),
           actions: [
@@ -238,18 +281,21 @@ class SelectedPlan extends StatelessWidget {
                 onPressed: () async {
                   if (walletData.value['balance'] >= selectedAmount.value * plan["real_price"]) {
                     Map res = await httpClient.newComGymBooking({
-                      'amount': (selectedAmount.value * plan["real_price"]) + (selectedAmount.value * plan["real_price"] * 0.06),
-                      'user_id': authUser.id,
+                      // 'amount': (selectedAmount.value * plan["real_price"]) + (selectedAmount.value * plan["real_price"] * 0.06),
+                      // 'user_id': authUser.id,
                       'gym_id': gymObj['user_id'],
                       'start_date': startDateText.text,
                       'plan_id':plan['id'],
-                      'quantity': selectedAmount.value
+                      // 'quantity': selectedAmount.value,
+                      'paymentType':2,
+                      'couponCode':couponCode.value
                     });
 
 
 
                     print(res);
                     if (res['code'] == 200) {
+                      informMe();
                       Get.offAll(() => Layout());
                       print('Booking Success ---> $res');
                       showSnack('Booking Successful', 'Your booking has been successfully placed.');
@@ -286,9 +332,8 @@ class SelectedPlan extends StatelessWidget {
               padding: EdgeInsets.only(top: 3),
               child: ElevatedButton(
                 onPressed: (){
-                  num amt = (selectedAmount.value * plan["real_price"]) + (selectedAmount.value * plan["real_price"] * 0.06);
-                  int payAmt = (amt * 100).toInt();
-                  payByCard(payAmt);
+                  int amt = plan["real_price"];
+                  payByCard(amt);
                 },
                 style: SignUpStyles.selectedButton(),
                 child: Obx(() => ready.value ? Padding(
@@ -305,8 +350,23 @@ class SelectedPlan extends StatelessWidget {
                           ),
                         ),
                         SizedBox(width: 16),
-                        Text('Pay with Card',
-                          style: TypographyStyles.boldText(15, Themes.mainThemeColor.shade500),
+                        Column(
+                          children: [
+                            Text(
+                              'Pay with Card',
+                              style: TextStyle(
+                                color: AppColors.accentColor,
+                                fontSize: 20,
+                                fontFamily: 'Bebas Neue',
+                                fontWeight: FontWeight.w400,
+                                height: 0,
+                              ),
+                            ),
+                            Text(
+                              'Tax amount: MVR ${(taxController.getCalculatedTax( plan["real_price"]- couponValue.value)).toStringAsFixed(2)}',
+                              style: TypographyStyles.text(10),
+                            )
+                          ],
                         )
                       ]
                   ),
@@ -364,16 +424,8 @@ class SelectedPlan extends StatelessWidget {
                           Text(plan['name'],
                             style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
                           ),
-                          Row(
-                            children: [
-                              Text("MVR ${plan["real_price"]}",
-
-                                style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
-                              ),
-                              Text("  +  GST",
-                                style: TypographyStyles.normalText(12, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : AppColors.primary2Color,),
-                              ),
-                            ],
+                          Text("MVR ${plan["real_price"]}",
+                            style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
                           )
                         ],
                       ),
@@ -672,17 +724,17 @@ class SelectedPlan extends StatelessWidget {
 
                     SizedBox(height: 5,),
 
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("GST ( 6% )",
-                          style: TypographyStyles.normalText(14, Get.isDarkMode ? Themes.mainThemeColorAccent.shade500 : colors.Colors().lightBlack(1),),
-                        ),
-                        Text("MVR ${(selectedAmount.value * plan["real_price"] * 0.06).toStringAsFixed(2)}",
-                          style: TypographyStyles.normalText(14, Get.isDarkMode ? Themes.mainThemeColorAccent.shade500 : colors.Colors().lightBlack(1),),
-                        ),
-                      ],
-                    ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     Text("GST ( 6% )",
+                    //       style: TypographyStyles.normalText(14, Get.isDarkMode ? Themes.mainThemeColorAccent.shade500 : colors.Colors().lightBlack(1),),
+                    //     ),
+                    //     Text("MVR ${(selectedAmount.value * plan["real_price"] * 0.06).toStringAsFixed(2)}",
+                    //       style: TypographyStyles.normalText(14, Get.isDarkMode ? Themes.mainThemeColorAccent.shade500 : colors.Colors().lightBlack(1),),
+                    //     ),
+                    //   ],
+                    // ),
 
                     SizedBox(height: 10,),
 
@@ -692,7 +744,7 @@ class SelectedPlan extends StatelessWidget {
                         Text("Total Amount",
                           style: TypographyStyles.normalText(14, Get.isDarkMode ? Themes.mainThemeColorAccent.shade500 : colors.Colors().lightBlack(1),),
                         ),
-                        Text("MVR ${(selectedAmount.value * plan["real_price"]) + (selectedAmount.value * plan["real_price"] * 0.06)}",
+                        Text("MVR ${plan["real_price"]}",
                           style: TypographyStyles.boldText(16, Themes.mainThemeColor.shade500),
                         ),
                       ],

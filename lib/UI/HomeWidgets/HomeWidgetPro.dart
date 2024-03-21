@@ -16,9 +16,11 @@ import 'package:north_star/UI/SharedWidgets/CommonConfirmDialog.dart';
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/Utils/PopUps.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../components/CouponApply.dart';
+import '../SharedWidgets/PaymentVerification.dart';
 
 class HomeWidgetPro extends StatelessWidget {
   HomeWidgetPro({Key? key, this.extend = false}) : super(key: key);
@@ -84,23 +86,29 @@ class HomeWidgetPro extends StatelessWidget {
       Map durationsMap = {'month': 1, 'year': 12, 'lifetime': 9999};
       int durationAmountMultiplier = durationsMap[plan['duration_unit']];
       int months = plan['duration_amount'] * durationAmountMultiplier;
-
-      Map res = await httpClient.subscribeNow({
-        'months': months,
-        'user_id': authUser.id,
+      var data = {
         'planId':plansList[_current.value]['id'],
-        'amount': getPlanPrice(plan) - couponValue.value + taxController.getCalculatedTax(getPlanPrice(plan) - couponValue.value)
-      });
+        'couponCode': '${couponCode.value}',
+        'payment_type':1
+      };
+      Map res = await httpClient.proMemberActivate(data);
+      // Map res = await httpClient.subscribeNow({
+      //   'months': months,
+      //   'user_id': authUser.id,
+      //   'planId':plansList[_current.value]['id'],
+      //   'amount': getPlanPrice(plan) - couponValue.value + taxController.getCalculatedTax(getPlanPrice(plan) - couponValue.value)
+      // });
       print('printing price ${getPlanPrice(plan)}');
       print(res);
       if (res['code'] == 200) {
-        print(res['data']['url']);
-        currentTransactionId.value = res['data']['id'];
-        await launchUrl(Uri.parse(res['data']['url']),
-            mode: LaunchMode.externalApplication);
-        check.value = true;
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString("lastTransactionId", res['data']['id']);
+        await prefs.setString("lastTransactionUrl", res['data']['url']);
+        Get.to(()=>PaymentVerification());
+        // check.value = true;
       } else {
         print(res);
+        showSnack("Booking Failed",res['data']['description'][0] );
       }
       ready.value = true;
     }
@@ -290,7 +298,7 @@ class HomeWidgetPro extends StatelessWidget {
                     var data = {
                       'planId':plansList[_current.value]['id'],
                       'couponCode': '${couponCode.value}',
-                      'paymentType':1
+                      'payment_type':2
                     };
                     Map res = await httpClient.proMemberActivate(data);
                     print(res);
