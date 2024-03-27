@@ -34,6 +34,9 @@ class CouponApply extends StatelessWidget {
 
     print(data);
     print(response);
+    print('====payingAmount');
+    print(payingAmount);
+    print('====payingAmount');
     if (response['code'] == 200) {
       if (response['data'] != null) {
         double couponPercentage = double.parse(

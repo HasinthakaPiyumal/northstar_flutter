@@ -3,6 +3,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Plugins/Utils.dart';
+import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:cached_network_image/cached_network_image.dart';
@@ -88,13 +89,15 @@ class ViewResourceDoc extends StatelessWidget {
                 SizedBox(height: 25),
                 Obx(() => ExpansionPanelList(
                   expansionCallback: (panelIndex, isExpanded){
-                    steps[panelIndex].isExpanded.value= !isExpanded;
+                    steps[panelIndex].isExpanded.value= isExpanded;
                   },
                   expandedHeaderPadding: EdgeInsets.zero,
                   children: steps.map<ExpansionPanel>((step) {
+                    print('step.body');
+                    print(step.body);
                     return ExpansionPanel(
                       canTapOnHeader: true,
-                      backgroundColor: Utils.isDarkMode() ? colors.Colors().deepGrey(1) : colors.Colors().lightCardBG,
+                      backgroundColor: Get.isDarkMode? AppColors.primary2Color:Colors.white,
                       headerBuilder: (BuildContext context, bool isExpanded) {
                         return ListTile(
                           title: Text(step.title,

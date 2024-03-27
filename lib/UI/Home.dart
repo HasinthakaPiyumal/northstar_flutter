@@ -9,6 +9,7 @@ import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
+import 'package:north_star/UI/HomeWidgets/HomeWidgetClasses.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetCalories.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetClientNotes.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetFinance.dart';
@@ -308,15 +309,17 @@ class Home extends StatelessWidget {
                     ? Container(
                         padding: const EdgeInsets.all(8),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             homeWidgetButton(() {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetVendingMachine()));
                             }, 'vending', 'Vending Machine'),
-                            SizedBox(width: 5,),
                             homeWidgetButton(() {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => FamilyLink()));
                             }, 'family', 'Family Link'),
+                            homeWidgetButton(() {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => Classes()));
+                            }, 'class', 'Classes'),
                           ],
                         ))
                     : SizedBox(),

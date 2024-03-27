@@ -4,7 +4,7 @@ import '../Styles/AppColors.dart';
 
 class DropdownButtonWithBorder extends StatefulWidget {
   final List<String> items;
-  final String? selectedValue;
+  String? selectedValue;
   final double width;
   final Function(String) onChanged;
 
@@ -48,6 +48,9 @@ class _DropdownButtonWithBorderState extends State<DropdownButtonWithBorder> {
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
               value: widget.selectedValue,
               onChanged: (String? newValue) {
+                setState(() {
+                  widget.selectedValue = newValue;
+                });
                 widget.onChanged(newValue!);
               },
               dropdownColor: AppColors.primary2Color,

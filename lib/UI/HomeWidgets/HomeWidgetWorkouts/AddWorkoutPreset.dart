@@ -11,6 +11,7 @@ import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/Utils/PopUps.dart';
+import 'package:north_star/components/DropDownButtonWithBorder.dart';
 
 import '../../../Styles/AppColors.dart';
 
@@ -29,6 +30,7 @@ class AddWorkoutPreset extends StatelessWidget {
 
     TextEditingController title = TextEditingController();
     TextEditingController description = TextEditingController();
+    TextEditingController days = TextEditingController();
 
     Future<List> searchWorkouts(pattern) async {
       Map res = await httpClient.searchWorkouts(pattern);
@@ -57,6 +59,7 @@ class AddWorkoutPreset extends StatelessWidget {
         'title': title.text,
         'description': description.text,
         'workout_id': id,
+        'day_count':days.text.isEmpty ?1:days.text
       });
 
       if (res['code'] == 200) {
@@ -79,6 +82,7 @@ class AddWorkoutPreset extends StatelessWidget {
       if (editWorkoutObject != null) {
         title.text = editWorkoutObject['title'];
         description.text = editWorkoutObject['description'];
+        days.text = editWorkoutObject['day_count'].toString();
         workouts.value = editWorkoutObject['workout_plan'];
       }
     }
@@ -105,22 +109,22 @@ class AddWorkoutPreset extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Obx(() => !ready.value
-                  ?
-              TextButton(
-                  onPressed: () {
-                    if (workouts.length > 0 &&
-                        title.text.isNotEmpty &&
-                        description.text.isNotEmpty) {
-                      saveWorkout();
-                    } else {
-                      showSnack('Fill All the Fields!',
-                          'Please fill all the fields to continue');
-                    }
-                  },
-                  child: Text(
-                    'Save',
-                    style: TextStyle(color: AppColors.accentColor),
-                  )): LoadingAndEmptyWidgets.loadingWidget()),
+                  ? TextButton(
+                      onPressed: () {
+                        if (workouts.length > 0 &&
+                            title.text.isNotEmpty &&
+                            description.text.isNotEmpty) {
+                          saveWorkout();
+                        } else {
+                          showSnack('Fill All the Fields!',
+                              'Please fill all the fields to continue');
+                        }
+                      },
+                      child: Text(
+                        'Save',
+                        style: TextStyle(color: AppColors.accentColor),
+                      ))
+                  : LoadingAndEmptyWidgets.loadingWidget()),
             )
           ],
         ),
@@ -143,8 +147,19 @@ class AddWorkoutPreset extends StatelessWidget {
                   TextField(
                     controller: description,
                     maxLength: 250,
-                    decoration: InputDecoration(
-                      labelText: 'Description'
+                    decoration: InputDecoration(labelText: 'Description'),
+                  ),
+                  SizedBox(height: 25),
+                  Obx(()=> TextField(
+                      controller: days,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(labelText: 'Days'),
+                      enabled: workouts.isEmpty,
+                      onTap: (){
+                        if(workouts.isNotEmpty){
+                          showSnack("Can't edit days count", "You can not edit when workout created. Please clear workouts to edit day count");
+                        }
+                      },
                     ),
                   ),
                   SizedBox(height: 25),
@@ -206,6 +221,7 @@ class AddWorkoutPreset extends StatelessWidget {
                           (element) => element['id'] == jsonObj['id']);
                       if (already == null) {
                         jsonObj['repetitions'] = 1;
+                        jsonObj['day'] = 1;
                         jsonObj['has_completed'] = false;
                         workouts.add(jsonObj);
                         print(jsonObj);
@@ -356,7 +372,29 @@ class AddWorkoutPreset extends StatelessWidget {
                                         labelText: 'Notes',
                                       ),
                                     ),
-                                  ),
+                                  ), Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 15.0, vertical: 10),
+                                      child: Row(
+                                        children: [
+                                          Text("Day: "),
+                                          SizedBox(width: 20,),
+                                          Expanded(
+                                            child: DropdownButtonWithBorder(
+                                              items: List.generate(int.parse(days.text.isEmpty? '1':days.text), (index) => (index+1).toString()),
+                                              selectedValue: workouts[index]['day'].toString(),
+                                              onChanged: (String val) {
+                                                print("printing date ${val}");
+                                                workouts[index]['day'] =
+                                                    int.parse(val);
+                                              },
+                                              width: Get.width,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
                                   SizedBox(height: 4),
                                 ],
                               ),

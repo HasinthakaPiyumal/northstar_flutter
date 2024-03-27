@@ -9,6 +9,7 @@ import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetWorkouts/ViewWorkout.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetWorkouts/ViewWorkoutFeedBack.dart';
+import 'package:north_star/UI/HomeWidgets/HomeWidgetWorkouts/WorkoutDays.dart';
 import 'package:north_star/UI/SharedWidgets/CommonConfirmDialog.dart';
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
@@ -142,9 +143,12 @@ print(workouts);
                                   : null,
                               borderRadius: BorderRadius.circular(12),
                               onTap: () {
-                                Get.to(() => ViewWorkout(
+                                Get.to(() => WorkoutDays(
                                         workoutData: workouts[index]))
                                     ?.then((value) => {getWorkouts()});
+                                // Get.to(() => ViewWorkout(
+                                //         workoutData: workouts[index]))
+                                //     ?.then((value) => {getWorkouts()});
                               },
                               child: Container(
                                 margin: EdgeInsets.symmetric(

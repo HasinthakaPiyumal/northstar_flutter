@@ -12,6 +12,7 @@ import 'package:north_star/UI/HomeWidgets/HomeWidgetWorkouts/GymWorkouts.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetWorkouts/SelectedUserWorkouts.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetWorkouts/ViewWorkout.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetWorkouts/ViewWorkoutFeedBack.dart';
+import 'package:north_star/UI/HomeWidgets/HomeWidgetWorkouts/WorkoutDays.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetWorkouts/WorkoutPresets.dart';
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
@@ -358,14 +359,13 @@ class HomeWidgetWorkouts extends StatelessWidget {
                                                   workouts[index]['feedback'] ==
                                                       null
                                               ? 145
-                                              : 95,
+                                              : 90,
                                           decoration: BoxDecoration(
                                             color: Get.isDarkMode
-                                                ? colors.Colors().deepGrey(1)
-                                                : colors.Colors()
-                                                    .selectedCardBG,
+                                                ? AppColors.primary2Color
+                                                : Colors.white,
                                             borderRadius:
-                                                BorderRadius.circular(12),
+                                            BorderRadius.circular(10),
                                           ),
                                         ),
                                         AnimatedContainer(
@@ -394,41 +394,39 @@ class HomeWidgetWorkouts extends StatelessWidget {
                                             ),
                                           ),
                                         ),
-                                        Container(
-                                          color: Colors.transparent,
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 15, vertical: 15),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                    workouts[index]['title']
-                                                        .toString(),
-                                                    style: TypographyStyles
-                                                        .boldText(
-                                                      14,
-                                                      Get.isDarkMode
-                                                          ? Themes
-                                                              .mainThemeColorAccent
-                                                              .shade100
-                                                          : colors.Colors()
-                                                              .lightBlack(1),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              SizedBox(height: 10),
-                                              Row(
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                              color: Colors.transparent,
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 15, vertical: 15),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
+                                                    MainAxisAlignment.center,
+                                                mainAxisSize: MainAxisSize.min,
                                                 children: [
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        workouts[index]['title']
+                                                            .toString(),
+                                                        style: TypographyStyles
+                                                            .boldText(
+                                                          14,
+                                                          Get.isDarkMode
+                                                              ? Themes
+                                                                  .mainThemeColorAccent
+                                                                  .shade100
+                                                              : colors.Colors()
+                                                                  .lightBlack(1),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(height: 10),
                                                   Text(
                                                     "Steps - ${workouts[index]['completed_steps']}/${workouts[index]['steps']}",
                                                     style: TypographyStyles
@@ -442,23 +440,18 @@ class HomeWidgetWorkouts extends StatelessWidget {
                                                               .lightBlack(1),
                                                     ),
                                                   ),
-                                                  Text(
-                                                    " Progress ${(workouts[index]['completed_steps'] / workouts[index]['steps'] * 100).toStringAsFixed(0)}%",
-                                                    style: TypographyStyles
-                                                        .normalText(
-                                                      14,
-                                                      Get.isDarkMode
-                                                          ? Themes
-                                                              .mainThemeColorAccent
-                                                              .shade100
-                                                          : colors.Colors()
-                                                              .lightBlack(1),
-                                                    ),
-                                                  ),
                                                 ],
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(right:16.0),
+                                              child: CircularProgressBar(
+                                                  progress: workouts[index]
+                                                  ['completed_steps'] /
+                                                      workouts[index]
+                                                      ['steps']),
+                                            )
+                                          ],
                                         ),
                                         Container(
                                           width: double.infinity,
@@ -469,10 +462,13 @@ class HomeWidgetWorkouts extends StatelessWidget {
                                               borderRadius:
                                                   BorderRadius.circular(12),
                                               onTap: () {
-                                                Get.to(() => ViewWorkout(
-                                                    workoutData:
-                                                        workouts[index]))?.then(
+                                                Get.to(() => WorkoutDays(workoutData: workouts[index],
+                                                ))?.then(
                                                     (value) => {getWorkouts()});
+                                                //     Get.to(() => ViewWorkout(
+                                                //     workoutData:
+                                                //         workouts[index]))?.then(
+                                                //     (value) => {getWorkouts()});
                                               },
                                             ),
                                           ),
@@ -516,6 +512,139 @@ class HomeWidgetWorkouts extends StatelessWidget {
                                                 ),
                                               )
                                             : SizedBox(),
+                                      ],
+                                    ),
+                                  );
+
+                                  return Container(
+                                    padding: EdgeInsets.symmetric(vertical: 8),
+                                    child: Stack(
+                                      children: [
+                                        Container(
+                                          width: double.infinity,
+                                          height: 90,
+                                          decoration: BoxDecoration(
+                                            color: Get.isDarkMode
+                                                ? AppColors.primary2Color
+                                                : Colors.white,
+                                            borderRadius:
+                                            BorderRadius.circular(10),
+                                          ),
+                                        ),
+                                        AnimatedContainer(
+                                          duration: Duration(milliseconds: 500),
+                                          width: (workouts[index]
+                                          ['completed_steps'] /
+                                              workouts[index]
+                                              ['totalSteps']) *
+                                              Get.width,
+                                          height: 95,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                            BorderRadius.circular(12),
+                                            gradient: LinearGradient(
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                              colors: Get.isDarkMode
+                                                  ? [
+                                                //Color(0xFF3E8F00),
+                                                Color(0xFF6EBB35),
+                                                Color(0xFF3E8F00),
+                                              ]
+                                                  : [
+                                                Color(0xFFB6FF92),
+                                                Color(0xFFB6FF92),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          color: Colors.transparent,
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 15, vertical: 20),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                            children: [
+                                              CircleAvatar(
+                                                  radius: 24,
+                                                  backgroundImage:
+                                                  CachedNetworkImageProvider(
+                                                    HttpClient.s3BaseUrl +
+                                                        workouts[index]['user']
+                                                        ['avatar_url'],
+                                                  )),
+                                              SizedBox(
+                                                width: 20,
+                                              ),
+                                              Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    workouts[index]['user']
+                                                    ['name']
+                                                        .toString(),
+                                                    style: TypographyStyles.boldText(
+                                                        14,
+                                                        Get.isDarkMode
+                                                            ? Themes
+                                                            .mainThemeColorAccent
+                                                            .shade100
+                                                            : colors.Colors()
+                                                            .lightBlack(1)),
+                                                  ),
+                                                  Text(
+                                                    "Steps - ${workouts[index]['completed_steps']}/${workouts[index]['totalSteps']}",
+                                                    style: TypographyStyles
+                                                        .normalText(
+                                                        14,
+                                                        Get.isDarkMode
+                                                            ? Themes
+                                                            .mainThemeColorAccent
+                                                            .shade100
+                                                            : colors.Colors()
+                                                            .lightBlack(
+                                                            1)),
+                                                  ),
+                                                ],
+                                              ),
+                                              Expanded(
+                                                child: SizedBox(
+                                                  width: 20,
+                                                ),
+                                              ),
+                                              CircularProgressBar(
+                                                  progress: workouts[index]
+                                                  ['completed_steps'] /
+                                                      workouts[index]
+                                                      ['totalSteps'])
+                                            ],
+                                          ),
+                                        ),
+                                        Container(
+                                          width: double.infinity,
+                                          height: 95,
+                                          child: Material(
+                                            color: Colors.transparent,
+                                            child: InkWell(
+                                              borderRadius:
+                                              BorderRadius.circular(12),
+                                              onTap: () {
+                                                Get.to(() =>
+                                                    SelectedUserWorkouts(
+                                                        clientID:
+                                                        workouts[index]
+                                                        ['user']
+                                                        ['id']));
+                                              },
+                                            ),
+                                          ),
+                                        )
                                       ],
                                     ),
                                   );

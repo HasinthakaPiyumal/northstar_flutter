@@ -29,6 +29,7 @@ class AddWorkouts extends StatelessWidget {
     RxList workoutPlan = [].obs;
     String title = '';
     String description = '';
+    int days = 0;
     String lastUpdatedDate = '';
     RxList selectedUsers = authUser.role == 'client' ? [authUser].obs : [].obs;
     RxBool ready = false.obs;
@@ -68,6 +69,7 @@ class AddWorkouts extends StatelessWidget {
           'trainer_id': authUser.id,
           'title': title,
           'description': description,
+          'day_count':days
         });
 
         if (res['code'] == 200) {
@@ -75,6 +77,8 @@ class AddWorkouts extends StatelessWidget {
           success = true;
         } else {
           print(res['data']);
+          showSnack("Something went wrong", res['data']['error']);
+          return;
         }
 
         httpClient.sendNotification(
@@ -107,9 +111,11 @@ class AddWorkouts extends StatelessWidget {
         'trainer_id': authUser.id,
         'title': title,
         'description': description,
+        'day_count':days
       });
 
       if (res['code'] == 200) {
+        print('httpClient.addWorkout');
         print(res['data']);
         success = true;
       } else {
@@ -286,6 +292,7 @@ class AddWorkouts extends StatelessWidget {
                       print(jsonObj);
                       title = jsonObj['title'];
                       description = jsonObj['description'];
+                      days = jsonObj['day_count'];
                       lastUpdatedDate = jsonObj['updated_at'];
                       List workouts = jsonObj['workout_plan'];
                       workouts.forEach((element) {

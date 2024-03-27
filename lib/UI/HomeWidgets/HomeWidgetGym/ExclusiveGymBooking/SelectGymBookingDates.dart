@@ -131,148 +131,149 @@ class SelectGymBookingDates extends StatelessWidget {
           contentPadding: EdgeInsets.symmetric(
             horizontal: 20,
           ),
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "BOOKING SUMMARY",
-                style: TypographyStyles.boldText(
-                    16,
-                    Get.isDarkMode
-                        ? Themes.mainThemeColorAccent.shade100
-                        : colors.Colors().lightBlack(1)),
-              ),
-              SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Total Bookings',
-                    style: TypographyStyles.normalText(
-                        16,
-                        Get.isDarkMode
-                            ? Themes.mainThemeColorAccent.shade300
-                            : colors.Colors().lightBlack(1)),
-                  ),
-                  Text(
-                    '${bookings.value.length}',
-                    style: TypographyStyles.boldText(
-                        16,
-                        Get.isDarkMode
-                            ? Themes.mainThemeColorAccent.shade100
-                            : colors.Colors().lightBlack(1)),
-                  ),
-                ],
-              ),
-              SizedBox(height: 4),
-              Divider(
-                thickness: 1,
-                color: Themes.mainThemeColorAccent.shade300.withOpacity(0.2),
-              ),
-              SizedBox(height: 4),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Total Hours',
-                    style: TypographyStyles.normalText(
-                      16,
-                      Get.isDarkMode
-                          ? Themes.mainThemeColorAccent.shade300
-                          : colors.Colors().lightBlack(1),
-                    ),
-                  ),
-                  Text(
-                    '${totalHours.value}',
-                    style: TypographyStyles.boldText(
+          content: Obx(()=> Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "BOOKING SUMMARY",
+                  style: TypographyStyles.boldText(
                       16,
                       Get.isDarkMode
                           ? Themes.mainThemeColorAccent.shade100
-                          : colors.Colors().lightBlack(1),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 7,
-              ),
-              Divider(
-                thickness: 1,
-                color: Themes.mainThemeColorAccent.shade300.withOpacity(0.2),
-              ),
-              SizedBox(
-                height: 7,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Total To be Paid',
-                    style: TypographyStyles.normalText(
-                      16,
-                      Get.isDarkMode
-                          ? Themes.mainThemeColorAccent.shade100
-                          : colors.Colors().lightBlack(1),
-                    ),
-                  ),
-                  Text(
-                    'MVR ${totalHours.value * gymObj['hourly_rate'] - couponValue.value}',
-                    style: TypographyStyles.boldText(
-                      20,
-                      Get.isDarkMode
-                          ? Themes.mainThemeColorAccent.shade100
-                          : colors.Colors().lightBlack(1),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 30),
-              RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  text: 'By clicking Pay with Card, you are agreeing to our ',
-                  style: TypographyStyles.normalText(
-                    12,
-                    Get.isDarkMode
-                        ? Themes.mainThemeColorAccent.shade100
-                        : colors.Colors().lightBlack(1),
-                  ),
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: 'Terms & Conditions',
+                          : colors.Colors().lightBlack(1)),
+                ),
+                SizedBox(height: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Total Bookings',
                       style: TypographyStyles.normalText(
-                          12, Themes.mainThemeColor),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () => launchUrl(Uri.parse(
-                            'https://northstar.mv/terms-conditions/')),
+                          16,
+                          Get.isDarkMode
+                              ? Themes.mainThemeColorAccent.shade300
+                              : colors.Colors().lightBlack(1)),
                     ),
-                    TextSpan(
-                      text: " & ",
-                      style: TypographyStyles.normalText(
-                          12,
+                    Text(
+                      '${bookings.value.length}',
+                      style: TypographyStyles.boldText(
+                          16,
                           Get.isDarkMode
                               ? Themes.mainThemeColorAccent.shade100
                               : colors.Colors().lightBlack(1)),
                     ),
-                    TextSpan(
-                      text: 'Privacy Policy',
+                  ],
+                ),
+                SizedBox(height: 4),
+                Divider(
+                  thickness: 1,
+                  color: Themes.mainThemeColorAccent.shade300.withOpacity(0.2),
+                ),
+                SizedBox(height: 4),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Total Hours',
                       style: TypographyStyles.normalText(
-                          12, Themes.mainThemeColor),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () => launchUrl(
-                            Uri.parse('https://northstar.mv/privacy-policy')),
+                        16,
+                        Get.isDarkMode
+                            ? Themes.mainThemeColorAccent.shade300
+                            : colors.Colors().lightBlack(1),
+                      ),
+                    ),
+                    Text(
+                      '${totalHours.value}',
+                      style: TypographyStyles.boldText(
+                        16,
+                        Get.isDarkMode
+                            ? Themes.mainThemeColorAccent.shade100
+                            : colors.Colors().lightBlack(1),
+                      ),
                     ),
                   ],
                 ),
-              ),
-              SizedBox(height: 10),
-              CouponApply(
-                  type: 2,
-                  typeId: gymObj['user_id'],
-                  couponCode: couponCode,
-                  couponValue: couponValue,
-                  payingAmount: totalHours.value * gymObj['hourly_rate'])
-            ],
+                SizedBox(
+                  height: 7,
+                ),
+                Divider(
+                  thickness: 1,
+                  color: Themes.mainThemeColorAccent.shade300.withOpacity(0.2),
+                ),
+                SizedBox(
+                  height: 7,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Total To be Paid',
+                      style: TypographyStyles.normalText(
+                        16,
+                        Get.isDarkMode
+                            ? Themes.mainThemeColorAccent.shade100
+                            : colors.Colors().lightBlack(1),
+                      ),
+                    ),
+                    Text(
+                      'MVR ${totalHours.value * gymObj['hourly_rate'] - couponValue.value}',
+                      style: TypographyStyles.boldText(
+                        20,
+                        Get.isDarkMode
+                            ? Themes.mainThemeColorAccent.shade100
+                            : colors.Colors().lightBlack(1),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 30),
+                RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    text: 'By clicking Pay with Card, you are agreeing to our ',
+                    style: TypographyStyles.normalText(
+                      12,
+                      Get.isDarkMode
+                          ? Themes.mainThemeColorAccent.shade100
+                          : colors.Colors().lightBlack(1),
+                    ),
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: 'Terms & Conditions',
+                        style: TypographyStyles.normalText(
+                            12, Themes.mainThemeColor),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () => launchUrl(Uri.parse(
+                              'https://northstar.mv/terms-conditions/')),
+                      ),
+                      TextSpan(
+                        text: " & ",
+                        style: TypographyStyles.normalText(
+                            12,
+                            Get.isDarkMode
+                                ? Themes.mainThemeColorAccent.shade100
+                                : colors.Colors().lightBlack(1)),
+                      ),
+                      TextSpan(
+                        text: 'Privacy Policy',
+                        style: TypographyStyles.normalText(
+                            12, Themes.mainThemeColor),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () => launchUrl(
+                              Uri.parse('https://northstar.mv/privacy-policy')),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 10),
+                CouponApply(
+                    type: 2,
+                    typeId: gymObj['user_id'],
+                    couponCode: couponCode,
+                    couponValue: couponValue,
+                    payingAmount: totalHours.value * gymObj['hourly_rate'])
+              ],
+            ),
           ),
           actions: [
             Container(

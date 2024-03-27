@@ -20,17 +20,19 @@ class ViewWorkout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     RxInt pageIndex = 0.obs;
-    RxBool ready = false.obs;
+    RxBool ready = true.obs;
     RxMap workout = {}.obs;
     PageController pageController = PageController(initialPage: 0);
 
     void fillData(){
+      workout.value = workoutData;
       print(workoutData);
     }
 
     Future<bool> getWorkout() async {
       ready.value = false;
       Map res = await httpClient.getWorkoutByID(workoutData['id']);
+      print("Fetching workout");
 
       if (res['code'] == 200) {
         workout.value = res['data'];
@@ -70,7 +72,7 @@ class ViewWorkout extends StatelessWidget {
     }
 
     fillData();
-    getWorkout();
+    // getWorkout();
 
     return Obx(()=> ready.value ? Scaffold(
       appBar: AppBar(
