@@ -33,8 +33,6 @@ class ViewResourceDoc extends StatelessWidget {
 
     void articleBuilder(){
 
-      debugPrint(data['article']);
-
       List article = data['article'].toString().split(RegExp("<h[1-7]>"));
 
       if(article.length > 1){
@@ -119,24 +117,24 @@ class ViewResourceDoc extends StatelessWidget {
                   }).toList(),
                 )),
                 SizedBox(height: 32),
-                Padding(
+                data['courtesy_notes']!=null? Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     children: [
                       CircleAvatar(
                           minRadius: 25,
-                          backgroundImage: CachedNetworkImageProvider('https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/avatars/newsletter.png')
+                          backgroundImage: CachedNetworkImageProvider(HttpClient.s3ResourcesBaseUrl+data['courtesy_notes']['image'])
                       ),
                       SizedBox(width: 10,),
                       Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Dr. Kristina Timkanova",
+                          Text(data['courtesy_notes']['title'].toString().capitalizeFirst.toString()+'. '+data['courtesy_notes']['name'].toString().capitalizeFirst.toString(),
                             style: TypographyStyles.title(18),
                           ),
                           SizedBox(height: 5,),
-                          Text("General Practitioner",
+                          Text(data['courtesy_notes']['description'].toString().capitalizeFirst.toString(),
                             style: TextStyle(
                               color: colors.Colors().selectedCardBG.withOpacity(0.8),
                             ),
@@ -145,7 +143,7 @@ class ViewResourceDoc extends StatelessWidget {
                       )
                     ],
                   ),
-                ),
+                ):Container(),
                 SizedBox(height: 32),
               ],
             ),

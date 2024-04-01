@@ -1161,6 +1161,8 @@ class HttpClient {
   Future<Map> searchWorkoutPresets(String pattern) async {
     Response response =
         await get('/fitness/workout-presets/search/' + pattern.toString());
+    print(pattern.toString());
+    print(response);
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -1398,6 +1400,8 @@ class HttpClient {
   Future<Map> getMyChats() async {
     Response response =
         await get('/meeting/chats/${authUser.role}-my-chats/${authUser.id}');
+    print('chat list response');
+    print(response);
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -1628,7 +1632,7 @@ class HttpClient {
   }
 
   Future<Map> getNewsLetters() async {
-    Response response = await get('/fitness/newsletters/actions/get');
+    Response response = await get('/fitness/newsletters/actions/get/posted');
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -1840,6 +1844,24 @@ class HttpClient {
     Response response = await post('/payments/verify', {
       "transaction_id": id
     });
+    return {"code": response.statusCode, "data": response.data};
+  }
+
+  // Class apis
+  Future<Map> getActiveClasses() async {
+    Response response = await get('/fitness/trainer-class/classes/active');
+    return {"code": response.statusCode, "data": response.data};
+  }
+  Future<Map> getRejectedClasses() async {
+    Response response = await get('/fitness/trainer-class/classes/rejected');
+    return {"code": response.statusCode, "data": response.data};
+  }
+  Future<Map> createClass(data) async {
+    Response response = await post('/fitness/trainer-class/add',data);
+    return {"code": response.statusCode, "data": response.data};
+  }
+  Future<Map> editClass(data) async {
+    Response response = await post('/fitness/trainer-class/update',data);
     return {"code": response.statusCode, "data": response.data};
   }
 }

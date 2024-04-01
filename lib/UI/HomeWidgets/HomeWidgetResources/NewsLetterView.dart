@@ -13,6 +13,8 @@ class NewsLetterView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    print('newsLetter');
+    print(newsLetter);
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
@@ -43,7 +45,7 @@ class NewsLetterView extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 8),
               child: Html(data: newsLetter['article'],
                 style: {
-                  "p": Style(color: colors.Colors().selectedCardBG.withOpacity(0.8), fontSize: FontSize(16)),
+                  "p": Style(color: Get.isDarkMode?Colors.white:Colors.black, fontSize: FontSize(16)),
                   "li": Style(padding: HtmlPaddings.only(left:5, right: 5)),
                 },
               ),

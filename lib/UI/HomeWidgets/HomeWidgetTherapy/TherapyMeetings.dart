@@ -88,6 +88,7 @@ class TherapyMeetings extends StatelessWidget {
       print(res);
       if (res['code'] == 200) {
         meetings.value = res['data'];
+        print('printing meeting el');
         print(res['data']);
         ready.value = true;
       } else {
@@ -188,7 +189,7 @@ class TherapyMeetings extends StatelessWidget {
                                             width: 10,
                                           ),
                                           Text(
-                                            '${meetings[index]['therapy_name']??"Dr. John Doe"}'.capitalizeFirst as String,
+                                            '${meetings[index]['therapy_user']['name']??""}'.capitalizeFirst as String,
                                             style:
                                             TypographyStyles.textWithWeight(
                                                 16, FontWeight.w600),
@@ -237,7 +238,7 @@ class TherapyMeetings extends StatelessWidget {
                                           ),
                                           Text(
                                               DateFormat("dd MMM, yyyy").format(
-                                                  DateTime.parse("2000-01-22 ${meetings[index]['start_time']}")),
+                                                  DateTime.parse("${meetings[index]['apt_date']} ${meetings[index]['start_time']}")),
                                               style: TextStyle(
                                                 color: Color(0xFFFFB700),
                                                 fontSize: 20,

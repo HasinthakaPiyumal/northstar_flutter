@@ -16,6 +16,8 @@ import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/Utils/PopUps.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../../Controllers/LocalNotificationsController.dart';
+
 class HomeWidgetToDos extends StatelessWidget {
   const HomeWidgetToDos({Key? key}) : super(key: key);
 
@@ -100,6 +102,8 @@ class HomeWidgetToDos extends StatelessWidget {
       Map res = await httpClient.getTodo();
       if (res['code'] == 200) {
         todos.value = res['data'];
+        print('Printing todos---');
+        print(res['data']);
         res['data'].forEach((element) {
           try{
             toHighlight.add(DateTime.parse(element['endDate']));
@@ -456,7 +460,7 @@ class HomeWidgetToDos extends StatelessWidget {
                                                                     CommonConfirmDialog.confirm(
                                                                             'Complete')
                                                                         .then(
-                                                                            (value) {
+                                                                            (value) async {
                                                                       if (value) {
                                                                         httpClient
                                                                             .completeTodo(thisTodo['id'])
@@ -469,6 +473,7 @@ class HomeWidgetToDos extends StatelessWidget {
                                                                             await categorizeTodos();
                                                                           });
                                                                         });
+                                                                        await LocalNotificationsController.cancelNotification(thisTodo['id']);
                                                                       }
                                                                     });
                                                                   },
@@ -531,6 +536,7 @@ class HomeWidgetToDos extends StatelessWidget {
                                                                           await categorizeTodos();
                                                                         });
                                                                       });
+                                                                      await LocalNotificationsController.cancelNotification(thisTodo['id']);
                                                                     }
                                                                   });
                                                                 },

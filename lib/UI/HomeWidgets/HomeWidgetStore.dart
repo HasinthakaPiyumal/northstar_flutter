@@ -267,17 +267,15 @@ class HomeWidgetStore extends StatelessWidget {
                       children: [
                         MasonryGridView.count(
                           crossAxisCount: 2,
-                          itemCount: products.length,
+                          itemCount: products.where((product)=>selectedCategory.value == product['CategoryId'] || selectedCategory.value == 0).length,
                           mainAxisSpacing: 12,
                           crossAxisSpacing: 12,
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
                           padding: EdgeInsets.symmetric(horizontal: 16),
                           itemBuilder: (_, index) {
-                            return Obx(() => selectedCategory.value ==
-                                        products[index]['CategoryId'] ||
-                                    selectedCategory.value == 0
-                                ? Container(
+                            dynamic lists = products.where((product)=>selectedCategory.value == product['CategoryId'] || selectedCategory.value == 0).toList();
+                            return  Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(12),
                                       color: Get.isDarkMode
@@ -291,7 +289,7 @@ class HomeWidgetStore extends StatelessWidget {
                                             BorderRadius.circular(8.0),
                                         onTap: () {
                                           Get.to(() => StoreItemView(
-                                              product: products[index]));
+                                              product: lists[index]));
                                         },
                                         child: Padding(
                                           padding: EdgeInsets.symmetric(
@@ -319,7 +317,7 @@ class HomeWidgetStore extends StatelessWidget {
                                                       child: CachedNetworkImage(
                                                         imageUrl: HttpClient
                                                                 .s3ResourcesBaseUrl +
-                                                            products[index]
+                                                            lists[index]
                                                                 ['image_path'],
                                                         fit: BoxFit.cover,
                                                         placeholder: (context,
@@ -331,7 +329,7 @@ class HomeWidgetStore extends StatelessWidget {
                                                   ),
                                                   SizedBox(height: 10),
                                                   Text(
-                                                    "${products[index]['name']}",
+                                                    "${lists[index]['name']}",
                                                     style:
                                                         TypographyStyles.text(
                                                             14),
@@ -345,7 +343,7 @@ class HomeWidgetStore extends StatelessWidget {
                                                 child: Text(
                                                   // authUser.user['currency'] +
                                                       'MVR ' +
-                                                      products[index]['price']
+                                                          lists[index]['price']
                                                           .toString(),
                                                   style: TypographyStyles.title(
                                                       16),
@@ -356,8 +354,7 @@ class HomeWidgetStore extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                                  )
-                                : SizedBox());
+                                  );
                           },
                         ),
                       ],

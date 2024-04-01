@@ -4,6 +4,7 @@ import 'package:country_currency_pickers/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:north_star/Styles/PickerDialogStyles.dart';
 import 'package:north_star/Utils/PopUps.dart';
 
 import '../../../Models/HttpClient.dart';
@@ -42,6 +43,28 @@ class _ClientRegisterSecondState extends State<ClientRegisterSecond> {
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 5),
                 child: Text("${country.name}  (${country.isoCode})"),
+              ),
+            ),
+          ],
+        ),
+      );
+  Widget _buildDropdownItemWithCountryCode(Country country) => Container(
+        child: Row(
+          children: <Widget>[
+            CountryPickerUtils.getDefaultFlagImage(country),
+            SizedBox(
+              width: 8.0,
+            ),
+            Flexible(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(child: Text("${country.name}  (${country.isoCode})",overflow: TextOverflow.ellipsis,)),
+                    Text("${country.phoneCode}"),
+                  ],
+                ),
               ),
             ),
           ],
@@ -231,6 +254,8 @@ class _ClientRegisterSecondState extends State<ClientRegisterSecond> {
                           isSearchable: true,
                           title: Text('Country of Residence'),
                           onValuePicked: (Country country) {
+                            print('country printing');
+                            print(country);
                             signUpData.countryCode = country.isoCode.toString();
                             signUpData.currency =
                                 country.currencyCode.toString();
@@ -285,30 +310,36 @@ class _ClientRegisterSecondState extends State<ClientRegisterSecond> {
                   style: TextStyle(color: isDark ? Colors.white : Colors.black),
                 ),
                 SizedBox(height: contentHeight),
-                IntlPhoneField(
-                  controller: _emergencyContactController,
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.call_outlined,
-                        color: isDark ? Colors.white : Colors.black, size: 18),
-                    border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                    ),
-                    labelText: 'Emergency Contact',
-                    labelStyle: TextStyle(
-                      color: isDark ? Colors.white70 : Colors.black54,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Poppins',
-                      fontSize: 16,
-                    ),
-                    contentPadding: EdgeInsets.only(bottom: 0),
+                Theme(
+                  data: Theme.of(context).copyWith(
+                    listTileTheme: ListTileThemeData()
                   ),
-                  style: TextStyle(color: isDark ? Colors.white : Colors.black),
-                  initialCountryCode: 'MV',
-                  onChanged: (phone) {
-                    setState(() {
-                      emergencyContact = "${phone.completeNumber}";
-                    });
-                  },
+                  child: IntlPhoneField(
+                    controller: _emergencyContactController,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.call_outlined,
+                          color: isDark ? Colors.white : Colors.black, size: 18),
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
+                      labelText: 'Emergency Contact',
+                      labelStyle: TextStyle(
+                        color: isDark ? Colors.white70 : Colors.black54,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                      ),
+                      contentPadding: EdgeInsets.only(bottom: 0),
+                    ),
+                    style: TextStyle(color: isDark ? Colors.white : Colors.black),
+                    pickerDialogStyle: PickerDialogStyles.main(),
+                    initialCountryCode: 'MV',
+                    onChanged: (phone) {
+                      setState(() {
+                        emergencyContact = "${phone.completeNumber}";
+                      });
+                    },
+                  ),
                 ),
                 // TextFormField(
                 //   controller: _emergencyContactController,

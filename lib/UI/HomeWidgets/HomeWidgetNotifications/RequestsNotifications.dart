@@ -18,10 +18,40 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../components/Buttons.dart';
 
-class RequestsNotifications extends StatelessWidget {
+class RequestsNotifications extends StatefulWidget {
   const RequestsNotifications({Key? key}) : super(key: key);
+
+  @override
+  State<RequestsNotifications> createState() => _RequestsNotificationsState();
+}
+
+class _RequestsNotificationsState extends State<RequestsNotifications> {
+
+  Set<NSNotification> selectedList = <NSNotification>{};
   @override
   Widget build(BuildContext context) {
+
+    void selectItem(NSNotification notification) {
+      setState(() {
+        if (selectedList.contains(notification)) {
+          selectedList.remove(notification);
+        } else {
+          selectedList.add(notification);
+        }
+      });
+    }
+
+    void selectAll() {
+      setState(() {
+        selectedList =
+        Set<NSNotification>.from(NotificationsController.getRequestNotifications());
+      });
+    }
+    void deleteSelected(){
+      selectedList.forEach((element) {
+        element.deleteSelectedNotification();
+      });
+    }
 
 
     void sendInvite(NSNotification notification) async{
@@ -63,116 +93,129 @@ class RequestsNotifications extends StatelessWidget {
             ),
             child: Padding(
               padding: EdgeInsets.fromLTRB(15, 15, 15, 12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(notification.title,
-                              style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(0.7)),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(left: 10),
-                              child: notification.hasSeen ? null : Icon(Icons.circle, size: 10, color: Get.isDarkMode ? Themes.mainThemeColor.shade600 : colors.Colors().lightBlack(1),),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 10,),
-                        Text(notification.description,
-                          style: TypographyStyles.normalText(15, Get.isDarkMode ? Colors.white54 : colors.Colors().darkGrey(0.7)),
-                        ),
-                        SizedBox(height: 10,),
-                        Text("${DateFormat("dd-MMM-yyyy").format(notification.createdAt)} | ${DateFormat("HH:mm").format(notification.createdAt)}",
-                          style: TypographyStyles.boldText(12, Get.isDarkMode ? Colors.white30 : colors.Colors().darkGrey(0.5)),
-                        ),
-                        SizedBox(height: 10),
-                        Divider(
-                          color: Get.isDarkMode ? colors.Colors().darkGrey(1) : colors.Colors().darkGrey(1).withOpacity(0.6),
-                        ),
-                        Visibility(visible: NSNotificationTypes.DietConsultationRequest==notification.type,child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Buttons.outlineButton(width: 120,label: "Add Plan",onPressed: (){Get.to(()=>HomeWidgetDietaryConsultation(userId: authUser.id,trainerId: notification.senderId,));}),
-                          ],
+              child: InkWell(
+                onLongPress: () {
+                  NotificationsController.actions(notification,
+                      selectItem, selectedList, selectAll,deleteSelected);
+                },
+                onTap: () {
+                  if (selectedList.length > 0) {
+                    selectItem(notification);
+                  }
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Visibility(
+                        visible: selectedList.length > 0,
+                        child: Checkbox(
+                          splashRadius: 15,
+                          visualDensity: VisualDensity(
+                              horizontal: -4.0, vertical: -4.0),
+                          value:
+                          selectedList.contains(notification),
+                          onChanged: (bool? value) {
+                            selectItem(notification);
+                          },
                         )),
-                        Visibility(
-                          visible: ![NSNotificationTypes.DietConsultationRequest].contains(notification.type),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              ElevatedButton(
-                                onPressed: (){
-                                  String phone = notification.data['sender_phone'];
-                                  launchUrl(Uri.parse('tel:'+ phone.toString()));
-                                },
-                                style: ButtonStyles.matButton(Colors.transparent, 0),
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.call,
-                                      color: Get.isDarkMode ? Colors.white : colors.Colors().lightBlack(1),
-                                    ),
-                                    SizedBox(width: 7,),
-                                    Text("Call",
-                                      style: TextStyle(
-                                        color: Get.isDarkMode ? Colors.white : colors.Colors().lightBlack(1),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                              Text(notification.title,
+                                style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(0.7)),
                               ),
-                              SizedBox(width: 5,),
-                              ElevatedButton(
-                                onPressed: (){
-                                  String email = notification.data['sender_email'];
-                                  launchUrl(Uri.parse('mailto:'+ email.toString()));
-                                },
-                                style: ButtonStyles.matButton(Colors.transparent, 0),
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.email,
-                                      color: Get.isDarkMode ? Colors.white : colors.Colors().lightBlack(1),
-                                    ),
-                                    SizedBox(width: 7,),
-                                    Text("Email",
-                                      style: TextStyle(
-                                        color: Get.isDarkMode ? Colors.white : colors.Colors().lightBlack(1),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(width: 5,),
-                              ElevatedButton(
-                                onPressed: notification.type != NSNotificationTypes.ClientRequestWeb ? (){
-                                  sendInvite(notification);
-                                }: null,
-                                style: ButtonStyles.matButton(Themes.mainThemeColor.shade500, 3),
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.person_add_alt_rounded,
-                                      color: colors.Colors().lightBlack(1),
-                                    ),
-                                    SizedBox(width: 7,),
-                                    Text("Invite",
-                                      style: TextStyle(
-                                        color: colors.Colors().lightBlack(1),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 10),
+                                child: notification.hasSeen ? null : Icon(Icons.circle, size: 10, color: Get.isDarkMode ? Themes.mainThemeColor.shade600 : colors.Colors().lightBlack(1),),
                               ),
                             ],
                           ),
-                        ),
-                      ],
+                          SizedBox(height: 10,),
+                          Text(notification.description,
+                            style: TypographyStyles.normalText(15, Get.isDarkMode ? Colors.white54 : colors.Colors().darkGrey(0.7)),
+                          ),
+                          SizedBox(height: 10,),
+                          Text("${DateFormat("dd-MMM-yyyy").format(notification.createdAt)} | ${DateFormat("HH:mm").format(notification.createdAt)}",
+                            style: TypographyStyles.boldText(12, Get.isDarkMode ? Colors.white30 : colors.Colors().darkGrey(0.5)),
+                          ),
+                          SizedBox(height: 10),
+                          Divider(
+                            color: Get.isDarkMode ? colors.Colors().darkGrey(1) : colors.Colors().darkGrey(1).withOpacity(0.6),
+                          ),
+                          Visibility(visible: NSNotificationTypes.DietConsultationRequest==notification.type,child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Buttons.outlineButton(width: 120,label: "Add Plan",onPressed: (){notification.deleteSelectedNotification();Get.to(()=>HomeWidgetDietaryConsultation(userId: authUser.id,trainerId: notification.senderId,));}),
+                            ],
+                          )),
+                          Visibility(
+                            visible: ![NSNotificationTypes.DietConsultationRequest].contains(notification.type),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                // ElevatedButton(
+                                //   onPressed: (){
+                                //     String phone = notification.data['sender_phone'];
+                                //     launchUrl(Uri.parse('tel:'+ phone.toString()));
+                                //   },
+                                //   style: ButtonStyles.matButton(Colors.transparent, 0),
+                                //   child: Row(
+                                //     children: [
+                                //       Icon(Icons.call,
+                                //         color: Get.isDarkMode ? Colors.white : colors.Colors().lightBlack(1),
+                                //       ),
+                                //       SizedBox(width: 7,),
+                                //       Text("Call",
+                                //         style: TextStyle(
+                                //           color: Get.isDarkMode ? Colors.white : colors.Colors().lightBlack(1),
+                                //         ),
+                                //       ),
+                                //     ],
+                                //   ),
+                                // ),
+                                Expanded(
+                                  child: Buttons.outlineTextIconButton(
+                                      onPressed: (){
+                                        String phone = notification.data['sender_phone'];
+                                        launchUrl(Uri.parse('tel:'+ phone.toString()));
+                                      },
+                                      icon: Icons.phone,
+                                      label:"Call"
+                                  ),
+                                ),
+                                SizedBox(width: 5,),
+                                Expanded(
+                                  child: Buttons.outlineTextIconButton(
+                                    onPressed: (){
+                                      String email = notification.data['sender_email'];
+                                      launchUrl(Uri.parse('mailto:'+ email.toString()));
+                                    },
+                                    icon: Icons.email,
+                                    label:"Email"
+                                  ),
+                                ),
+                                SizedBox(width: 5,),
+                                Expanded(
+                                  child: Buttons.yellowFlatButton(
+                                    onPressed: notification.type != NSNotificationTypes.ClientRequestWeb ? (){
+                                      notification.deleteSelectedNotification();
+                                      sendInvite(notification);
+                                    }:(){},
+                                      label:"Invite"
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );

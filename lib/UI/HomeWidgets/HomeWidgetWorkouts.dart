@@ -63,7 +63,7 @@ class HomeWidgetWorkouts extends StatelessWidget {
             height: 44,
             child: FloatingActionButton.extended(
               onPressed: () async {
-                final result = await Get.to(() => AddWorkouts(workoutList: [], workoutID: -1));
+                final result = await Get.to(() => AddWorkouts(workoutList: [], workoutID: -1))?.then((value){getWorkouts();});
                 if (result != null) {
                   // Only if a result is returned, perform the following actions.
                   getWorkouts();

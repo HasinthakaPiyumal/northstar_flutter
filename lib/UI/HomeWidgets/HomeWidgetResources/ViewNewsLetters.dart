@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Models/HttpClient.dart';
+import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetResources/NewsLetterView.dart';
 
 class ViewNewsLetters extends StatelessWidget {
@@ -60,7 +61,7 @@ class ViewNewsLetters extends StatelessWidget {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12.0),
                             ),
-                            title: Text(newsLetters[index]['title']),
+                            title: Text(newsLetters[index]['title'],style: TypographyStyles.text(16),),
                             subtitle: Text(newsLetters[index]['created_at'].split('T').first),
                           )
                         ],

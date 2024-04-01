@@ -221,6 +221,8 @@ class AddWorkoutPreset extends StatelessWidget {
                           (element) => element['id'] == jsonObj['id']);
                       if (already == null) {
                         jsonObj['repetitions'] = 1;
+                        jsonObj['sets'] = 1;
+                        jsonObj['weight'] = 50;
                         jsonObj['day'] = 1;
                         jsonObj['has_completed'] = false;
                         workouts.add(jsonObj);
@@ -372,28 +374,36 @@ class AddWorkoutPreset extends StatelessWidget {
                                         labelText: 'Notes',
                                       ),
                                     ),
-                                  ), Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 15.0, vertical: 10),
-                                      child: Row(
-                                        children: [
-                                          Text("Day: "),
-                                          SizedBox(width: 20,),
-                                          Expanded(
-                                            child: DropdownButtonWithBorder(
-                                              items: List.generate(int.parse(days.text.isEmpty? '1':days.text), (index) => (index+1).toString()),
-                                              selectedValue: workouts[index]['day'].toString(),
-                                              onChanged: (String val) {
-                                                print("printing date ${val}");
-                                                workouts[index]['day'] =
-                                                    int.parse(val);
-                                              },
-                                              width: Get.width,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                  ), Container(
+                                    decoration: BoxDecoration(
+                                      color: AppColors.accentColor,
+                                      borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10),bottomRight: Radius.circular(10))
                                     ),
+                                    child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 15.0, vertical: 10),
+                                        child: Row(
+                                          children: [
+                                            Text("Day: ",style: TypographyStyles.title(16).copyWith(color: AppColors.textOnAccentColor),),
+                                            SizedBox(width: 20,),
+                                            Expanded(
+                                              child: DropdownButtonWithBorder(
+                                                items: List.generate(int.parse(days.text.isEmpty? '1':days.text), (index) => (index+1).toString()),
+                                                selectedValue: workouts[index]['day'].toString(),
+                                                onChanged: (String val) {
+                                                  print("printing date ${val}");
+                                                  workouts[index]['day'] =
+                                                      int.parse(val);
+                                                },
+                                                color: AppColors.textOnAccentColor,
+                                                backgroundColor: Colors.white,
+                                                width: Get.width,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                  ),
 
                                   SizedBox(height: 4),
                                 ],

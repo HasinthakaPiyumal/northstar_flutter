@@ -267,7 +267,8 @@ class ThemeAll {
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
           selectedItemColor: AppColors.accentColor),
-      listTileTheme: ListTileThemeData(tileColor: AppColors.primary2Color));
+      listTileTheme: ListTileThemeData(tileColor: AppColors.primary2Color)
+  );
 }
 // class ThemeAll {
 //   final lightTheme = ThemeData(

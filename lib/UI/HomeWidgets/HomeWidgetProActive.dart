@@ -249,7 +249,7 @@ class HomeWidgetProActive extends StatelessWidget{
                       borderRadius: BorderRadius.circular(8),
                       child: Card(
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                        color: Get.isDarkMode ? colors.Colors().lightBlack(1) : colors.Colors().selectedCardBG,
+                        color: Get.isDarkMode ? AppColors.primary2Color : colors.Colors().selectedCardBG,
                         margin: EdgeInsets.zero,
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 25),

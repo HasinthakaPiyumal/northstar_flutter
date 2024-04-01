@@ -56,15 +56,16 @@ class _AddToDosState extends State<AddToDos> {
 
       if (res['code'] == 200) {
         Random random = Random();
-
+        print(res['data']);
         print('Scheduled Time');
         print(DateTime.parse(endDate.text).toLocal());
-        await LocalNotificationsController.showLocalNotification(
-            id: random.nextInt(1000000),
-            title: todo.text,
-            body: notes.text,
-            scheduledDate: DateTime.parse(endDate.text));
-
+        try{
+          await LocalNotificationsController.showLocalNotification(
+              id: res['data']['id'],
+              title: todo.text,
+              body: notes.text,
+              scheduledDate: DateTime.parse(endDate.text));
+        }catch(e){}
         Get.back();
         showSnack('TODO Saved!', 'Your Todo has been saved!');
       } else {

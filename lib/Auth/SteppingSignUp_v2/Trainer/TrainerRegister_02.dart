@@ -3,7 +3,9 @@ import 'package:country_currency_pickers/country_picker_dialog.dart';
 import 'package:country_currency_pickers/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+// import 'package:intl_phone_field/country_picker_dialog.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:north_star/Styles/PickerDialogStyles.dart';
 import 'package:north_star/Utils/PopUps.dart';
 
 import '../../../Models/HttpClient.dart';
@@ -281,30 +283,36 @@ class _TrainerRegisterSecondState extends State<TrainerRegisterSecond> {
                   style: TextStyle(color: isDark ? Colors.white : Colors.black),
                 ),
                 SizedBox(height: contentHeight),
-                IntlPhoneField(
-                  controller: _emergencyContactController,
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.call_outlined,
-                        color: isDark ? Colors.white : Colors.black, size: 18),
-                    border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: isDark ? Colors.white : Colors.black),
-                    ),
-                    labelText: 'Emergency Contact',
-                    labelStyle: TextStyle(
-                      color: isDark ? Colors.white70 : Colors.black54,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Poppins',
-                      fontSize: 16,
-                    ),
-                    contentPadding: EdgeInsets.only(bottom: 0),
+                Theme(
+                  data: Theme.of(context).copyWith(
+                      listTileTheme: ListTileThemeData()
                   ),
-                  style: TextStyle(color: isDark ? Colors.white : Colors.black),
-                  initialCountryCode: 'MV',
-                  onChanged: (phone) {
-                    setState(() {
-                      emergencyContact = "${phone.completeNumber}";
-                    });
-                  },
+                  child: IntlPhoneField(
+                    controller: _emergencyContactController,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.call_outlined,
+                          color: isDark ? Colors.white : Colors.black, size: 18),
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: isDark ? Colors.white : Colors.black),
+                      ),
+                      labelText: 'Emergency Contact',
+                      labelStyle: TextStyle(
+                        color: isDark ? Colors.white70 : Colors.black54,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                      ),
+                      contentPadding: EdgeInsets.only(bottom: 0),
+                    ),
+                    style: TextStyle(color: isDark ? Colors.white : Colors.black),
+                    pickerDialogStyle: PickerDialogStyles.main(),
+                    initialCountryCode: 'MV',
+                    onChanged: (phone) {
+                      setState(() {
+                        emergencyContact = "${phone.completeNumber}";
+                      });
+                    },
+                  ),
                 ),
                 // TextFormField(
                 //   controller: _emergencyContactController,

@@ -106,19 +106,22 @@ class ChatThread extends StatelessWidget {
         String tempMSG = message.text.toString();
         message.clear();
         List users = [];
-        chatData['clients'].forEach((client) {
-          if (client['client_id'].toString() != authUser.id.toString()) {
-            users.add(client['client_id'].toString());
+        if(chatData['clients']!=null) {
+          chatData['clients'].forEach((client) {
+            if (client['client_id'].toString() != authUser.id.toString()) {
+              users.add(client['client_id'].toString());
+            }
+          });
+          if (authUser.role == 'client') {
+            users.add(chatData['owner_id'].toString());
           }
-        });
-        if (authUser.role == 'client') {
-          users.add(chatData['owner_id'].toString());
+
+          await httpClient.newChatNotification({
+            'clients': users,
+            'title': authUser.name + ': ' + tempMSG.toString(),
+          });
         }
 
-        await httpClient.newChatNotification({
-          'clients': users,
-          'title': authUser.name + ': ' + tempMSG.toString(),
-        });
         Get.back();
       });
     }

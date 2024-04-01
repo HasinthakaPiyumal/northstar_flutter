@@ -1,9 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Models/NSNotification.dart';
+import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/ButtonStyles.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
@@ -21,8 +23,6 @@ class TrainerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-
 
     RxBool ready = false.obs;
     RxMap reviews = {}.obs;
@@ -135,6 +135,7 @@ class TrainerView extends StatelessWidget {
               Visibility(
                 visible: trainerObj['qualifications'].length > 0,
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Divider(),
                     SizedBox(height: 16),
@@ -151,7 +152,7 @@ class TrainerView extends StatelessWidget {
                             width: Get.width*0.75,
                             margin: index == 0 ? EdgeInsets.only(left: 0) : EdgeInsets.only(left: 10),
                             decoration: BoxDecoration(
-                              color: Get.isDarkMode ? colors.Colors().deepGrey(1) : colors.Colors().lightCardBG,
+                              color: Get.isDarkMode ? AppColors.primary2Color : colors.Colors().lightCardBG,
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Padding(
@@ -215,6 +216,50 @@ class TrainerView extends StatelessWidget {
                 visible: authUser.role == 'client',
               ),
               SizedBox(height: 8),
+              Visibility(visible: trainerObj['trainer_classes'].length>0,child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("All Classes",style: TypographyStyles.title(20),),
+                  Container(
+                      height: trainerObj['trainer_classes'].length > 0 ? 200: 8,
+                      child: ListView.builder(scrollDirection: Axis.horizontal,itemCount: trainerObj['trainer_classes'].length,itemBuilder: (BuildContext context, int index) {
+                        Map cls = trainerObj['trainer_classes'][index];
+                        return Container(
+                          width: Get.width-40,
+                          margin: EdgeInsets.only( top: 16,left: index!=trainerObj['trainer_classes'].length-1?0:16,right: 16),
+                          padding: EdgeInsets.all( 16),
+                          decoration: BoxDecoration(
+                            color: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
+                            borderRadius: BorderRadius.circular(10),),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Expanded(child: Text(cls['class_name'].toString().capitalizeFirst.toString(),style: TypographyStyles.title(18),overflow: TextOverflow.ellipsis,)),
+                              // SizedBox(height: 10,),
+                              Expanded(child: Text(cls['description'].toString().capitalizeFirst.toString(),style: TypographyStyles.text(14),overflow: TextOverflow.fade,)),
+                              SizedBox(height: 10,)
+                              ,Row(
+                                  children:[
+                                    Icon(Icons.watch_later_outlined),
+                                    SizedBox(width: 10,),
+                                    Text(DateFormat("yyyy-MM-dd HH:mm a").format(DateTime.parse(cls['shedule_time'])).toString(),style: TypographyStyles.text(16),),
+                                  ]
+                              ),
+                              SizedBox(height: 10,),
+                              Row(
+                                  children:[
+                                    Icon(Icons.location_on_outlined),
+                                    SizedBox(width: 10,),
+                                    Text(cls['location'].toString(),style: TypographyStyles.text(16),),
+                                  ]
+                              ),
+                            ],
+                          ),
+                        );
+                      },)),
+                ],
+              )),
               SizedBox(height: 10),
               reviewWidget(reviews, data),
             ],

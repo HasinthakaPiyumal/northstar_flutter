@@ -55,7 +55,7 @@ class ViewWorkout extends StatelessWidget {
         await httpClient.sendNotification(
             workout['trainer_id'],
             '${authUser.user['name']} has completed a workout!',
-            '${authUser.user['name']} has completed the workout titled "${authUser.user['title']}"',
+            '${authUser.user['name']} has completed the workout titled "${workoutData['title']}"',
             NSNotificationTypes.WorkoutCompleted,
             {
               'sender_id': authUser.id,

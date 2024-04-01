@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:north_star/Controllers/TaxController.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
@@ -16,11 +17,13 @@ import 'package:north_star/UI/SharedWidgets/CommonConfirmDialog.dart';
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/Utils/PopUps.dart';
+import 'package:north_star/components/MaterialBottomSheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../components/CouponApply.dart';
 import '../SharedWidgets/PaymentVerification.dart';
+import 'PurchaseSummary.dart';
 
 class HomeWidgetPro extends StatelessWidget {
   HomeWidgetPro({Key? key, this.extend = false}) : super(key: key);
@@ -73,21 +76,61 @@ class HomeWidgetPro extends StatelessWidget {
     }
 
     double getPlanPrice(Map plan) {
-      double price = double.parse(plan['price'].toString());
-      if (plan['discounted']) {
-        price = price - (price * plan['discounted_percentage'] / 100);
-      }
+      double price = double.parse(plan['real_price'].toString());
+      // if (plan['discounted']) {
+      //   price = price - (price * plan['discounted_percentage'] / 100);
+      // }
       return price;
     }
+    DateTime addTimeUnitToDate(DateTime date, int amount, String unit) {
+      switch (unit) {
+        case 'day':
+          return date.add(Duration(days: amount));
+        case 'month':
+          int year = date.year + (date.month + amount) ~/ 12;
+          int month = (date.month + amount) % 12;
+          int day = date.day;
+          int daysInMonth = DateTime(year, month + 1, 0).day;
+          if (day > daysInMonth) {
+            day = daysInMonth;
+          }
+          return DateTime(year, month, day, date.hour, date.minute, date.second,
+              date.millisecond, date.microsecond);
+        case 'year':
+          return DateTime(date.year + amount, date.month, date.day, date.hour,
+              date.minute, date.second, date.millisecond, date.microsecond);
+        default:
+          throw ArgumentError('Invalid unit. Must be "day", "month", or "year".');
+      }
+    }
 
-    void subscribeNow(Map plan) async {
+    void showPurchaseSummary(onSuccess,type){
+      dynamic plan = plansList[selectedPackage.value];
+      var formatter = DateFormat('yyyy-MM-dd');
+      String valid = authUser.user['subscription']!=null?authUser.user['subscription']['valid_till']:formatter.format(DateTime.now().toLocal());
+      var data = {
+        "plan_name":plan['name'],
+        "price":getPlanPrice(plan).toStringAsFixed(2),
+        "pay_type":type,
+        "discount_percentage":((couponValue.value)/getPlanPrice(plan)*100).toStringAsFixed(2),
+        "discount_amount":(getPlanPrice(plan)-couponValue.value).toStringAsFixed(2),
+        "tax":(type==2?0:taxController.getCalculatedTax(getPlanPrice(plan) - couponValue.value)).toStringAsFixed(2),
+        "total":(getPlanPrice(plan) - couponValue.value + (type==2?0:taxController.getCalculatedTax(getPlanPrice(plan) - couponValue.value))).toStringAsFixed(2),
+        "validation":plan['duration_unit']=='lifetime'?'Life Time':"${plan['duration_amount']} ${plan['duration_unit']}",
+        "starting_date":valid,
+        "expire_date":plan['duration_unit']=='lifetime'?'Life Time':formatter.format(addTimeUnitToDate(DateTime.parse(valid),plan['duration_amount'],plan['duration_unit']).toLocal()).toString(),
+      };
+      Get.to(()=>PurchaseSummary(onSuccess: onSuccess, data: data,));
+    }
+
+    void subscribeNow(Map plan, VoidCallback callback) async {
       print("subscribeNow calling");
       ready.value = false;
       Map durationsMap = {'month': 1, 'year': 12, 'lifetime': 9999};
       int durationAmountMultiplier = durationsMap[plan['duration_unit']];
       int months = plan['duration_amount'] * durationAmountMultiplier;
       var data = {
-        'planId':plansList[_current.value]['id'],
+        'planId':plansList[selectedPackage.value]['id'],
         'couponCode': '${couponCode.value}',
         'payment_type':1
       };
@@ -104,10 +147,12 @@ class HomeWidgetPro extends StatelessWidget {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString("lastTransactionId", res['data']['id']);
         await prefs.setString("lastTransactionUrl", res['data']['url']);
+        callback();
         Get.to(()=>PaymentVerification());
         // check.value = true;
       } else {
         print(res);
+        callback();
         showSnack("Booking Failed",res['data']['description'][0] );
       }
       ready.value = true;
@@ -279,7 +324,7 @@ class HomeWidgetPro extends StatelessWidget {
                       typeId: plan['id'],
                       couponCode: couponCode,
                       couponValue: couponValue,
-                      payingAmount: plan['price'])
+                      payingAmount: getPlanPrice(plan))
                 ],
               )),
           actions: [
@@ -287,29 +332,30 @@ class HomeWidgetPro extends StatelessWidget {
               width: Get.width,
               child: ElevatedButton(
                 onPressed: () async {
-                  print(_current.value);
-                  print(plansList[_current.value]);
                   if(!isAgree.value){
                     showSnack('Terms and Conditions','Please accept the terms and conditions.');
                     return;
                   }
-                  if (plansList[_current.value]['real_price'] <=
+                  if (plansList[selectedPackage.value]['real_price']-couponValue.value <=
                       walletData['balance']) {
-                    var data = {
-                      'planId':plansList[_current.value]['id'],
-                      'couponCode': '${couponCode.value}',
-                      'payment_type':2
-                    };
-                    Map res = await httpClient.proMemberActivate(data);
-                    print(res);
-                    if(res['code']==200){
-                      Get.to(()=>Layout());
-                      showSnack('Successfully Subscribed',
-                          'You have successfully upgraded your membership plan.');
-                    }else{
-                      showSnack('Error',
-                          'Something went wrong.');
-                    }
+                        showPurchaseSummary((VoidCallback callback)async{
+                          var data = {
+                            'planId': plansList[selectedPackage.value]['id'],
+                            'couponCode': '${couponCode.value}',
+                            'payment_type': 2
+                          };
+                          Map res = await httpClient.proMemberActivate(data);
+                          print(res);
+                          if (res['code'] == 200) {
+                            callback();
+                            Get.to(() => Layout());
+                            showSnack('Successfully Subscribed',
+                                'You have successfully upgraded your membership plan.');
+                          } else {
+                            callback();
+                            showSnack('Error', 'Something went wrong.');
+                          }
+                        }, 2);
                   } else {
                     showSnack('Insufficient Balance',
                         'You do not have sufficient balance to pay for this booking.');
@@ -353,7 +399,8 @@ class HomeWidgetPro extends StatelessWidget {
                     return;
                   }
                   Get.back();
-                  subscribeNow(plan);
+                  showPurchaseSummary((VoidCallback callback){subscribeNow(plan,callback);},1);
+                  // subscribeNow(plan);
                 },
                 style: SignUpStyles.selectedButton(),
                 child: Obx(() => ready.value
@@ -689,7 +736,7 @@ class HomeWidgetPro extends StatelessWidget {
                                                         plansList[index]
                                                                 ['discounted']
                                                             ? Text(
-                                                                'MVR ${plansList[index]['price']}',
+                                                                'MVR ${plansList[index]['price']*plansList[index]['duration_amount']}',
                                                                 style: TextStyle(
                                                                     decoration:
                                                                         TextDecoration
@@ -701,7 +748,7 @@ class HomeWidgetPro extends StatelessWidget {
                                                             : SizedBox(),
                                                         SizedBox(width: 4),
                                                         Text(
-                                                          'MVR ${getPlanPrice(plansList[index])}',
+                                                          'MVR ${plansList[index]['real_price']}',
                                                           textAlign:
                                                               TextAlign.left,
                                                           style:
