@@ -433,9 +433,9 @@ class FrontPage extends StatelessWidget {
                                         mainAxisAlignment:
                                             MainAxisAlignment.end,
                                         children: [
-                                          Buttons.outlineButton(onPressed: (){askIfFinished( list[index]);},width: 120, label: "Finish"),
+                                          Expanded(child: Buttons.outlineButton(onPressed: (){askIfFinished( list[index]);}, label: "Finish")),
                                           SizedBox(width: 10,),
-                                          Buttons.yellowFlatButton(onPressed: (){joinMeeting(list[index]);},width: 120,label:"Join"),
+                                          Expanded(child: Buttons.yellowFlatButton(onPressed: (){joinMeeting(list[index]);},label:"Join")),
                                         ],
                                       ),
                                     ],
@@ -572,54 +572,54 @@ class FrontPage extends StatelessWidget {
                       )),
                 ),
                 SizedBox(height: 8),
-                Container(
-                  width: Get.width,
-                  height: 75,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: ElevatedButton(
-                      style: Get.isDarkMode
-                          ? ButtonStyles.bigBlackButton()
-                          : ButtonStyles.matRadButton(
-                              colors.Colors().selectedCardBG, 0, 12),
-                      onPressed: () {
-                        Get.to(() => HomeWidgetFinance());
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Finance'.toUpperCase()),
-                            Icon(Icons.chevron_right)
-                          ],
-                        ),
-                      )),
-                ),
-                SizedBox(height: 8),
-                Container(
-                  width: Get.width,
-                  height: 75,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: ElevatedButton(
-                      style: Get.isDarkMode
-                          ? ButtonStyles.bigBlackButton()
-                          : ButtonStyles.matRadButton(
-                              colors.Colors().selectedCardBG, 0, 12),
-                      onPressed: () {
-                        Get.to(() => Wallet());
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('E Wallet'.toUpperCase()),
-                            Icon(Icons.chevron_right)
-                          ],
-                        ),
-                      )),
-                ),
-                SizedBox(height: 8),
+                // Container(
+                //   width: Get.width,
+                //   height: 75,
+                //   padding: const EdgeInsets.symmetric(horizontal: 16),
+                //   child: ElevatedButton(
+                //       style: Get.isDarkMode
+                //           ? ButtonStyles.bigBlackButton()
+                //           : ButtonStyles.matRadButton(
+                //               colors.Colors().selectedCardBG, 0, 12),
+                //       onPressed: () {
+                //         Get.to(() => HomeWidgetFinance());
+                //       },
+                //       child: Padding(
+                //         padding: EdgeInsets.symmetric(horizontal: 12),
+                //         child: Row(
+                //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //           children: [
+                //             Text('Finance'.toUpperCase()),
+                //             Icon(Icons.chevron_right)
+                //           ],
+                //         ),
+                //       )),
+                // ),
+                // SizedBox(height: 8),
+                // Container(
+                //   width: Get.width,
+                //   height: 75,
+                //   padding: const EdgeInsets.symmetric(horizontal: 16),
+                //   child: ElevatedButton(
+                //       style: Get.isDarkMode
+                //           ? ButtonStyles.bigBlackButton()
+                //           : ButtonStyles.matRadButton(
+                //               colors.Colors().selectedCardBG, 0, 12),
+                //       onPressed: () {
+                //         Get.to(() => Wallet());
+                //       },
+                //       child: Padding(
+                //         padding: EdgeInsets.symmetric(horizontal: 12),
+                //         child: Row(
+                //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //           children: [
+                //             Text('E Wallet'.toUpperCase()),
+                //             Icon(Icons.chevron_right)
+                //           ],
+                //         ),
+                //       )),
+                // ),
+                // SizedBox(height: 8),
               ],
             )
           : Center(

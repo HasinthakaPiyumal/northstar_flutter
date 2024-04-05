@@ -441,7 +441,7 @@ class Home extends StatelessWidget {
                     ? Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 8),
-                        child: watchDataWidget(authUser.id),
+                        child: WatchDataWidget(authUser.id),
                       )
                     : SizedBox(),
                 authUser.role == 'client'

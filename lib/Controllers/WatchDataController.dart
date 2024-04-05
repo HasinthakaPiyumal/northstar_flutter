@@ -40,7 +40,12 @@ class WatchDataController {
     HealthDataType.BODY_TEMPERATURE,
     HealthDataType.ACTIVE_ENERGY_BURNED,
   ];
-
+  static var permissions = [
+    HealthDataAccess.READ,
+    HealthDataAccess.READ,
+    HealthDataAccess.READ,
+    HealthDataAccess.READ,
+  ];
   emptyAll(){
     heartData.clear();
     tempData.clear();
@@ -59,8 +64,6 @@ class WatchDataController {
   }
 
   void formatData() async {
-
-
     Map<dynamic, dynamic>? hasHeartElement =
     jsonData.firstWhereOrNull((element) => element['type'] == 'HEART_RATE');
 
@@ -94,6 +97,8 @@ class WatchDataController {
       stepsDataStatus.value = 'No Steps Data Found.';
     } else {
       try {
+        print("steps adding======");
+        print(jsonData);
 
         jsonData
             .where((element) => element['type'] == 'STEPS').forEach((element) {
@@ -101,6 +106,7 @@ class WatchDataController {
           print(element);
           if(date.day == DateTime.now().day){
             lastSteps.value += double.parse(element['value'].toString()).round();
+            print(lastSteps.value);
           }
 
 
@@ -123,7 +129,8 @@ class WatchDataController {
     }
     Map<dynamic, dynamic>? hasTempElement = jsonData
         .firstWhereOrNull((element) => element['type'] == 'BODY_TEMPERATURE');
-
+    print("===========hasTempElement");
+    print(jsonData);
     if (hasTempElement == null) {
       tempDataStatus.value = 'No Temperature Data Found.';
     } else {
@@ -146,7 +153,6 @@ class WatchDataController {
         tempDataStatus.value = 'Temperature Sync Error occured.';
       }
     }
-
     ready.value = true;
   }
 
@@ -183,12 +189,22 @@ class WatchDataController {
   }
 
   void setupSync() async {
+    print("=====setup inner");
     if (authUser.id == userId) {
+      print("Fetching new Data...");
       statusText.value = 'Fetching New Data...';
       DateTime to = DateTime.now();
       DateTime from = to.subtract(Duration(days: daysToGet));
       healthData.value = await health.getHealthDataFromTypes(from, to, types);
-
+      var now = DateTime.now();
+      List result = await health.getHealthDataFromTypes(
+          now.subtract(Duration(days: 1)), now.add(Duration(days: 1)),
+          [HealthDataType.STEPS]);
+      print('===result');
+      print('===result.length => ${result.length}');
+      print('===healthData.length => ${healthData.length}');
+      print(result);
+      print(healthData.value);
       if (healthData.isEmpty) {
         statusText.value = 'Connected: No Data Found.';
         heartDataStatus.value = 'No Data Found.';
@@ -201,10 +217,14 @@ class WatchDataController {
         startSync();
       }
     } else {
+      print("Fetching Saved Data...");
       statusText.value = 'Fetching Saved Data...';
       print(statusText.value);
 
       Map res = await httpClient.getUserWatchData(userId);
+      print("=====userId");
+      print(userId);
+
       if (res['code'] == 200) {
         List resData = res['data']['data'];
 
@@ -246,6 +266,7 @@ class WatchDataController {
     emptyAll();
 
     if(authUser.id == userId){
+      print(authUser.user['health_data'] && (authUser.id == userId));
       enabled = authUser.user['health_data'] && (authUser.id == userId);
     } else {
       enabled = true;
@@ -272,6 +293,7 @@ class WatchDataController {
         statusText.value = 'Health Data Permission Granted';
         FirebaseCrashlytics.instance.log("Health Data Permission Granted");
       }
+      print("====syncing health data");
       setupSync();
     } else {
       ready.value = true;
@@ -306,6 +328,8 @@ class WatchDataController {
   }
 
   static Future<bool> requestPermission() async {
-    return await HealthFactory().requestAuthorization(types);
+    var state = await HealthFactory().requestAuthorization(types,permissions: permissions);
+    print('Printing health data state ---> $state');
+    return state;
   }
 }

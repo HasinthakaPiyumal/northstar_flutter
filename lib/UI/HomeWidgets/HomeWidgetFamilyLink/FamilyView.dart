@@ -589,33 +589,33 @@ class FamilyView extends StatelessWidget {
                                     visible: _currentTab.value == 1,
                                     child: Column(
                                       children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              'Your Assign List',
-                                              style: TypographyStyles.title(20),
-                                            ),
-                                            DropdownButtonWithBorder(
-                                              items: [
-                                                'All',
-                                                'Ongoing',
-                                                'Pending',
-                                                'Rejected'
-                                              ],
-                                              selectedValue:
-                                                  _assignFilterDropdown.value,
-                                              onChanged: (newValue) {
-                                                _assignFilterDropdown.value =
-                                                    newValue;
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 20,
-                                        ),
+                                        // Row(
+                                        //   mainAxisAlignment:
+                                        //       MainAxisAlignment.spaceBetween,
+                                        //   children: [
+                                        //     Text(
+                                        //       'Your Assign List',
+                                        //       style: TypographyStyles.title(20),
+                                        //     ),
+                                        //     DropdownButtonWithBorder(
+                                        //       items: [
+                                        //         'All',
+                                        //         'Ongoing',
+                                        //         'Pending',
+                                        //         'Rejected'
+                                        //       ],
+                                        //       selectedValue:
+                                        //           _assignFilterDropdown.value,
+                                        //       onChanged: (newValue) {
+                                        //         _assignFilterDropdown.value =
+                                        //             newValue;
+                                        //       },
+                                        //     ),
+                                        //   ],
+                                        // ),
+                                        // SizedBox(
+                                        //   height: 20,
+                                        // ),
                                         ListView.builder(
                                             itemCount: assigns.where((p0) => checkStatus(p0)).length,
                                             physics:
@@ -649,7 +649,7 @@ class FamilyView extends StatelessWidget {
                                         SizedBox(
                                           height: 20,
                                         ),
-                                        isAdmin
+                                        isAdmin && assigns.where((p0) =>  p0['status']=='2').length ==0
                                             ? Buttons.yellowFlatButton(
                                                 onPressed: createNewAssign,
                                                 label: "Create New Assign",

@@ -78,18 +78,18 @@ class Prescriptions extends StatelessWidget {
                     ),
                     title: Text(prescriptions[index]['doctor']['name']),
                     subtitle: Text(prescriptions[index]['doctor']['email']),
-                    trailing: InkWell(
-                      onTap: (){
-                        CommonConfirmDialog.confirm('Delete').then((value){
-                          if (value){
-                            archivePrescriptions(prescriptions[index]['id']);
-                          }
-                        });
-                      },
-                      child: Icon(Icons.delete,
-                        color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),
-                      ),
-                    ),
+                    // trailing: InkWell(
+                    //   onTap: (){
+                    //     CommonConfirmDialog.confirm('Delete').then((value){
+                    //       if (value){
+                    //         archivePrescriptions(prescriptions[index]['id']);
+                    //       }
+                    //     });
+                    //   },
+                    //   child: Icon(Icons.delete,
+                    //     color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),
+                    //   ),
+                    // ),
                   ),
                   Divider(),
                   ListTile(

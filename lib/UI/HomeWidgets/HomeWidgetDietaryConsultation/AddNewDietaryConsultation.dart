@@ -43,6 +43,8 @@ class AddNewDietaryConsultation extends StatelessWidget {
     late DateTime selectedDate;
 
     void addDietConsultation() async {
+      print('menuItems printing');
+      print(menuItems);
       Map res = await httpClient.addDietConsult({
         'client_id': userId,
         'data': {
@@ -273,8 +275,10 @@ class AddNewDietaryConsultation extends StatelessWidget {
                       },
                       itemBuilder: (context, index) {
                         TextEditingController time = TextEditingController();
+                        TextEditingController meal = TextEditingController();
                         time.text = menuItems[index]["time"];
-        
+                        meal.text = menuItems[index]["meal"];
+
                         return SizedBox(
                           child: Row(
                             children: [
@@ -307,6 +311,7 @@ class AddNewDietaryConsultation extends StatelessWidget {
                                       }
                                       time.text =
                                           "${pickedTime.hour}:${pickedTime.minute}";
+                                      menuItems[index]["time"] = time.text;
                                     });
                                   },
                                   decoration: InputDecoration(
@@ -322,6 +327,7 @@ class AddNewDietaryConsultation extends StatelessWidget {
                                 width: (Get.width - 40) / 100 * 80,
                                 child: TextField(
                                   enabled: editMode ? false : true,
+                                  controller:meal,
                                   onChanged: (value) {
                                     menuItems[index]["meal"] = value;
                                     // if(mealOptions.last != "" && mealTimes.last != ""){

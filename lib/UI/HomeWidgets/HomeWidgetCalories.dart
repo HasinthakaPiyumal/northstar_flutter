@@ -328,7 +328,7 @@ class HomeWidgetCalories extends StatelessWidget {
                                             ),
                                           ],
                                         ),
-                                        watchDataWidget(
+                                        WatchDataWidget(
                                               macrosData[index]['user_id']),
 
                                       ],
