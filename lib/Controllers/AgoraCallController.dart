@@ -91,25 +91,29 @@ class AgoraCallController {
           startTime = DateTime.now();
           timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
             duration.value = DateTime.now().difference(startTime);
-          });
-          callUpdater = Timer.periodic(Duration(seconds: 1), (Timer t) async{
             if(callStatus.value!='Connected'){
-              callUpdater.cancel();
-              return;
+              t.cancel();
             }
-            print('updating call duration ${duration.value.inSeconds}');
-            await httpClient.updateCallLog({'call_id':callId,'duration':duration.value.inSeconds,'status':"Connected"});
           });
+          // callUpdater = Timer.periodic(Duration(seconds: 1), (Timer t) async{
+          //   if(callStatus.value!='Connected'){
+          //     callUpdater.cancel();
+          //     return;
+          //   }
+          //   print('updating call duration ${duration.value.inSeconds}');
+          //   await httpClient.updateCallLog({'call_id':callId,'duration':duration.value.inSeconds,'status':"Connected"});
+          // });
         },
         onUserOffline: (RtcConnection connection, int remoteUid,
-            UserOfflineReasonType reason) {
+            UserOfflineReasonType reason) async {
           print("Remote user uid left the channel");
           callStatus.value = 'Disconnected';
           remoteUID = 0;
           // httpClient.updateCallLog({'call_id':callId,'duration':duration.value.inSeconds,'status':"Finished"});
           endTime = DateTime.now();
           try {
-            callUpdater.cancel();
+            // callUpdater.cancel();
+            await httpClient.updateCallLog({'call_id':callId,'duration':duration.value.inSeconds,'status':"Connected"});
             timer.cancel();
             duration.value = Duration(seconds: 0);
           } catch (e) {
@@ -175,7 +179,7 @@ class AgoraCallController {
           timer.cancel();
           duration.value = Duration(seconds: 0);
           try {
-            callUpdater.cancel();
+            // callUpdater.cancel();
             timer.cancel();
             duration.value = Duration(seconds: 0);
           } catch (e) {
@@ -220,7 +224,7 @@ class AgoraCallController {
   static rejectCall() async {
     print('rejecting call by agora');
     try {
-      callUpdater.cancel();
+      // callUpdater.cancel();
       timer.cancel();
       duration.value = Duration(seconds: 0);
     } catch (e) {
@@ -277,7 +281,7 @@ class AgoraCallController {
     callStatus.value = 'End call';
     callConnectionStatus = 'Not Connected';
     try {
-      callUpdater.cancel();
+      // callUpdater.cancel();
       timer.cancel();
       duration.value = Duration(seconds: 0);
     } catch (e) {

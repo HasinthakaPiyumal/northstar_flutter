@@ -45,7 +45,9 @@ class _CallView extends State<CallView> {
             ? InCall(
                 callData: widget.callData,
               )
-            : SizedBox()),
+            : InCall(
+          callData: widget.callData,
+        )),
       ),
     ));
   }
