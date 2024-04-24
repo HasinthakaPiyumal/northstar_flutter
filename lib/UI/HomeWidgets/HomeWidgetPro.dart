@@ -153,7 +153,7 @@ class HomeWidgetPro extends StatelessWidget {
       } else {
         print(res);
         callback();
-        showSnack("Booking Failed",res['data']['description'][0] );
+        showSnack("Booking Failed",res['data']['message'] );
       }
       ready.value = true;
     }

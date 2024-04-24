@@ -43,7 +43,7 @@ class StoreCart extends StatelessWidget {
         await prefs.setString("lastTransactionUrl", res['data']['url']);
         Get.to(()=>PaymentVerification());
       }else{
-        showSnack("Booking Failed",res['data']['description'][0] );
+        showSnack("Booking Failed",res['data']['message'] );
       }
       print('===res');
       print(res);
@@ -139,7 +139,7 @@ class StoreCart extends StatelessWidget {
                     Map res = await httpClient.purchaseCart({'payment_type':2});
                     print(res);
                     if (res['code'] == 200) {
-                      Get.offAll(() => MyOrders());
+                      Get.off(() => MyOrders());
                       print('Purchasing Success ---> $res');
                       showSnack('Purchasing Successful', 'Your cart has been successfully Purchased.');
                     } else {

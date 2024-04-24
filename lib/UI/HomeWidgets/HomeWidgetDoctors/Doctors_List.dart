@@ -185,7 +185,7 @@ class DoctorsList extends StatelessWidget {
                                                               CrossAxisAlignment
                                                                   .center,
                                                           children: [
-                                                            SizedBox(
+                                                            Expanded(
                                                               child: Text(
                                                                 "${doctors[index]['doctor']['speciality'].toString().capitalizeFirst}",
                                                                 style:
@@ -198,6 +198,7 @@ class DoctorsList extends StatelessWidget {
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .w700,
+                                                                      overflow: TextOverflow.ellipsis
                                                                 ),
                                                               ),
                                                             ),

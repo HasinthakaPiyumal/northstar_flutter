@@ -250,7 +250,7 @@ class DoctorProfile extends StatelessWidget {
                           _carouselController.previousPage();
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: AppColors.accentColor,
+                          backgroundColor: AppColors.accentColor,
                           shape: CircleBorder(),
                           minimumSize: Size(30, 30),
                         ),
@@ -261,7 +261,7 @@ class DoctorProfile extends StatelessWidget {
                           _carouselController.nextPage();
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: AppColors.accentColor,
+                          backgroundColor: AppColors.accentColor,
                           shape: CircleBorder(),
                           minimumSize: Size(30, 30),
                         ),

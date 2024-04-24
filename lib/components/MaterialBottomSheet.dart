@@ -36,7 +36,7 @@ class MaterialBottomSheet {
                 padding: const EdgeInsets.all(16.0),
                 child: this.child,
               ),
-              SizedBox(height: 20),
+              // SizedBox(height: 20),
             ],
           ),
         ),

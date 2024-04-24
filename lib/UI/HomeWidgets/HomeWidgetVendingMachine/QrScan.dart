@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -15,9 +17,27 @@ class VendingQr extends StatelessWidget {
 
     MobileScannerController cameraController = MobileScannerController();
 
-    void unlockGym(gymID) async{
+    void confirmDialog(vendingStr) async{
       cameraController.stop();
-        showSnack('Error', 'Something went wrong!');
+      try {
+        Map<String, dynamic> vendingJson = jsonDecode(vendingStr);
+        List<String> requiredKeys = ['product_code', 'name', 'price', 'quantity', 'orderId'];
+
+        for (String key in requiredKeys) {
+          if (!vendingJson.containsKey(key) || vendingJson[key] == null) {
+            String errorMessage = "Missing $key field!";
+            Get.back();
+            showSnack('Error', errorMessage);
+            break;
+          }
+        }
+        Get.back(result: vendingJson);
+        // showSnack("Success!", "QR scan complete.");
+      } catch (e, s) {
+        Get.back();
+        showSnack('Error', "Something Went Wrong in QR Code");
+      }
+
     }
 
 
@@ -37,9 +57,9 @@ class VendingQr extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16),
                 child: MobileScanner(
                   controller: cameraController,
-                  onDetect: (barcode) {
-                    int gymID = int.parse(barcode.raw.toString());
-                    unlockGym(gymID);
+                  onDetect: (vendingJson) {
+                    String vendingStr =vendingJson.barcodes[0].rawValue!.toString();
+                    confirmDialog(vendingStr);
                   },
                 ),
               )

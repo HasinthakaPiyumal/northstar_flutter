@@ -78,7 +78,7 @@ class SelectGymBookingDates extends StatelessWidget {
         await prefs.setString("lastTransactionUrl", res['data']['url']);
         Get.to(()=>PaymentVerification());
       }else{
-        showSnack("Booking Failed",res['data']['description'][0] );
+        showSnack("Booking Failed",res['data']['message'] );
       }
     }
 

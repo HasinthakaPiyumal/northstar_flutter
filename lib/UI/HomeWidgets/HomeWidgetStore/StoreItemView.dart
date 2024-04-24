@@ -159,7 +159,7 @@ class StoreItemView extends StatelessWidget {
                     ),
                     onPressed: () async{
                       await storeHelper.addToCart(product['id'], quantity.value);
-                      Get.to(()=>StoreCart());
+                      Get.off(()=>StoreCart());
                     },
                   ),
                 ),

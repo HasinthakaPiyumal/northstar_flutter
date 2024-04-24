@@ -189,7 +189,7 @@ class TherapyMeetings extends StatelessWidget {
                                             width: 10,
                                           ),
                                           Text(
-                                            '${meetings[index]['therapy_user']['name']??""}'.capitalizeFirst as String,
+                                            '${meetings[index]['therapy_name']??""}'.capitalizeFirst as String,
                                             style:
                                             TypographyStyles.textWithWeight(
                                                 16, FontWeight.w600),

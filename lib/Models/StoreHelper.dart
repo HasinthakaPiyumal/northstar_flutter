@@ -11,7 +11,7 @@ class StoreHelper{
     print('cart====');
     print(res);
     if(res['code'] == 200){
-      cart.value = res['data'];
+      cart.value = res['data'].where((product) => product['product'] != null).toList();
     }
     return 0;
   }

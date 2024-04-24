@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 
+import '../../../Models/StoreHelper.dart';
 import '../../../Styles/AppColors.dart';
 import '../../../Styles/Themes.dart';
 import '../../../Styles/TypographyStyles.dart';
@@ -25,6 +26,7 @@ class MyOrders extends StatelessWidget {
     }
 
     getOrders();
+    storeHelper.refreshCart();
     return Scaffold(
       appBar: AppBar(
         title: Text('Order History'),

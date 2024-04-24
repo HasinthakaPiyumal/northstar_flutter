@@ -377,7 +377,7 @@ class _ClientRegisterFirstState extends State<ClientRegisterFirst> {
                       //             primaryColor:
                       //                 isDark ? Colors.white : Colors.black,
                       //             colorScheme: ColorScheme.dark(
-                      //                 primary: Color(0xFFFFB700),
+                      //                 backgroundColor: Color(0xFFFFB700),
                       //                 onSecondary: Color(0xFFFFB700)),
                       //             dialogBackgroundColor: Color(0xFF1B1F24),
                       //           )
@@ -385,7 +385,7 @@ class _ClientRegisterFirstState extends State<ClientRegisterFirst> {
                       //             primaryColor:
                       //                 isDark ? Colors.white : Colors.black,
                       //             colorScheme: ColorScheme.light(
-                      //                 primary: Color(0xFFFFB700)),
+                      //                 backgroundColor: Color(0xFFFFB700)),
                       //           ),
                       //     child: child!,
                       //   );
@@ -510,7 +510,7 @@ class _ClientRegisterFirstState extends State<ClientRegisterFirst> {
                         next();
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Color(0xFFFFB700),
+                        backgroundColor: Color(0xFFFFB700),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),

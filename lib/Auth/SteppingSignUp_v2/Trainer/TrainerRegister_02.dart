@@ -415,7 +415,7 @@ class _TrainerRegisterSecondState extends State<TrainerRegisterSecond> {
                         next();
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Color(0xFFFFB700),
+                        backgroundColor: Color(0xFFFFB700),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),

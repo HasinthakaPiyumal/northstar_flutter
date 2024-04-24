@@ -761,7 +761,7 @@ class _TrainerProfileState extends State<TrainerProfile> {
                                 });
                               },
                               style: ElevatedButton.styleFrom(
-                                primary: Color(0xFFFFB700),
+                                backgroundColor: Color(0xFFFFB700),
                                 // Set the background color
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(5),

@@ -12,7 +12,7 @@ class HttpClient {
   // static String baseURL = 'https://api.northstar.mv/api';
   // static String baseURL = 'http://175.41.184.146:8081/api';
   static String baseURL = 'https://api.northstar.mv/api';
-
+//https://api.northstar.mv/api/clients/requests/49/accept
   static String buildInfo = '9.0.0 Build 1';
 
   static String s3BaseUrl =
@@ -275,8 +275,10 @@ class HttpClient {
 
   //AcceptTrainer
   Future<Map> acceptTrainer(requestID, trainerID) async {
-    Response response =
-        await post('/clients/requests/' + requestID.toString() + '/accept', {});
+    // Response response =
+    //     await post('/clients/requests/' + requestID.toString() + '/accept', {});
+ Response response =
+        await post('/clients/requests/46/accept', {});
 
     this.sendNotification(
         trainerID,
@@ -1864,6 +1866,24 @@ class HttpClient {
     Response response = await post('/fitness/trainer-class/update',data);
     return {"code": response.statusCode, "data": response.data};
   }
+
+  // ====== Vending Machine Start =======
+
+  Future<Map> purchaseDrink(Map data) async {
+    Response response = await post('/payments/vendor-machine-payment/pay-now',data);
+    return {
+      "code": response.statusCode,
+      "data": response.data,
+    };
+  }
+  Future<Map> getVendingOrderHistory() async {
+    Response response = await get('/ecom/vendor-order/view');
+    return {
+      "code": response.statusCode,
+      "data": response.data,
+    };
+  }
+  // ====== Vending Machine End =======
 }
 
 HttpClient httpClient = HttpClient();

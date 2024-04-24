@@ -29,7 +29,13 @@ Widget clientHomeTrainerRequest() {
     ready.value = false;
     Map res = await httpClient.acceptTrainer(requestID,trainerID);
     print(res);
-    showSnack('Trainer Accepted!', 'Trainer Has been Accepted!');
+    if(res['code']==200){
+      showSnack('Trainer Accepted!', 'Trainer Has been Accepted!');
+    }else{
+      print("trainer accept error");
+      print(res);
+      showSnack('Accept Failed', res['data']['error']);
+    }
     getClientProfile();
     print('authCheck');
     AuthUser().checkAuth();

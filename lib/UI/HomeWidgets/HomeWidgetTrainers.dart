@@ -97,7 +97,7 @@ class HomeWidgetTrainers extends StatelessWidget {
                       child: Ink(
                         padding: EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: AppColors.primary2Color,
+                          color: Get.isDarkMode?AppColors.primary2Color:Colors.white,
                           borderRadius: BorderRadius.circular(10)
                         ),
                         child: Row(

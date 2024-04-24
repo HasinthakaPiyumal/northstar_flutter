@@ -60,7 +60,7 @@ class ScheduleForMe extends StatelessWidget {
         await prefs.setString("lastTransactionUrl", res['data']['url']);
         Get.to(()=>PaymentVerification());
       }else{
-        showSnack("Booking Failed",res['data']['description'][0] );
+        showSnack("Booking Failed",res['data']['message'] );
       }
       print('===res');
       print(res);
@@ -82,8 +82,8 @@ class ScheduleForMe extends StatelessWidget {
         showSnack('Booking Successful',
             'Your booking has been successfully placed.');
       } else {
-        showSnack('Booking Failed',
-            'Something went wrong. Please try again later.');
+        print(res);
+        showSnack("Booking Failed",res['data']['message'] );
       }
     }
 
