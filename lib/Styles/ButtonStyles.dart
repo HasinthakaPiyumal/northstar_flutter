@@ -42,15 +42,44 @@ class ButtonStyles {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)));
   }
 
-  static ButtonStyle bigBlackButton() {
+  static ButtonStyle primaryButton() {
     return ElevatedButton.styleFrom(
-        foregroundColor: AppColors.textOnAccentColor,
-        // backgroundColor: Colors.black,
+        foregroundColor:AppColors.textOnAccentColor, //!Get.isDarkMode?AppColors.primary2Color:Colors.white,
         backgroundColor: AppColors.accentColor,
+        // backgroundColor: Get.isDarkMode?AppColors.primary2Color:Colors.white,
         textStyle: TextStyle(
           color: Color(0xFF1B1F24),
           fontSize: 20,
           fontFamily: 'Bebas Neue',
+          fontWeight: FontWeight.w400,
+          height: 0,
+        ),
+        // elevation: 6,
+        padding: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)));
+  }
+  static ButtonStyle primaryOutlineButton() {
+    return ElevatedButton.styleFrom(
+        // foregroundColor:AppColors.textOnAccentColor, //!Get.isDarkMode?AppColors.primary2Color:Colors.white,
+        // backgroundColor: AppColors.accentColor,
+        backgroundColor: Colors.transparent,
+        textStyle: TextStyle(
+          color: Get.isDarkMode?Colors.white:AppColors.textOnAccentColor,
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          height: 0,
+        ),
+        // elevation: 6,
+        padding: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5),side: BorderSide(color: AppColors.accentColor,width: 2)));
+  }
+  static ButtonStyle secondaryButton() {
+    return ElevatedButton.styleFrom(
+        foregroundColor:!Get.isDarkMode?AppColors.primary2Color:Colors.white,
+        backgroundColor: Get.isDarkMode?AppColors.primary2Color:Colors.white,
+        textStyle: TextStyle(
+          color: Color(0xFF1B1F24),
+          fontSize: 16,
           fontWeight: FontWeight.w400,
           height: 0,
         ),
@@ -147,13 +176,15 @@ class ButtonStyles {
   }
 
   static ButtonStyle matRadButton(
-      Color color, double? elevation, double radius) {
+      Color color, double? elevation, double radius,{bool showBorder = false}) {
     return ElevatedButton.styleFrom(
         foregroundColor: Get.isDarkMode ? Colors.white : Colors.black,
         backgroundColor: color,
         elevation: elevation,
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(radius)));
+            borderRadius: BorderRadius.circular(radius),
+            side: showBorder?BorderSide(width: 1, color: Get.isDarkMode?Colors.white:AppColors.textOnAccentColor):BorderSide(width: 0)
+        ));
   }
 
   static ButtonStyle notSelectedBookingButton(double bRadius) {

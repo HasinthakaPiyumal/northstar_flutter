@@ -475,7 +475,7 @@ class NewIngredientsFood extends StatelessWidget {
           width: Get.width,
           height: 44,
           child: ElevatedButton(
-            style: ButtonStyles.bigBlackButton(),
+            style: ButtonStyles.primaryButton(),
             child: Text('Save'),
             onPressed: () {
               if (foods.length > 0) {

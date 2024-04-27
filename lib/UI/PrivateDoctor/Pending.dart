@@ -84,7 +84,7 @@ print('accepting-->$res');
           ),
           actions: [
             ElevatedButton(
-                style: ButtonStyles.bigBlackButton(),
+                style: ButtonStyles.primaryButton(),
                 child: Text('Confirm Canceling'),
                 onPressed: () {
                   if (reason.text.isNotEmpty) {

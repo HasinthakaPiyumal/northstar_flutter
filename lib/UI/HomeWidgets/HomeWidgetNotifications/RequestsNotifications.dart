@@ -122,25 +122,25 @@ class _RequestsNotificationsState extends State<RequestsNotifications> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(notification.title,
-                                style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(0.7)),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 10),
-                                child: notification.hasSeen ? null : Icon(Icons.circle, size: 10, color: Get.isDarkMode ? Themes.mainThemeColor.shade600 : colors.Colors().lightBlack(1),),
-                              ),
-                            ],
+                          Text(
+                            notification.title,
+                            style: TypographyStyles.boldText(
+                                16,Get.isDarkMode?Colors.white:Colors.black),
                           ),
-                          SizedBox(height: 10,),
-                          Text(notification.description,
-                            style: TypographyStyles.normalText(15, Get.isDarkMode ? Colors.white54 : colors.Colors().darkGrey(0.7)),
+                          SizedBox(
+                            height: 5,
                           ),
-                          SizedBox(height: 10,),
-                          Text("${DateFormat("dd-MMM-yyyy").format(notification.createdAt)} | ${DateFormat("HH:mm").format(notification.createdAt)}",
-                            style: TypographyStyles.boldText(12, Get.isDarkMode ? Colors.white30 : colors.Colors().darkGrey(0.5)),
+                          Text(
+                            notification.description,
+                            style: TypographyStyles.text(
+                                14),),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                              "${DateFormat("dd MMMM yyyy - HH:mm").format(notification.createdAt)}",
+                              style: TypographyStyles.text(
+                                  14)
                           ),
                           SizedBox(height: 10),
                           Divider(

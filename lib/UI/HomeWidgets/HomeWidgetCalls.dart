@@ -7,6 +7,8 @@ import 'package:north_star/UI/HomeWidgets/HomeWidgetCalls/CallHistory.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetCalls/Dialer.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/Styles/AppColors.dart';
+
+import '../../components/Buttons.dart';
 class HomeWidgetCalls extends StatefulWidget {
   const HomeWidgetCalls({Key? key}) : super(key: key);
 
@@ -40,7 +42,7 @@ class _HomeWidgetCallsState extends State<HomeWidgetCalls> {
       ),
       body: _lastSelected,
       bottomNavigationBar: SizedBox(
-        height: 70,
+        // height: 70,
         child: BottomNavigationBar(
           selectedItemColor: AppColors.accentColor,
           backgroundColor: Utils.isDarkMode() ? AppColors.primary2Color : Colors.white,
@@ -49,15 +51,11 @@ class _HomeWidgetCallsState extends State<HomeWidgetCalls> {
           unselectedItemColor: Get.isDarkMode ? AppColors.textColorDark :AppColors.textColorLight,
           currentIndex: _currentIndex,
           onTap: _change,
+          selectedFontSize: 0,
+          unselectedFontSize: 0,
           items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.perm_contact_calendar_outlined,),
-              label: "Contacts",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.access_time,),
-              label: "Recent",
-            ),
+            Buttons.bottomNavbarButton(label: "Contacts",pathname: "contact.svg"),
+            Buttons.bottomNavbarButton(label: "Recent",pathname: "recent.svg"),
           ],
         ),
       ),

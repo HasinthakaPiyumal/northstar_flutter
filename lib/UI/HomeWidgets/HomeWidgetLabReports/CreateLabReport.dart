@@ -203,7 +203,7 @@ class CreateLabReport extends StatelessWidget {
         child: Container(
           height: 56,
           child: ElevatedButton(
-            style: ButtonStyles.bigBlackButton(),
+            style: ButtonStyles.primaryButton(),
             child:  Obx(()=> ready.value ? Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

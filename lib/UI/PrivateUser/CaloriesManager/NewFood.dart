@@ -121,7 +121,7 @@ class NewFood extends StatelessWidget {
               Container(
                 height: 44,
                 child: ElevatedButton(
-                  style: ButtonStyles.bigBlackButton(),
+                  style: ButtonStyles.primaryButton(),
                   child:  Obx(()=>ready.value ? Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

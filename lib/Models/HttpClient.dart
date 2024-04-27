@@ -275,10 +275,8 @@ class HttpClient {
 
   //AcceptTrainer
   Future<Map> acceptTrainer(requestID, trainerID) async {
-    // Response response =
-    //     await post('/clients/requests/' + requestID.toString() + '/accept', {});
- Response response =
-        await post('/clients/requests/46/accept', {});
+    Response response =
+        await post('/clients/requests/' + requestID.toString() + '/accept', {});
 
     this.sendNotification(
         trainerID,

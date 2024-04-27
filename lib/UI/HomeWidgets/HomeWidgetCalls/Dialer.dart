@@ -66,7 +66,7 @@ class Dialer extends StatelessWidget {
                         '${HttpClient.s3BaseUrl}${contacts[index]['user']['avatar_url']}',
                       ),
                     ),
-                    title: Text(contacts[index]['user']['name']),
+                    title: Text(contacts[index]['user']['name'].toString().capitalize.toString()),
                     trailing: Container(
                       width: 36,
                       height: 36,

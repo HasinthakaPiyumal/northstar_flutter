@@ -104,7 +104,7 @@ class SignUpClientDataOne extends StatelessWidget {
               width: Get.width,
               height: 72,
               child: ElevatedButton(
-                style: ButtonStyles.bigBlackButton(),
+                style: ButtonStyles.primaryButton(),
                 child: Text('Sign Up'),
                 onPressed: () {
                   signUpData.eContactName = _emergencyNameController.text;

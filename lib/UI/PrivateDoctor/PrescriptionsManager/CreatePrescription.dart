@@ -201,7 +201,7 @@ class CreatePrescription extends StatelessWidget {
               onPressed: (){
                 savePrescription();
               },
-              style: ButtonStyles.bigBlackButton(),
+              style: ButtonStyles.primaryButton(),
               child: Text('Save',
                 style: TypographyStyles.boldText(14, Themes.mainThemeColorAccent.shade100),
               ),

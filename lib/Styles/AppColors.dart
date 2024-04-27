@@ -10,7 +10,7 @@ class AppColors {
   static const Color textOnAccentColor = Color(0xFF1B1F24);
 
   static const Color textColorDark = Colors.white;
-  static const Color textColorLight  =Color(0xFF1B1F24);
+  static const Color textColorLight = Color(0xFF1B1F24);
 
 
 // Add more color constants here

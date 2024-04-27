@@ -11,6 +11,7 @@ import 'package:north_star/UI/PrivateDoctor/Pending.dart';
 
 
 import '../../Controllers/NotificationsController.dart';
+import '../../components/Buttons.dart';
 import 'Upcoming.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 
@@ -48,6 +49,7 @@ class _DoctorHomeState extends State<DoctorHome> {
           appBar: AppBar(
             toolbarHeight: 74,
             elevation: 0.5,
+            centerTitle: false,
             title: Container(
               height: 30,
               child: Image.asset('assets/logo_white.png', fit: BoxFit.fitHeight,
@@ -93,42 +95,20 @@ class _DoctorHomeState extends State<DoctorHome> {
                 ),
               ],
             ),
-            padding: EdgeInsets.symmetric(vertical: 10),
+            // padding: EdgeInsets.symmetric(vertical: 10),
             child: BottomNavigationBar(
               elevation: 0,
               backgroundColor: Get.isDarkMode ? AppColors.primary2Color  : Colors.white,
               selectedItemColor: AppColors.accentColor,
               currentIndex: currentPage.value,
               type: BottomNavigationBarType.fixed,
+              unselectedFontSize: 0,
+              selectedFontSize: 0,
               items: [
-                BottomNavigationBarItem(
-                  icon: Padding(
-                    padding: EdgeInsets.only(bottom: 5),
-                    child: Icon(IcoMoon.home),
-                  ),
-                  label: 'Home',
-                ),
-                BottomNavigationBarItem(
-                  icon: Padding(
-                    padding: EdgeInsets.only(bottom: 5),
-                    child: Icon(Icons.medical_services_rounded),
-                  ),
-                  label: 'Requests',
-                ),
-                BottomNavigationBarItem(
-                  icon: Padding(
-                    padding: EdgeInsets.only(bottom: 5),
-                    child: Icon(Icons.videocam),
-                  ),
-                  label: 'Schedules',
-                ),
-                BottomNavigationBarItem(
-                  icon: Padding(
-                    padding: EdgeInsets.only(bottom: 5),
-                    child: Icon(Icons.person),
-                  ),
-                  label: 'Profile',
-                ),
+                Buttons.bottomNavbarButton(label: "Home",pathname: "home.svg"),
+                Buttons.bottomNavbarButton(label: "Requests",pathname: "requests.svg"),
+                Buttons.bottomNavbarButton(label: "Schedules",pathname: "schedule.svg"),
+                Buttons.bottomNavbarButton(label: "Profile",pathname: "profile.svg"),
               ],
               onTap: (index) {
                 currentPage.value = index;

@@ -287,7 +287,7 @@ class Wallet extends StatelessWidget {
                           child: Container(
                             height: 90,
                             child: ElevatedButton(
-                              style: ButtonStyles.bigBlackButton(),
+                              style: ButtonStyles.primaryButton(),
                               onPressed: (){
                                 Get.to(() => HomeWidgetClientNotes());
                               },
@@ -316,7 +316,7 @@ class Wallet extends StatelessWidget {
                           child: Container(
                             height: 90,
                             child: ElevatedButton(
-                              style: ButtonStyles.bigBlackButton(),
+                              style: ButtonStyles.primaryButton(),
                               onPressed: null,
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,

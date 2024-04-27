@@ -50,7 +50,7 @@ class UserCalories extends StatelessWidget {
                 width: Get.width * 0.9,
                 child: ElevatedButton(
                   style: Get.isDarkMode
-                      ? ButtonStyles.bigBlackButton()
+                      ? ButtonStyles.primaryButton()
                       : ButtonStyles.matRadButton(
                           colors.Colors().selectedCardBG, 0, 12),
                   onPressed: () {
@@ -67,7 +67,7 @@ class UserCalories extends StatelessWidget {
                 width: Get.width * 0.9,
                 child: ElevatedButton(
                   style: Get.isDarkMode
-                      ? ButtonStyles.bigBlackButton()
+                      ? ButtonStyles.primaryButton()
                       : ButtonStyles.matRadButton(
                           colors.Colors().selectedCardBG, 0, 12),
                   onPressed: () {
@@ -84,7 +84,7 @@ class UserCalories extends StatelessWidget {
                 width: Get.width * 0.9,
                 child: ElevatedButton(
                   style: Get.isDarkMode
-                      ? ButtonStyles.bigBlackButton()
+                      ? ButtonStyles.primaryButton()
                       : ButtonStyles.matRadButton(
                           colors.Colors().selectedCardBG, 0, 12),
                   onPressed: () {

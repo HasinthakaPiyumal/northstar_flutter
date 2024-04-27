@@ -229,7 +229,7 @@ class ChatThread extends StatelessWidget {
                         saveChat();
                       }
                     },
-                    style: ButtonStyles.bigBlackButton(),
+                    style: ButtonStyles.primaryButton(),
                     child: Obx(() => ready.value
                         ? Text('Save Chat')
                         : CircularProgressIndicator()),

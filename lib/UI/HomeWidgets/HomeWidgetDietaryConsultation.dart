@@ -20,7 +20,7 @@ class HomeWidgetDietaryConsultation extends StatelessWidget {
     RxList dietConsultations = [].obs;
 
     void requestDietaryConsultation() async{
-      CommonConfirmDialog.confirm('Request Dietary Consultation').then((value) async {
+      CommonConfirmDialog.confirm('Request Dietary Consultation',isSameButton: false,buttonText: "Send").then((value) async {
         if(value){
           await httpClient.sendNotification(
             userId,
@@ -69,7 +69,7 @@ class HomeWidgetDietaryConsultation extends StatelessWidget {
             Visibility(
               visible: authUser.role == 'trainer',
               child: Container(
-                height: 64,
+                height: 44,
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 margin: EdgeInsets.only(bottom: 16),
                 width: double.infinity,
@@ -77,7 +77,7 @@ class HomeWidgetDietaryConsultation extends StatelessWidget {
                   onPressed: (){
                     requestDietaryConsultation();
                   },
-                  style: ButtonStyles.bigBlackButton(),
+                  style: ButtonStyles.primaryButton(),
                   child: Text("Request Dietary Consultation"),
                 ),
               ),

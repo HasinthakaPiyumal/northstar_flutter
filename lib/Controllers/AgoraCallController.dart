@@ -27,7 +27,7 @@ class AgoraCallController {
   static Rx<Duration> duration = Duration(seconds: 0).obs;
   static late DateTime startTime;
   static late DateTime endTime;
-  static late Timer timer;
+
   static late Timer callUpdater;
   static late int callId;
 
@@ -61,76 +61,84 @@ class AgoraCallController {
 
   static Future<bool> init(Map<String, dynamic> userData) async {
     user = userData;
-
+    callStatus.value = 'Calling...';
     agoraEngine = createAgoraRtcEngine();
+    late Timer timer;
     await agoraEngine.initialize(const RtcEngineContext(
         appId: appId, logConfig: LogConfig(level: LogLevel.logLevelApiCall)));
 
     await agoraEngine.disableVideo();
 
-    Map res = await httpClient.saveCallLog({'receiver_id':user['id'],'duration':0,'status':"Outgoing"});
-    print("-----Calling log");
-    if(res['code']==200){
+    Map res = await httpClient.saveCallLog(
+        {'receiver_id': user['id'], 'duration': 0, 'status': "Outgoing"});
+    if (res['code'] == 200) {
       callId = res['data']['id'];
-      print("-----Calling log");
-      print(res);
     }
 
     agoraEngine.registerEventHandler(
       RtcEngineEventHandler(
-        onJoinChannelSuccess: (RtcConnection connection, int elapsed) async{
-          print("Local user uid:${connection.localUid} joined the channel $elapsed");
-          isJoined = true;
-          callStatus.value = 'Calling...';
-        },
-        onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) async{
-          print("Remote user uid joined the channel");
-          callStatus.value = 'Connected';
-          callConnectionStatus = 'Connected';
-          remoteUID = remoteUid;
-          startTime = DateTime.now();
-          timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
-            duration.value = DateTime.now().difference(startTime);
-            if(callStatus.value!='Connected'){
-              t.cancel();
-            }
-          });
-          // callUpdater = Timer.periodic(Duration(seconds: 1), (Timer t) async{
-          //   if(callStatus.value!='Connected'){
-          //     callUpdater.cancel();
-          //     return;
-          //   }
-          //   print('updating call duration ${duration.value.inSeconds}');
-          //   await httpClient.updateCallLog({'call_id':callId,'duration':duration.value.inSeconds,'status':"Connected"});
-          // });
-        },
-        onUserOffline: (RtcConnection connection, int remoteUid,
-            UserOfflineReasonType reason) async {
-          print("Remote user uid left the channel");
-          callStatus.value = 'Disconnected';
-          remoteUID = 0;
-          // httpClient.updateCallLog({'call_id':callId,'duration':duration.value.inSeconds,'status':"Finished"});
-          endTime = DateTime.now();
-          try {
-            // callUpdater.cancel();
-            await httpClient.updateCallLog({'call_id':callId,'duration':duration.value.inSeconds,'status':"Connected"});
+          onJoinChannelSuccess: (RtcConnection connection, int elapsed) async {
+        print(
+            "Local user uid:${connection.localUid} joined the channel $elapsed");
+        isJoined = true;
+        callStatus.value = 'Calling...';
+      }, onUserJoined:
+              (RtcConnection connection, int remoteUid, int elapsed) async {
+        print("Remote user uid joined the channel");
+        callStatus.value = 'Connected';
+        callConnectionStatus = 'Connected';
+        remoteUID = remoteUid;
+        startTime = DateTime.now();
+        timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
+          duration.value = DateTime.now().difference(startTime);
+          print("Time updating ${DateTime.now().difference(startTime)}");
+          if (callStatus.value != 'Connected') {
             timer.cancel();
-            duration.value = Duration(seconds: 0);
-          } catch (e) {
-            print(e);
           }
-          // Get.back(closeOverlays: true, canPop: false);
-          agoraEngine.leaveChannel();
-          print('Finish ${duration.value.inSeconds}');
-        },
-      ),
+        });
+        // callUpdater = Timer.periodic(Duration(seconds: 1), (Timer t) async{
+        //   if(callStatus.value!='Connected'){
+        //     callUpdater.cancel();
+        //     return;
+        //   }
+        //   print('updating call duration ${duration.value.inSeconds}');
+        //   await httpClient.updateCallLog({'call_id':callId,'duration':duration.value.inSeconds,'status':"Connected"});
+        // });
+      }, onUserOffline: (RtcConnection connection, int remoteUid,
+              UserOfflineReasonType reason) async {
+        print("Remote user uid left the channel");
+        callStatus.value = 'Disconnected';
+        remoteUID = 0;
+        // httpClient.updateCallLog({'call_id':callId,'duration':duration.value.inSeconds,'status':"Finished"});
+        endTime = DateTime.now();
+        // Get.back(closeOverlays: true, canPop: false);
+        agoraEngine.leaveChannel();
+        print('Finish ${duration.value.inSeconds}');
+      }, onLeaveChannel: (connection, state) async {
+        try {
+          // callUpdater.cancel();
+          await httpClient.updateCallLog({
+            'call_id': callId,
+            'duration': duration.value.inSeconds,
+            'status': "Connected"
+          });
+          timer.cancel();
+          duration.value = Duration(seconds: 0);
+        } catch (e) {
+          print(e);
+        }
+      }),
     );
 
     await agoraEngine.enableAudio();
     await agoraEngine.enableLocalAudio(true);
     var channelName = Uuid().v4();
     print(user);
-    callData.setCallData(id:'${user['id']}',callerName: user['name'], avatar: user['avatar_url'],channelName: channelName);
+    callData.setCallData(
+        id: '${user['id']}',
+        callerName: user['name'],
+        avatar: user['avatar_url'],
+        channelName: channelName);
     invokeCall(user['id'], channelName);
 
     await joinCall(channelName);
@@ -142,6 +150,7 @@ class AgoraCallController {
   static Future<bool> initIncoming(Map<String, dynamic> data) async {
     user = data['from'];
     agoraEngine = createAgoraRtcEngine();
+    late Timer timer;
     await agoraEngine.initialize(const RtcEngineContext(
       appId: appId,
     ));
@@ -154,40 +163,54 @@ class AgoraCallController {
 
     agoraEngine.registerEventHandler(
       RtcEngineEventHandler(
-        onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
-          print("Local user uid joined the channel");
-          isJoined = true;
-          callStatus.value = 'Calling...';
-        },
-        onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
-          print("Remote user uid:$remoteUid joined the channel");
-          startTime = DateTime.now();
-          callStatus.value = 'Connected';
-          callConnectionStatus = 'Connected';
-          remoteUID = remoteUid;
-          timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
-            duration.value = DateTime.now().difference(startTime);
-          });
-        },
-        onUserOffline: (RtcConnection connection, int remoteUid,
-            UserOfflineReasonType reason) {
-          print("Remote user uid left the channel");
-          agoraEngine.leaveChannel();
-          callStatus.value = 'Disconnected';
-          remoteUID = 0;
-          endTime = DateTime.now();
+          onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
+        print("Local user uid joined the channel");
+        isJoined = true;
+        callStatus.value = 'Calling...';
+      }, onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
+        print("Remote user uid:$remoteUid joined the channel");
+        startTime = DateTime.now();
+        callStatus.value = 'Connected';
+        callConnectionStatus = 'Connected';
+        remoteUID = remoteUid;
+        timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
+          duration.value = DateTime.now().difference(startTime);
+          if (callStatus.value != 'Connected') {
+            timer.cancel();
+          }
+        });
+      }, onUserOffline: (RtcConnection connection, int remoteUid,
+              UserOfflineReasonType reason) {
+        print("Remote user uid left the channel");
+        agoraEngine.leaveChannel();
+        callStatus.value = 'Disconnected';
+        remoteUID = 0;
+        endTime = DateTime.now();
+        timer.cancel();
+        duration.value = Duration(seconds: 0);
+        try {
+          // callUpdater.cancel();
           timer.cancel();
           duration.value = Duration(seconds: 0);
-          try {
-            // callUpdater.cancel();
-            timer.cancel();
-            duration.value = Duration(seconds: 0);
-          } catch (e) {
-            print(e);
-          }
-          // Get.back(closeOverlays: true, canPop: false);
-        },
-      ),
+        } catch (e) {
+          print(e);
+        }
+        // Get.back(closeOverlays: true, canPop: false);
+      },
+          onLeaveChannel: (connection, state) async {
+        try {
+          // callUpdater.cancel();
+          // await httpClient.updateCallLog({
+          //   'call_id': callId,
+          //   'duration': duration.value.inSeconds,
+          //   'status': "Connected"
+          // });
+          timer.cancel();
+          duration.value = Duration(seconds: 0);
+        } catch (e) {
+          print(e);
+        }
+      }),
     );
 
     ready.value = true;
@@ -225,7 +248,7 @@ class AgoraCallController {
     print('rejecting call by agora');
     try {
       // callUpdater.cancel();
-      timer.cancel();
+      // timer.cancel();
       duration.value = Duration(seconds: 0);
     } catch (e) {
       print(e);
@@ -278,26 +301,24 @@ class AgoraCallController {
     await agoraEngine.leaveChannel();
     accepted.value = false;
     isJoined = false;
-    callStatus.value = 'End call';
+    callStatus.value = 'Disconnected';
     callConnectionStatus = 'Not Connected';
     try {
       // callUpdater.cancel();
-      timer.cancel();
+      // timer.cancel();
       duration.value = Duration(seconds: 0);
     } catch (e) {
       print(e);
     }
     print("calling end");
     callData.clearCall();
-    if(back){
+    if (back) {
       Get.back(closeOverlays: true, canPop: false);
     }
   }
 }
 
-
-
-void callMessage(int userId, String channelName,CallEvents callEvent) async {
+void callMessage(int userId, String channelName, CallEvents callEvent) async {
   String deviceToken = await getTokenByUser(userId);
   Map res = await httpClient.getMyProfile();
   dynamic avatar = res["data"]["avatar_url"] ?? "default.jpg";

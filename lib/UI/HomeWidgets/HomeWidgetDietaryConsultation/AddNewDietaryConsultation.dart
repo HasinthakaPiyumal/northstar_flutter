@@ -355,7 +355,7 @@ class AddNewDietaryConsultation extends StatelessWidget {
                   height: 48,
                   margin: EdgeInsets.fromLTRB(16, 0, 16, 16),
                   child: ElevatedButton(
-                    style: ButtonStyles.bigBlackButton(),
+                    style: ButtonStyles.primaryButton(),
                     onPressed: () async {
                       if (date.text == "" || dietitianName.text == "" || goals.text == "" || advice.text == "") {
                         showSnack("Please fill all the fields",'Please fill all the fields to continue');

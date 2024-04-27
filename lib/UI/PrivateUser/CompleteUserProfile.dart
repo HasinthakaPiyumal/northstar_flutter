@@ -311,7 +311,7 @@ class CompleteUserProfile extends StatelessWidget {
       bottomNavigationBar: Padding(
         padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
         child: ElevatedButton(
-          style: ButtonStyles.bigBlackButton(),
+          style: ButtonStyles.primaryButton(),
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: 20),
             child: Row(

@@ -134,26 +134,15 @@ class _ForgotPassword2State extends State<ForgotPassword2> {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
+              // Image.asset(
+              //
+              // ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                        color: AppColors.accentColor,
-                        borderRadius: BorderRadius.circular(5)),
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(
-                      'OTP',
-                      textAlign: TextAlign.center,
-                      style: TypographyStyles.title(20)
-                          .copyWith(color: AppColors.textColorLight),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
+
                   Text(
-                    'Verification',
+                    'OTP Verification',
                     textAlign: TextAlign.center,
                     style: TypographyStyles.title(20),
                   ),
@@ -269,7 +258,7 @@ class _ForgotPassword2State extends State<ForgotPassword2> {
                     width: Get.width * 0.8,
                     height: 44,
                     child: ElevatedButton(
-                      style: ButtonStyles.bigBlackButton(),
+                      style: ButtonStyles.primaryButton(),
                       child: Text('Reset'),
                       onPressed: () {
                         if (password.text == rPassword.text) {

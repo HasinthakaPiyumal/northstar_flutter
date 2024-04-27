@@ -152,7 +152,7 @@ class StoreItemView extends StatelessWidget {
                 SizedBox(width: 12),
                 Expanded(
                   child: ElevatedButton(
-                    style: ButtonStyles.bigBlackButton(),
+                    style: ButtonStyles.primaryButton(),
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 18),
                       child: Text('BUY NOW', style: TypographyStyles.boldText(14, Themes.mainThemeColorAccent.shade100)),

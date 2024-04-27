@@ -193,7 +193,7 @@ class TrainerView extends StatelessWidget {
                   width: Get.width,
                   height: 56,
                   child: Obx(()=>ElevatedButton(
-                    style: ButtonStyles.bigBlackButton(),
+                    style: ButtonStyles.primaryButton(),
                     child: ready.value ? Text('Send a Request') :
                     LoadingAndEmptyWidgets.loadingWidget(),
                     onPressed: (){

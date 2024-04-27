@@ -128,7 +128,7 @@ class DoctorSettings extends StatelessWidget {
               height: 52,
               width: Get.width,
               child: ElevatedButton(
-                  style: ButtonStyles.bigBlackButton(),
+                  style: ButtonStyles.primaryButton(),
                   onPressed: (){
                     list.add({
                       'date': date.value,

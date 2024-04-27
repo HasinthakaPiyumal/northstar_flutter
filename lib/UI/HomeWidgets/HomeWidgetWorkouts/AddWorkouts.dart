@@ -459,7 +459,7 @@ class AddWorkouts extends StatelessWidget {
         child: Container(
           height: 44,
           child: ElevatedButton(
-            style: ButtonStyles.bigBlackButton(),
+            style: ButtonStyles.primaryButton(),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

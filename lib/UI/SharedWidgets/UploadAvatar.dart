@@ -55,7 +55,7 @@ class UploadAvatar extends StatelessWidget {
               width: Get.width * 0.8,
               height: 48,
               child: ElevatedButton(
-                style: ButtonStyles.bigBlackButton(),
+                style: ButtonStyles.primaryButton(),
                 child: Text('Pick Your Avatar'),
                 onPressed: pickFile,
               ),
@@ -76,7 +76,7 @@ class UploadAvatar extends StatelessWidget {
                   width: Get.width * 0.8,
                   height: 48,
                   child: ElevatedButton(
-                    style: ButtonStyles.bigBlackButton(),
+                    style: ButtonStyles.primaryButton(),
                     child: Text('Upload'),
                     onPressed: (){
                       uploadFile();

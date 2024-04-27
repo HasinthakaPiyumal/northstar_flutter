@@ -46,7 +46,7 @@ class SignUpStart extends StatelessWidget {
               width: Get.width,
               height: 60,
               child: ElevatedButton(
-                style: ButtonStyles.bigBlackButton(),
+                style: ButtonStyles.primaryButton(),
                 child: Text('Get Started',
                   style: TypographyStyles.boldText(16, Themes.mainThemeColorAccent.shade100),
                 ),

@@ -251,7 +251,7 @@ class Measurements extends StatelessWidget {
                       width: Get.width*0.8,
                       height: 56,
                       child: ElevatedButton(
-                        style: ButtonStyles.bigBlackButton(),
+                        style: ButtonStyles.primaryButton(),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [

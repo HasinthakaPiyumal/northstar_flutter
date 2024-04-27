@@ -62,7 +62,7 @@ class HomeWidgetMeasurement extends StatelessWidget {
               onPressed: (){
                 Get.to(()=> Measurements(user: selectedUser));
               },
-              style: ButtonStyles.bigBlackButton(),
+              style: ButtonStyles.primaryButton(),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -81,7 +81,7 @@ class HomeWidgetMeasurement extends StatelessWidget {
               onPressed: (){
                 Get.to(()=> BloodSugar(user: selectedUser));
               },
-              style: ButtonStyles.bigBlackButton(),
+              style: ButtonStyles.primaryButton(),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -100,7 +100,7 @@ class HomeWidgetMeasurement extends StatelessWidget {
               onPressed: (){
                 Get.to(()=> BodyFat(user: selectedUser));
               },
-              style: ButtonStyles.bigBlackButton(),
+              style: ButtonStyles.primaryButton(),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -119,7 +119,7 @@ class HomeWidgetMeasurement extends StatelessWidget {
               onPressed: (){
                 Get.to(()=> BloodPressure(user: selectedUser));
               },
-              style: ButtonStyles.bigBlackButton(),
+              style: ButtonStyles.primaryButton(),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -138,7 +138,7 @@ class HomeWidgetMeasurement extends StatelessWidget {
               onPressed: (){
                 Get.to(()=> BMI(user: selectedUser));
               },
-              style: ButtonStyles.bigBlackButton(),
+              style: ButtonStyles.primaryButton(),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

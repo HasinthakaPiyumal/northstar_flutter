@@ -105,36 +105,22 @@ class _AllNotificationsState extends State<AllNotifications> {
                                         Text(
                                           notification.title,
                                           style: TypographyStyles.boldText(
-                                              16,
-                                              Get.isDarkMode
-                                                  ? Themes.mainThemeColorAccent
-                                                      .shade100
-                                                  : colors.Colors()
-                                                      .lightBlack(0.7)),
+                                              16,Get.isDarkMode?Colors.white:Colors.black),
                                         ),
                                         SizedBox(
-                                          height: 4,
+                                          height: 5,
                                         ),
                                         Text(
                                           notification.description,
-                                          style: TypographyStyles.normalText(
-                                              15,
-                                              Get.isDarkMode
-                                                  ? Colors.white54
-                                                  : colors.Colors()
-                                                      .darkGrey(0.7)),
-                                        ),
+                                          style: TypographyStyles.text(
+                                            14),),
                                         SizedBox(
-                                          height: 4,
+                                          height: 8,
                                         ),
                                         Text(
-                                          "${DateFormat("dd-MMM-yyyy").format(notification.createdAt)} | ${DateFormat("HH:mm").format(notification.createdAt)}",
-                                          style: TypographyStyles.boldText(
-                                              12,
-                                              Get.isDarkMode
-                                                  ? Colors.white30
-                                                  : colors.Colors()
-                                                      .darkGrey(0.5)),
+                                          "${DateFormat("dd MMMM yyyy - HH:mm").format(notification.createdAt)}",
+                                          style: TypographyStyles.text(
+                                              14)
                                         ),
                                       ],
                                     ),

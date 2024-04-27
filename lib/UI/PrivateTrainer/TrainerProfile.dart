@@ -412,7 +412,7 @@ class _TrainerProfileState extends State<TrainerProfile> {
                                       : EdgeInsets.only(left: 14, right: 8),
                                   child: Card(
                                     color: Get.isDarkMode
-                                        ? Color(0xFF1E2630)
+                                        ? AppColors.primary2Color
                                         : Color(0xFFffffff),
                                     child: Padding(
                                       padding: EdgeInsets.symmetric(

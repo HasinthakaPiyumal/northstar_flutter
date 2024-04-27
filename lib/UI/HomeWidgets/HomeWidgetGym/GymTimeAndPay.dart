@@ -256,7 +256,7 @@ class GymTimeAndPay extends StatelessWidget {
                     }
                   });*/
                 },
-                style: ButtonStyles.bigBlackButton(),
+                style: ButtonStyles.primaryButton(),
                 child: Obx(()=> ready.value ? Text('Confirm and Pay'): LoadingAndEmptyWidgets.loadingWidget()),
               ),
             ),

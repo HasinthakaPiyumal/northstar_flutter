@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Styles/ButtonStyles.dart';
@@ -136,13 +137,16 @@ class GymView extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Icon(
-                        Icons.location_on_outlined,
-                        size: 30,
-                        color: Get.isDarkMode
-                            ? Themes.mainThemeColorAccent.shade100
-                            : colors.Colors().lightBlack(1),
-                      ),
+                      // Icon(
+                      //   Icons.location_on_outlined,
+                      //   size: 30,
+                      //   color: Get.isDarkMode
+                      //       ? Themes.mainThemeColorAccent.shade100
+                      //       : colors.Colors().lightBlack(1),
+                      // ),
+                      SvgPicture.asset("assets/svgs/location.svg",
+                        width: 30,
+                        height: 30,),
                       SizedBox(width: 13),
                       Flexible(
                         child: Column(
@@ -553,7 +557,7 @@ class GymView extends StatelessWidget {
                     height: 56,
                     color: Colors.transparent,
                     child: ElevatedButton(
-                      style: ButtonStyles.bigBlackButton(),
+                      style: ButtonStyles.primaryButton(),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [SizedBox(width: 8), Text('BOOK NOW',

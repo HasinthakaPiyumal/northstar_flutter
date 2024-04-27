@@ -155,7 +155,7 @@ class HomeWidgetSchedules extends StatelessWidget {
                                           Text(DateFormat.d().format(DateTime.parse(meetings[index]['start_time'])),
                                               style: TypographyStyles.title(30)),
                                           ElevatedButton(
-                                              style: ButtonStyles.bigBlackButton(),
+                                              style: ButtonStyles.primaryButton(),
                                               onPressed: (){
                                                 //joinMeeting(context, meetings[index]['meeting_id'], meetings[index]['passcode']);
                                               }, child: Text('Join'))

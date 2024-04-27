@@ -3,12 +3,14 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 // import 'package:flutter_zoom_sdk/zoom_options.dart';
 // import 'package:flutter_zoom_sdk/zoom_view.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:north_star/Models/HttpClient.dart';
+import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/ButtonStyles.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
@@ -183,7 +185,7 @@ class FrontPage extends StatelessWidget {
       child: Obx(() => ready.value
           ? Column(
               children: [
-                SizedBox(height: 32),
+                SizedBox(height: 24),
                 authUser.user['doctor']['approved']
                     ? Container()
                     : Container(
@@ -196,8 +198,9 @@ class FrontPage extends StatelessWidget {
                         ),
                       ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    SizedBox(width: 20,),
                     Text('Online', style: TypographyStyles.title(24)),
                     Obx(() => CupertinoSwitch(
                         value: online.value,
@@ -213,9 +216,9 @@ class FrontPage extends StatelessWidget {
                     )
                   ],
                 ),
-                SizedBox(height: 32),
+                SizedBox(height: 24),
                 Obx(() => Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: ElevatedButton(
                           onPressed: () {
                             DoctorPageController.doctorPageController.value
@@ -224,7 +227,7 @@ class FrontPage extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                               elevation: 0,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
+                                borderRadius: BorderRadius.circular(10),
                               )),
                           child: Padding(
                             padding: EdgeInsets.symmetric(vertical: 4),
@@ -238,11 +241,13 @@ class FrontPage extends StatelessWidget {
                                     children: [
                                       SizedBox(height: 10),
                                       Text('Schedule',
-                                          style: TypographyStyles.title(15)),
-                                      SizedBox(height: 6),
+                                          style: TypographyStyles.title(15).copyWith(color: AppColors.textOnAccentColor)),
+                                      SizedBox(height: 4),
+                                      Container(width: 58,height: 3,decoration: BoxDecoration(color: AppColors.textOnAccentColor, borderRadius: BorderRadius.circular(5)),),
+                                      SizedBox(height: 4),
                                       Text(countSchedule.string,
-                                          style: TypographyStyles.title(32)),
-                                      SizedBox(height: 10),
+                                          style: TypographyStyles.title(20).copyWith(color: AppColors.textOnAccentColor)),
+                                      SizedBox(height: 6),
                                     ],
                                   ),
                                   Column(
@@ -251,11 +256,13 @@ class FrontPage extends StatelessWidget {
                                     children: [
                                       SizedBox(height: 10),
                                       Text('Pending',
-                                          style: TypographyStyles.title(15)),
-                                      SizedBox(height: 6),
+                                          style: TypographyStyles.title(15).copyWith(color: AppColors.textOnAccentColor)),
+                                      SizedBox(height: 4),
+                                      Container(width: 58,height: 3,decoration: BoxDecoration(color: AppColors.textOnAccentColor, borderRadius: BorderRadius.circular(5)),),
+                                      SizedBox(height: 4),
                                       Text(countPending.string,
-                                          style: TypographyStyles.title(32)),
-                                      SizedBox(height: 10),
+                                          style: TypographyStyles.title(20).copyWith(color: AppColors.textOnAccentColor)),
+                                      SizedBox(height: 6),
                                     ],
                                   ),
                                 ]),
@@ -263,202 +270,207 @@ class FrontPage extends StatelessWidget {
                     )),
                 SizedBox(height: 16),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text('Upcoming Appointments',
                           style: TypographyStyles.title(18)),
-                      TextButton(
+                      IconButton(
                           onPressed: () {
                             DoctorPageController.doctorPageController.value
                                 .jumpToPage(2);
                           },
-                          child: Text('View All'))
+                          icon: SvgPicture.asset(
+                            "assets/svgs/next.svg",
+                            width: 24,
+                            height: 24,
+                            color: Get.isDarkMode?Colors.white:AppColors.textOnAccentColor,
+                          ),)
                     ],
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(10, 10, 0, 10),
-                  width: Get.width,
-                  height: 260,
-                  child: Obx(() => list.length > 0
-                      ? PageView.builder(
-                          itemCount: list.length,
-                          controller: PageController(
-                            viewportFraction: 0.8,
-                          ),
-                          pageSnapping: true,
-                          padEnds: false,
-                          itemBuilder: (_, index) {
-                            return Padding(
-                              padding: EdgeInsets.only(
-                                  right: index == list.length - 1 ? 20 : 10),
-                              child: Container(
-                                margin: index == 0
-                                    ? EdgeInsets.only(left: 6)
-                                    : EdgeInsets.zero,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  color: Get.isDarkMode
-                                      ? colors.Colors().deepGrey(1)
-                                      : colors.Colors().lightCardBG,
-                                ),
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      InkWell(
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                CircleAvatar(
-                                                  radius: 26,
-                                                  backgroundImage:
-                                                      CachedNetworkImageProvider(
-                                                          'https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/avatars/' +
-                                                              list[index]
-                                                                      ['client']
-                                                                  [
-                                                                  'avatar_url']),
-                                                ),
-                                                SizedBox(width: 20),
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                        list[index]['client']
-                                                                ['name']
-                                                            .toString()
-                                                            .split(" ")
-                                                            .first,
-                                                        style: TypographyStyles
-                                                            .title(20)),
-                                                    SizedBox(height: 5),
-                                                    Text(
-                                                        list[index]['client']
-                                                            ['email'],
-                                                        style: TypographyStyles
-                                                            .text(14)),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                            Image.asset(
-                                              "assets/icons/externallink.png",
-                                              color: Get.isDarkMode
-                                                  ? Themes.mainThemeColorAccent
-                                                      .shade100
-                                                      .withOpacity(0.5)
-                                                  : colors.Colors()
-                                                      .lightBlack(1),
-                                              height: 20,
-                                            ),
-                                          ],
-                                        ),
-                                        onTap: () {
-                                          Get.to(() => UserView(
-                                              userID: list[index]['client']
-                                                  ['id']));
-                                        },
-                                      ),
-                                      SizedBox(height: 2),
-                                      Divider(),
-                                      SizedBox(height: 4),
-                                      Row(
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text('Date',
-                                                  style:
-                                                      TypographyStyles.boldText(
-                                                    12,
-                                                    Get.isDarkMode
-                                                        ? Themes
-                                                            .mainThemeColorAccent
-                                                            .shade100
-                                                            .withOpacity(0.7)
-                                                        : colors.Colors()
-                                                            .lightBlack(0.6),
-                                                  )),
-                                              SizedBox(height: 5),
-                                              Text(
-                                                "${DateFormat("MMM dd,yyyy").format(DateTime.parse(list[index]['start_time']))}",
-                                                style:
-                                                    TypographyStyles.title(16),
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(width: 25),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text('Time',
-                                                  style:
-                                                      TypographyStyles.boldText(
-                                                    12,
-                                                    Get.isDarkMode
-                                                        ? Themes
-                                                            .mainThemeColorAccent
-                                                            .shade100
-                                                            .withOpacity(0.7)
-                                                        : colors.Colors()
-                                                            .lightBlack(0.6),
-                                                  )),
-                                              SizedBox(height: 5),
-                                              Text(
-                                                "${DateFormat("hh:mm a").format(DateTime.parse(list[index]['start_time']))}",
-                                                style:
-                                                    TypographyStyles.title(16),
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                      SizedBox(height: 5),
-                                      Divider(),
-                                      SizedBox(height: 5),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          Expanded(child: Buttons.outlineButton(onPressed: (){askIfFinished( list[index]);}, label: "Finish")),
-                                          SizedBox(width: 10,),
-                                          Expanded(child: Buttons.yellowFlatButton(onPressed: (){joinMeeting(list[index]);},label:"Join")),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        )
-                      : Center(
-                          child: Center(
-                            child: Text("Nothing Here yet"),
-                          ),
-                        )),
-                ),
+                // Container(
+                //   padding: const EdgeInsets.fromLTRB(10, 10, 0, 10),
+                //   width: Get.width,
+                //   height: 260,
+                //   child: Obx(() => list.length > 0
+                //       ? PageView.builder(
+                //           itemCount: list.length,
+                //           controller: PageController(
+                //             viewportFraction: 0.8,
+                //           ),
+                //           pageSnapping: true,
+                //           padEnds: false,
+                //           itemBuilder: (_, index) {
+                //             return Padding(
+                //               padding: EdgeInsets.only(
+                //                   right: index == list.length - 1 ? 20 : 10),
+                //               child: Container(
+                //                 margin: index == 0
+                //                     ? EdgeInsets.only(left: 6)
+                //                     : EdgeInsets.zero,
+                //                 decoration: BoxDecoration(
+                //                   borderRadius: BorderRadius.circular(15),
+                //                   color: Get.isDarkMode
+                //                       ? colors.Colors().deepGrey(1)
+                //                       : colors.Colors().lightCardBG,
+                //                 ),
+                //                 child: Padding(
+                //                   padding:
+                //                       const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                //                   child: Column(
+                //                     mainAxisAlignment: MainAxisAlignment.center,
+                //                     crossAxisAlignment:
+                //                         CrossAxisAlignment.start,
+                //                     children: [
+                //                       InkWell(
+                //                         child: Row(
+                //                           mainAxisAlignment:
+                //                               MainAxisAlignment.spaceBetween,
+                //                           children: [
+                //                             Row(
+                //                               children: [
+                //                                 CircleAvatar(
+                //                                   radius: 26,
+                //                                   backgroundImage:
+                //                                       CachedNetworkImageProvider(
+                //                                           'https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/avatars/' +
+                //                                               list[index]
+                //                                                       ['client']
+                //                                                   [
+                //                                                   'avatar_url']),
+                //                                 ),
+                //                                 SizedBox(width: 20),
+                //                                 Column(
+                //                                   crossAxisAlignment:
+                //                                       CrossAxisAlignment.start,
+                //                                   children: [
+                //                                     Text(
+                //                                         list[index]['client']
+                //                                                 ['name']
+                //                                             .toString()
+                //                                             .split(" ")
+                //                                             .first,
+                //                                         style: TypographyStyles
+                //                                             .title(20)),
+                //                                     SizedBox(height: 5),
+                //                                     Text(
+                //                                         list[index]['client']
+                //                                             ['email'],
+                //                                         style: TypographyStyles
+                //                                             .text(14)),
+                //                                   ],
+                //                                 ),
+                //                               ],
+                //                             ),
+                //                             Image.asset(
+                //                               "assets/icons/externallink.png",
+                //                               color: Get.isDarkMode
+                //                                   ? Themes.mainThemeColorAccent
+                //                                       .shade100
+                //                                       .withOpacity(0.5)
+                //                                   : colors.Colors()
+                //                                       .lightBlack(1),
+                //                               height: 20,
+                //                             ),
+                //                           ],
+                //                         ),
+                //                         onTap: () {
+                //                           Get.to(() => UserView(
+                //                               userID: list[index]['client']
+                //                                   ['id']));
+                //                         },
+                //                       ),
+                //                       SizedBox(height: 2),
+                //                       Divider(),
+                //                       SizedBox(height: 4),
+                //                       Row(
+                //                         children: [
+                //                           Column(
+                //                             crossAxisAlignment:
+                //                                 CrossAxisAlignment.start,
+                //                             children: [
+                //                               Text('Date',
+                //                                   style:
+                //                                       TypographyStyles.boldText(
+                //                                     12,
+                //                                     Get.isDarkMode
+                //                                         ? Themes
+                //                                             .mainThemeColorAccent
+                //                                             .shade100
+                //                                             .withOpacity(0.7)
+                //                                         : colors.Colors()
+                //                                             .lightBlack(0.6),
+                //                                   )),
+                //                               SizedBox(height: 5),
+                //                               Text(
+                //                                 "${DateFormat("MMM dd,yyyy").format(DateTime.parse(list[index]['start_time']))}",
+                //                                 style:
+                //                                     TypographyStyles.title(16),
+                //                               ),
+                //                             ],
+                //                           ),
+                //                           SizedBox(width: 25),
+                //                           Column(
+                //                             crossAxisAlignment:
+                //                                 CrossAxisAlignment.start,
+                //                             children: [
+                //                               Text('Time',
+                //                                   style:
+                //                                       TypographyStyles.boldText(
+                //                                     12,
+                //                                     Get.isDarkMode
+                //                                         ? Themes
+                //                                             .mainThemeColorAccent
+                //                                             .shade100
+                //                                             .withOpacity(0.7)
+                //                                         : colors.Colors()
+                //                                             .lightBlack(0.6),
+                //                                   )),
+                //                               SizedBox(height: 5),
+                //                               Text(
+                //                                 "${DateFormat("hh:mm a").format(DateTime.parse(list[index]['start_time']))}",
+                //                                 style:
+                //                                     TypographyStyles.title(16),
+                //                               ),
+                //                             ],
+                //                           )
+                //                         ],
+                //                       ),
+                //                       SizedBox(height: 5),
+                //                       Divider(),
+                //                       SizedBox(height: 5),
+                //                       Row(
+                //                         mainAxisAlignment:
+                //                             MainAxisAlignment.end,
+                //                         children: [
+                //                           Expanded(child: Buttons.outlineButton(onPressed: (){askIfFinished( list[index]);}, label: "Finish")),
+                //                           SizedBox(width: 10,),
+                //                           Expanded(child: Buttons.yellowFlatButton(onPressed: (){joinMeeting(list[index]);},label:"Join")),
+                //                         ],
+                //                       ),
+                //                     ],
+                //                   ),
+                //                 ),
+                //               ),
+                //             );
+                //           },
+                //         )
+                //       : Center(
+                //           child: Center(
+                //             child: Text("Nothing Here yet"),
+                //           ),
+                //         )),
+                // ),
                 SizedBox(height: 16),
                 Container(
                   width: Get.width,
-                  height: 75,
+                  height: 44,
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: ElevatedButton(
                       style: Get.isDarkMode
-                          ? ButtonStyles.bigBlackButton()
+                          ? ButtonStyles.secondaryButton()
                           : ButtonStyles.matRadButton(
                               colors.Colors().selectedCardBG, 0, 12),
                       onPressed: () {
@@ -469,7 +481,7 @@ class FrontPage extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('TODOs and Notes'.toUpperCase()),
+                            Text('Todo and Notes'),
                             Icon(Icons.chevron_right)
                           ],
                         ),
@@ -478,11 +490,11 @@ class FrontPage extends StatelessWidget {
                 SizedBox(height: 8),
                 Container(
                   width: Get.width,
-                  height: 75,
+                  height: 44,
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: ElevatedButton(
                       style: Get.isDarkMode
-                          ? ButtonStyles.bigBlackButton()
+                          ? ButtonStyles.secondaryButton()
                           : ButtonStyles.matRadButton(
                               colors.Colors().selectedCardBG, 0, 12),
                       onPressed: () {
@@ -493,7 +505,7 @@ class FrontPage extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Prescription Manager'.toUpperCase()),
+                            Text('Prescription Manager'),
                             Icon(Icons.chevron_right)
                           ],
                         ),
@@ -502,11 +514,11 @@ class FrontPage extends StatelessWidget {
                 SizedBox(height: 8),
                 Container(
                   width: Get.width,
-                  height: 75,
+                  height: 44,
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: ElevatedButton(
                       style: Get.isDarkMode
-                          ? ButtonStyles.bigBlackButton()
+                          ? ButtonStyles.secondaryButton()
                           : ButtonStyles.matRadButton(
                               colors.Colors().selectedCardBG, 0, 12),
                       onPressed: () {
@@ -517,7 +529,7 @@ class FrontPage extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Schedule Calender'.toUpperCase()),
+                            Text('Schedule Calender'),
                             Icon(Icons.chevron_right)
                           ],
                         ),
@@ -526,11 +538,11 @@ class FrontPage extends StatelessWidget {
                 SizedBox(height: 8),
                 Container(
                   width: Get.width,
-                  height: 75,
+                  height: 44,
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: ElevatedButton(
                       style: Get.isDarkMode
-                          ? ButtonStyles.bigBlackButton()
+                          ? ButtonStyles.secondaryButton()
                           : ButtonStyles.matRadButton(
                               colors.Colors().selectedCardBG, 0, 12),
                       onPressed: () {
@@ -541,7 +553,7 @@ class FrontPage extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Library Resources'.toUpperCase()),
+                            Text('Library Resources'),
                             Icon(Icons.chevron_right)
                           ],
                         ),
@@ -550,11 +562,11 @@ class FrontPage extends StatelessWidget {
                 SizedBox(height: 8),
                 Container(
                   width: Get.width,
-                  height: 75,
+                  height: 44,
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: ElevatedButton(
                       style: Get.isDarkMode
-                          ? ButtonStyles.bigBlackButton()
+                          ? ButtonStyles.secondaryButton()
                           : ButtonStyles.matRadButton(
                               colors.Colors().selectedCardBG, 0, 12),
                       onPressed: () {
@@ -565,7 +577,7 @@ class FrontPage extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Payments'.toUpperCase()),
+                            Text('Payments'),
                             Icon(Icons.chevron_right)
                           ],
                         ),
@@ -578,7 +590,7 @@ class FrontPage extends StatelessWidget {
                 //   padding: const EdgeInsets.symmetric(horizontal: 16),
                 //   child: ElevatedButton(
                 //       style: Get.isDarkMode
-                //           ? ButtonStyles.bigBlackButton()
+                //           ? ButtonStyles.secondaryButton()
                 //           : ButtonStyles.matRadButton(
                 //               colors.Colors().selectedCardBG, 0, 12),
                 //       onPressed: () {
@@ -602,7 +614,7 @@ class FrontPage extends StatelessWidget {
                 //   padding: const EdgeInsets.symmetric(horizontal: 16),
                 //   child: ElevatedButton(
                 //       style: Get.isDarkMode
-                //           ? ButtonStyles.bigBlackButton()
+                //           ? ButtonStyles.secondaryButton()
                 //           : ButtonStyles.matRadButton(
                 //               colors.Colors().selectedCardBG, 0, 12),
                 //       onPressed: () {

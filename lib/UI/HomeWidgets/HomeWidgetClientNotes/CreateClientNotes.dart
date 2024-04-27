@@ -338,7 +338,7 @@ class CreateClientNotes extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 16,vertical: 10),
         color: Theme.of(context).scaffoldBackgroundColor,
         child: ElevatedButton(
-          style: ButtonStyles.bigBlackButton(),
+          style: ButtonStyles.primaryButton(),
           child:  Obx(()=> ready.value ? Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

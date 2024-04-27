@@ -172,7 +172,7 @@ class Upcoming extends StatelessWidget {
               width: Get.width,
               height: 80,
               child: ElevatedButton(
-                  style: Get.isDarkMode ? ButtonStyles.bigBlackButton() : ButtonStyles.matRadButton(colors.Colors().selectedCardBG, 0, 12),
+                  style: Get.isDarkMode ? ButtonStyles.primaryButton() : ButtonStyles.matRadButton(colors.Colors().selectedCardBG, 0, 12),
                   onPressed: (){
                     Get.to(()=> SchedulesHistory());
                   },

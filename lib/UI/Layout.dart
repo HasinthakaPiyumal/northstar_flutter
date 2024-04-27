@@ -20,6 +20,7 @@ import 'package:north_star/UI/PrivateUser/ClientCalories.dart';
 import 'package:north_star/UI/PrivateUser/ClientProfile.dart';
 import 'package:north_star/UI/SharedWidgets/ExitWidget.dart';
 import 'package:north_star/UI/Wallet.dart';
+import 'package:north_star/components/Buttons.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -123,57 +124,22 @@ class _LayoutState extends State<Layout> {
                   saveSelectedTabIndex(index);
                   pgController.value.jumpToPage(index);
                 },
+                selectedFontSize: 0,
+                unselectedFontSize: 0,
+                showSelectedLabels: false,
+                showUnselectedLabels: false,
                 items: [
-                  BottomNavigationBarItem(
-                      label: 'Home',
-                      icon: Padding(
-                        padding: EdgeInsets.only(bottom: 5),
-                        child: Icon(IcoMoon.home),
-                      )),
+                  Buttons.bottomNavbarButton(label: "Home",pathname: "home.svg"),
                   authUser.role == 'trainer'
-                      ? BottomNavigationBarItem(
-                          label: 'Members',
-                          icon: Padding(
-                            padding: EdgeInsets.only(bottom: 5),
-                            child: Icon(IcoMoon.members),
-                          ),
-                        )
-                      : BottomNavigationBarItem(
-                          label: 'Calories',
-                          icon: Padding(
-                            padding: EdgeInsets.only(bottom: 5),
-                            child: Icon(Icons.local_fire_department),
-                          )),
+                      ? Buttons.bottomNavbarButton(label: "Members",pathname: "members.svg")
+                      : Buttons.bottomNavbarButton(label: "Calories",pathname: "calories.svg"),
                   authUser.role == 'trainer'
-                      ? BottomNavigationBarItem(
-                          label: 'eWallet',
-                          icon: Padding(
-                            padding: EdgeInsets.only(bottom: 5),
-                            child: Icon(IcoMoon.wallet),
-                          ),
-                        )
-                      : BottomNavigationBarItem(
-                          label: 'Health',
-                          icon: Padding(
-                            padding: EdgeInsets.only(bottom: 5),
-                            child: Icon(Icons.addchart),
-                          ),
-                        ),
+                      ?
+                  Buttons.bottomNavbarButton(label: "eWallet",pathname: "ewallet.svg")
+                      : Buttons.bottomNavbarButton(label: "Health",pathname: "health.svg"),
                   authUser.role == 'trainer'
-                      ? BottomNavigationBarItem(
-                          label: 'Profile',
-                          icon: Padding(
-                            padding: EdgeInsets.only(bottom: 5),
-                            child: Icon(Icons.account_circle_outlined),
-                          ),
-                        )
-                      : BottomNavigationBarItem(
-                          label: 'Profile',
-                          icon: Padding(
-                            padding: EdgeInsets.only(bottom: 5),
-                            child: Icon(Icons.account_circle_outlined),
-                          ),
-                        ),
+                      ? Buttons.bottomNavbarButton(label: "Profile",pathname: "profile.svg")
+                      : Buttons.bottomNavbarButton(label: "Profile",pathname: "profile.svg"),
                 ]);
           }),
         ),

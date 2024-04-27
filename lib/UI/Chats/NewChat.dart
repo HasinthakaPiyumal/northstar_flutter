@@ -158,7 +158,7 @@ class NewChat extends StatelessWidget {
                       createChat();
                     }
                   },
-                  style: ButtonStyles.bigBlackButton(),
+                  style: ButtonStyles.primaryButton(),
                   child: Obx(()=> ready.value ? Text('Create Chat') : CircularProgressIndicator()),
                 ),
               )

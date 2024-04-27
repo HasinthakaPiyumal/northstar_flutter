@@ -72,7 +72,7 @@ class SignUpUserType extends StatelessWidget {
               width: Get.width,
               height: 72,
               child: ElevatedButton(
-                style: ButtonStyles.bigBlackButton(),
+                style: ButtonStyles.primaryButton(),
                 child: Text('Continue'),
                 onPressed: () {
 

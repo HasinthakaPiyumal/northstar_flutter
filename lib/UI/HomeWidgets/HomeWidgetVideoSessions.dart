@@ -284,7 +284,7 @@ print('HttpClient.baseURL');
                                             style: TypographyStyles.title(20)),
                                       ),
                                       ElevatedButton(
-                                          style: ButtonStyles.bigBlackButton(),
+                                          style: ButtonStyles.primaryButton(),
                                           onPressed: () {
                                             joinMeeting(meetings[index]);
                                             // joinMeeting(

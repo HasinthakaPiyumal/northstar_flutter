@@ -171,6 +171,7 @@ class NorthStar extends StatelessWidget {
 
 class ThemeAll {
   final lightTheme = ThemeData(
+      useMaterial3: false,
       checkboxTheme: CheckboxThemeData(
         fillColor: MaterialStateProperty.all(Colors.white),
         checkColor: MaterialStateProperty.all(Colors.black),
@@ -214,6 +215,7 @@ class ThemeAll {
       );
 
   final darkTheme = ThemeData(
+      useMaterial3: false,
       checkboxTheme: CheckboxThemeData(
         fillColor: MaterialStateProperty.all(Colors.white),
         // Change to your desired color

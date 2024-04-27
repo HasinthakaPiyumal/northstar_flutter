@@ -353,7 +353,7 @@ class OverrideMacros extends StatelessWidget {
                     width: Get.width,
                     height: 56,
                     child: ElevatedButton(
-                      style: ButtonStyles.bigBlackButton(),
+                      style: ButtonStyles.primaryButton(),
                       onPressed: (){
                         if(advanced.value){
                           saveAdvMacros();

@@ -1,33 +1,57 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:north_star/Styles/AppColors.dart';
+import 'package:north_star/Styles/ButtonStyles.dart';
+
+import '../../components/Buttons.dart';
 
 class CommonConfirmDialog {
 
-  static Future<bool> confirm(String reason) async{
+  static Future<bool> confirm(String reason,{bool isSameButton = true,String buttonText = ''}) async{
     bool status = false;
     await Get.defaultDialog(
       radius: 6,
       title: 'Confirm Action',
-      content: Text('Are you sure you want to $reason?',
-        textAlign: TextAlign.justify,
+      content: Column(
+        children: [
+          Text('Are you sure you want to $reason?',
+            textAlign: TextAlign.justify,
+          ),
+          SizedBox(height: 30,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Expanded(
+                child: ElevatedButton(
+                    style: ButtonStyles.primaryButton(),
+                    onPressed: (){
+                      status = true;
+                      Get.back();
+                    }, child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text('${isSameButton?reason.capitalizeFirst:buttonText}'),
+                )),
+              ),
+              SizedBox(width: 8),
+              Expanded(
+                child: ElevatedButton(
+                    style: ButtonStyles.primaryOutlineButton(),
+                    onPressed: (){
+                      status = false;
+                      Get.back();
+                    },child: Text("Cancel")),
+              )
+            ],
+          )
+        ],
       ),
-      titlePadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      backgroundColor: AppColors.primary2Color,
+      titlePadding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
       contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      actions: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            TextButton(onPressed: (){
-              status = false;
-              Get.back();
-            }, child: Text('Cancel')),
-            TextButton(onPressed: (){
-              status = true;
-              Get.back();
-            }, child: Text('${reason.capitalizeFirst}')),
-          ],
-        )
-      ]
+
     );
 
     return status;

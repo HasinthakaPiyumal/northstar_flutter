@@ -994,7 +994,7 @@ late Map data = {};
                                                                     [
                                                                     'target_calories']
                                                             ? Colors.red
-                                                            : Colors.green,
+                                                            : Color(0xFF68FC80),
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(5)),
@@ -1009,7 +1009,7 @@ late Map data = {};
                                                         Text('Current',
                                                             style: TextStyle(
                                                               color:
-                                                                  Colors.white,
+                                                                  AppColors.textOnAccentColor,
                                                               fontSize: 16,
                                                               fontFamily:
                                                                   'Poppins',
@@ -1024,7 +1024,7 @@ late Map data = {};
                                                                 .toString(),
                                                             style: TextStyle(
                                                               color:
-                                                                  Colors.white,
+                                                                  AppColors.textOnAccentColor,
                                                               fontSize: 20,
                                                               fontFamily:
                                                                   'Poppins',
@@ -1178,7 +1178,7 @@ late Map data = {};
                                         healthData['bmi_pi']['bmi'],
                                         healthData['bmi_pi']['bmi_category'],
                                         'Body Mass Index (BMI)',
-                                        Color(0xFFC3FB67))
+                                        Color(0xFFFDF5AA))
                                     : SizedBox(),
                                 healthData['bmi_pi'] != null
                                     ? SizedBox(height: 8)
@@ -1188,7 +1188,7 @@ late Map data = {};
                                         healthData['bmi_pi']['pi'],
                                         healthData['bmi_pi']['pi_category'],
                                         'Ponderal Index (PI)',
-                                        Color(0xFFC3FB67))
+                                        Color(0xFFFDF5AA))
                                     : SizedBox(),
                                 healthData['bmi_pi'] != null
                                     ? SizedBox(height: 12)
@@ -1293,7 +1293,7 @@ late Map data = {};
                                                 healthData['body_fat']
                                                     ['body_fat_category'],
                                                 'Body Fat',
-                                                Color(0xFFFFC149)),
+                                                Color(0xFFAAFDC1)),
                                             SizedBox(height: 8),
                                             cardHealth(
                                                 healthData['body_fat']
@@ -1303,7 +1303,7 @@ late Map data = {};
                                                 healthData['body_fat']
                                                     ['body_fat_category'],
                                                 'Muscle Mass',
-                                                Color(0xFFFFC149)),
+                                                Color(0xFFAAFDC1)),
                                             SizedBox(height: 12),
                                           ],
                                         ),
@@ -1443,7 +1443,7 @@ late Map data = {};
                                         healthData['blood_sugar']
                                             ['fbs_category'],
                                         'Fasting Blood Sugar',
-                                        Color(0xFF67A3FB))
+                                        Color(0xFFAACBFD))
                                     : SizedBox(),
                                 SizedBox(height: 8),
                                 healthData['blood_sugar'] != null
@@ -1455,7 +1455,7 @@ late Map data = {};
                                         healthData['blood_sugar']
                                             ['rbs_category'],
                                         'Post Blood Sugar',
-                                        Color(0xFF67A3FB))
+                                        Color(0xFFAACBFD))
                                     : SizedBox(),
                                 SizedBox(height: 12),
                                 Row(
@@ -1562,7 +1562,7 @@ late Map data = {};
                                         healthData['blood_pressure']
                                             ['blood_pressure_category'],
                                         'Blood Pressure',
-                                        Color(0xFFFF4242))
+                                        Color(0xFFFFB8B8))
                                     : SizedBox(),
                                 SizedBox(height: 12),
                                 Row(
@@ -1702,7 +1702,7 @@ late Map data = {};
                                                   style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      color: Colors.green),
+                                                      color: AppColors.accentColor),
                                                 ),
                                                 SizedBox(
                                                   height: 10,
@@ -1716,7 +1716,7 @@ late Map data = {};
                                                   style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      color: Colors.green),
+                                                      color: AppColors.accentColor),
                                                 ),
                                                 SizedBox(
                                                   height: 10,
@@ -1730,7 +1730,7 @@ late Map data = {};
                                                   style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      color: Colors.green),
+                                                      color: AppColors.accentColor),
                                                 ),
                                                 SizedBox(
                                                   height: 10,
@@ -1744,7 +1744,7 @@ late Map data = {};
                                                   style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      color: Colors.green),
+                                                      color: AppColors.accentColor),
                                                 ),
                                               ],
                                             ),
@@ -1795,7 +1795,7 @@ late Map data = {};
                                                   style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      color: Colors.green),
+                                                      color: AppColors.accentColor),
                                                 ),
                                                 SizedBox(
                                                   height: 10,
@@ -1808,7 +1808,7 @@ late Map data = {};
                                                       'mm',
                                                   style: TextStyle(
                                                     fontWeight: FontWeight.bold,
-                                                    color: Colors.green,
+                                                    color:AppColors.accentColor,
                                                   ),
                                                 ),
                                                 SizedBox(
@@ -1823,7 +1823,7 @@ late Map data = {};
                                                   style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      color: Colors.green),
+                                                      color: AppColors.accentColor),
                                                 ),
                                                 SizedBox(
                                                   height: 10,
@@ -1837,7 +1837,7 @@ late Map data = {};
                                                   style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      color: Colors.green),
+                                                      color: AppColors.accentColor),
                                                 ),
                                               ],
                                             ),

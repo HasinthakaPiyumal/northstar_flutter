@@ -45,21 +45,21 @@ class ForgotPassword extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: AppColors.accentColor,
-                        borderRadius: BorderRadius.circular(5)
-                      ),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Text(
-                        'Forgot',
-                        textAlign: TextAlign.center,
-                        style: TypographyStyles.title(20).copyWith(color: AppColors.textColorLight),
-                      ),
-                    ),
-                    SizedBox(width: 10,),
+                    // Container(
+                    //   decoration: BoxDecoration(
+                    //     color: AppColors.accentColor,
+                    //     borderRadius: BorderRadius.circular(5)
+                    //   ),
+                    //   padding: EdgeInsets.symmetric(horizontal: 10),
+                    //   child: Text(
+                    //     'Forgot',
+                    //     textAlign: TextAlign.center,
+                    //     style: TypographyStyles.title(20).copyWith(color: AppColors.textColorLight),
+                    //   ),
+                    // ),
+                    // SizedBox(width: 10,),
                     Text(
-                      'Password',
+                      'Forgot Password',
                       textAlign: TextAlign.center,
                       style: TypographyStyles.title(20),
                     ),
@@ -94,7 +94,7 @@ class ForgotPassword extends StatelessWidget {
                         width: Get.width *0.8,
                         height: 44,
                         child: ElevatedButton(
-                          style: ButtonStyles.bigBlackButton(),
+                          style: ButtonStyles.primaryButton(),
                           child: isReady.value?Text('Send'):Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: CircularProgressIndicator(color: AppColors.textOnAccentColor,),

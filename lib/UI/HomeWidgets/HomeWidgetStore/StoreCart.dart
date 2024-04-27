@@ -337,7 +337,7 @@ class StoreCart extends StatelessWidget {
                             padding: EdgeInsets.symmetric(horizontal: 16),
                             child: ElevatedButton(
                               onPressed: null,
-                              style: ButtonStyles.bigBlackButton(),
+                              style: ButtonStyles.primaryButton(),
                               child: Text('BUYING UNAVAILABLE'),
                             ),
                           ),
