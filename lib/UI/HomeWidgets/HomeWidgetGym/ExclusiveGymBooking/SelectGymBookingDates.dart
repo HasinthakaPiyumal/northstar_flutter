@@ -44,6 +44,9 @@ class SelectGymBookingDates extends StatelessWidget {
         temp += DateTime.parse(element['end_time'])
             .difference(DateTime.parse(element['start_time']))
             .inHours;
+        print('element');
+        print(element);
+
       });
       totalHours.value = temp;
     }

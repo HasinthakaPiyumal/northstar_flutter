@@ -117,7 +117,7 @@ class GymDateAndTime extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text('Booking Datess'),
+          title: Text('Booking Dates'),
         ),
         body: ListView(
           children: [

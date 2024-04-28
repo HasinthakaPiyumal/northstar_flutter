@@ -466,6 +466,7 @@ class GymView extends StatelessWidget {
                       visible: !viewOnly,
                       child: Buttons.yellowFlatButton(
                           onPressed: () {
+
                             if (gymObj['gym_type'] == 'exclusive') {
                               Get.to(() => BookNow(gymObj: gymObj));
                             } else if (gymObj['gym_type'] == 'services') {

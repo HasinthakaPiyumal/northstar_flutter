@@ -29,6 +29,8 @@ class HomeWidgetProActive extends StatelessWidget{
 
     void getMyComGymBookings() async {
       Map res = await httpClient.getComGymSchedules();
+      print('home widget pro active');
+      print(res);
       if (res['code'] == 200) {
         myBookings.addAll(res['data']);
       }

@@ -36,6 +36,10 @@ class VendingQr extends StatelessWidget {
           return false;
         }
       }
+      vendingJson['quantity'] = int.parse("${vendingJson['quantity']}");
+      if(!(vendingJson['quantity'] is int)){
+        return false;
+      }
       return true;
     }
 
@@ -45,10 +49,11 @@ class VendingQr extends StatelessWidget {
       try {
         Map<String, dynamic> vendingJson = jsonDecode(vendingStr);
         if(checkQr(vendingJson)){
+          vendingJson['price'] = double.parse(double.parse("${vendingJson['price']}").toStringAsFixed(2));
           showSnack('qr  code scan successful', "Now you are being redirected to cart page...",status: PopupNotificationStatus.success);
-          Future.delayed(Duration(seconds: 3),()async{
-            Get.off(()=>VendingCart(orderDetails: vendingJson,));
-          });
+          Get.off(()=>VendingCart(orderDetails: vendingJson,));
+          // Future.delayed(Duration(seconds: 3),()async{
+          // });
         }else{
           showSnack('the QR code scan has failed', "Oops! Something went wrong with the QR code",status: PopupNotificationStatus.error);
         }
