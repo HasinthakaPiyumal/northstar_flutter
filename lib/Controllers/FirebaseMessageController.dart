@@ -102,6 +102,7 @@ void sendFCMMessage(String deviceToken, dynamic data) async {
   'data': data,
   'priority': 'high',
   'to': deviceToken, // Replace with the recipient device token
+  "content_available": true 
   };
 
   print('Sending FCM message------------------\n$message');
