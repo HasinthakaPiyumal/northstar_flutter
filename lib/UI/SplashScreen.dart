@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:north_star/UI/Layout.dart';
 import 'package:north_star/UI/WelcomeScreens/welcome_v2.dart';
+import 'package:north_star/Utils/notification_service.dart';
 import 'package:uuid/uuid.dart';
 
 import '../Controllers/FirebaseMessageController.dart';
@@ -20,9 +21,17 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
 
   late final Uuid _uuid;
+  NotificationServices notificationServices = NotificationServices();
 
   Future<void>? runSplash() {
-    initFirebase(_uuid);
+    // initFirebase(_uuid);
+    notificationServices.requestNotificationPermisions();
+    notificationServices.foregroundMessage();
+    notificationServices.firebaseInit(context);
+    notificationServices.isRefreshToken();
+    notificationServices.getDeviceToken().then((value) {
+      print("Device token found - ${value}");
+    });
     if(widget.isLoggedIn){
       Timer(Duration(seconds: 1), () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>Layout())));
     }else{

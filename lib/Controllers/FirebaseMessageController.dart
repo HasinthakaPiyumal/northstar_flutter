@@ -99,10 +99,11 @@ void sendFCMMessage(String deviceToken, dynamic data) async {
   };
 
   final message = {
-    'data': data,
-    'priority': 'high',
-    'to': deviceToken, // Replace with the recipient device token
+  'data': data,
+  'priority': 'high',
+  'to': deviceToken, // Replace with the recipient device token
   };
+
   print('Sending FCM message------------------\n$message');
   final response = await http.post(
     url,
@@ -193,7 +194,7 @@ void showLogoutDialog() {
       Buttons.outlineTextIconButton(
           icon: Icons.power_settings_new_rounded,
           onPressed: () {
-            Get.offAll(()=>AuthHome());
+            Get.offAll(() => AuthHome());
           },
           label: "Login Again"),
     ],

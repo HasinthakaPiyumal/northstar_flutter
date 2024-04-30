@@ -19,7 +19,7 @@ import 'package:north_star/UI/Members/IncomingVoiceCallUI.dart';
 import 'package:north_star/UI/SplashScreen.dart';
 import 'package:north_star/components/Buttons.dart';
 import 'package:north_star/firebase_options.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
+// import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
@@ -66,29 +66,30 @@ Future<void> main() async {
 
   await checkAuth();
 
-  await OneSignal.shared.setLogLevel(OSLogLevel.debug, OSLogLevel.none);
+  // await OneSignal.shared.setLogLevel(OSLogLevel.debug, OSLogLevel.none);
 
   // await OneSignal.shared.setAppId("813517cd-7999-4c5b-92c5-8a1554ae9984");
-  await OneSignal.shared.setAppId("d8154a83-a601-4611-9416-17cdd2f0e6bb");
+  // await OneSignal.shared.setAppId("d8154a83-a601-4611-9416-17cdd2f0e6bb"); correct
 
-  await OneSignal.shared
-      .promptUserForPushNotificationPermission()
-      .then((accepted) {
-    print("Accepted permission: $accepted");
-  });
+  // await OneSignal.shared
+  //     .promptUserForPushNotificationPermission()
+  //     .then((accepted) {
+  //   print("Accepted permission: $accepted");
+  // });
 
   final currentTheme =
       isDarkMode ? ThemeAll().darkTheme : ThemeAll().lightTheme;
 
-  OneSignal.shared.setNotificationWillShowInForegroundHandler(
-      (OSNotificationReceivedEvent event) {
-    if (event.notification.body == 'Incoming Call!' && isLoggedIn) {
-      Get.to(() =>
-          IncomingVoiceCallUI(callData: event.notification.additionalData));
-    } else {
-      event.complete(event.notification);
-    }
-  });
+  // OneSignal.shared.setNotificationWillShowInForegroundHandler(
+  //     (OSNotificationReceivedEvent event) {
+  //       print(event.notification.body);
+  //   if (event.notification.body == 'Incoming Call!' && isLoggedIn) {
+  //     Get.to(() =>
+  //         IncomingVoiceCallUI(callData: event.notification.additionalData));
+  //   } else {
+  //     event.complete(event.notification);
+  //   }
+  // });
   setupNotificationAction();
   runApp(
     ChangeNotifierProvider(
@@ -150,7 +151,8 @@ class NorthStar extends StatelessWidget {
     final themeData = themeProvider.getTheme();
 
     print("Primary Color: ${ThemeAll().lightTheme.primaryColor}");
-    print("Scaffold Background Color: ${ThemeAll().lightTheme.scaffoldBackgroundColor}");
+    print(
+        "Scaffold Background Color: ${ThemeAll().lightTheme.scaffoldBackgroundColor}");
 
     return GetMaterialApp(
         title: 'North Star',
@@ -158,7 +160,7 @@ class NorthStar extends StatelessWidget {
         transitionDuration: Duration(milliseconds: 200),
         debugShowCheckedModeBanner: false,
         theme: themeData.copyWith(
-          colorScheme:  themeData.colorScheme.copyWith(
+          colorScheme: themeData.colorScheme.copyWith(
             primary: AppColors.accentColor,
           ),
         ),
@@ -171,48 +173,49 @@ class NorthStar extends StatelessWidget {
 
 class ThemeAll {
   final lightTheme = ThemeData(
-      useMaterial3: false,
-      checkboxTheme: CheckboxThemeData(
-        fillColor: MaterialStateProperty.all(Colors.white),
-        checkColor: MaterialStateProperty.all(Colors.black),
-        /// Change to your desired color
-      ),
-      inputDecorationTheme: InputDecorationTheme(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(1),
-          borderSide: BorderSide(color: Colors.black),
-        ),
-        hintStyle: TextStyle(color: Colors.black.withOpacity(0.7)),
-        labelStyle: TextStyle(color: Colors.black),
-        // focusedBorder: OutlineInputBorder(
-        //   borderRadius: BorderRadius.circular(5),
-        //   borderSide: BorderSide(color: AppColors.accentColor, width: 1),
-        // ),
+    useMaterial3: false,
+    checkboxTheme: CheckboxThemeData(
+      fillColor: MaterialStateProperty.all(Colors.white),
+      checkColor: MaterialStateProperty.all(Colors.black),
 
-        contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      /// Change to your desired color
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(1),
+        borderSide: BorderSide(color: Colors.black),
       ),
-      buttonTheme: ButtonThemeData(buttonColor: AppColors.accentColor),
-      brightness: Brightness.light,
-      scaffoldBackgroundColor: Color(0xFFF2F2F2),
-      appBarTheme: AppBarTheme(
-          elevation: 0,
-          centerTitle: true,
-          backgroundColor: Color(0xFFF2F2F2),
-          titleTextStyle: TextStyle(
-            color: Colors.black,
-            fontSize: 20,
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w600,
-            height: 0,
-          )),
-      dialogBackgroundColor: Colors.white,
-      cardColor: Colors.white,
-      primaryColor: AppColors.accentColor,
-      bottomSheetTheme: BottomSheetThemeData(
-        backgroundColor: Colors.white,
-      ),
-      listTileTheme: ListTileThemeData(tileColor: Colors.white),
-      );
+      hintStyle: TextStyle(color: Colors.black.withOpacity(0.7)),
+      labelStyle: TextStyle(color: Colors.black),
+      // focusedBorder: OutlineInputBorder(
+      //   borderRadius: BorderRadius.circular(5),
+      //   borderSide: BorderSide(color: AppColors.accentColor, width: 1),
+      // ),
+
+      contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+    ),
+    buttonTheme: ButtonThemeData(buttonColor: AppColors.accentColor),
+    brightness: Brightness.light,
+    scaffoldBackgroundColor: Color(0xFFF2F2F2),
+    appBarTheme: AppBarTheme(
+        elevation: 0,
+        centerTitle: true,
+        backgroundColor: Color(0xFFF2F2F2),
+        titleTextStyle: TextStyle(
+          color: Colors.black,
+          fontSize: 20,
+          fontFamily: 'Poppins',
+          fontWeight: FontWeight.w600,
+          height: 0,
+        )),
+    dialogBackgroundColor: Colors.white,
+    cardColor: Colors.white,
+    primaryColor: AppColors.accentColor,
+    bottomSheetTheme: BottomSheetThemeData(
+      backgroundColor: Colors.white,
+    ),
+    listTileTheme: ListTileThemeData(tileColor: Colors.white),
+  );
 
   final darkTheme = ThemeData(
       useMaterial3: false,
@@ -246,7 +249,8 @@ class ThemeAll {
             borderRadius: BorderRadius.circular(5),
             borderSide: BorderSide(color: Colors.red, width: 1),
           ),
-          activeIndicatorBorder: BorderSide(color: AppColors.accentColor, width: 1),
+          activeIndicatorBorder:
+              BorderSide(color: AppColors.accentColor, width: 1),
           hintStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
           labelStyle: TextStyle(color: Colors.white),
           contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10)),
@@ -264,13 +268,10 @@ class ThemeAll {
         labelColor: Colors.white,
         unselectedLabelColor: Colors.white.withOpacity(0.7),
       ),
-      buttonTheme: ButtonThemeData(
-        buttonColor: AppColors.accentColor
-      ),
+      buttonTheme: ButtonThemeData(buttonColor: AppColors.accentColor),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
           selectedItemColor: AppColors.accentColor),
-      listTileTheme: ListTileThemeData(tileColor: AppColors.primary2Color)
-  );
+      listTileTheme: ListTileThemeData(tileColor: AppColors.primary2Color));
 }
 // class ThemeAll {
 //   final lightTheme = ThemeData(

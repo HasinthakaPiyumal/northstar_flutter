@@ -31,8 +31,8 @@ class CommonAuthUtils {
     print(authUser.id);
     httpClient.setToken(res['data']['token']);
     client.changeToken(res['data']['token']);
-    OneSignalClient.changeExternalUser(
-        res['data']['user']['id'], res['data']['user']['role']);
+    // OneSignalClient.changeExternalUser(
+    //     res['data']['user']['id'], res['data']['user']['role']);
     FirebaseCrashlytics.instance.setCustomKey('user_id', authUser.id);
     FirebaseCrashlytics.instance.setCustomKey('user_email', authUser.email);
     FirebaseCrashlytics.instance.setUserIdentifier(authUser.id.toString());
@@ -41,7 +41,7 @@ class CommonAuthUtils {
   }
 
   static Future<bool> signOut({bool redirect=true}) async {
-    OneSignalClient.changeExternalUser(null, null);
+    // OneSignalClient.changeExternalUser(null, null);
     print('Signing Out');
     FirebaseMessaging.instance.getToken().then((token) async {
       print('Device Token FCM: $token');
