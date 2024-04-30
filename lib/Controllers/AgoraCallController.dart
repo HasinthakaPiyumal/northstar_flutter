@@ -9,6 +9,7 @@ import 'package:north_star/Controllers/FirebaseMessageController.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/CallData.dart';
 import 'package:north_star/Models/HttpClient.dart';
+import 'package:north_star/UI/HomeWidgets/HomeWidgetCalls.dart';
 import 'package:uuid/uuid.dart';
 
 import '../Models/Enums.dart';
@@ -117,6 +118,7 @@ class AgoraCallController {
       }, onLeaveChannel: (connection, state) async {
         try {
           // callUpdater.cancel();
+          print("Call update ongoing:: ");
           await httpClient.updateCallLog({
             'call_id': callId,
             'duration': duration.value.inSeconds,
@@ -246,6 +248,7 @@ class AgoraCallController {
 
   static rejectCall() async {
     print('rejecting call by agora');
+    callStatus.value = "Declined";
     try {
       // callUpdater.cancel();
       // timer.cancel();
@@ -255,7 +258,8 @@ class AgoraCallController {
     }
     accepted.value = false;
     await agoraEngine.leaveChannel();
-    Get.back();
+    // Get.back();
+    // Get.off(()=>HomeWidgetCalls());
   }
 
   static void switchSpeaker() async {

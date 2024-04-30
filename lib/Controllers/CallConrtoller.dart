@@ -27,15 +27,18 @@ void processCall(dynamic data,String uuid) async {
           nameCaller: data["caller_name"], avatar: data["caller_avatar"],channel: data["channel_name"],id:int.parse(data["caller"]) );
     }else if(data["method"]==CallEvents.RejectCall.index.toString()){
       print('===Call reject');
-      print(callData.id==int.parse(data["caller"]));
-      if(callData.id==int.parse(data["caller"])){
+      print(int.parse('${callData.id}'));
+      print(int.parse(data["caller"]));
+      print(int.parse('${callData.id}')==int.parse(data["caller"]));
+      if(int.parse('${callData.id}')==int.parse(data["caller"])){
         AgoraCallController.rejectCall();
-        await FlutterCallkitIncoming.endAllCalls();
+        // await FlutterCallkitIncoming.endAllCalls();
       }
     }else if(data["method"]==CallEvents.DisconnectCall.index.toString()){
-      if(callData.id==int.parse(data["caller"])){
+      print('===Call disconnect');
+      if(int.parse('${callData.id}')==int.parse(data["caller"])){
         AgoraCallController.leaveCall();
-        FlutterCallkitIncoming.endAllCalls();
+        // FlutterCallkitIncoming.endAllCalls();
       }
     }
   }

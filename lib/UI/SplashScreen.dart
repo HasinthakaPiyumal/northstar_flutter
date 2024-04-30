@@ -33,6 +33,7 @@ class _SplashScreenState extends State<SplashScreen> {
       print("Device token found - ${value}");
     });
     if(widget.isLoggedIn){
+      saveToken();
       Timer(Duration(seconds: 1), () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>Layout())));
     }else{
       Timer(Duration(seconds: 1), () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>WelcomeOne())));

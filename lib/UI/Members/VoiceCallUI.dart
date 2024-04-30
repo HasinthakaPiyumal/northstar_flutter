@@ -90,7 +90,7 @@ class VoiceCallUI extends StatelessWidget {
                     () => Text(
                   AgoraCallController.callStatus.value == 'Connected'
                       ? '${AgoraCallController.duration.value.inMinutes.toString().padLeft(2, '0')}:${AgoraCallController.duration.value.inSeconds.remainder(60).toString().padLeft(2, '0')}'
-                      : AgoraCallController.callStatus.value=="Disconnected"?"Disconnected":'Calling...',
+                      : AgoraCallController.callStatus.value == 'Declined'?"Declined":AgoraCallController.callStatus.value=="Disconnected"?"Disconnected":'Calling...',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white,

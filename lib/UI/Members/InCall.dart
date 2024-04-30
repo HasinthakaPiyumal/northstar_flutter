@@ -54,11 +54,12 @@ class InCall extends StatelessWidget {
             SizedBox(
               height: 12,
             ),
+            Obx(()=>Text(AgoraCallController.callStatus.value)),
             Obx(
               () => Text(
                 AgoraCallController.callStatus.value == 'Connected'
                     ? '${AgoraCallController.duration.value.inMinutes.toString().padLeft(2, '0')}:${AgoraCallController.duration.value.inSeconds.remainder(60).toString().padLeft(2, '0')}'
-                    : AgoraCallController.callStatus.value == 'Disconnected'
+                    :AgoraCallController.callStatus.value == 'Declined'?"Declined": AgoraCallController.callStatus.value == 'Disconnected'
                         ? 'Disconnected'
                         : 'Connecting...',
                 textAlign: TextAlign.center,
@@ -123,7 +124,9 @@ class InCall extends StatelessWidget {
                       )),
                   MaterialButton(
                     onPressed: () async {
-                      AgoraCallController.leaveCall(back: true);
+                      if(AgoraCallController.callStatus=='Connected'){
+                          AgoraCallController.leaveCall(back: true);
+                      }
                     },
                     shape: CircleBorder(),
                     elevation: 0,
