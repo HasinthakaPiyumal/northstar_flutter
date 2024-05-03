@@ -1,13 +1,16 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:north_star/Controllers/ClientNotesController.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/ClientNote.dart';
+import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/SharedWidgets/CommonConfirmDialog.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
+import 'package:north_star/components/Buttons.dart';
 
 import '../../SharedWidgets/LoadingAndEmptyWidgets.dart';
 
@@ -84,10 +87,8 @@ class _SelectedClientNoteState extends State<SelectedClientNote> {
 
                         return Container(
                           decoration: BoxDecoration(
-                            color: Get.isDarkMode
-                                ? colors.Colors().deepGrey(1)
-                                : colors.Colors().lightCardBG,
-                            borderRadius: BorderRadius.circular(15),
+                            color: AppColors().getSecondaryColor(),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                           child: Padding(
                               padding: const EdgeInsets.symmetric(
@@ -101,121 +102,74 @@ class _SelectedClientNoteState extends State<SelectedClientNote> {
                                     children: [
                                       Text(
                                         clientNote.service,
-                                        style: TypographyStyles.boldText(
-                                          16,
-                                          Get.isDarkMode
-                                              ? Themes
-                                                  .mainThemeColorAccent.shade100
-                                              : colors.Colors().lightBlack(1),
-                                        ),
+                                        style: TypographyStyles.text(16),
                                       ),
-                                      Visibility(
-                                        visible: authUser.role == 'trainer',
-                                        child: IconButton(
-                                          onPressed: () {
-                                            CommonConfirmDialog.confirm(
-                                                    'Delete')
-                                                .then((value) async {
-                                              if (value) {
-                                                await clientNote.deleteClientNote();
-                                                sortClientNotes();
-                                              }
-                                            });
-                                          },
-                                          icon: Icon(
-                                            Icons.delete,
-                                            color: Get.isDarkMode
-                                                ? Colors.white
-                                                : Colors.black,
-                                          ),
-                                        ),
+                                      Text(
+                                        "${DateFormat("yyyy/MM/dd").format(clientNote.startDate)}",
+                                        style: TypographyStyles.text(14),
                                       ),
                                     ],
                                   ),
                                   SizedBox(
-                                    height: 6,
+                                    height: 8,
                                   ),
                                   Text(
                                     clientNote.note,
-                                    style: TypographyStyles.normalText(
-                                      13,
-                                      Get.isDarkMode
-                                          ? Themes.mainThemeColorAccent.shade300
-                                          : colors.Colors().lightBlack(1),
-                                    ),
+                                    style: TypographyStyles.text(14),
                                   ),
                                   SizedBox(
                                     height: 20,
                                   ),
-                                  Container(
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                        color: clientNote.active
-                                            ? Colors.green
-                                            : Get.isDarkMode
-                                                ? colors.Colors().darkGrey(1)
-                                                : colors.Colors()
-                                                    .selectedCardBG,
-                                        borderRadius: BorderRadius.circular(8)),
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 12, horizontal: 15),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text("Amount:"),
-                                          Text(
-                                            // authUser.user['currency'] +
-                                                "MVR  " +
-                                                clientNote.amount
-                                                    .toStringAsFixed(2),
-                                            style: TypographyStyles.title(16),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                    Text('Amount',style: TypographyStyles.text(14),),
+                                    Text('MVR ${clientNote.amount}',style: TypographyStyles.title(14),)
+                                  ],),
                                   SizedBox(
-                                    height: 15,
+                                    height: 25,
                                   ),
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "Date - ",
-                                            style: TypographyStyles.normalText(
-                                              12,
-                                              Get.isDarkMode
-                                                  ? Themes.mainThemeColorAccent
-                                                      .shade300
-                                                  : colors.Colors()
-                                                      .lightBlack(0.7),
-                                            ),
+                                      Expanded(
+                                        child: Visibility(
+                                          visible: authUser.role == 'trainer' &&
+                                              clientNote.active,
+                                          child: Buttons.outlineTextIconButton(
+                                              onPressed: () {
+                                                CommonConfirmDialog.confirm(
+                                                    'Delete')
+                                                    .then((value) async {
+                                                  if (value) {
+                                                    await clientNote.deleteClientNote();
+                                                    sortClientNotes();
+                                                  }
+                                                });
+                                              },
+                                              label: "Delete",
+                                            icon: Icons.check,
+                                            svg: "assets/svgs/delete-outline.svg"
                                           ),
-                                          Text(
-                                            "${DateFormat("yyyy-MM-dd").format(clientNote.startDate)}",
-                                            style: TypographyStyles.boldText(
-                                              12,
-                                              Get.isDarkMode
-                                                  ? Themes.mainThemeColorAccent
-                                                      .shade100
-                                                  : colors.Colors()
-                                                      .lightBlack(1),
-                                            ),
-                                          ),
-                                        ],
+                                          // child: CupertinoSwitch(
+                                          //   activeColor: Colors.green,
+                                          //   value: clientNote.active,
+                                          //   onChanged: (value) {
+                                          //     clientNote.deactivateClientNote();
+                                          //   },
+                                          // ),
+                                        ),
                                       ),
-                                      Visibility(
-                                        visible: authUser.role == 'trainer' &&
-                                            clientNote.active,
-                                        child: MaterialButton(
-                                          onPressed: () {
+                                      SizedBox(width: 20,),
+                                      Expanded(
+                                        child: Visibility(
+                                          visible: authUser.role == 'trainer' &&
+                                              clientNote.active,
+                                          child: Buttons.yellowTextIconButton(
+                                              onPressed: () {
                                             CommonConfirmDialog.confirm(
-                                                    'Mark as Done')
+                                                'Mark as Done')
                                                 .then((value) async {
                                               if (value) {
                                                 await clientNote
@@ -224,37 +178,17 @@ class _SelectedClientNoteState extends State<SelectedClientNote> {
                                               }
                                             });
                                           },
-                                          color: Colors.green,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8)),
-                                          padding: EdgeInsets.zero,
-                                          child: Row(
-                                            children: [
-                                              Icon(
-                                                Icons.check,
-                                                color: Colors.white,
-                                                size: 25,
-                                              ),
-                                              SizedBox(
-                                                width: 5,
-                                              ),
-                                              Text(
-                                                "Done",
-                                                style:
-                                                    TypographyStyles.boldText(
-                                                        14, Colors.white),
-                                              ),
-                                            ],
+                                              label: "Done",
+                                            icon: Icons.check
                                           ),
+                                          // child: CupertinoSwitch(
+                                          //   activeColor: Colors.green,
+                                          //   value: clientNote.active,
+                                          //   onChanged: (value) {
+                                          //     clientNote.deactivateClientNote();
+                                          //   },
+                                          // ),
                                         ),
-                                        // child: CupertinoSwitch(
-                                        //   activeColor: Colors.green,
-                                        //   value: clientNote.active,
-                                        //   onChanged: (value) {
-                                        //     clientNote.deactivateClientNote();
-                                        //   },
-                                        // ),
                                       ),
                                     ],
                                   ),
@@ -302,10 +236,8 @@ class _SelectedClientNoteState extends State<SelectedClientNote> {
 
                         return Container(
                           decoration: BoxDecoration(
-                            color: Get.isDarkMode
-                                ? colors.Colors().deepGrey(1)
-                                : colors.Colors().lightCardBG,
-                            borderRadius: BorderRadius.circular(15),
+                            color: AppColors().getSecondaryColor(),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                           child: Padding(
                               padding: const EdgeInsets.symmetric(
@@ -315,164 +247,67 @@ class _SelectedClientNoteState extends State<SelectedClientNote> {
                                 children: [
                                   Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
                                         clientNote.service,
-                                        style: TypographyStyles.boldText(
-                                          16,
-                                          Get.isDarkMode
-                                              ? Themes
-                                                  .mainThemeColorAccent.shade100
-                                              : colors.Colors().lightBlack(1),
-                                        ),
+                                        style: TypographyStyles.text(16),
                                       ),
-                                      Visibility(
-                                        visible: authUser.role == 'trainer',
-                                        child: IconButton(
-                                          onPressed: () {
-                                            CommonConfirmDialog.confirm(
-                                                    'Delete')
-                                                .then((value) async {
-                                              if (value) {
-                                                await clientNote.deleteClientNote();
-                                                sortClientNotes();
-                                              }
-                                            });
-                                          },
-                                          icon: Icon(
-                                            Icons.delete,
-                                            color: Get.isDarkMode
-                                                ? Colors.white
-                                                : Colors.black,
-                                          ),
-                                        ),
+                                      Text(
+                                        "${DateFormat("yyyy/MM/dd").format(clientNote.startDate)}",
+                                        style: TypographyStyles.text(14),
                                       ),
                                     ],
                                   ),
                                   SizedBox(
-                                    height: 6,
+                                    height: 8,
                                   ),
                                   Text(
                                     clientNote.note,
-                                    style: TypographyStyles.normalText(
-                                      13,
-                                      Get.isDarkMode
-                                          ? Themes.mainThemeColorAccent.shade300
-                                          : colors.Colors().lightBlack(1),
-                                    ),
+                                    style: TypographyStyles.text(14),
                                   ),
                                   SizedBox(
                                     height: 20,
                                   ),
-                                  Container(
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                        color: clientNote.active
-                                            ? Colors.green
-                                            : Get.isDarkMode
-                                                ? colors.Colors().darkGrey(1)
-                                                : colors.Colors()
-                                                    .selectedCardBG,
-                                        borderRadius: BorderRadius.circular(8)),
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 12, horizontal: 15),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text("Amount:"),
-                                          Text(
-                                            // authUser.user['currency'] +
-                                                "MVR  " +
-                                                clientNote.amount
-                                                    .toStringAsFixed(2),
-                                            style: TypographyStyles.title(16),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('Amount',style: TypographyStyles.text(14),),
+                                      Text('MVR ${clientNote.amount}',style: TypographyStyles.title(14),)
+                                    ],),
                                   SizedBox(
-                                    height: 15,
+                                    height: 25,
                                   ),
                                   Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "Date - ",
-                                            style: TypographyStyles.normalText(
-                                              12,
-                                              Get.isDarkMode
-                                                  ? Themes.mainThemeColorAccent
-                                                      .shade300
-                                                  : colors.Colors()
-                                                      .lightBlack(0.7),
-                                            ),
+                                      Expanded(
+                                        child: Visibility(
+                                          visible: authUser.role == 'trainer',
+                                          child: Buttons.outlineTextIconButton(
+                                              onPressed: () {
+                                                CommonConfirmDialog.confirm(
+                                                    'Delete')
+                                                    .then((value) async {
+                                                  if (value) {
+                                                    await clientNote.deleteClientNote();
+                                                    sortClientNotes();
+                                                  }
+                                                });
+                                              },
+                                              label: "Delete",
+                                              icon: Icons.check,
+                                              svg: "assets/svgs/delete-outline.svg"
                                           ),
-                                          Text(
-                                            "${DateFormat("yyyy-MM-dd").format(clientNote.startDate)}",
-                                            style: TypographyStyles.boldText(
-                                              12,
-                                              Get.isDarkMode
-                                                  ? Themes.mainThemeColorAccent
-                                                      .shade100
-                                                  : colors.Colors()
-                                                      .lightBlack(1),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Visibility(
-                                        visible: authUser.role == 'trainer' &&
-                                            clientNote.active,
-                                        child: MaterialButton(
-                                          onPressed: () {
-                                            CommonConfirmDialog.confirm(
-                                                    'Mark as Done')
-                                                .then((value) async {
-                                              if (value) {
-                                                await clientNote
-                                                    .deactivateClientNote();
-                                                sortClientNotes();
-                                              }
-                                            });
-                                          },
-                                          color: Colors.green,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8)),
-                                          padding: EdgeInsets.zero,
-                                          child: Row(
-                                            children: [
-                                              Icon(
-                                                Icons.check,
-                                                color: Colors.white,
-                                                size: 25,
-                                              ),
-                                              SizedBox(
-                                                width: 5,
-                                              ),
-                                              Text(
-                                                "Done",
-                                                style:
-                                                    TypographyStyles.boldText(
-                                                        14, Colors.white),
-                                              ),
-                                            ],
-                                          ),
+                                          // child: CupertinoSwitch(
+                                          //   activeColor: Colors.green,
+                                          //   value: clientNote.active,
+                                          //   onChanged: (value) {
+                                          //     clientNote.deactivateClientNote();
+                                          //   },
+                                          // ),
                                         ),
-                                        // child: CupertinoSwitch(
-                                        //   activeColor: Colors.green,
-                                        //   value: clientNote.active,
-                                        //   onChanged: (value) {
-                                        //     clientNote.deactivateClientNote();
-                                        //   },
-                                        // ),
                                       ),
                                     ],
                                   ),

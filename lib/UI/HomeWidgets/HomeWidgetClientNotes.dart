@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:north_star/Controllers/ClientNotesController.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
+import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetClientNotes/CreateClientNotes.dart';
@@ -49,11 +50,11 @@ class HomeWidgetClientNotes extends StatelessWidget {
             return Card(
               elevation: 4,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16)
+                borderRadius: BorderRadius.circular(5)
               ),
               child: ListTile(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16)
+                  borderRadius: BorderRadius.circular(5)
                 ),
                 onTap: (){
                   Get.to(() => SelectedClientNote(clientId: client['client']['id']));
@@ -66,8 +67,8 @@ class HomeWidgetClientNotes extends StatelessWidget {
                 subtitle: Text("MVR ${valueFmt.format(client['income'])}"),
                 trailing: Chip(
                   label: Text("${ClientNotesController.getClientNotesByClientId(client['client']['id']).length}"),
-                  backgroundColor: colors.Colors().lightBlack(1),
-                  labelStyle: TypographyStyles.boldText(14, Themes.mainThemeColorAccent.shade100),
+                  backgroundColor: AppColors.accentColor,
+                  labelStyle: TypographyStyles.boldText(14, AppColors.textOnAccentColor),
                 )
               ),
             );
