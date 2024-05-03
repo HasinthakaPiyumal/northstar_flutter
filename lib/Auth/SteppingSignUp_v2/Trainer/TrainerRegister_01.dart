@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:intl_phone_field/country_picker_dialog.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
@@ -7,6 +8,7 @@ import 'package:north_star/Utils/PopUps.dart';
 
 import '../../../Models/HttpClient.dart';
 import '../../../Styles/PickerDialogStyles.dart';
+import '../../../components/Buttons.dart';
 import 'TrainerRegister_02.dart';
 
 class TrainerRegisterFirst extends StatefulWidget {
@@ -28,7 +30,7 @@ class _TrainerRegisterFirstState extends State<TrainerRegisterFirst> {
   String phoneNumber = "";
 
   void next() async {
-    ready.value = false;
+
     String email = _emailController.text;
     if (_firstNameController.text.isEmpty ||
         _lastNameController.text.isEmpty ||
@@ -37,7 +39,7 @@ class _TrainerRegisterFirstState extends State<TrainerRegisterFirst> {
         // _countryCodeController.text.isEmpty ||
         _phoneNumberController.text.isEmpty ||
         _birthdayController.text.isEmpty) {
-      showSnack('Incomplete information', 'Please enter all the information');
+      showSnack('Incomplete information', 'Please enter all the information',status: PopupNotificationStatus.warning);
       return;
     }
 
@@ -46,24 +48,31 @@ class _TrainerRegisterFirstState extends State<TrainerRegisterFirst> {
         r'^[\w-]+(\.[\w-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,})$');
 
     if (!emailRegex.hasMatch(email)) {
-      showSnack('Invalid Email', 'Please enter a valid email address.');
+      showSnack('Invalid Email', 'Please enter a valid email address.',status: PopupNotificationStatus.warning);
       return;
     }
+    ready.value = false;
     Map res = await httpClient.signUpDataCheck({
+      'f_name':_firstNameController.text,
+      'l_name':_lastNameController.text,
+      'birth':_birthdayController.text,
+      'gender':genderType == 2?'female':'male',
       'email': _emailController.text,
       'phone': phoneNumber,
       'nic': _nicController.text,
     });
-
+    ready.value = true;
     if (res['code'] == 200) {
-      if (res['data']['error'] != null) {
-        showSnack('Account Information', res['data']['error']);
-      } else {
-        finishNext();
-      }
-      ready.value = true;
+      finishNext();
+
     } else {
-      showSnack('Incomplete information', 'Please Enter correct information');
+      print(res);
+      print("res----->");
+      if (res['data']['message'] != null) {
+        showSnack('Account Information', res['data']['message'],status: PopupNotificationStatus.warning);
+      } else {
+        showSnack('Incomplete information', 'Please Enter correct information',status: PopupNotificationStatus.warning);
+      }
     }
   }
 
@@ -75,7 +84,7 @@ class _TrainerRegisterFirstState extends State<TrainerRegisterFirst> {
         // _countryCodeController.text.isEmpty ||
         _phoneNumberController.text.isEmpty ||
         _birthdayController.text.isEmpty) {
-      showSnack('Incomplete information', 'Please enter all the information');
+      showSnack('Incomplete information', 'Please enter all the information',status: PopupNotificationStatus.warning);
     } else {
       signUpData.name =
           _firstNameController.text + " " + _lastNameController.text;
@@ -220,13 +229,16 @@ class _TrainerRegisterFirstState extends State<TrainerRegisterFirst> {
                           border: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.white),
                           ),
-                          labelText: 'First Name',
-                          labelStyle: TextStyle(
-                            color: isDark ? Colors.white70 : Colors.black54,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: 'Poppins',
-                            fontSize: 16,
-                          ),
+                          label: Row(children: [Text(
+                            "First Name",
+                            style:  TextStyle(
+                              color: isDark ? Colors.white70 : Colors.black54,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: 'Poppins',
+                              fontSize: 16,
+                            ),),
+                            Text(" *",style: TextStyle(color: Colors.red),)
+                          ],),
                           contentPadding: EdgeInsets.only(bottom: 0),
                         ),
                         style: TextStyle(color: isDark?Colors.white:Colors.black),
@@ -245,13 +257,16 @@ class _TrainerRegisterFirstState extends State<TrainerRegisterFirst> {
                           border: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.white),
                           ),
-                          labelText: 'Last Name',
-                          labelStyle: TextStyle(
-                            color: isDark ? Colors.white70 : Colors.black54,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: 'Poppins',
-                            fontSize: 16,
-                          ),
+                          label: Row(children: [Text(
+                            "Last Name",
+                            style:  TextStyle(
+                              color: isDark ? Colors.white70 : Colors.black54,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: 'Poppins',
+                              fontSize: 16,
+                            ),),
+                            Text(" *",style: TextStyle(color: Colors.red),)
+                          ],),
                           contentPadding: EdgeInsets.only(bottom: 0),
                         ),
                         style: TextStyle(
@@ -273,13 +288,16 @@ class _TrainerRegisterFirstState extends State<TrainerRegisterFirst> {
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
                     ),
-                    labelText: 'Email',
-                    labelStyle: TextStyle(
-                      color: isDark ? Colors.white70 : Colors.black54,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Poppins',
-                      fontSize: 16,
-                    ),
+                    label: Row(children: [Text(
+                      "Email",
+                      style:  TextStyle(
+                        color: isDark ? Colors.white70 : Colors.black54,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                      ),),
+                      Text(" *",style: TextStyle(color: Colors.red),)
+                    ],),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
                   style: TextStyle(color: isDark?Colors.white:Colors.black),
@@ -293,13 +311,16 @@ class _TrainerRegisterFirstState extends State<TrainerRegisterFirst> {
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
                     ),
-                    labelText: 'Nic Or Passport',
-                    labelStyle: TextStyle(
-                      color: isDark ? Colors.white70 : Colors.black54,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Poppins',
-                      fontSize: 16,
-                    ),
+                    label: Row(children: [Text(
+                      "Nic Or Passport",
+                      style:  TextStyle(
+                        color: isDark ? Colors.white70 : Colors.black54,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                      ),),
+                      Text(" *",style: TextStyle(color: Colors.red),)
+                    ],),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
                   style: TextStyle(color: isDark?Colors.white:Colors.black),
@@ -317,13 +338,16 @@ class _TrainerRegisterFirstState extends State<TrainerRegisterFirst> {
                       border: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.white),
                       ),
-                      labelText: 'Phone',
-                      labelStyle: TextStyle(
-                        color: isDark ? Colors.white70 : Colors.black54,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: 'Poppins',
-                        fontSize: 16,
-                      ),
+                      label: Row(children: [Text(
+                        "Phone",
+                        style:  TextStyle(
+                          color: isDark ? Colors.white70 : Colors.black54,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: 'Poppins',
+                          fontSize: 16,
+                        ),),
+                        Text(" *",style: TextStyle(color: Colors.red),)
+                      ],),
                       contentPadding: EdgeInsets.only(bottom: 0),
                     ),
                     style: TextStyle(color: isDark?Colors.white:Colors.black),
@@ -364,7 +388,7 @@ class _TrainerRegisterFirstState extends State<TrainerRegisterFirst> {
                       context: context,
                       initialDate: DateTime(2000),
                       firstDate: DateTime(1900),
-                      lastDate: DateTime.now(),
+                      lastDate: DateTime.now().subtract(Duration(days: 12 * 365)),
                       // builder: (BuildContext context, Widget? child) {
                       //   return Theme(
                       //     data: isDark
@@ -401,13 +425,16 @@ class _TrainerRegisterFirstState extends State<TrainerRegisterFirst> {
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
                     ),
-                    labelText: 'Birthday',
-                    labelStyle: TextStyle(
-                      color: isDark ? Colors.white70 : Colors.black54,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Poppins',
-                      fontSize: 16,
-                    ),
+                    label: Row(children: [Text(
+                      "Birthday",
+                      style:  TextStyle(
+                        color: isDark ? Colors.white70 : Colors.black54,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                      ),),
+                      Text(" *",style: TextStyle(color: Colors.red),)
+                    ],),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
                   style: TextStyle(color: isDark?Colors.white:Colors.black),
@@ -493,42 +520,16 @@ class _TrainerRegisterFirstState extends State<TrainerRegisterFirst> {
                   ],
                 ),
                 SizedBox(height: contentHeight),
-                Center(
-                  child: Container(
-                    width: 350,
-                    height: 64,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Get.to(() => ClientRegisterSecond());
-                        next();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFFFFB700),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            'next'.toUpperCase(),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Color(0xFF1B1F24),
-                              fontSize: 22,
-                              fontFamily: 'Bebas Neue',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                Obx(()=> Center(
+                  child: Buttons.yellowFlatButton(
+                    label: "Next",
+                    isLoading: !ready.value,
+                    width: Get.width - 40,
+                    onPressed: () {
+                      next();
+                    },
                   ),
+                ),
                 ),
               ],
             ),

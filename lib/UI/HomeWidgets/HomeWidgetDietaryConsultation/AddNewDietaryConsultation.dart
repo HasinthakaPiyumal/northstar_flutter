@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:north_star/Models/AuthUser.dart';
@@ -202,17 +203,23 @@ class AddNewDietaryConsultation extends StatelessWidget {
                 readOnly: true,
                 decoration: InputDecoration(
                   labelText: "Date",
-                  border: OutlineInputBorder(),
+                  prefixIcon: Padding(
+                  padding: const EdgeInsets.all(14.0),
+                  child: SvgPicture.asset("assets/svgs/birthday.svg",width: 14,height: 14,color: AppColors().getPrimaryColor(reverse: true),),
+                ),
+                  border: UnderlineInputBorder(),
                 ),
               ),
               SizedBox(
                 height: 15,
               ),
-              Text(
-                "Treatment Plan :",
-        
-                style: TypographyStyles.boldText(
-                    20, Get.isDarkMode ? Colors.white : Colors.black),
+              Row(
+                children: [
+                  Text(
+                    "Treatment Plan :",
+                    style: TypographyStyles.text(16),
+                  ),
+                ],
               ),
               SizedBox(
                 height: 15,
@@ -244,8 +251,7 @@ class AddNewDietaryConsultation extends StatelessWidget {
                 children: [
                   Text(
                     "Sample Menu :",
-                    style: TypographyStyles.boldText(
-                        20, Get.isDarkMode ? Colors.white : Colors.black),
+                    style: TypographyStyles.text(16),
                   ),
                   InkWell(
                     onTap:  editMode ? null :  () {
@@ -257,7 +263,10 @@ class AddNewDietaryConsultation extends StatelessWidget {
         
                       print(menuItems);
                     },
-                    child: Icon(Icons.add, color: Colors.white, size: 35),
+                    borderRadius: BorderRadius.circular(100),
+                    child: Ink(
+                      decoration: BoxDecoration(color: AppColors.accentColor,borderRadius: BorderRadius.circular(100)),
+                        child: Icon(Icons.add, color: AppColors.textOnAccentColor, size: 32)),
                   )
                 ],
               ),

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart' hide DatePickerTheme;
 import 'package:flutter_datetime_picker_bdaya/flutter_datetime_picker_bdaya.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -159,7 +160,10 @@ class CreateVideoSession extends StatelessWidget {
                     readOnly: true,
                     decoration: InputDecoration(
                       labelText: 'Meeting Start Time',
-                      suffixIcon: Icon(Icons.calendar_today),
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.all(14.0),
+                        child: SvgPicture.asset("assets/svgs/birthday.svg",width: 14,height: 14,color: AppColors().getPrimaryColor(reverse: true),),
+                      ),
                       border: UnderlineInputBorder(),
                     ),
                     onTap: () {
@@ -261,7 +265,7 @@ class CreateVideoSession extends StatelessWidget {
                     saveMeeting();
                   },
                   icon: Icons.video_call_outlined,
-                  label: 'create session',
+                  label: 'create video session',
               isLoading:isCreating.value)),
         ),
       ),

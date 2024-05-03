@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,15 +22,21 @@ class HomeWidgetTrainers extends StatelessWidget {
   Widget build(BuildContext context) {
     RxBool ready = false.obs;
     RxList trainers = [].obs;
+    TextEditingController searchController = TextEditingController();
 
     Future<List> searchTrainers(pattern) async{
+      if(pattern==""){
+        pattern = "ALL_TRAINERS";
+      }
       print('PATTERN: ' +pattern);
+      ready.value = false;
       var request = http.Request('GET',
           Uri.parse(HttpClient.baseURL + '/api/trainer/search/' + pattern.toString()));
       print(HttpClient.baseURL);
       request.headers.addAll(client.headers);
 
       http.StreamedResponse response = await request.send();
+
 
       if (response.statusCode == 200) {
         var res = jsonDecode(await response.stream.bytesToString());
@@ -61,10 +68,13 @@ class HomeWidgetTrainers extends StatelessWidget {
                 hideOnError: true,
                 hideOnLoading: true,
                 textFieldConfiguration: TextFieldConfiguration(
+                  controller: searchController,
                     autofocus: true,
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.search),
+                      suffixIcon: IconButton(color: AppColors.accentColor,onPressed: () { searchTrainers(searchController.text??"ALL"); }, icon: Container(padding: EdgeInsets.all(8),decoration:BoxDecoration(borderRadius:BorderRadius.circular(5),color:AppColors.accentColor,),child: SvgPicture.asset("assets/svgs/mi_filter.svg")),),
                       labelText: 'Search Trainers...',
+                      border: UnderlineInputBorder()
                     )
                 ),
                 suggestionsCallback: (pattern) async {

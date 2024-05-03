@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:north_star/Styles/AppColors.dart';
 
 class Colors {
 
@@ -21,7 +22,7 @@ class Colors {
   }
 
   Color deepGrey(double opacity) {
-    return this._deepGrey.withOpacity(opacity);
+    return AppColors.primary2Color.withOpacity(opacity);
   }
 
   Color lightBlack(double opacity){

@@ -144,6 +144,7 @@ class HttpClient {
   //SignUpDataCheck
   Future<Map> signUpDataCheck(Map data) async {
     Response response = await post('/checks/checkAccountInfo', data);
+    print(response);
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -1882,6 +1883,14 @@ class HttpClient {
     };
   }
   // ====== Vending Machine End =======
+
+  Future<Map> updateDeviceToken(String token) async {
+    Response response = await post('/update/device-token',{'token':token});
+    return {
+      "code": response.statusCode,
+      "data": response.data,
+    };
+  }
 }
 
 HttpClient httpClient = HttpClient();

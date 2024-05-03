@@ -77,9 +77,9 @@ Future<void> saveToken() async {
     if (currentToken != "" && token != currentToken) {
       print("trying to send Logout");
       dynamic data = {"channel": MessageChannel.Logout.index.toString()};
-
       sendFCMMessage(currentToken, data);
     }
+    httpClient.updateDeviceToken(token!);
     FirebaseFirestore.instance
         .collection("UserTokens")
         .doc(authUser.id.toString())
@@ -99,10 +99,10 @@ void sendFCMMessage(String deviceToken, dynamic data) async {
   };
 
   final message = {
-  'data': data,
-  'priority': 'high',
-  'to': deviceToken, // Replace with the recipient device token
-  "content_available": true 
+    'data': data,
+    'priority': 'high',
+    'to': deviceToken, // Replace with the recipient device token
+    "content_available": true
   };
 
   print('Sending FCM message------------------\n$message');

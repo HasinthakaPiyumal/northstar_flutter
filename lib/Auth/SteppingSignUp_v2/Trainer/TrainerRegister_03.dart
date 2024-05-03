@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:north_star/Utils/PopUps.dart';
 
 import '../../../Models/HttpClient.dart';
+import '../../../components/Buttons.dart';
 import '../../CommonAuthUtils.dart';
 import '../../SteppingSignUp/SignUpData.dart';
 
@@ -24,22 +25,22 @@ class _TrainerRegisterThreeState extends State<TrainerRegisterThree> {
   String emergencyContact = "";
 
   void next() async {
-    isLoading.value = true;
-
     if (_aboutController.text.isEmpty) {
-      showSnack('Incomplete information', 'Please enter correct information');
+      showSnack('Incomplete information', 'Please enter correct information',status: PopupNotificationStatus.warning);
     } else {
       signUpData.about = _aboutController.text;
       signUpData.isInsured = isInsured;
 
+      isLoading.value = true;
       Map res = await httpClient.signUp(signUpData.toTrainerJson());
+      isLoading.value = false;
       if (res['code'] == 200) {
         CommonAuthUtils.signIn(res);
         showSnack(
-            'Welcome to NorthStar!', 'Your personal fitness Application!');
+            'Welcome to NorthStar!', 'Your personal fitness Application!',status: PopupNotificationStatus.success);
         CommonAuthUtils.showWelcomeDialog();
       } else {
-        showSnackResponse('Something went wrong!', res);
+        showSnack('Something went wrong!', res['data']['message'],status: PopupNotificationStatus.warning);
       }
     }
   }
@@ -269,53 +270,31 @@ class _TrainerRegisterThreeState extends State<TrainerRegisterThree> {
                     border: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
                     ),
-                    labelText: 'About',
-                    labelStyle: TextStyle(
-                      color: isDark ? Colors.white70 : Colors.black54,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Poppins',
-                      fontSize: 16,
-                    ),
+                    label: Row(children: [Text(
+                      "Shipping Address",
+                      style:  TextStyle(
+                        color: isDark ? Colors.white70 : Colors.black54,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                      ),),
+                      Text(" *",style: TextStyle(color: Colors.red),)
+                    ],),
                     contentPadding: EdgeInsets.all(10),
                   ),
                   style: TextStyle(color: isDark? Colors.white:Colors.black),
                 ),
                 SizedBox(height: contentHeight),
-                Center(
-                  child: Container(
-                    width: 350,
-                    height: 64,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        next();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFFFFB700),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Sign up'.toUpperCase(),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Color(0xFF1B1F24),
-                              fontSize: 22,
-                              fontFamily: 'Bebas Neue',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                Obx(()=> Center(
+                  child: Buttons.yellowFlatButton(
+                    label: "Signup",
+                    isLoading: isLoading.value,
+                    width: Get.width - 40,
+                    onPressed: () {
+                      next();
+                    },
                   ),
+                ),
                 ),
               ],
             ),

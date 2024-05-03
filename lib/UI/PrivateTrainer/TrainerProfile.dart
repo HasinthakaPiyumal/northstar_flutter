@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:country_currency_pickers/utils/utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -500,9 +501,12 @@ class _TrainerProfileState extends State<TrainerProfile> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(data['trainer']['about'],
-                                    style: TypographyStyles.textWithWeight(
-                                        12, FontWeight.w300)),
+                                Expanded(
+                                  child: Text(data['trainer']['about'],
+                                      overflow: TextOverflow.clip,
+                                      style: TypographyStyles.textWithWeight(
+                                          12, FontWeight.w300)),
+                                ),
                                 IconButton(
                                   icon: Icon(
                                     Icons.edit_outlined,
@@ -659,7 +663,7 @@ class _TrainerProfileState extends State<TrainerProfile> {
                                       Text('Phone',
                                           style: TypographyStyles.title(16)),
                                       SizedBox(height: 24),
-                                      Text('Birth Day',
+                                      Text('Birthday',
                                           style: TypographyStyles.title(16)),
                                       SizedBox(height: 26),
                                       Text('Email',

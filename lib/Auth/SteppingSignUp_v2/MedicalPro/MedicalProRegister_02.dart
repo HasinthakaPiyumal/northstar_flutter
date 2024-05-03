@@ -7,6 +7,7 @@ import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:north_star/Utils/PopUps.dart';
 
 import '../../../Styles/PickerDialogStyles.dart';
+import '../../../components/Buttons.dart';
 import '../../SteppingSignUp/SignUpData.dart';
 import 'MedicalProRegister_03.dart';
 
@@ -50,22 +51,33 @@ class _MedicalProRegisterSecondState extends State<MedicalProRegisterSecond> {
       );
 
   void next() async {
-    isLoading.value = true;
+    // isLoading.value = true;
     // print(signUpData.toClientJson());
 
     if (_countryController.text.isEmpty ||
+        _addressController.text.isEmpty ||
         _contactPersonController.text.isEmpty ||
         _emergencyContactController.text.isEmpty ||
         _passwordController.text.isEmpty ||
         _confirmPasswordController.text.isEmpty) {
-      showSnack('Incomplete information', 'Please enter correct information');
+      showSnack('Incomplete information', 'Please enter correct information',status: PopupNotificationStatus.warning);
     } else {
+
+      if(_confirmPasswordController.text.length<8||_passwordController.text.length<8){
+        showSnack("Password Validation", "Your password must be at least 8 characters long.",status: PopupNotificationStatus.warning);
+        return;
+      }
+      if(_confirmPasswordController.text.length!=_passwordController.text.length){
+        showSnack("Password Mismatch", "The passwords you entered do not match. Please ensure that both passwords are the same.",status: PopupNotificationStatus.warning);
+        return;
+      }
       // signUpData.countryCode = _countryController.text;
       signUpData.address = _addressController.text;
       signUpData.eContactName = _contactPersonController.text;
       signUpData.eContactPhone = emergencyContact;
       signUpData.password = _passwordController.text;
       signUpData.passwordConfirmation = _confirmPasswordController.text;
+
 
       Navigator.push(
         context,
@@ -195,13 +207,16 @@ class _MedicalProRegisterSecondState extends State<MedicalProRegisterSecond> {
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
                     ),
-                    labelText: 'Country Of Residence',
-                    labelStyle: TextStyle(
-                      color: isDark?Colors.white70:Colors.black54,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Poppins',
-                      fontSize: 16,
-                    ),
+                    label: Row(children: [Text(
+                      "Country Of Residence",
+                      style:  TextStyle(
+                        color: isDark ? Colors.white70 : Colors.black54,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                      ),),
+                      Text(" *",style: TextStyle(color: Colors.red),)
+                    ],),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
                   style: TextStyle(color: isDark?Colors.white:Colors.black),
@@ -249,13 +264,16 @@ class _MedicalProRegisterSecondState extends State<MedicalProRegisterSecond> {
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
                     ),
-                    labelText: 'Shipping Address',
-                    labelStyle: TextStyle(
-                      color: isDark?Colors.white70:Colors.black54,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Poppins',
-                      fontSize: 16,
-                    ),
+                    label: Row(children: [Text(
+                      "Shipping Address",
+                      style:  TextStyle(
+                        color: isDark ? Colors.white70 : Colors.black54,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                      ),),
+                      Text(" *",style: TextStyle(color: Colors.red),)
+                    ],),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
                   style: TextStyle(color: isDark?Colors.white:Colors.black),
@@ -264,18 +282,21 @@ class _MedicalProRegisterSecondState extends State<MedicalProRegisterSecond> {
                 TextFormField(
                   controller: _contactPersonController,
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.call_outlined,
+                    prefixIcon: Icon(Icons.person_2_outlined,
                         color: isDark?Colors.white:Colors.black, size: 18),
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
                     ),
-                    labelText: 'Contact Person',
-                    labelStyle: TextStyle(
-                      color: isDark?Colors.white70:Colors.black54,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Poppins',
-                      fontSize: 16,
-                    ),
+                    label: Row(children: [Text(
+                      "Contact Person",
+                      style:  TextStyle(
+                        color: isDark ? Colors.white70 : Colors.black54,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                      ),),
+                      Text(" *",style: TextStyle(color: Colors.red),)
+                    ],),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
                   style: TextStyle(color: isDark?Colors.white:Colors.black),
@@ -294,13 +315,16 @@ class _MedicalProRegisterSecondState extends State<MedicalProRegisterSecond> {
                       border: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.white),
                       ),
-                      labelText: 'Emergency Contact',
-                      labelStyle: TextStyle(
-                        color: isDark?Colors.white70:Colors.black54,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: 'Poppins',
-                        fontSize: 16,
-                      ),
+                      label: Row(children: [Text(
+                        "Emergency Contact",
+                        style:  TextStyle(
+                          color: isDark ? Colors.white70 : Colors.black54,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: 'Poppins',
+                          fontSize: 16,
+                        ),),
+                        Text(" *",style: TextStyle(color: Colors.red),)
+                      ],),
                       contentPadding: EdgeInsets.only(bottom: 0),
                     ),
                     style: TextStyle(color: isDark?Colors.white:Colors.black),
@@ -355,13 +379,16 @@ class _MedicalProRegisterSecondState extends State<MedicalProRegisterSecond> {
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
                     ),
-                    labelText: 'Password',
-                    labelStyle: TextStyle(
-                      color: isDark?Colors.white70:Colors.black54,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Poppins',
-                      fontSize: 16,
-                    ),
+                    label: Row(children: [Text(
+                      "Password",
+                      style:  TextStyle(
+                        color: isDark ? Colors.white70 : Colors.black54,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                      ),),
+                      Text(" *",style: TextStyle(color: Colors.red),)
+                    ],),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
                   style: TextStyle(color: isDark?Colors.white:Colors.black),
@@ -390,52 +417,29 @@ class _MedicalProRegisterSecondState extends State<MedicalProRegisterSecond> {
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
                     ),
-                    labelText: 'Confirm Password',
-                    labelStyle: TextStyle(
-                      color: isDark?Colors.white70:Colors.black54,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Poppins',
-                      fontSize: 16,
-                    ),
+                    label: Row(children: [Text(
+                      "Confirm Password",
+                      style:  TextStyle(
+                        color: isDark ? Colors.white70 : Colors.black54,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                      ),),
+                      Text(" *",style: TextStyle(color: Colors.red),)
+                    ],),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
                   style: TextStyle(color: isDark?Colors.white:Colors.black),
                 ),
                 SizedBox(height: contentHeight),
                 Center(
-                  child: Container(
-                    width: 350,
-                    height: 64,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        next();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFFFFB700),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            'next'.toUpperCase(),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Color(0xFF1B1F24),
-                              fontSize: 22,
-                              fontFamily: 'Bebas Neue',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                  child: Buttons.yellowFlatButton(
+                    label: "Next",
+                    // isLoading: isLoading.value,
+                    width: Get.width - 40,
+                    onPressed: () {
+                      next();
+                    },
                   ),
                 ),
               ],

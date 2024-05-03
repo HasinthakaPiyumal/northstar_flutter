@@ -43,24 +43,19 @@ class BookNow extends StatelessWidget {
           children: [
             Padding(
               padding: EdgeInsets.symmetric(vertical: 15),
-              child: Row(
+              child: Column(
                 children: [
                   CircleAvatar(
                     radius: 35,
                     backgroundImage: CachedNetworkImageProvider(
-                      'https://img.freepik.com/free-vector/fitness-logo_25327-145.jpg?w=2000',
+                      HttpClient.s3BaseUrl + gymObj['user']['avatar_url'],
                     ),
                   ),
                   SizedBox(width: 16,),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(gymObj['gym_name'], style: TypographyStyles.title(22)),
-                      SizedBox(height: 5,),
-                      Text("${gymObj['gym_city']}, ${gymObj['gym_country']}",
-                        style: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
-                      ),
-                    ],
+                  Text(gymObj['gym_name'], style: TypographyStyles.text(16)),
+                  SizedBox(height: 5,),
+                  Text("${gymObj['gym_city']}, ${gymObj['gym_country']}",
+                    style: TypographyStyles.text(14),
                   ),
                 ],
               ),
@@ -144,7 +139,9 @@ class BookNow extends StatelessWidget {
                           ],
                         ),
                         IconButton(
-                          icon:  Icon(Icons.close),
+                          icon:  Container(
+                            decoration: BoxDecoration(color: Get.isDarkMode?Colors.white:Colors.black,borderRadius: BorderRadius.circular(100)),
+                              child: Icon(Icons.close,color: Get.isDarkMode?Colors.black:Colors.white,)),
                           onPressed: () {
                             selectedMembers.removeAt(index);
                           },

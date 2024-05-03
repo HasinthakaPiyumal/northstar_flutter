@@ -23,7 +23,7 @@ class HomeWidgetClientNotes extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('${authUser.role == 'trainer' ? 'Clients':'Trainer' } with Notes'),
+        title: Text('Income & Expenses'),
       ),
       floatingActionButton: authUser.role == 'trainer' ? FloatingActionButton(
         onPressed: (){

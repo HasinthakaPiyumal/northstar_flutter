@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:north_star/Models/AuthUser.dart';
@@ -15,6 +16,7 @@ import 'package:north_star/UI/SharedWidgets/ReviewWidget.dart';
 import 'package:north_star/Utils/PopUps.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/main.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TrainerView extends StatelessWidget {
   const TrainerView({Key? key, this.trainerObj, this.isViewOnly = false}) : super(key: key);
@@ -97,87 +99,166 @@ class TrainerView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 20,),
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 32,
-                    backgroundImage : CachedNetworkImageProvider(HttpClient.s3BaseUrl + trainerObj['avatar_url']),
-                  ),
-                  SizedBox(width: 10,),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 32,
+                      backgroundImage : CachedNetworkImageProvider(HttpClient.s3BaseUrl + trainerObj['avatar_url']),
+                    ),
+                    SizedBox(width: 10,),
+                    Text(trainerObj['name'], style: TypographyStyles.title(20)),
+                    SizedBox(height: 3,),
+                    Text(trainerObj['email'], style: TypographyStyles.text(16),),
+                    SizedBox(height: 32),
+                  ],
+                ),
+              ),
+              Container(
+                width: Get.width,
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(color: AppColors().getSecondaryColor(),borderRadius: BorderRadius.circular(10)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SizedBox(height: 3,),
-                        Text(trainerObj['name'], style: TypographyStyles.title(20)),
-                        SizedBox(height: 3,),
-                        Text(trainerObj['email'], style: TypographyStyles.normalText(13, Get.isDarkMode ? Themes.mainThemeColorAccent.shade500.withOpacity(0.7) : colors.Colors().lightBlack(1),),)
+                        SvgPicture.asset("assets/svgs/profile-outline.svg"),
+                        SizedBox(width: 10,),
+                        Text('About', style: TypographyStyles.title(20)),
                       ],
                     ),
+                    SizedBox(height: 20),
+                    Text(trainerObj['trainer']['about'].toString()),
+                    SizedBox(height: 8),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20,),
+              ElevatedButton(
+                style: Get.isDarkMode
+                    ? ButtonStyles.matButton(AppColors.primary2Color, 0)
+                    : ButtonStyles.matButton(Colors.white, 1),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: 4,
+                      ),
+                      Icon(
+                        Icons.phone,
+                        size: 25,
+                        color: Get.isDarkMode
+                            ? Themes.mainThemeColorAccent.shade100
+                            : colors.Colors().lightBlack(1),
+                      ),
+                      SizedBox(width: 13),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(trainerObj['phone'],
+                              style: TypographyStyles.title(16).copyWith(
+                                color: Get.isDarkMode
+                                    ? Themes.mainThemeColorAccent.shade100
+                                    : colors.Colors().lightBlack(1),
+                              )),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            'TAP TO CALL',
+                            style: TypographyStyles.normalText(
+                                12, AppColors.accentColor),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                ],
+                ),
+                onPressed: () async {
+                  final Uri launchUri = Uri(
+                    scheme: 'tel',
+                    path: "+${trainerObj['phone']}",
+                  );
+                  await launchUrl(launchUri);
+                },
               ),
-              SizedBox(height: 32),
-              Row(
-                children: [
-                  Icon(Icons.phone),
-                  SizedBox(width: 8),
-                  Text(trainerObj['phone'])
-                ],
-              ),
-              SizedBox(height: 8),
-              Divider(),
+              
               SizedBox(height: 16),
-              Text('About', style: TypographyStyles.title(20)),
-              SizedBox(height: 20),
-              Text(trainerObj['trainer']['about'].toString()),
-              SizedBox(height: 8),
               Visibility(
                 visible: trainerObj['qualifications'].length > 0,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Divider(),
                     SizedBox(height: 16),
-                    Text('Qualifications', style: TypographyStyles.title(20)),
-                    SizedBox(height: 20),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Text('Qualifications',
+                          style: TypographyStyles.title(20)),
+                    ),
+                    SizedBox(height: 5),
                     Container(
-                      height: trainerObj['qualifications'].length > 0 ? 100: 8,
+                      height:
+                      trainerObj['qualifications'].length > 0 ? 164 : 8,
                       width: Get.width,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: trainerObj['qualifications'].length,
-                        itemBuilder: (_,index){
-                          return Container(
-                            width: Get.width*0.75,
-                            margin: index == 0 ? EdgeInsets.only(left: 0) : EdgeInsets.only(left: 10),
-                            decoration: BoxDecoration(
-                              color: Get.isDarkMode ? AppColors.primary2Color : colors.Colors().lightCardBG,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Row(children: [
-                                    Container(
-                                      width:18,
-                                      child: Image.asset("assets/images/award.png",
-                                        color: isDarkMode == true ? colors.Colors().deepYellow(1) : Colors.black,
-                                        fit: BoxFit.fitWidth,
-                                      ),
+                        itemBuilder: (_, index) {
+                          return InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Container(
+                                width: Get.width * 0.75,
+                                margin: index == 0
+                                    ? EdgeInsets.only(left: 8)
+                                    : EdgeInsets.only(left: 14, right: 8),
+                                child: Card(
+                                  color: Get.isDarkMode
+                                      ? AppColors.primary2Color
+                                      : Color(0xFFffffff),
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 20),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Container(
+                                          width: 36,
+                                          child: Image.asset(
+                                            "assets/images/award_v2.png",
+                                            fit: BoxFit.fitWidth,
+                                          ),
+                                        ),
+                                        SizedBox(width: 18),
+                                        Text(
+                                            trainerObj['qualifications']
+                                            [index]['title']
+                                                .toString(),
+                                            style:
+                                            TypographyStyles.title(16)),
+                                        SizedBox(height: 10.0),
+                                        Text(
+                                          trainerObj['qualifications'][index]
+                                          ['description'],
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              color: Get.isDarkMode
+                                                  ? Colors.white
+                                                  : Color(0xFF1B1F24),
+                                              fontFamily: 'Poppins',
+                                              fontSize: 12),
+                                        ),
+                                      ],
                                     ),
-                                    SizedBox(width: 15),
-                                    Text(trainerObj['qualifications'][index]['title'].toString(),style: TypographyStyles.title(16))
-                                  ],),
-                                  SizedBox(height: 8.0),
-                                  Text(trainerObj['qualifications'][index]['description'], textAlign: TextAlign.left, style: TextStyle(color: Get.isDarkMode ? Colors.grey[500] : colors.Colors().lightBlack(0.6), fontSize: 14),)
-                                ],
-                              ),
-                            ),
+                                  ),
+                                )),
                           );
                         },
                       ),
@@ -186,7 +267,6 @@ class TrainerView extends StatelessWidget {
                   ],
                 ),
               ),
-              Divider(),
               SizedBox(height: 15,),
               Visibility(
                 child: Container(

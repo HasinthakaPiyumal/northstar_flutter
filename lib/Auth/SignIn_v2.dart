@@ -8,6 +8,8 @@ import 'package:north_star/Auth/SteppingSignUp_v2/SignUpUserType.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Utils/PopUps.dart';
 
+import '../components/Buttons.dart';
+
 class SignIn extends StatelessWidget {
   SignIn({Key? key}) : super(key: key);
 
@@ -29,22 +31,37 @@ class SignIn extends StatelessWidget {
 
   void signIn() async {
     if (!userName.text.isEmail) {
-      showSnack('Incorrect Email', 'Please use the correct email address');
+      showSnack('Incorrect Email', 'Please use the correct email address',status:PopupNotificationStatus.error);
     } else if (password.text.isEmpty) {
-      showSnack('Incorrect Password', 'Please use the correct password');
+      showSnack('Incorrect Password', 'Please use the correct password',status:PopupNotificationStatus.error);
     } else {
+
+      loading.value = true;
       Map res = await httpClient.signIn({
         'email': userName.text,
         'password': password.text,
       });
 
       if (res['code'] == 200) {
+        loading.value = false;
         CommonAuthUtils.signIn(res);
       } else {
-        showSnack(
-          'Incorrect Email and/or Password',
-          'Please use the correct password and email',
-        );
+        loading.value = false;
+        print(res);
+        if(res['data']['error']==null){
+          showSnack(
+              'Incorrect Email and/or Password',
+              'Please use the correct password and email',
+              status:PopupNotificationStatus.error
+          );
+        }else{
+          showSnack(
+              res['data']['message']??'Incorrect Email and/or Password',
+              res['data']['error']??'Please use the correct password and email',
+              status:PopupNotificationStatus.warning
+          );
+        }
+
       }
     }
   }
@@ -272,46 +289,16 @@ class SignIn extends StatelessWidget {
                             ],
                           ),
                           SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Container(
-                                width: 264,
-                                height: 64,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 10),
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    signIn();
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(0xFFFFB700),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'Login'.toUpperCase(),
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: Color(0xFF1B1F24),
-                                          fontSize: 22,
-                                          fontFamily: 'Bebas Neue',
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
+                          Obx(()=> Center(
+                            child: Buttons.yellowFlatButton(
+                              label: "Login",
+                              isLoading: loading.value,
+                              width: 240,
+                              onPressed: () {
+                                signIn();
+                              },
+                            ),
+                          ),
                           ),
                           SizedBox(height: Get.height / 100 * 1),
                           Row(

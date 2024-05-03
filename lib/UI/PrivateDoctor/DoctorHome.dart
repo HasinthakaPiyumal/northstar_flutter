@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/IcoMoon.dart';
@@ -8,6 +9,7 @@ import 'package:north_star/UI/PrivateDoctor/DoctorPageController.dart';
 import 'package:north_star/UI/PrivateDoctor/DoctorPrivateProfile.dart';
 import 'package:north_star/UI/PrivateDoctor/FrontPage.dart';
 import 'package:north_star/UI/PrivateDoctor/Pending.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 import '../../Controllers/NotificationsController.dart';
@@ -23,6 +25,25 @@ class DoctorHome extends StatefulWidget {
 }
 
 class _DoctorHomeState extends State<DoctorHome> {
+
+  final RxInt currentPage = 0.obs;
+  String preferenceName = "homeViewTabIndex";
+
+  @override
+  void dispose() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt(preferenceName, 0);
+    DoctorPageController.doctorPageController.close();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    DoctorPageController.doctorPageController = PageController(initialPage: currentPage.value).obs;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -32,8 +53,21 @@ class _DoctorHomeState extends State<DoctorHome> {
       await NotificationsController.getNotifications();
       NotificationsController.showNotificationsPrompt();
     }
+    Future<int?> retrieveSelectedTabIndex() async {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      int val = prefs.getInt(preferenceName)!;
+      currentPage.value = val;
+      print('$preferenceName $val ------> Getting');
+      return prefs.getInt(preferenceName);
+    }
 
+    Future<void> saveSelectedTabIndex(int index) async {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      print('$preferenceName $index ------> Setting');
+      prefs.setInt(preferenceName, index);
+    }
     getNotificationsAndShowPrompt();
+    retrieveSelectedTabIndex();
 
     return RefreshIndicator(
       onRefresh: () {
@@ -68,8 +102,8 @@ class _DoctorHomeState extends State<DoctorHome> {
                     ? Stack(
                   alignment: Alignment.center,
                   children: [
-                    Icon(Icons.notifications,
-                        size: 24, color: Colors.red),
+                    SvgPicture.asset("assets/svgs/notification-bell.svg",
+                        height: 24,width: 18, color: Colors.red),
                     Positioned(
                       child: Text(
                           NotificationsController
@@ -80,7 +114,8 @@ class _DoctorHomeState extends State<DoctorHome> {
                     )
                   ],
                 )
-                    : Icon(Icons.notifications, size: 24),
+                    : SvgPicture.asset("assets/svgs/notification-bell.svg",
+                    height: 24,width: 24, color:Get.isDarkMode?Colors.white:AppColors.primary1Color),
               )),
             ],
           ),
@@ -112,6 +147,8 @@ class _DoctorHomeState extends State<DoctorHome> {
               ],
               onTap: (index) {
                 currentPage.value = index;
+                DoctorPageController.doctorPageController.value.jumpToPage(index);
+                saveSelectedTabIndex(index);
                 DoctorPageController.doctorPageController.value.jumpToPage(index);
               },
             ),

@@ -9,6 +9,7 @@ import 'package:north_star/Styles/PickerDialogStyles.dart';
 import 'package:north_star/Utils/PopUps.dart';
 
 import '../../../Models/HttpClient.dart';
+import '../../../components/Buttons.dart';
 import '../../CommonAuthUtils.dart';
 import '../../SteppingSignUp/SignUpData.dart';
 import 'TrainerRegister_03.dart';
@@ -60,9 +61,17 @@ class _TrainerRegisterSecondState extends State<TrainerRegisterSecond> {
         _emergencyContactController.text.isEmpty ||
         _passwordController.text.isEmpty ||
         _confirmPasswordController.text.isEmpty) {
-      showSnack('Incomplete information', 'Please enter correct information');
+      showSnack('Incomplete information', 'Please enter correct information',status: PopupNotificationStatus.warning);
     } else {
       // signUpData.countryCode = _countryController.text;
+      if(_confirmPasswordController.text.length<8||_passwordController.text.length<8){
+        showSnack("Password Validation", "Your password must be at least 8 characters long.",status: PopupNotificationStatus.warning);
+        return;
+      }
+      if(_confirmPasswordController.text.length!=_passwordController.text.length){
+        showSnack("Password Mismatch", "The passwords you entered do not match. Please ensure that both passwords are the same.",status: PopupNotificationStatus.warning);
+        return;
+      }
       signUpData.address = _addressController.text;
       signUpData.eContactName = _contactPersonController.text;
       signUpData.eContactPhone = emergencyContact;
@@ -197,13 +206,16 @@ class _TrainerRegisterSecondState extends State<TrainerRegisterSecond> {
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(color: isDark ? Colors.white : Colors.black),
                     ),
-                    labelText: 'Country Of Residence',
-                    labelStyle: TextStyle(
-                      color: isDark ? Colors.white70 : Colors.black54,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Poppins',
-                      fontSize: 16,
-                    ),
+                    label: Row(children: [Text(
+                      "Country Of Residence",
+                      style:  TextStyle(
+                        color: isDark ? Colors.white70 : Colors.black54,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                      ),),
+                      Text(" *",style: TextStyle(color: Colors.red),)
+                    ],),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
                   style: TextStyle(color: isDark ? Colors.white : Colors.black),
@@ -251,13 +263,16 @@ class _TrainerRegisterSecondState extends State<TrainerRegisterSecond> {
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(color: isDark ? Colors.white : Colors.black),
                     ),
-                    labelText: 'Shipping Address',
-                    labelStyle: TextStyle(
-                      color: isDark ? Colors.white70 : Colors.black54,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Poppins',
-                      fontSize: 16,
-                    ),
+                    label: Row(children: [Text(
+                      "Shipping Address",
+                      style:  TextStyle(
+                        color: isDark ? Colors.white70 : Colors.black54,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                      ),),
+                      Text(" *",style: TextStyle(color: Colors.red),)
+                    ],),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
                   style: TextStyle(color: isDark ? Colors.white : Colors.black),
@@ -266,18 +281,21 @@ class _TrainerRegisterSecondState extends State<TrainerRegisterSecond> {
                 TextFormField(
                   controller: _contactPersonController,
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.call_outlined,
+                    prefixIcon: Icon(Icons.person_2_outlined,
                         color: isDark ? Colors.white : Colors.black, size: 18),
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(color: isDark ? Colors.white : Colors.black),
                     ),
-                    labelText: 'Contact Person',
-                    labelStyle: TextStyle(
-                      color: isDark ? Colors.white70 : Colors.black54,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Poppins',
-                      fontSize: 16,
-                    ),
+                    label: Row(children: [Text(
+                      "Contact Person",
+                      style:  TextStyle(
+                        color: isDark ? Colors.white70 : Colors.black54,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                      ),),
+                      Text(" *",style: TextStyle(color: Colors.red),)
+                    ],),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
                   style: TextStyle(color: isDark ? Colors.white : Colors.black),
@@ -295,13 +313,16 @@ class _TrainerRegisterSecondState extends State<TrainerRegisterSecond> {
                       border: UnderlineInputBorder(
                         borderSide: BorderSide(color: isDark ? Colors.white : Colors.black),
                       ),
-                      labelText: 'Emergency Contact',
-                      labelStyle: TextStyle(
-                        color: isDark ? Colors.white70 : Colors.black54,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: 'Poppins',
-                        fontSize: 16,
-                      ),
+                      label: Row(children: [Text(
+                        "Emergency Contact",
+                        style:  TextStyle(
+                          color: isDark ? Colors.white70 : Colors.black54,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: 'Poppins',
+                          fontSize: 16,
+                        ),),
+                        Text(" *",style: TextStyle(color: Colors.red),)
+                      ],),
                       contentPadding: EdgeInsets.only(bottom: 0),
                     ),
                     style: TextStyle(color: isDark ? Colors.white : Colors.black),
@@ -357,13 +378,16 @@ class _TrainerRegisterSecondState extends State<TrainerRegisterSecond> {
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(color: isDark ? Colors.white : Colors.black),
                     ),
-                    labelText: 'Password',
-                    labelStyle: TextStyle(
-                      color: isDark ? Colors.white70 : Colors.black54,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Poppins',
-                      fontSize: 16,
-                    ),
+                    label: Row(children: [Text(
+                      "Password",
+                      style:  TextStyle(
+                        color: isDark ? Colors.white70 : Colors.black54,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                      ),),
+                      Text(" *",style: TextStyle(color: Colors.red),)
+                    ],),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
                   style: TextStyle(color: isDark ? Colors.white : Colors.black),
@@ -392,52 +416,28 @@ class _TrainerRegisterSecondState extends State<TrainerRegisterSecond> {
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(color: isDark ? Colors.white : Colors.black),
                     ),
-                    labelText: 'Confirm Password',
-                    labelStyle: TextStyle(
-                      color: isDark ? Colors.white70 : Colors.black54,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Poppins',
-                      fontSize: 16,
-                    ),
+                    label: Row(children: [Text(
+                      "Confirm Password",
+                      style:  TextStyle(
+                        color: isDark ? Colors.white70 : Colors.black54,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                      ),),
+                      Text(" *",style: TextStyle(color: Colors.red),)
+                    ],),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
                   style: TextStyle(color: isDark ? Colors.white : Colors.black),
                 ),
                 SizedBox(height: contentHeight),
-                Center(
-                  child: Container(
-                    width: 350,
-                    height: 64,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        next();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFFFFB700),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            'next'.toUpperCase(),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Color(0xFF1B1F24),
-                              fontSize: 22,
-                              fontFamily: 'Bebas Neue',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                 Center(
+                  child: Buttons.yellowFlatButton(
+                    label: "Next",
+                    width: Get.width - 40,
+                    onPressed: () {
+                      next();
+                    },
                   ),
                 ),
               ],

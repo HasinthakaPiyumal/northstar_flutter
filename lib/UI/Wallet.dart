@@ -128,11 +128,11 @@ class Wallet extends StatelessWidget {
                               RichText(
                                 text: TextSpan(
                                   text: "MVR ",
-                                  style: TypographyStyles.normalText(18, Get.isDarkMode ? Colors.white : Colors.black),
+                                  style: TypographyStyles.text(16).copyWith(color: AppColors.accentColor),
                                   children: [
                                     TextSpan(
                                       text: Utils.currencyFmt.format(data['balance']),
-                                      style: TypographyStyles.title(35),
+                                      style: TypographyStyles.smallBoldTitle(26).copyWith(color: AppColors.accentColor),
                                     ),
                                   ]
                                 ),
@@ -143,7 +143,7 @@ class Wallet extends StatelessWidget {
                               child: CircularProgressIndicator()),
                           )),
                           SizedBox(height: 4),
-                          Obx(()=> ready.value ? Text('Last update on ' + data['updated_at'].split('T')[0], style: TypographyStyles.normalText(13, Color(0xFF8D8D8D), )):Container(),),
+                          Obx(()=> ready.value ? Text('Last update on ' + data['updated_at'].split('T')[0], style: TypographyStyles.text(16)):Container(),),
                           SizedBox(height: 15),
                           SizedBox(
                             width: Get.width,
@@ -285,9 +285,16 @@ class Wallet extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Container(
-                            height: 90,
+                            height: 118,
                             child: ElevatedButton(
-                              style: ButtonStyles.primaryButton(),
+                              style: ButtonStyle(
+                                backgroundColor: MaterialStateColor.resolveWith((states) => AppColors().getSecondaryColor()),
+                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0), // Adjust the value as per your requirement
+                                  ),
+                                ),
+                              ),
                               onPressed: (){
                                 Get.to(() => HomeWidgetClientNotes());
                               },
@@ -298,12 +305,12 @@ class Wallet extends StatelessWidget {
                                 children: [
                                   SizedBox(height: 8,),
                                   SizedBox(
-                                    height: 40,
-                                    child: Image.asset("assets/home/note.png", fit: BoxFit.fitHeight,),
+                                    height: 64,
+                                    child: Image.asset("assets/icons/payment-requests.png", fit: BoxFit.fitHeight,),
                                   ),
                                   SizedBox(height: 10,),
                                   Text("Payment Requests",
-                                    style: TypographyStyles.boldText(10, Get.isDarkMode ? Colors.white : Colors.black),
+                                    style: TypographyStyles.text(16),
                                     textAlign: TextAlign.center,
                                   ),
                                 ],
@@ -311,12 +318,19 @@ class Wallet extends StatelessWidget {
                             ),
                           ),
                         ),
-                        SizedBox(width: 4),
+                        SizedBox(width: 16),
                         Expanded(
                           child: Container(
-                            height: 90,
+                            height: 118,
                             child: ElevatedButton(
-                              style: ButtonStyles.primaryButton(),
+                              style: ButtonStyle(
+                                backgroundColor: MaterialStateColor.resolveWith((states) => AppColors().getSecondaryColor()),
+                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0), // Adjust the value as per your requirement
+                                  ),
+                                ),
+                              ),
                               onPressed: null,
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
@@ -325,12 +339,12 @@ class Wallet extends StatelessWidget {
                                 children: [
                                   SizedBox(height: 8,),
                                   SizedBox(
-                                    height: 40,
-                                    child: Image.asset("assets/home/trans.png", fit: BoxFit.fitHeight,),
+                                    height: 64,
+                                    child: Image.asset("assets/icons/transaction.png", fit: BoxFit.fitHeight,),
                                   ),
                                   SizedBox(height: 10,),
                                   Text("Transactions",
-                                    style: TypographyStyles.boldText(10, Get.isDarkMode ? Colors.white : Colors.black),
+                                    style: TypographyStyles.text(16).copyWith(color: Get.isDarkMode?Colors.white:Colors.black),
                                     textAlign: TextAlign.center,
                                   ),
                                 ],
@@ -357,35 +371,39 @@ class Wallet extends StatelessWidget {
                   physics: NeverScrollableScrollPhysics(),
                   itemCount: transactions.length,
                   separatorBuilder: (context, index){
-                    return Divider(color: colors.Colors().darkGrey(1),);
+                    return SizedBox(height: 8);
                   },
                   itemBuilder: (context,index){
-                    return Padding(
-                      padding: EdgeInsets.symmetric(vertical: 5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  child: Text('${transactions[index]['type']} - ${transactions[index]['description']}',
-                                    style: TypographyStyles.normalText(16, Get.isDarkMode ? Colors.white : Colors.black),
+                    return Container(
+                      padding: EdgeInsets.all(16),
+                      decoration: BoxDecoration(color: AppColors().getSecondaryColor(),borderRadius: BorderRadius.circular(10)),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    child: Text('${transactions[index]['type']} - ${transactions[index]['description']}',
+                                      style: TypographyStyles.normalText(16, Get.isDarkMode ? Colors.white : Colors.black),
+                                    ),
+                                    width: Get.width/100*70,
                                   ),
-                                  width: Get.width/100*70,
-                                ),
-                                SizedBox(height: 2,),
-                                Text("${DateFormat("MMM dd,yyyy - HH:mm").format(DateTime.parse(transactions[index]['created_at']).toLocal())}",
-                                  style: TypographyStyles.normalText(12, Get.isDarkMode ? colors.Colors().lightCardBG.withOpacity(0.6) : colors.Colors().darkGrey(0.7),),
-                                )
-                              ],
+                                  SizedBox(height: 8,),
+                                  Text("${DateFormat("MMM dd,yyyy - HH:mm").format(DateTime.parse(transactions[index]['created_at']).toLocal())}",
+                                    style: TypographyStyles.text(14),
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                          Text((Utils.formatCurrency.format(transactions[index]['amount'])).toString(),style: TypographyStyles.walletTransactions(16, transactions[index]['type']),),
-                        ],
+                            Text((Utils.formatCurrency.format(transactions[index]['amount'])).toString(),style: TypographyStyles.walletTransactions(16, transactions[index]['type']),),
+                          ],
+                        ),
                       ),
                     );
                   },

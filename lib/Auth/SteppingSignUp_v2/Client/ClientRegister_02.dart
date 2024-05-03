@@ -8,6 +8,7 @@ import 'package:north_star/Styles/PickerDialogStyles.dart';
 import 'package:north_star/Utils/PopUps.dart';
 
 import '../../../Models/HttpClient.dart';
+import '../../../components/Buttons.dart';
 import '../../CommonAuthUtils.dart';
 import '../../SteppingSignUp/SignUpData.dart';
 
@@ -72,10 +73,10 @@ class _ClientRegisterSecondState extends State<ClientRegisterSecond> {
       );
 
   void signUp() async {
-    isLoading.value = true;
     // print(signUpData.toClientJson());
 
     if (_countryController.text.isEmpty ||
+        _addressController.text.isEmpty ||
         _contactPersonController.text.isEmpty ||
         _emergencyContactController.text.isEmpty ||
         _passwordController.text.isEmpty ||
@@ -89,16 +90,19 @@ class _ClientRegisterSecondState extends State<ClientRegisterSecond> {
       signUpData.password = _passwordController.text;
       signUpData.passwordConfirmation = _confirmPasswordController.text;
 
+      isLoading.value = true;
       Map res = await httpClient.signUp(signUpData.toClientJson());
       print(signUpData.countryCode);
       if (res['code'] == 200) {
+        isLoading.value = false;
         CommonAuthUtils.signIn(res);
         showSnack(
             'Welcome to NorthStar!', 'Your personal fitness Application!');
         CommonAuthUtils.showWelcomeDialog();
       } else {
         print(res.toString());
-        showSnackResponse('Something went wrong!', res);
+        isLoading.value = false;
+        showSnack('Something went wrong!', res['data']['message'],status: PopupNotificationStatus.error);
       }
     }
   }
@@ -222,13 +226,16 @@ class _ClientRegisterSecondState extends State<ClientRegisterSecond> {
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
                     ),
-                    labelText: 'Country Of Residence',
-                    labelStyle: TextStyle(
-                      color: isDark ? Colors.white70 : Colors.black54,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Poppins',
-                      fontSize: 16,
-                    ),
+                    label: Row(children: [Text(
+                      "Country Of Residence",
+                      style:  TextStyle(
+                        color: isDark ? Colors.white70 : Colors.black54,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                      ),),
+                      Text(" *",style: TextStyle(color: Colors.red),)
+                    ],),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
                   style: TextStyle(color: isDark ? Colors.white : Colors.black),
@@ -278,13 +285,16 @@ class _ClientRegisterSecondState extends State<ClientRegisterSecond> {
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
                     ),
-                    labelText: 'Shipping Address',
-                    labelStyle: TextStyle(
-                      color: isDark ? Colors.white70 : Colors.black54,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Poppins',
-                      fontSize: 16,
-                    ),
+                    label: Row(children: [Text(
+                      "Shipping Address",
+                      style:  TextStyle(
+                        color: isDark ? Colors.white70 : Colors.black54,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                      ),),
+                      Text(" *",style: TextStyle(color: Colors.red),)
+                    ],),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
                   style: TextStyle(color: isDark ? Colors.white : Colors.black),
@@ -293,18 +303,21 @@ class _ClientRegisterSecondState extends State<ClientRegisterSecond> {
                 TextFormField(
                   controller: _contactPersonController,
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.call_outlined,
+                    prefixIcon: Icon(Icons.person_2_outlined,
                         color: isDark ? Colors.white : Colors.black, size: 18),
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
                     ),
-                    labelText: 'Contact Person',
-                    labelStyle: TextStyle(
-                      color: isDark ? Colors.white70 : Colors.black54,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Poppins',
-                      fontSize: 16,
-                    ),
+                    label: Row(children: [Text(
+                      "Contact Person",
+                      style:  TextStyle(
+                        color: isDark ? Colors.white70 : Colors.black54,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                      ),),
+                      Text(" *",style: TextStyle(color: Colors.red),)
+                    ],),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
                   style: TextStyle(color: isDark ? Colors.white : Colors.black),
@@ -322,13 +335,16 @@ class _ClientRegisterSecondState extends State<ClientRegisterSecond> {
                       border: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.white),
                       ),
-                      labelText: 'Emergency Contact',
-                      labelStyle: TextStyle(
-                        color: isDark ? Colors.white70 : Colors.black54,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: 'Poppins',
-                        fontSize: 16,
-                      ),
+                      label: Row(children: [Text(
+                        "Emergency Contact",
+                        style:  TextStyle(
+                          color: isDark ? Colors.white70 : Colors.black54,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: 'Poppins',
+                          fontSize: 16,
+                        ),),
+                        Text(" *",style: TextStyle(color: Colors.red),)
+                      ],),
                       contentPadding: EdgeInsets.only(bottom: 0),
                     ),
                     style: TextStyle(color: isDark ? Colors.white : Colors.black),
@@ -384,13 +400,16 @@ class _ClientRegisterSecondState extends State<ClientRegisterSecond> {
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
                     ),
-                    labelText: 'Password',
-                    labelStyle: TextStyle(
-                      color: isDark ? Colors.white70 : Colors.black54,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Poppins',
-                      fontSize: 16,
-                    ),
+                    label: Row(children: [Text(
+                      "Password",
+                      style:  TextStyle(
+                        color: isDark ? Colors.white70 : Colors.black54,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                      ),),
+                      Text(" *",style: TextStyle(color: Colors.red),)
+                    ],),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
                   style: TextStyle(color: isDark ? Colors.white : Colors.black),
@@ -419,53 +438,31 @@ class _ClientRegisterSecondState extends State<ClientRegisterSecond> {
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
                     ),
-                    labelText: 'Confirm Password',
-                    labelStyle: TextStyle(
-                      color: isDark ? Colors.white70 : Colors.black54,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Poppins',
-                      fontSize: 16,
-                    ),
+                    label: Row(children: [Text(
+                      "Confirm Password",
+                      style:  TextStyle(
+                        color: isDark ? Colors.white70 : Colors.black54,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                      ),),
+                      Text(" *",style: TextStyle(color: Colors.red),)
+                    ],),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),
                   style: TextStyle(color: isDark ? Colors.white : Colors.black),
                 ),
                 SizedBox(height: contentHeight),
-                Center(
-                  child: Container(
-                    width: 350,
-                    height: 64,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        signUp();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFFFFB700),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            'sign up'.toUpperCase(),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Color(0xFF1B1F24),
-                              fontSize: 22,
-                              fontFamily: 'Bebas Neue',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                Obx(()=> Center(
+                  child: Buttons.yellowFlatButton(
+                    label: "Signup",
+                    isLoading: isLoading.value,
+                    width: Get.width - 40,
+                    onPressed: () {
+                      signUp();
+                    },
                   ),
+                ),
                 ),
               ],
             ),

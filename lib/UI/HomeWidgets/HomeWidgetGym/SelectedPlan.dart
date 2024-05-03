@@ -454,7 +454,7 @@ class SelectedPlan extends StatelessWidget {
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(50),
-                                color: AppColors.accentColor,
+                                color: Color(0xFF68FC80),
                               ),
                               child: Padding(
                                 padding: EdgeInsets.symmetric(

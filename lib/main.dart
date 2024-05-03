@@ -177,7 +177,6 @@ class ThemeAll {
     checkboxTheme: CheckboxThemeData(
       fillColor: MaterialStateProperty.all(Colors.white),
       checkColor: MaterialStateProperty.all(Colors.black),
-
       /// Change to your desired color
     ),
     inputDecorationTheme: InputDecorationTheme(
@@ -201,6 +200,7 @@ class ThemeAll {
         elevation: 0,
         centerTitle: true,
         backgroundColor: Color(0xFFF2F2F2),
+        iconTheme: IconThemeData(size: 30,color: AppColors.primary1Color),
         titleTextStyle: TextStyle(
           color: Colors.black,
           fontSize: 20,

@@ -12,6 +12,10 @@ import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:north_star/Utils/PopUps.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 
+import '../../Styles/AppColors.dart';
+import '../../components/Buttons.dart';
+import '../../components/Radios.dart';
+
 class CompleteUserProfile extends StatelessWidget {
   const CompleteUserProfile({Key? key}) : super(key: key);
 
@@ -117,45 +121,69 @@ class CompleteUserProfile extends StatelessWidget {
                   SizedBox(
                     height: 30,
                   ),
-                  Column(
+                  Row(
                     children: [
-                      Container(
-                        width: Get.width,
-                        child: ElevatedButton(
-                          style: marital.value == 'single'
-                              ? SignUpStyles.selectedButton()
-                              : SignUpStyles.notSelectedButton(),
-                          onPressed: () {
-                            marital.value = 'single';
-                          },
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 20),
-                            child: Text(
-                              'Single',
-                              style: TypographyStyles.text(17).copyWith(color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
-                            ),
-                          ),
+                      // ElevatedButton(
+                      //   style: marital.value == 'single'
+                      //       ? SignUpStyles.selectedButton()
+                      //       : SignUpStyles.notSelectedButton(),
+                      //   onPressed: () {
+                      //     marital.value = 'single';
+                      //   },
+                      //   child: Padding(
+                      //     padding: EdgeInsets.symmetric(vertical: 20),
+                      //     child: Text(
+                      //       'Single',
+                      //       style: TypographyStyles.text(17).copyWith(color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
+                      //     ),
+                      //   ),
+                      // ),
+                      SizedBox(width: 13),
+                      InkWell(
+                        onTap:  (){marital.value = 'single';},
+                        splashColor: Colors.transparent,
+                        child: Container(
+                          height: 50,
+                          width: 140,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Obx(()=>marital.value=='single'?Radios.radioChecked2():Radios.radio()),
+                            SizedBox(width: 10,),
+                            Text("Single",style: TypographyStyles.text(14),)
+                          ],),
                         ),
                       ),
-                      SizedBox(height: 13),
-                      Container(
-                        width: Get.width,
-                        child: ElevatedButton(
-                          style: marital.value == 'married'
-                              ? SignUpStyles.selectedButton()
-                              : SignUpStyles.notSelectedButton(),
-                          onPressed: () {
-                            marital.value = 'married';
-                          },
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 20),
-                            child: Text(
-                              'Married',
-                              style: TypographyStyles.text(17),
-                            ),
-                          ),
+                      InkWell(
+                        onTap:  (){marital.value = 'married';},
+                        splashColor: Colors.transparent,
+                        child: Container(
+                          height: 50,
+                          width: 140,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                            Obx(()=>marital.value=='married'?Radios.radioChecked2():Radios.radio()),
+                            SizedBox(width: 10,),
+                            Text("Married",style: TypographyStyles.text(14),)
+                          ],),
                         ),
                       ),
+                      // ElevatedButton(
+                      //   style: marital.value == 'married'
+                      //       ? SignUpStyles.selectedButton()
+                      //       : SignUpStyles.notSelectedButton(),
+                      //   onPressed: () {
+                      //     marital.value = 'married';
+                      //   },
+                      //   child: Padding(
+                      //     padding: EdgeInsets.symmetric(vertical: 20),
+                      //     child: Text(
+                      //       'Married',
+                      //       style: TypographyStyles.text(17),
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                   SizedBox(
@@ -168,39 +196,27 @@ class CompleteUserProfile extends StatelessWidget {
                   SizedBox(
                     height: 20,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          if (noOfChildren.value > 0) noOfChildren.value--;
-                        },
-                        child: Icon(Icons.remove, color: Colors.white),
-                        style: ElevatedButton.styleFrom(
-                          shape: CircleBorder(),
-                          padding: EdgeInsets.all(10),
-                          backgroundColor: colors.Colors().deepGrey(1),
-                          foregroundColor: colors.Colors().deepYellow(1),
-                        ),
+                  Container(
+                    decoration:BoxDecoration(borderRadius: BorderRadius.circular(5),color: AppColors().getSecondaryColor()),
+                    height: 56,
+                    width: 212,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Buttons.yellowFlatButton(onPressed: () {
+                            if (noOfChildren.value > 0) noOfChildren.value--;
+                          },label: "-",svg: "assets/svgs/minus.svg",width: 64,fontSize: 40,height: 36),
+                          Text(noOfChildren.value.toString(),
+                              style: TypographyStyles.title(21)),
+
+                          Buttons.yellowFlatButton(onPressed: () {
+                            noOfChildren.value++;
+                          },label: "+",svg: "assets/svgs/plus.svg",width: 64,fontSize: 16,height: 36),
+                        ],
                       ),
-                      SizedBox(width: 16),
-                      Text(noOfChildren.value.toString(),
-                          style: TypographyStyles.title(21)
-                              .copyWith(color: Get.isDarkMode ? colors.Colors().deepYellow(1) : colors.Colors().lightBlack(1),)),
-                      SizedBox(width: 16),
-                      ElevatedButton(
-                        onPressed: () {
-                          noOfChildren.value++;
-                        },
-                        child: Icon(Icons.add, color: Colors.white),
-                        style: ElevatedButton.styleFrom(
-                          shape: CircleBorder(),
-                          padding: EdgeInsets.all(10),
-                          backgroundColor: colors.Colors().deepGrey(1),
-                          foregroundColor: colors.Colors().deepYellow(1), // <-- Splash color
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                   SizedBox(
                     height: 20,
@@ -298,8 +314,8 @@ class CompleteUserProfile extends StatelessWidget {
                                 }
                               },
                               value: selectedHealthConditions.contains(healthConditions[index]),
-                              checkColor: Colors.white,
-                              activeColor: colors.Colors().deepYellow(1),
+                              checkColor: AppColors.textOnAccentColor,
+                              activeColor: AppColors.accentColor,
                             )),
                           );
                         },
@@ -310,19 +326,9 @@ class CompleteUserProfile extends StatelessWidget {
       ),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-        child: ElevatedButton(
-          style: ButtonStyles.primaryButton(),
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [Text('SAVE & COMPLETE')],
-            ),
-          ),
-          onPressed: () {
-            saveAdditionalData();
-          },
-        ),
+        child: Buttons.yellowFlatButton(onPressed: () {
+          saveAdditionalData();
+        },label: "Save & complete"),
       ),
     );
   }

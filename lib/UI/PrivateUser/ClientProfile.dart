@@ -1,6 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Controllers/WatchDataController.dart';
 import 'package:north_star/Models/AuthUser.dart';
@@ -57,7 +60,6 @@ class ClientProfile extends StatelessWidget {
       }, trainerID);
 
       if (res['code'] == 200) {
-
         Get.back();
         getProfile();
       } else {
@@ -74,10 +76,13 @@ class ClientProfile extends StatelessWidget {
       });
       if (res['code'] == 200) {
         Get.back();
-        showSnack('Review Added!', 'Your review has been added successfully!');
+        showSnack('Review Added!', 'Your review has been added successfully!',status: PopupNotificationStatus.success);
         getProfile();
       } else {
         print(res);
+        Map resMap = res['data'];
+        print(resMap.keys.first);
+        showSnack('Something went wrong!', res['data'][resMap.keys.first][0],status: PopupNotificationStatus.warning);
         ready.value = true;
       }
     }
@@ -126,7 +131,7 @@ class ClientProfile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(data['name'], style: TypographyStyles.title(16)),
+                Container(width:Get.width-190,child: Text(data['name'],overflow: TextOverflow.ellipsis, style: TypographyStyles.title(16))),
                 SizedBox(
                   height: 5,
                 ),
@@ -153,7 +158,7 @@ class ClientProfile extends StatelessWidget {
             SizedBox(
               width: Get.width / 100 * 60,
               child: RatingBar.builder(
-                initialRating: 0,
+                initialRating: noOfStars.value,
                 minRating: 1,
                 itemSize: 35,
                 unratedColor: Get.isDarkMode
@@ -204,54 +209,67 @@ class ClientProfile extends StatelessWidget {
         actionsPadding: EdgeInsets.only(bottom: 15),
         contentPadding: EdgeInsets.fromLTRB(25, 20, 25, 10),
         actions: <Widget>[
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: 15),
+          //   child: MaterialButton(
+          //     onPressed: () async {
+          //       newReview(data['id'], noOfStars.value.toInt(),
+          //           commentController.text);
+          //     },
+          //     minWidth: Get.width,
+          //     shape: RoundedRectangleBorder(
+          //       borderRadius: BorderRadius.circular(12),
+          //     ),
+          //     color: Colors.black,
+          //     child: Padding(
+          //       padding: const EdgeInsets.symmetric(vertical: 15),
+          //       child: Text(
+          //         "SUBMIT",
+          //         style: TextStyle(
+          //           color: Colors.white,
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: MaterialButton(
-              onPressed: () async {
-                newReview(data['id'], noOfStars.value.toInt(),
-                    commentController.text);
-              },
-              minWidth: Get.width,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              color: Colors.black,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 15),
-                child: Text(
-                  "SUBMIT",
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            child: Buttons.yellowFlatButton( onPressed: () async {
+                    newReview(data['id'], noOfStars.value.toInt(),
+              commentController.text);
+                  },label: "Submit",width: Get.width),
           ),
           SizedBox(
             height: 10,
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: MaterialButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              minWidth: Get.width,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  side: BorderSide(
-                    color: Get.isDarkMode
-                        ? Themes.mainThemeColorAccent.shade500.withOpacity(0.5)
-                        : colors.Colors().darkGrey(1),
-                  )),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 15),
-                child: Text(
-                  "CANCEL",
-                ),
-              ),
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            child: Buttons.outlineButton( onPressed: ()  {
+              Get.back();
+            },label: "Cancel",width: Get.width),
           ),
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: 15),
+          //   child: MaterialButton(
+          //     onPressed: () {
+          //       Navigator.pop(context);
+          //     },
+          //     minWidth: Get.width,
+          //     shape: RoundedRectangleBorder(
+          //         borderRadius: BorderRadius.circular(12),
+          //         side: BorderSide(
+          //           color: Get.isDarkMode
+          //               ? Themes.mainThemeColorAccent.shade500.withOpacity(0.5)
+          //               : colors.Colors().darkGrey(1),
+          //         )),
+          //     child: Padding(
+          //       padding: const EdgeInsets.symmetric(vertical: 15),
+          //       child: Text(
+          //         "CANCEL",
+          //       ),
+          //     ),
+          //   ),
+          // ),
         ],
       );
     }
@@ -260,9 +278,7 @@ class ClientProfile extends StatelessWidget {
       return Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          color: Get.isDarkMode
-              ? colors.Colors().deepGrey(1)
-              : colors.Colors().lightCardBG,
+          color: AppColors().getSecondaryColor(),
         ),
         child: Padding(
             padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
@@ -282,26 +298,34 @@ class ClientProfile extends StatelessWidget {
                               HttpClient.s3BaseUrl + data[type]['avatar_url']),
                         ),
                         SizedBox(
-                          width: 10,
+                          width: 25,
                         ),
                         Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(data[type]['name'],
-                                style: TypographyStyles.title(16)),
+                            Container(
+                              width: Get.width-200,
+                              child: Text(data[type]['name'],
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TypographyStyles.title(16)),
+                            ),
                             SizedBox(
                               height: 5,
                             ),
-                            Text(data[type]['email'],
-                                style: TypographyStyles.text(14)),
+                            Container(
+                              width: Get.width-200,
+                              child: Text(data[type]['email'],
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TypographyStyles.text(14)),
+                            ),
                           ],
                         ),
                       ],
                     ),
                     IconButton(
-                      icon: Icon(Icons.delete),
+                      icon: Container(padding: EdgeInsets.all(6),decoration: BoxDecoration(color: Color(0xFFFFB8B8),borderRadius: BorderRadius.circular(5)),child: SvgPicture.asset("assets/svgs/delete.svg",width: 24,height: 24,color: AppColors().getSecondaryColor(),),),
                       onPressed: () {
                         CommonConfirmDialog.confirm('Remove').then((value) {
                           if (value) {
@@ -317,72 +341,101 @@ class ClientProfile extends StatelessWidget {
                   ],
                 ),
                 SizedBox(
-                  height: 10,
-                ),
-                Divider(
-                  thickness: 1,
-                  color: Themes.mainThemeColorAccent.shade300.withOpacity(0.5),
+                  height: 20,
                 ),
                 Container(
                   width: Get.width * 0.9,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Expanded(
-                        child: TextButton(
-                          onPressed: () async {
-                            Map res = await httpClient
-                                .getOneUser(data[type]['id'].toString());
-                            Get.to(() =>
-                                TrainerView(trainerObj: res['data']['user']));
-                          },
-                          child: Text(
-                            "View Profile",
-                            style: TypographyStyles.boldText(
-                              14,
-                              Get.isDarkMode
-                                  ? Themes.mainThemeColorAccent.shade100
-                                  : colors.Colors().lightBlack(1),
-                            ),
-                          ),
-                        ),
+                      // Expanded(
+                      //   child: TextButton(
+                      //     onPressed: () async {
+                      //       Map res = await httpClient
+                      //           .getOneUser(data[type]['id'].toString());
+                      //       Get.to(() =>
+                      //           TrainerView(trainerObj: res['data']['user']));
+                      //     },
+                      //     child: Text(
+                      //       "View Profile",
+                      //       style: TypographyStyles.boldText(
+                      //         14,
+                      //         Get.isDarkMode
+                      //             ? Themes.mainThemeColorAccent.shade100
+                      //             : colors.Colors().lightBlack(1),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
+
+                      Expanded(child:
+                      Buttons.outlineTextIconButton(  onPressed: () async {
+                        Map res = await httpClient
+                            .getOneUser(data[type]['id'].toString());
+                        Get.to(() =>
+                            TrainerView(trainerObj: res['data']['user']));
+                      },
+                          icon:Icons.ac_unit,
+                          svg:"assets/svgs/carbon_view.svg",
+                          label: "View Profile",
+                          fontSize: 16,
+                          fontFamily: "Poppins",
+                          borderWidth: 1,
+                        outlineColor: AppColors().getPrimaryColor(reverse: true)
                       ),
-                      Expanded(
-                        child: MaterialButton(
-                          onPressed: () {
-                            showDialog(
-                                context: context,
-                                builder: (context) =>
-                                    alert(context, data[type]));
-                          },
-                          elevation: 0,
-                          shape: StadiumBorder(),
-                          color:
-                              Themes.mainThemeColor.shade500.withOpacity(0.15),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.rate_review_rounded,
-                                color: Get.isDarkMode
-                                    ? Themes.mainThemeColor.shade500
-                                    : colors.Colors().lightBlack(1),
-                                size: 16,
-                              ),
-                              SizedBox(width: 5),
-                              Text(
-                                "Write a Review",
-                                style: TypographyStyles.boldText(
-                                  14,
-                                  Get.isDarkMode
-                                      ? Themes.mainThemeColor.shade500
-                                      : colors.Colors().lightBlack(1),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
                       ),
+                      SizedBox(width: 16,),
+                      Expanded(child:
+                      Buttons.yellowTextIconButton(onPressed: (){
+                        showDialog(
+                            context: context,
+                            builder: (context) =>
+                                alert(context, data[type])
+                        );
+                      },
+                          icon:Icons.ac_unit,
+                          svg:"assets/svgs/write.svg",
+                        label: "Write A Review",
+                        fontSize: 16,
+                        fontFamily: "Poppins"
+                      ),
+                      ),
+                      // Expanded(
+                      //   child: MaterialButton(
+                      //     onPressed: () {
+                      //       showDialog(
+                      //           context: context,
+                      //           builder: (context) =>
+                      //               alert(context, data[type]));
+                      //     },
+                      //     elevation: 0,
+                      //     shape: StadiumBorder(),
+                      //     color:
+                      //         Themes.mainThemeColor.shade500.withOpacity(0.15),
+                      //     child: Row(
+                      //       mainAxisAlignment: MainAxisAlignment.center,
+                      //       children: [
+                      //         Icon(
+                      //           Icons.rate_review_rounded,
+                      //           color: Get.isDarkMode
+                      //               ? Themes.mainThemeColor.shade500
+                      //               : colors.Colors().lightBlack(1),
+                      //           size: 16,
+                      //         ),
+                      //         SizedBox(width: 5),
+                      //         Text(
+                      //           "Write a Review",
+                      //           style: TypographyStyles.boldText(
+                      //             14,
+                      //             Get.isDarkMode
+                      //                 ? Themes.mainThemeColor.shade500
+                      //                 : colors.Colors().lightBlack(1),
+                      //           ),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                 )
@@ -779,29 +832,33 @@ class ClientProfile extends StatelessWidget {
                                       style: TypographyStyles.text(16).copyWith(
                                           color: colors.Colors().darkGrey(1))),
                                 )),
-                        SizedBox(height: 8),
+                        SizedBox(height: 42),
                         Visibility(
                           visible: data['physical_trainer'] != null &&
                               data['diet_trainer'] != null,
-                          child: Container(
-                            child: ElevatedButton(
-                              onPressed: () {
-                                CommonConfirmDialog.confirm('Switch')
-                                    .then((value) {
-                                  if (value) {
-                                    ready.value = false;
-                                    httpClient.switchTrainers().then((value) {
-                                      getProfile();
-                                    });
-                                  }
+                          // child: Container(
+                          //   child: ElevatedButton(
+                          //
+                          //     child: Text('Switch Trainers'),
+                          //   ),
+                          // ),
+                          child: Buttons.yellowFlatButton(
+                            onPressed: () {
+                            CommonConfirmDialog.confirm('Switch')
+                                .then((value) {
+                              if (value) {
+                                ready.value = false;
+                                httpClient.switchTrainers().then((value) {
+                                  getProfile();
                                 });
-                              },
-                              child: Text('Switch Trainers'),
-                            ),
+                              }
+                            },);
+                          },
+                            label: "Switch Trainers",
+                            width: 186
                           ),
                         ),
                         SizedBox(height: 16),
-                        Divider(),
                         SizedBox(height: 16),
                         SizedBox(height: 10),
                         GestureDetector(
@@ -832,7 +889,7 @@ class ClientProfile extends StatelessWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Health Data Sync'),
+                              Text('Health Data Sync',style: TypographyStyles.title(20),),
                               CheckButton(
                                 isChecked: authUser.user['health_data'],
                               ),

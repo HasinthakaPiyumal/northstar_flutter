@@ -62,6 +62,6 @@ class TypographyStyles {
     return TextStyle(
         fontSize: size.toDouble(),
         fontWeight: FontWeight.bold,
-        color: type == 'Credit' ? Color(0xff02B88D) : Color(0xffDB1E00));
+        color: type == 'Credit' ? Color(0xff02B88D) : Get.isDarkMode?Color(0xFFFFB8B8):Colors.redAccent);
   }
 }

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Models/NSNotification.dart';
+import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/ButtonStyles.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetDietaryConsultation/AddNewDietaryConsultation.dart';
@@ -59,8 +60,8 @@ class HomeWidgetDietaryConsultation extends StatelessWidget {
             getDietConsultations();
           });
         },
-        backgroundColor: Colors.black,
-        child: Icon(Icons.add, color: Colors.white),
+        backgroundColor: AppColors.accentColor,
+        child: Icon(Icons.add, color: AppColors.textOnAccentColor,size: 32,),
       ):null,
       body: Padding(
         padding: EdgeInsets.only(top: 20),
@@ -115,7 +116,7 @@ class HomeWidgetDietaryConsultation extends StatelessWidget {
                               Text(DateFormat("EEEE, MMM dd, yyyy").format(DateTime.parse(dietConsultations.value[index]['created_at'])),
                                 style: TypographyStyles.normalText(14, Get.isDarkMode ? Colors.white : Colors.black),
                               ),
-                              SizedBox(height: 5,),
+                              SizedBox(height: 15,),
                               Text("Dietary Consultation Form #${dietConsultations.value[index]['id']}",
                                 style: TypographyStyles.boldText(16, Get.isDarkMode ? Colors.white : Colors.black),
                               )

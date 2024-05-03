@@ -20,6 +20,7 @@ class NotificationServices{
     messaging.onTokenRefresh.listen((event) {
       event.toString();
       print("Token refreshed");
+      saveToken();
     });
   }
 

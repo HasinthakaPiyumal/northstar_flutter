@@ -401,124 +401,126 @@ class Home extends StatelessWidget {
                                           )
                                               : Container(),
                                           SizedBox(height: 4),
-                                          Container(
-                                            child: homeData[
-                                            'workouts_total'] !=
-                                                0
-                                                ? Stack(
-                                              alignment:
-                                              Alignment
-                                                  .center,
-                                              children: [
-                                                Container(
-                                                  height: 128,
-                                                  width: 128,
-                                                ),
-                                                Center(
-                                                  child:
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(vertical: homeData['workouts_total'] != 0?0:72.0),
+                                            child: Container(
+                                              child: (homeData[
+                                              'workouts_total'] !=
+                                                  0)
+                                                  ? Stack(
+                                                alignment:
+                                                Alignment
+                                                    .center,
+                                                children: [
                                                   Container(
-                                                    height: 150,
-                                                    width: 150,
-                                                    child: SfCircularChart(
-                                                        margin: EdgeInsets
-                                                            .zero,
-                                                        series: <RadialBarSeries<
-                                                            ChartData,
-                                                            int>>[
-                                                          RadialBarSeries<
-                                                              ChartData,
-                                                              int>(
-                                                            useSeriesColor:
-                                                            true,
-                                                            trackOpacity:
-                                                            0.2,
-                                                            maximumValue:
-                                                            100,
-                                                            radius:
-                                                            "60",
-                                                            innerRadius:
-                                                            "48",
-                                                            gap:
-                                                            "3",
-                                                            cornerStyle:
-                                                            CornerStyle.bothCurve,
-                                                            dataSource: [
-                                                              ChartData(
-                                                                radius: 3,
-                                                                value: double.parse(homeData['workouts_done'].toString()) / double.parse(homeData['workouts_total']) * 100,
-                                                                color: colors.Colors().deepYellow(1),
-                                                              ),
-                                                            ],
-                                                            //pointRadiusMapper: (ChartData data, _) => data.radius.toString(),
-                                                            pointColorMapper: (ChartData data, _) =>
-                                                            data.color,
-                                                            xValueMapper: (ChartData sales, _) =>
-                                                            0,
-                                                            yValueMapper: (ChartData sales, _) =>
-                                                            sales.value,
-                                                          )
-                                                        ]),
+                                                    height: 128,
+                                                    width: 128,
                                                   ),
-                                                ),
-                                                // Container(
-                                                //   padding: const EdgeInsets.all(8),
-                                                //   width: 128,
-                                                //   height: 128,
-                                                //   child: CircularProgressIndicator(
-                                                //     strokeWidth: 8,
-                                                //     value: double.parse(homeData['workouts_done'].toString()) / double.parse(homeData['workouts_total'].toString()),
-                                                //     valueColor: new AlwaysStoppedAnimation<Color>(Themes.mainThemeColor),
-                                                //   ),
-                                                // ),
-                                                // Container(
-                                                //   padding: const EdgeInsets.all(8),
-                                                //   width: 128,
-                                                //   height: 128,
-                                                //   child: CircularProgressIndicator(
-                                                //     strokeWidth: 8,
-                                                //     value: 1,
-                                                //     valueColor: new AlwaysStoppedAnimation<Color>(Themes.mainThemeColor.withOpacity(0.125)),
-                                                //   ),
-                                                // ),
-                                                Container(
-                                                  child: Text(
-                                                      (double.parse(homeData['workouts_done'].toString()) / double.parse(homeData['workouts_total'].toString()) * 100.0)
-                                                          .round()
-                                                          .toString() +
-                                                          '%',
-                                                      style: TypographyStyles
-                                                          .boldText(
-                                                        24,
-                                                        Get.isDarkMode
-                                                            ? Themes.mainThemeColorAccent.shade100
-                                                            : colors.Colors().lightBlack(1),
-                                                      )),
-                                                ),
-                                              ],
-                                            )
-                                                : Container(
-                                              constraints:
-                                              BoxConstraints(
-                                                minHeight: 100,
-                                              ),
-                                              child: Center(
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .center,
-                                                  children: [
-                                                    SizedBox(
-                                                      height: 5,
+                                                  Center(
+                                                    child:
+                                                    Container(
+                                                      height: 150,
+                                                      width: 150,
+                                                      child: SfCircularChart(
+                                                          margin: EdgeInsets
+                                                              .zero,
+                                                          series: <RadialBarSeries<
+                                                              ChartData,
+                                                              int>>[
+                                                            RadialBarSeries<
+                                                                ChartData,
+                                                                int>(
+                                                              useSeriesColor:
+                                                              true,
+                                                              trackOpacity:
+                                                              0.2,
+                                                              maximumValue:
+                                                              100,
+                                                              radius:
+                                                              "60",
+                                                              innerRadius:
+                                                              "48",
+                                                              gap:
+                                                              "3",
+                                                              cornerStyle:
+                                                              CornerStyle.bothFlat,
+                                                              dataSource: [
+                                                                ChartData(
+                                                                  radius: 3,
+                                                                  value: double.parse(homeData['workouts_done'].toString()) / double.parse(homeData['workouts_total']) * 100,
+                                                                  color: Color(0xff68FC80),
+                                                                ),
+                                                              ],
+                                                              //pointRadiusMapper: (ChartData data, _) => data.radius.toString(),
+                                                              pointColorMapper: (ChartData data, _) =>
+                                                              data.color,
+                                                              xValueMapper: (ChartData sales, _) =>
+                                                              0,
+                                                              yValueMapper: (ChartData sales, _) =>
+                                                              sales.value,
+                                                            )
+                                                          ]),
                                                     ),
-                                                    Text(
-                                                      'No workouts for today',
-                                                    ),
-                                                  ],
+                                                  ),
+                                                  // Container(
+                                                  //   padding: const EdgeInsets.all(8),
+                                                  //   width: 128,
+                                                  //   height: 128,
+                                                  //   child: CircularProgressIndicator(
+                                                  //     strokeWidth: 8,
+                                                  //     value: double.parse(homeData['workouts_done'].toString()) / double.parse(homeData['workouts_total'].toString()),
+                                                  //     valueColor: new AlwaysStoppedAnimation<Color>(Themes.mainThemeColor),
+                                                  //   ),
+                                                  // ),
+                                                  // Container(
+                                                  //   padding: const EdgeInsets.all(8),
+                                                  //   width: 128,
+                                                  //   height: 128,
+                                                  //   child: CircularProgressIndicator(
+                                                  //     strokeWidth: 8,
+                                                  //     value: 1,
+                                                  //     valueColor: new AlwaysStoppedAnimation<Color>(Themes.mainThemeColor.withOpacity(0.125)),
+                                                  //   ),
+                                                  // ),
+                                                  Container(
+                                                    child: Text(
+                                                        (double.parse(homeData['workouts_done'].toString()) / double.parse(homeData['workouts_total'].toString()) * 100.0)
+                                                            .round()
+                                                            .toString() +
+                                                            '%',
+                                                        style: TypographyStyles
+                                                            .boldText(
+                                                          24,
+                                                          Get.isDarkMode
+                                                              ? Themes.mainThemeColorAccent.shade100
+                                                              : colors.Colors().lightBlack(1),
+                                                        )),
+                                                  ),
+                                                ],
+                                              )
+                                                  : Container(
+                                                constraints:
+                                                BoxConstraints(
+                                                  minHeight: 100,
+                                                ),
+                                                child: Center(
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .center,
+                                                    children: [
+                                                      SizedBox(
+                                                        height: 5,
+                                                      ),
+                                                      Text(
+                                                        'No workouts for today',
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                             ),
                                           ),
-                                          SizedBox(height: 8),
                                           homeData['workouts_total'] !=
                                               0
                                               ? Row(
@@ -526,41 +528,55 @@ class Home extends StatelessWidget {
                                             MainAxisAlignment
                                                 .spaceEvenly,
                                             children: [
-                                              Column(
-                                                children: [
-                                                  Text(
-                                                      homeData[
-                                                      'workouts_done']
-                                                          .toString(),
-                                                      style: TextStyle(
-                                                          fontSize:
-                                                          27,
-                                                          fontWeight:
-                                                          FontWeight.bold)),
-                                                  Text(
-                                                      'Exercises'),
-                                                ],
+                                              Container(
+                                                padding: EdgeInsets.all(10),
+                                                decoration: BoxDecoration(
+                                                  color: AppColors().getPrimaryColor(),
+                                                  borderRadius: BorderRadius.circular(10)
+                                                ),
+                                                child: Column(
+                                                  children: [
+                                                    Text(
+                                                        'Exercises'),
+                                                    Text(
+                                                        homeData[
+                                                        'workouts_done']
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                            fontSize:
+                                                            27,
+                                                            fontWeight:
+                                                            FontWeight.bold)),
+                                                  ],
+                                                ),
                                               ),
-                                              Column(
-                                                children: [
-                                                  Text(
-                                                      (int.parse(homeData['workouts_total'].toString()) -
-                                                          int.parse(homeData['workouts_done']
-                                                              .toString()))
-                                                          .toString(),
-                                                      style: TextStyle(
-                                                          fontSize:
-                                                          27,
-                                                          fontWeight:
-                                                          FontWeight.bold)),
-                                                  Text(
-                                                      'Remaining'),
-                                                ],
+                                              Container(
+                                                padding: EdgeInsets.all(10),
+                                                decoration: BoxDecoration(
+                                                    color: AppColors().getPrimaryColor(),
+                                                    borderRadius: BorderRadius.circular(10)
+                                                ),
+                                                child: Column(
+                                                  children: [
+                                                    Text(
+                                                        'Remaining'),
+                                                    Text(
+                                                        (int.parse(homeData['workouts_total'].toString()) -
+                                                            int.parse(homeData['workouts_done']
+                                                                .toString()))
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                            fontSize:
+                                                            27,
+                                                            fontWeight:
+                                                            FontWeight.bold)),
+                                                  ],
+                                                ),
                                               ),
                                             ],
                                           )
                                               : Container(),
-                                          SizedBox(height: 10),
+                                          // SizedBox(height: 10),
                                         ],
                                       ),
                                     ),

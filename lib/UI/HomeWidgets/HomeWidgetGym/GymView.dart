@@ -56,41 +56,65 @@ class GymView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Padding(
-          padding: EdgeInsets.symmetric(vertical: 0),
-          child: Row(
-            children: [
-              CircleAvatar(
-                radius: 20,
-                backgroundImage: CachedNetworkImageProvider(
-                  HttpClient.s3BaseUrl + gymObj['user']['avatar_url'],
-                ),
-              ),
-              SizedBox(
-                width: 16,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(gymObj['gym_name'], style: TypographyStyles.title(20)),
-                  SizedBox(
-                    height: 2,
-                  ),
-                  Text(
-                    "${gymObj['gym_city']}, ${gymObj['gym_country']}",
-                    style: TypographyStyles.textWithWeight(13, FontWeight.w300),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
+        // title: Padding(
+        //   padding: EdgeInsets.symmetric(vertical: 0),
+        //   child: Row(
+        //     children: [
+        //       CircleAvatar(
+        //         radius: 20,
+        //         backgroundImage: CachedNetworkImageProvider(
+        //           HttpClient.s3BaseUrl + gymObj['user']['avatar_url'],
+        //         ),
+        //       ),
+        //       SizedBox(
+        //         width: 16,
+        //       ),
+        //       Column(
+        //         crossAxisAlignment: CrossAxisAlignment.start,
+        //         children: [
+        //           Text(gymObj['gym_name'], style: TypographyStyles.title(20)),
+        //           SizedBox(
+        //             height: 2,
+        //           ),
+        //           Text(
+        //             "${gymObj['gym_city']}, ${gymObj['gym_country']}",
+        //             style: TypographyStyles.textWithWeight(13, FontWeight.w300),
+        //           ),
+        //         ],
+        //       ),
+        //     ],
+        //   ),
+        // ),
       ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
             children: [
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 0),
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 32,
+                      backgroundImage: CachedNetworkImageProvider(
+                        HttpClient.s3BaseUrl + gymObj['user']['avatar_url'],
+                      ),
+                    ),
+                    SizedBox(
+                      width: 16,
+                    ),
+                    Text(gymObj['gym_name'], style: TypographyStyles.title(20)),
+                    SizedBox(
+                      height: 2,
+                    ),
+                    Text(
+                      "${gymObj['gym_city']}, ${gymObj['gym_country']}",
+                      style: TypographyStyles.textWithWeight(13, FontWeight.w300),
+                    ),
+                  ],
+                ),
+              ),
               gymObj['gym_type'] == 'services'
                   ? Column(
                       children: [

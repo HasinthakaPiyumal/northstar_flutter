@@ -47,13 +47,6 @@ class SignIn extends StatelessWidget {
       height: Get.height,
       child: Stack(
         children: [
-          Container(
-            width: Get.width,
-            child: Image.asset(
-              'assets/images/bg_login.png',
-              fit: BoxFit.fitWidth,
-            ),
-          ),
 
           Positioned(
             left: 16,

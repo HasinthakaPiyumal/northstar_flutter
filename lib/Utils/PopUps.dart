@@ -10,6 +10,7 @@ enum PopupNotificationStatus {
   info,     // Informational notification
   warning,  // Warning about a potential issue
   error,    // Indicates a critical error
+  none
 }
 
 double approximateHeight(String text, double fontSize, double width) {
@@ -21,7 +22,27 @@ double approximateHeight(String text, double fontSize, double width) {
   return lines * avgCharHeight;
 }
 
-void showSnack(String title, String message, {PopupNotificationStatus status = PopupNotificationStatus.info}) {
+void showSnack(String title, String message, {PopupNotificationStatus status = PopupNotificationStatus.none}) {
+  String svg = "";
+  Color color = Get.isDarkMode?Colors.white:AppColors.textOnAccentColor;
+  switch(status){
+    case PopupNotificationStatus.success:
+      svg = "assets/svgs/circle-solid.svg";
+      color = Color(0xFF00E417);
+      break;
+    case PopupNotificationStatus.info:
+      svg = "assets/svgs/info.svg";
+      color = Color(0xFF00C2FF);
+      break;
+    case PopupNotificationStatus.error:
+      svg = "assets/svgs/error-outline.svg";
+      color = Color(0xFFFB0000);
+      break;
+    case PopupNotificationStatus.warning:
+      svg = "assets/svgs/error-outline.svg";
+      color = Color(0xFFFFB800);
+      break;
+  }
   double calculatedTopMargin = (Get.height/2)-approximateHeight(message,14,Get.width)-60;
   Get.snackbar(
     title,
@@ -38,18 +59,18 @@ void showSnack(String title, String message, {PopupNotificationStatus status = P
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Visibility(
-          visible: PopupNotificationStatus.error==status || PopupNotificationStatus.success==status,
+          visible: PopupNotificationStatus.none!=status,
           child: Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: SvgPicture.asset(
-              PopupNotificationStatus.error==status?"assets/svgs/error-outline.svg":"assets/svgs/circle-solid.svg",
+              svg,
             width: 24,
             height: 24,
-            color: status==PopupNotificationStatus.error?Color(0xFFFB0000):Color(0xFF00E417),
+            color: color,
                     ),
           ),),
         Text(title,textAlign: TextAlign.center,style:  TextStyle(
-          color: status==PopupNotificationStatus.error?Color(0xFFFB0000):status==PopupNotificationStatus.success?Color(0xFF00E417):Get.isDarkMode?Colors.white:AppColors.textOnAccentColor,
+          color: color,
           fontSize: 20,
           fontFamily: 'Bebas Neue',
           fontWeight: FontWeight.w400,
@@ -73,22 +94,24 @@ void showSnackResponse(String title, dynamic data) {
       print(value);
       if (value is List && value.isNotEmpty) {
         firstErrorMessage = value.first;
-        Get.snackbar(
-          title,
-          firstErrorMessage,
-          margin: const EdgeInsets.all(16),
-          backgroundColor: Get.isDarkMode ? Colors.white : Colors.black,
-          colorText: Get.isDarkMode ? Colors.black : Colors.white,
-        );
+        // Get.snackbar(
+        //   title,
+        //   firstErrorMessage,
+        //   margin: const EdgeInsets.all(16),
+        //   backgroundColor: Get.isDarkMode ? Colors.white : Colors.black,
+        //   colorText: Get.isDarkMode ? Colors.black : Colors.white,
+        // );
+        showSnack(title, firstErrorMessage,status: PopupNotificationStatus.warning);
       } else if (value is String) {
         firstErrorMessage = value;
-        Get.snackbar(
-          title,
-          firstErrorMessage,
-          margin: const EdgeInsets.all(16),
-          backgroundColor: Get.isDarkMode ? Colors.white : Colors.black,
-          colorText: Get.isDarkMode ? Colors.black : Colors.white,
-        );
+        // Get.snackbar(
+        //   title,
+        //   firstErrorMessage,
+        //   margin: const EdgeInsets.all(16),
+        //   backgroundColor: Get.isDarkMode ? Colors.white : Colors.black,
+        //   colorText: Get.isDarkMode ? Colors.black : Colors.white,
+        // );
+        showSnack(title, firstErrorMessage,status: PopupNotificationStatus.warning);
       }
     });
   }

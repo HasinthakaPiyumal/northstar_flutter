@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Controllers/LocalNotificationsController.dart';
 import 'package:north_star/Controllers/NotificationsController.dart';
@@ -192,8 +193,8 @@ class _LayoutState extends State<Layout> {
                             ? Stack(
                                 alignment: Alignment.center,
                                 children: [
-                                  Icon(Icons.notifications,
-                                      size: 24, color: Colors.red),
+                                  SvgPicture.asset("assets/svgs/notification-bell.svg",
+                                      height: 24,width: 18, color: Colors.red),
                                   Positioned(
                                     child: Text(
                                         NotificationsController
@@ -204,7 +205,8 @@ class _LayoutState extends State<Layout> {
                                   )
                                 ],
                               )
-                            : Icon(Icons.notifications, size: 24),
+                            : SvgPicture.asset("assets/svgs/notification-bell.svg",
+                            height: 24,width: 24, color:Get.isDarkMode?Colors.white:AppColors.primary1Color),
                   )),
               IconButton(
                 onPressed: authUser.user['subscription'] != null
@@ -215,12 +217,11 @@ class _LayoutState extends State<Layout> {
                         Get.to(() => HomeWidgetPro());
                       },
                 splashRadius: 20,
-                icon: Icon(
-                  Icons.message_rounded,
-                  size: 22,
+                icon:  SvgPicture.asset("assets/svgs/message.svg",
+    height: 24,width: 24,
                   color: authUser.user['subscription'] == null
                       ? Colors.grey[600]
-                      : null,
+                      : AppColors().getPrimaryColor(reverse: true),
                 ),
               ),
               IconButton(
@@ -232,12 +233,11 @@ class _LayoutState extends State<Layout> {
                     : () {
                         Get.to(() => HomeWidgetPro());
                       },
-                icon: Icon(
-                  Icons.phone_rounded,
-                  size: 22,
+                icon:  SvgPicture.asset("assets/svgs/call.svg",
+    height: 24,width: 18,
                   color: authUser.user['subscription'] == null
                       ? Colors.grey[600]
-                      : null,
+                      : AppColors().getPrimaryColor(reverse: true),
                 ),
               )
             ],

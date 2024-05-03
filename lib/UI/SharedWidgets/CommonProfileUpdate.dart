@@ -3,6 +3,7 @@ import 'package:country_currency_pickers/country_picker_dialog.dart';
 import 'package:country_currency_pickers/utils/utils.dart';
 import 'package:flutter/material.dart' hide DatePickerTheme;
 import 'package:flutter_datetime_picker_bdaya/flutter_datetime_picker_bdaya.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:intl_phone_field/phone_number.dart';
@@ -79,17 +80,17 @@ class CommonProfileUpdate extends StatelessWidget {
           if (res2['code'] == 200) {
             print(res);
             Get.back();
-            showSnack('Profile Updated', 'Profile updated successfully');
+            showSnack('Profile Updated', 'Profile updated successfully',status: PopupNotificationStatus.success);
           } else {
             ready.value = true;
-            showSnack('Something went wrong!', 'please try again');
+            showSnack('Something went wrong!', 'please try again',status: PopupNotificationStatus.error);
           }
         }else{
-          showSnack('Profile Updated', 'Profile updated successfully');
+          showSnack('Profile Updated', 'Profile updated successfully',status: PopupNotificationStatus.success);
         }
       } else {
         ready.value = true;
-        showSnack('Something went wrong!', 'please try again');
+        showSnack('Something went wrong!', 'please try again',status: PopupNotificationStatus.error);
       }
     }
 
@@ -118,7 +119,7 @@ class CommonProfileUpdate extends StatelessWidget {
           centerTitle: true,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           title: Text(
-            'Profile Update',
+            'Update profile information',
             style: TypographyStyles.title(20),
           ),
           // actions: [
@@ -161,7 +162,10 @@ class CommonProfileUpdate extends StatelessWidget {
                             controller: fName,
                             decoration: InputDecoration(
                                 labelText: 'First Name',
-                                prefixIcon: Icon(Icons.person_2_rounded),
+                                prefixIcon: Padding(
+                                  padding: const EdgeInsets.all(14.0),
+                                  child: SvgPicture.asset("assets/svgs/profile-input.svg",color: AppColors().getPrimaryColor(reverse: true),),
+                                ),
                                 border: UnderlineInputBorder()),
                           ),
                         ),
@@ -173,7 +177,10 @@ class CommonProfileUpdate extends StatelessWidget {
                             controller: lName,
                             decoration: InputDecoration(
                                 labelText: 'Last Name',
-                                prefixIcon: Icon(Icons.person_2_rounded),
+                                prefixIcon: Padding(
+                                  padding: const EdgeInsets.all(14.0),
+                                  child: SvgPicture.asset("assets/svgs/profile-input.svg",),
+                                ),
                                 border: UnderlineInputBorder()),
                           ),
                         )
@@ -187,7 +194,10 @@ class CommonProfileUpdate extends StatelessWidget {
                       controller: phone,
                       decoration: InputDecoration(
                         labelText: 'Phone Number',
-                        prefixIcon: Icon(Icons.call_outlined),
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.all(14.0),
+                          child: SvgPicture.asset("assets/svgs/phone-line.svg",width: 14,height: 14,color:AppColors().getPrimaryColor(reverse: true),),
+                        ),
                         suffixIcon: IconButton(onPressed: () {  Get.to(()=>HelpAndSupportHome());}, icon: Icon(Icons.info_outlined),),
                         border: UnderlineInputBorder(),
                       ),
@@ -265,7 +275,10 @@ class CommonProfileUpdate extends StatelessWidget {
                       readOnly: true,
                       decoration: InputDecoration(
                         labelText: 'Email',
-                        prefixIcon: Icon(Icons.email_outlined),
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.all(14.0),
+                          child: SvgPicture.asset("assets/svgs/email-line.svg",width: 14,height: 14,color: AppColors().getPrimaryColor(reverse: true),),
+                        ),
                         suffixIcon: IconButton(onPressed: () {  Get.to(()=>HelpAndSupportHome());}, icon: Icon(Icons.info_outlined),),
                         border: UnderlineInputBorder(),
                       ),
@@ -277,12 +290,15 @@ class CommonProfileUpdate extends StatelessWidget {
                       controller: nic,
                       decoration: InputDecoration(
                         labelText: 'NIC/Passport',
-                        prefixIcon: Icon(Icons.contact_mail_rounded),
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.all(14.0),
+                          child: SvgPicture.asset("assets/svgs/nic-passport.svg",width: 14,height: 14,color: AppColors().getPrimaryColor(reverse: true),),
+                        ),
                         border: UnderlineInputBorder(),
                       ),
                     ),
                     SizedBox(
-                      height: 26,
+                      height: 40,
                     ),
                     // Row(children: [
                     //   Text('Gender'),
@@ -320,7 +336,6 @@ class CommonProfileUpdate extends StatelessWidget {
                     //     ),
                     //   ),
                     // ]),
-
                     Row(
                       children: [
                         SizedBox(
@@ -368,7 +383,7 @@ class CommonProfileUpdate extends StatelessWidget {
                       ],
                     ),
                     SizedBox(
-                      height: 16,
+                      height: 40,
                     ),
                     Container(
                       width: Get.width,
@@ -392,7 +407,10 @@ class CommonProfileUpdate extends StatelessWidget {
                         controller: birthday,
                         decoration: InputDecoration(
                           labelText: 'Birthday',
-                          prefixIcon: Icon(Icons.today_rounded),
+                          prefixIcon: Padding(
+                            padding: const EdgeInsets.all(14.0),
+                            child: SvgPicture.asset("assets/svgs/birthday.svg",width: 14,height: 14,color: AppColors().getPrimaryColor(reverse: true),),
+                          ),
                           border: UnderlineInputBorder(),
                         ),
                       ),
@@ -407,7 +425,10 @@ class CommonProfileUpdate extends StatelessWidget {
                           controller: country,
                           decoration: InputDecoration(
                             labelText: 'Country of Residence',
-                            prefixIcon: Icon(Icons.home_outlined),
+                            prefixIcon: Padding(
+                              padding: const EdgeInsets.all(14.0),
+                              child: SvgPicture.asset("assets/svgs/home-line.svg",width: 14,height: 14,color: AppColors().getPrimaryColor(reverse: true),),
+                            ),
                             border: UnderlineInputBorder(),
                           ),
                           onTap: () {

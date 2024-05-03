@@ -16,6 +16,9 @@ import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/components/CheckButton.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
+import '../../../components/Buttons.dart';
+import '../../../components/Radios.dart';
+
 class CreateClientNotes extends StatelessWidget {
   const CreateClientNotes({Key? key}) : super(key: key);
 
@@ -117,6 +120,39 @@ class CreateClientNotes extends StatelessWidget {
             children: [
 
               SizedBox(height: 20,),
+              Row(children: [
+                InkWell(
+                  onTap:  (){isIncome.value = true;},
+                  splashColor: Colors.transparent,
+                  child: Container(
+                    height: 50,
+                    width: 140,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Obx(()=>isIncome.value?Radios.radioChecked2():Radios.radio()),
+                        SizedBox(width: 10,),
+                        Text("Income",style: TypographyStyles.text(14),)
+                      ],),
+                  ),
+                ),
+                InkWell(
+                  onTap:  (){isIncome.value=false;},
+                  splashColor: Colors.transparent,
+                  child: Container(
+                    height: 50,
+                    width: 140,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Obx(()=>!isIncome.value?Radios.radioChecked2():Radios.radio()),
+                        SizedBox(width: 10,),
+                        Text("Expense",style: TypographyStyles.text(14),)
+                      ],),
+                  ),
+                ),
+              ],),
+              SizedBox(height: 20,),
 
               Obx(()=>Text(selectedClient.isNotEmpty ? 'Selected Client' : "Select Client",
                 style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
@@ -129,7 +165,7 @@ class CreateClientNotes extends StatelessWidget {
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.search),
                     labelText: 'Search Members...',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
+                    border: UnderlineInputBorder(),
                   ),
                 ),
                 suggestionsCallback: (pattern) async {
@@ -183,23 +219,23 @@ class CreateClientNotes extends StatelessWidget {
                 style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
               ),
 
-              Obx(()=> GestureDetector(
-                  onTap: (){isIncome.value = !isIncome.value;},
-                  child: Container(
-                    color:Colors.transparent,
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                      Text('Is income note?',
-                        style: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
-                      ),
-                      CheckButton(isChecked: isIncome.value,)
-                    ],),
-                  ),
-                ),
-              ),
-
+              // Obx(()=> GestureDetector(
+              //     onTap: (){isIncome.value = !isIncome.value;},
+              //     child: Container(
+              //       color:Colors.transparent,
+              //       padding: EdgeInsets.symmetric(vertical: 16),
+              //       child: Row(
+              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //         children: [
+              //         Text('Is income note?',
+              //           style: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
+              //         ),
+              //         CheckButton(isChecked: isIncome.value,)
+              //       ],),
+              //     ),
+              //   ),
+              // ),
+SizedBox(height: 16,),
 
               Obx(()=>DropdownButtonFormField(
                 decoration: InputDecoration(
@@ -337,29 +373,13 @@ class CreateClientNotes extends StatelessWidget {
       bottomNavigationBar: Container(
         padding: EdgeInsets.symmetric(horizontal: 16,vertical: 10),
         color: Theme.of(context).scaffoldBackgroundColor,
-        child: ElevatedButton(
-          style: ButtonStyles.primaryButton(),
-          child:  Obx(()=> ready.value ? Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 20),
-                child: Text('SAVE NOTE',
-                  style: TypographyStyles.boldText(16, Themes.mainThemeColorAccent.shade100),
-                ),
-              ),
-            ],
-          ) : Center(
-            child: CircularProgressIndicator(),
-          )),
-          onPressed: (){
-            if(date.text.isNotEmpty && amount.text.isNotEmpty && note.text.isNotEmpty && selectedClient != {} && selectedServiceValue.value != "service"){
-              saveNote();
-            } else {
-              showSnack('Fill All the Fields', 'Fill All the fields in the form');
-            }
-          },
-        ),
+        child: Buttons.yellowFlatButton(onPressed: (){
+          if(date.text.isNotEmpty && amount.text.isNotEmpty && note.text.isNotEmpty && selectedClient != {} && selectedServiceValue.value != "service"){
+            saveNote();
+          } else {
+            showSnack('Fill All the Fields', 'Fill All the fields in the form');
+          }
+        },label: "Save Note"),
       ),
     );
   }

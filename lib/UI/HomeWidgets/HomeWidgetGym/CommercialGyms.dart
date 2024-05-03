@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:country_currency_pickers/country.dart';
 import 'package:country_currency_pickers/country_pickers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Models/HttpClient.dart';
@@ -129,9 +130,9 @@ class CommercialGyms extends StatelessWidget {
                           prefixIcon: Icon(
                             Icons.search,
                           ),
+                          suffixIcon: IconButton(color: AppColors.accentColor,onPressed: () { filterGyms(); }, icon: Container(padding: EdgeInsets.all(8),decoration:BoxDecoration(borderRadius:BorderRadius.circular(5),color:AppColors.accentColor,),child: SvgPicture.asset("assets/svgs/mi_filter.svg")),),
                           labelText: 'Search Gyms...',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.0)),
+                          border: UnderlineInputBorder(),
                         )),
                         suggestionsCallback: (pattern) async {
                           return await searchGyms(pattern);
@@ -142,25 +143,25 @@ class CommercialGyms extends StatelessWidget {
                         onSuggestionSelected: (suggestion) {},
                       ),
                     ),
-                    SizedBox(width: 10),
-                    Container(
-                      height: 60,
-                      child: ElevatedButton(
-                        style: ButtonStyles.matRadButton(
-                          AppColors.accentColor,
-                          0,
-                          12,
-                        ),
-                        child: Icon(
-                          Icons.filter_alt_outlined,
-                          color: AppColors.textOnAccentColor,
-                          size: 30,
-                        ),
-                        onPressed: () {
-                          filterGyms();
-                        },
-                      ),
-                    ),
+                    // SizedBox(width: 10),
+                    // Container(
+                    //   height: 60,
+                    //   child: ElevatedButton(
+                    //     style: ButtonStyles.matRadButton(
+                    //       AppColors.accentColor,
+                    //       0,
+                    //       12,
+                    //     ),
+                    //     child: Icon(
+                    //       Icons.filter_alt_outlined,
+                    //       color: AppColors.textOnAccentColor,
+                    //       size: 30,
+                    //     ),
+                    //     onPressed: () {
+                    //       filterGyms();
+                    //     },
+                    //   ),
+                    // ),
                   ],
                 ),
                 Obx(

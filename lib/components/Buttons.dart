@@ -19,6 +19,7 @@ class Buttons {
       bool buttonFit = false,
       bool disabled = false,
       bool isLoading = false,
+        String svg = '',
         bool useDefaultFont = false
       }) {
     return Material(
@@ -43,7 +44,7 @@ class Buttons {
                   ? CircularProgressIndicator(
                       color: AppColors.textOnAccentColor,
                     )
-                  : Text(
+                  : svg==''?Text(
                       label,
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -52,7 +53,7 @@ class Buttons {
                         fontFamily: useDefaultFont?'poppins':fontFamily,
                         fontWeight: fontWeight,
                       ),
-                    ),
+                    ):SvgPicture.asset(svg,width: fontSize,height: fontSize,),
             ),
           ),
         ),
@@ -72,6 +73,7 @@ class Buttons {
       Color textColor = AppColors.textOnAccentColor,
       bool buttonFit = false,
       bool isLoading = false,
+        String svg = "",
       required IconData icon}) {
     return Material(
       color: Colors.transparent,
@@ -95,8 +97,8 @@ class Buttons {
                 children: [
                   isLoading
                       ? SizedBox()
-                      : Icon(icon,
-                          color: textColor), //AppColors.textOnAccentColor),
+                      : svg==""?Icon(icon,
+                          color: textColor):SvgPicture.asset(svg,width: 24,height: 24,color: textColor), //AppColors.textOnAccentColor),
                   isLoading
                       ? SizedBox()
                       : SizedBox(
@@ -176,6 +178,11 @@ class Buttons {
     double height = 40,
     Color backgroundColor = AppColors.accentColor,
     bool buttonFit = false,
+    String svg = "",
+    String fontFamily = 'Bebas Neue',
+    double fontSize = 20,
+    double borderWidth = 2,
+    Color outlineColor = AppColors.accentColor,
     required IconData icon,
   }) {
     return Material(
@@ -189,7 +196,7 @@ class Buttons {
             // color: backgroundColor,
 
             shape: RoundedRectangleBorder(
-                side: BorderSide(color: AppColors.accentColor, width: 2),
+                side: BorderSide(color: outlineColor, width: borderWidth),
                 borderRadius: BorderRadius.circular(5)),
           ),
           child: Container(
@@ -200,17 +207,25 @@ class Buttons {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(icon,
+
+                  svg==""?Icon(icon,
                       color: Get.isDarkMode
                           ? AppColors.textColorDark
-                          : AppColors.textColorLight),
+                          : AppColors.textColorLight):SvgPicture.asset(svg,width: 24,height: 24,color: Get.isDarkMode
+                      ? AppColors.textColorDark
+                      : AppColors.textColorLight),
                   SizedBox(
                     width: 10,
                   ),
                   Text(
                     label,
                     textAlign: TextAlign.center,
-                    style: TypographyStyles.smallBoldTitle(20),
+                    style: TextStyle(
+                      fontSize: fontSize,
+                      color:Get.isDarkMode?Colors.white:Color(0xFF1B1F24),
+                      fontFamily: fontFamily,
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
                 ],
               ),
