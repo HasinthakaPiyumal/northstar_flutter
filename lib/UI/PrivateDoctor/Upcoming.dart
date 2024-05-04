@@ -170,10 +170,14 @@ class Upcoming extends StatelessWidget {
           children: [
             Container(
               width: Get.width,
-              height: 80,
+              height: 50,
+              // padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ElevatedButton(
-                  style: Get.isDarkMode ? ButtonStyles.primaryButton() : ButtonStyles.matRadButton(colors.Colors().selectedCardBG, 0, 12),
-                  onPressed: (){
+                  style: Get.isDarkMode
+                      ? ButtonStyles.secondaryButton()
+                      : ButtonStyles.matRadButton(
+                      colors.Colors().selectedCardBG, 0, 12),
+                  onPressed: () {
                     Get.to(()=> SchedulesHistory());
                   },
                   child: Padding(
@@ -181,22 +185,11 @@ class Upcoming extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            Icon(Icons.history,
-                              color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),
-                            ),
-                            SizedBox(width: 10,),
-                            Text('HISTORY'.toUpperCase(),
-                              style: TypographyStyles.boldText(14, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
-                            ),
-                          ],
-                        ),
+                        Text('History'),
                         Icon(Icons.chevron_right)
                       ],
                     ),
-                  )
-              ),
+                  )),
             ),
             SizedBox(height: 24),
             Padding(

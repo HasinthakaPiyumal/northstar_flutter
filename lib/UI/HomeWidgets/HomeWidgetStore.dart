@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
 import 'package:marquee/marquee.dart';
@@ -69,7 +70,7 @@ class HomeWidgetStore extends StatelessWidget {
               onPressed: () {
                 Get.to(MyOrders());
               },
-              child: Text('History'))
+              child: SvgPicture.asset("assets/svgs/store-history.svg"))
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -144,7 +145,7 @@ class HomeWidgetStore extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: 4,
+              height: 8,
             ),
             Obx(() => Container(
                   height: Get.height * 12 / 100,
@@ -184,8 +185,8 @@ class HomeWidgetStore extends StatelessWidget {
                                           MainAxisAlignment.center,
                                       children: [
                                         cat[index]['image_path']!="all"?Container(
-                                          height: 25,
-                                          width: 25,
+                                          height: 48,
+                                          width: 48,
                                           child: CachedNetworkImage(
                                             imageUrl:
                                                 HttpClient.s3ResourcesBaseUrl+cat[index]['image_path'],
@@ -200,7 +201,7 @@ class HomeWidgetStore extends StatelessWidget {
                                           height: 8,
                                         ),
                                         SizedBox(
-                                          width: 70,
+                                          width: 80,
                                           height: 15,
                                           child: cat[index]['name'].length > 5
                                               ? Marquee(
@@ -255,7 +256,7 @@ class HomeWidgetStore extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('More To Love', style: TypographyStyles.title(16)),
+                  Text('Popular Products', style: TypographyStyles.title(16)),
                 ],
               ),
             ),
@@ -309,7 +310,7 @@ class HomeWidgetStore extends StatelessWidget {
                                                         EdgeInsets.fromLTRB(
                                                             0, 8, 0, 0),
                                                     width: Get.width,
-                                                    height: Get.height * 0.2,
+                                                    height: Get.height * 0.15,
                                                     child: ClipRRect(
                                                       borderRadius:
                                                           BorderRadius.circular(
@@ -329,10 +330,10 @@ class HomeWidgetStore extends StatelessWidget {
                                                   ),
                                                   SizedBox(height: 10),
                                                   Text(
-                                                    "${lists[index]['name']}",
+                                                    "${lists[index]['name'].toString().capitalize}",
                                                     style:
                                                         TypographyStyles.text(
-                                                            14),
+                                                            16),
                                                   ),
                                                   SizedBox(height: 8),
                                                 ],
@@ -340,13 +341,20 @@ class HomeWidgetStore extends StatelessWidget {
                                               Padding(
                                                 padding:
                                                     EdgeInsets.only(bottom: 10),
-                                                child: Text(
-                                                  // authUser.user['currency'] +
-                                                      'MVR ' +
-                                                          lists[index]['price']
-                                                          .toString(),
-                                                  style: TypographyStyles.title(
-                                                      16),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      // authUser.user['currency'] +
+                                                          'MVR ' +
+                                                              lists[index]['price'].toStringAsFixed(2),
+                                                      style: TypographyStyles.smallBoldTitle(
+                                                          20),
+                                                    ),
+                                                    IconButton(
+                                                        onPressed: () {  },
+                                                    icon: Container(child: SvgPicture.asset("assets/svgs/cart.svg",width: 24,height: 24,color:  AppColors().getPrimaryColor(reverse: true),)))
+                                                  ],
                                                 ),
                                               ),
                                             ],

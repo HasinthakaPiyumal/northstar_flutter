@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:north_star/Models/AuthUser.dart';
@@ -15,6 +17,8 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../../Styles/TypographyStyles.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:intl/intl.dart';
+
+import '../../components/Buttons.dart';
 
 class HomeWidgetLabReports extends StatelessWidget {
   const HomeWidgetLabReports({Key? key, this.userID}) : super(key: key);
@@ -90,19 +94,11 @@ class HomeWidgetLabReports extends StatelessWidget {
       appBar: AppBar(
         title: Text('Lab Reports'),
       ),
-      floatingActionButton: userID == null ? FloatingActionButton.extended(
-        onPressed: (){
-          Get.to(() => CreateLabReport())?.then((value){
-            getLabReports();
-          });
-        },
-        label: Text("Add New",style: TextStyle(color: AppColors.textOnAccentColor),),
-        icon: Icon(Icons.add,color: AppColors.textOnAccentColor,),
-        backgroundColor: AppColors.accentColor,
-        extendedPadding: EdgeInsets.symmetric(horizontal: 15,),
-      ):null,
+      floatingActionButton: userID == null ? Buttons.yellowTextIconButton(onPressed: (){Get.to(() => CreateLabReport())?.then((value){
+        getLabReports();
+      });},label: "Add New",icon:Icons.add,width: 120):null,
       body: Obx(()=>Padding(
-        padding: EdgeInsets.symmetric(horizontal: 15),
+        padding: EdgeInsets.only(left: 15,right:15),
         child: Column(
           children: [
             Padding(
@@ -152,22 +148,8 @@ class HomeWidgetLabReports extends StatelessWidget {
                           width: Get.width,
                           child: Padding(
                             padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
-                            child: MaterialButton(
-                              onPressed: (){
-                                labReports.value = filterLabReportsByDateRange(selectedStartDate.value, selectedEndDate.value);
-                                Get.back();
-                              },
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              color: colors.Colors().lightBlack(1),
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(vertical: 15),
-                                child: Text("DONE",
-                                  style: TypographyStyles.boldText(16, Colors.white),
-                                ),
-                              ),
-                            ),
+                            child: Buttons.yellowFlatButton(onPressed: (){labReports.value = filterLabReportsByDateRange(selectedStartDate.value, selectedEndDate.value);
+                            Get.back();},label: "Done"),
                           ),
                         )
                       ],
@@ -216,25 +198,25 @@ class HomeWidgetLabReports extends StatelessWidget {
                     itemCount: labReports.length,
                     itemBuilder: (context, index) {
                       return Card(
-                        color: Get.isDarkMode?AppColors.primary1Color:Colors.white,
+                        color: AppColors().getSecondaryColor(),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8)
                         ),
-                        margin: EdgeInsets.only(top: 15),
+                        margin: EdgeInsets.only(top: 15,bottom: labReports.length-1==index?80:0),
                         child: Stack(
                           children: [
                             Positioned(
-                              top: 0,
-                              right: 0,
+                              top: 8,
+                              right: 8,
                               child: IconButton(
-                                onPressed: (){
+                                icon: Container(padding: EdgeInsets.all(6),decoration: BoxDecoration(color: Color(0xFFFFB8B8),borderRadius: BorderRadius.circular(5)),child: SvgPicture.asset("assets/svgs/delete.svg",width: 24,height: 24,color: AppColors().getSecondaryColor(),),),
+                                onPressed: () {
                                   CommonConfirmDialog.confirm("remove").then((value){
                                     if(value){
                                       deleteLabReport(labReports[index]['id'],labReports[index]['report_url']);
                                     }
                                   });
                                 },
-                                icon: Icon(Icons.delete,),
                               ),
                             ),
                             Padding(
@@ -248,32 +230,33 @@ class HomeWidgetLabReports extends StatelessWidget {
                                     style: TypographyStyles.title(16),
                                   ),
                                   SizedBox(height: 8),
-                                  Text('${labReports[index]['report_description']}', style: TypographyStyles.text(14).copyWith(color: Themes.mainThemeColorAccent.shade300)),
-                                  SizedBox(height: 8),
+                                  Text('${labReports[index]['report_description']}', style: TypographyStyles.text(14)),
+                                  SizedBox(height: 16),
                                   Text('Report Result',
-                                    style: TypographyStyles.boldText(14, Colors.white),
+                                    style: TypographyStyles.title(14),
                                   ),
+                                  SizedBox(height: 8,),
                                   Text(labReports[index]['report_result'].toString(),
-                                    style: TypographyStyles.boldText(16, colors.Colors().deepYellow(1)),
+                                    style: TypographyStyles.text(14),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  SizedBox(height: 8),
-                                  Divider(thickness: 1,),
-                                  SizedBox(height: 8),
-                                  Container(
-                                    width: Get.width,
-                                    child: TextButton(
-                                      onPressed: (){
-                                        //print(HttpClient.s3LabReportsBaseUrl + labReports[index]['report_url']);
-                                        //launchUrl(Uri.parse(HttpClient.s3LabReportsBaseUrl + labReports[index]['report_url']));
-                                        Get.to(()=>ViewLabReportAttachment(url: HttpClient.s3LabReportsBaseUrl + labReports[index]['report_url']));
-                                      },
-                                      style: ButtonStyles.matButton(colors.Colors().darkGrey(1), 0),
-                                      child: Text(
-                                        "View Report Attachment",
-                                        style: TypographyStyles.boldText(15, Colors.white),
-                                      ),
-                                    ),
-                                  ),
+                                  SizedBox(height: 20),
+                                  Buttons.yellowFlatButton(onPressed: (){Get.to(()=>ViewLabReportAttachment(url: HttpClient.s3LabReportsBaseUrl + labReports[index]['report_url']));},label: "View Report Attachment",width: Get.width)
+                                  // Container(
+                                  //   width: Get.width,
+                                  //   child: TextButton(
+                                  //     onPressed: (){
+                                  //       //print(HttpClient.s3LabReportsBaseUrl + labReports[index]['report_url']);
+                                  //       //launchUrl(Uri.parse(HttpClient.s3LabReportsBaseUrl + labReports[index]['report_url']));
+                                  //       Get.to(()=>ViewLabReportAttachment(url: HttpClient.s3LabReportsBaseUrl + labReports[index]['report_url']));
+                                  //     },
+                                  //     style: ButtonStyles.matButton(colors.Colors().darkGrey(1), 0),
+                                  //     child: Text(
+                                  //       "View Report Attachment",
+                                  //       style: TypographyStyles.boldText(15, Colors.white),
+                                  //     ),
+                                  //   ),
+                                  // ),
               
                                 ],
                               ),

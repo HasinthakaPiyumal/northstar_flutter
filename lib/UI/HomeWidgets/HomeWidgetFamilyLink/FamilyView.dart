@@ -817,8 +817,8 @@ class CustomProfileContainer extends StatelessWidget {
   final String description;
   final bool isAdmin;
   final int userId;
-  final bool haveAccess;
-  final bool viewAccess;
+  late  bool haveAccess;
+  late bool viewAccess;
 
   CustomProfileContainer({
     required this.imageUrl,
@@ -832,8 +832,11 @@ class CustomProfileContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if(userId==authUser.id){
+      haveAccess = false;
+      viewAccess = false;
+    }
     return Padding(
-
       padding: const EdgeInsets.only(bottom: 8.0),
       child: Ink(
         decoration: BoxDecoration(

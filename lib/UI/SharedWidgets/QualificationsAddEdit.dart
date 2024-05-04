@@ -76,26 +76,22 @@ class QualificationsAddEdit extends StatelessWidget {
                   TextField(
                     controller: title,
                     decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.star_border),
                         hintText: 'Title',
-                        border: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white),
+                        border: OutlineInputBorder(
                         )),
                   ),
                   SizedBox(height: 8),
                   TextField(
                     controller: description,
+                    maxLines: 5,
                     decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.description),
                         hintText: 'Description',
-                        border: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white),
-                        )),
+                    )
                   ),
                   SizedBox(height: 26),
                   Container(
                     height: 44,
-                    width: Get.width-60,
+                    width: Get.width-32,
                     child: Obx(() => ElevatedButton(
                           style: ButtonStyles.bigFlatYellowButton(),
                           child: ready.value

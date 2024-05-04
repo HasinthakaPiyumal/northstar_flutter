@@ -83,7 +83,7 @@ class ButtonStyles {
           fontWeight: FontWeight.w400,
           height: 0,
         ),
-        // elevation: 6,
+        elevation: 0,
         padding: EdgeInsets.zero,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)));
   }

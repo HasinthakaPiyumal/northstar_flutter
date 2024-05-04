@@ -14,6 +14,8 @@ import 'package:north_star/UI/HomeWidgets/HomeWidgetLabReports/ReportTypesList.d
 import 'package:north_star/Utils/PopUps.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 
+import '../../../components/Buttons.dart';
+
 class CreateLabReport extends StatelessWidget {
   const CreateLabReport({Key? key}) : super(key: key);
 
@@ -54,9 +56,9 @@ class CreateLabReport extends StatelessWidget {
       if (res['code'] == 200) {
         ready.value = false;
         Get.back();
-        showSnack('Note Saved!', 'client notes is saved successfully');
+        showSnack('Note Saved!', 'client notes is saved successfully',status: PopupNotificationStatus.success);
       } else {
-        showSnack('Something went wrong!', 'please try again');
+        showSnack('Something went wrong!', 'please try again',status: PopupNotificationStatus.error);
         ready.value = false;
       }
     }
@@ -74,14 +76,48 @@ class CreateLabReport extends StatelessWidget {
                 controller: reportName,
                 decoration: InputDecoration(
                   labelText: 'Report Name',
+                  border: UnderlineInputBorder()
                 ),
               ),
               SizedBox(height: 16),
+
+              Container(
+
+                width: Get.width,
+                child: InkWell(
+                  onTap: (){
+                    DatePickerBdaya.showDatePicker(
+                      context,
+                      theme: ThemeBdayaStyles.main(),
+                      showTitleActions: true,
+                      onChanged: (date) {
+                        print('change $date');
+                      }, onConfirm: (date) {
+                      print('confirm $date');
+                      reportDate.text = date.toLocal().toString().split(' ')[0];
+                    },
+
+                    );
+                  },
+                  child: TextField(
+                    enabled: false,
+                    controller: reportDate,
+                    decoration: InputDecoration(
+                        hintText: 'Report Date',
+                        border: UnderlineInputBorder(
+                        )
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
               TextField(
                 controller: reportResult,
                 decoration: InputDecoration(
                   labelText: 'Report Result',
                 ),
+                maxLength: 250,
+                maxLines: 3,
               ),
               SizedBox(height: 16),
               TextField(
@@ -116,45 +152,14 @@ class CreateLabReport extends StatelessWidget {
                   suffixIcon: Icon(Icons.keyboard_arrow_down),
                 ),
               ),
-              SizedBox(height: 16),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12.0),
-                  border: Border.all(
-                    color: Colors.white.withOpacity(0.6)
-                  ),
-                ),
-                width: Get.width,
-                child: InkWell(
-                  onTap: (){
-                    DatePickerBdaya.showDatePicker(
-                      context,
-                      theme: ThemeBdayaStyles.main(),
-                      showTitleActions: true,
-                      onChanged: (date) {
-                        print('change $date');
-                      }, onConfirm: (date) {
-                      print('confirm $date');
-                      reportDate.text = date.toLocal().toString().split(' ')[0];
-                    },
-
-                    );
-                  },
-                  child: TextField(
-                    enabled: false,
-                    controller: reportDate,
-                    decoration: InputDecoration(
-                      hintText: 'Report Date',
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 16),
+              SizedBox(height: 20),
               TextField(
                 controller: reportDescription,
                 decoration: InputDecoration(
                   labelText: 'Report Description',
                 ),
+                maxLines: 3,
+                maxLength: 250,
               ),
               SizedBox(height: 32),
               Container(
@@ -199,34 +204,20 @@ class CreateLabReport extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        child: Container(
-          height: 56,
-          child: ElevatedButton(
-            style: ButtonStyles.primaryButton(),
-            child:  Obx(()=> ready.value ? Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('Submit Lab Report',
-                  style: TypographyStyles.boldText(14, Themes.mainThemeColorAccent.shade100),
-                )
-              ],
-            ) : Center(
-              child: CircularProgressIndicator(),
-            )),
+        padding: const EdgeInsets.all(16.0),
+        child: Obx(()=>Buttons.yellowFlatButton(
+          isLoading: !ready.value,
             onPressed: (){
-              if(reportName.text.isEmpty || reportResult.text.isEmpty || reportType.text.isEmpty || reportDate.text.isEmpty || reportDescription.text.isEmpty){
-                showSnack('Fill all the fields!', 'please fill all the mandatory fields and try again');
-              } else {
-                if(xFile == null){
-                  showSnack('Select a Lab Report file!', 'please select a lab report file and try again');
-                } else {
-                  saveNote();
-                }
-              }
-            },
-          ),
-        ),
+          if(reportName.text.isEmpty || reportResult.text.isEmpty || reportType.text.isEmpty || reportDate.text.isEmpty || reportDescription.text.isEmpty){
+            showSnack('Fill all the fields!', 'please fill all the mandatory fields and try again');
+          } else {
+            if(xFile == null){
+              showSnack('Select a Lab Report file!', 'please select a lab report file and try again');
+            } else {
+              saveNote();
+            }
+          }
+        }, label:"Submit Lab Report")),
       ),
     );
   }

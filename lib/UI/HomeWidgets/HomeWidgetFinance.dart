@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:north_star/Controllers/ClientNotesController.dart';
@@ -145,24 +146,25 @@ class HomeWidgetFinance extends StatelessWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text('Profit Earned', style: TypographyStyles.boldText(18, Get.isDarkMode ? Color(0xFF8D8D8D) : Colors.black)),
+                          Text('Profit Earned', style: TypographyStyles.text(16)),
                           SizedBox(height: 4),
                           Obx(()=>ready.value ? Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Obx(()=>RichText(
-                                  text: TextSpan(
-                                      text: "MVR ",
-                                      style: TypographyStyles.normalText(22, Get.isDarkMode ? Colors.white : Colors.black),
-                                      children: [
-                                        TextSpan(
-                                          text: Utils.currencyFmt.format(income.value-expense.value),
-                                          style: TypographyStyles.title(48),
-                                        ),
-                                      ]
-                                  ),
+                                text: TextSpan(
+                                    text: "MVR ",
+                                    style: TypographyStyles.text(16).copyWith(color: AppColors.accentColor),
+                                    children: [
+                                      TextSpan(
+                                        text: Utils.currencyFmt.format(income.value-expense.value),
+                                        style: TypographyStyles.smallBoldTitle(26).copyWith(color: AppColors.accentColor),
+                                      ),
+                                    ]
                                 ),
+                              ),
+
                               ),
                             ],
                           ): Center(child: Padding(
@@ -182,7 +184,7 @@ class HomeWidgetFinance extends StatelessWidget {
 
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: Get.isDarkMode?AppColors.primary2Color:Colors.white,
+                                      backgroundColor: AppColors.greenAccent,
                                       foregroundColor: Colors.white,
                                       shape: Themes().roundedBorder(12),
                                     ),
@@ -194,24 +196,31 @@ class HomeWidgetFinance extends StatelessWidget {
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
-                                              Transform.rotate(
-                                                angle: 1,
-                                                child: Icon(Icons.arrow_upward, color: Colors.green, size: 18),
-                                              ),
                                               Text("Income",
-                                                style: TypographyStyles.normalText(14, Color(0xFF8D8D8D)),
-                                              )
+                                                style: TypographyStyles.text(16).copyWith(color: AppColors.textOnAccentColor),
+                                              ),
+                                              SizedBox(width: 10,),
+                                              Container(
+                                                padding: EdgeInsets.all(3),
+                                                width: 24,
+                                                height: 24,
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(100),
+                                                  color: AppColors.textOnAccentColor
+                                                ),
+                                                child: SvgPicture.asset("assets/svgs/arrow-growth.svg",),
+                                              ),
                                             ],
                                           ),
                                           SizedBox(height: 4,),
                                           RichText(
                                             text: TextSpan(
                                                 text: "MVR ",
-                                                style: TypographyStyles.normalText(14, Get.isDarkMode ? Colors.white : Colors.black),
+                                                style: TypographyStyles.text(14).copyWith(color: AppColors.textOnAccentColor),
                                                 children: [
                                                   TextSpan(
                                                     text: Utils.currencyFmt.format(income.value),
-                                                    style: TypographyStyles.title(18),
+                                                    style: TypographyStyles.title(20).copyWith(color: AppColors.textOnAccentColor),
                                                   ),
                                                 ]
                                             ),
@@ -228,7 +237,7 @@ class HomeWidgetFinance extends StatelessWidget {
 
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: Get.isDarkMode?AppColors.primary2Color:Colors.white,
+                                      backgroundColor: AppColors.redAccent,
                                       foregroundColor: Colors.white,
                                       shape: Themes().roundedBorder(12),
                                     ),
@@ -240,24 +249,34 @@ class HomeWidgetFinance extends StatelessWidget {
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
-                                              Transform.rotate(
-                                                angle: 2,
-                                                child: Icon(Icons.arrow_upward, color: Colors.red, size: 18),
-                                              ),
                                               Text("Expenses",
-                                                style: TypographyStyles.normalText(14, Color(0xFF8D8D8D)),
-                                              )
+                                                style: TypographyStyles.text(16).copyWith(color: AppColors.textOnAccentColor),
+                                              ),
+                                              SizedBox(width: 10,),
+                                              Transform.rotate(
+                                                angle: 1.1,
+                                                child: Container(
+                                                  padding: EdgeInsets.all(3),
+                                                  width: 24,
+                                                  height: 24,
+                                                  decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(100),
+                                                      color: AppColors.textOnAccentColor
+                                                  ),
+                                                  child: SvgPicture.asset("assets/svgs/arrow-growth.svg",color: AppColors.redAccent,),
+                                                ),
+                                              ),
                                             ],
                                           ),
                                           SizedBox(height: 4,),
                                           RichText(
                                             text: TextSpan(
                                                 text: "MVR ",
-                                                style: TypographyStyles.normalText(14, Get.isDarkMode ? Colors.white : Colors.black),
+                                                style: TypographyStyles.text(14).copyWith(color: AppColors.textOnAccentColor),
                                                 children: [
                                                   TextSpan(
                                                     text: Utils.currencyFmt.format(expense.value),
-                                                    style: TypographyStyles.title(18),
+                                                    style: TypographyStyles.title(20).copyWith(color: AppColors.textOnAccentColor),
                                                   ),
                                                 ]
                                             ),
@@ -288,7 +307,9 @@ class HomeWidgetFinance extends StatelessWidget {
                           child: Container(
                             height: 90,
                             child: ElevatedButton(
-                              style: ButtonStyles.primaryButton(),
+                              style: ButtonStyle(
+                                backgroundColor: MaterialStateColor.resolveWith((states) => AppColors().getSecondaryColor())
+                              ),
                               onPressed: (){
                                 Get.to(() => HomeWidgetClientNotes());
                               },
@@ -300,7 +321,7 @@ class HomeWidgetFinance extends StatelessWidget {
                                   SizedBox(height: 8,),
                                   SizedBox(
                                     height: 40,
-                                    child: Image.asset("assets/home/note.png", fit: BoxFit.fitHeight,),
+                                    child: Image.asset("assets/icons/client.png", fit: BoxFit.fitHeight,),
                                   ),
                                   SizedBox(height: 10,),
                                   Text("Clients",
@@ -316,14 +337,16 @@ class HomeWidgetFinance extends StatelessWidget {
 
                       Visibility(
                         visible: authUser.role == 'trainer',
-                        child: SizedBox(width: 4),
+                        child: SizedBox(width: 8),
                       ),
 
                       Expanded(
                         child: Container(
                           height: 90,
                           child: ElevatedButton(
-                            style: ButtonStyles.primaryButton(),
+                            style: ButtonStyle(
+                                backgroundColor: MaterialStateColor.resolveWith((states) => AppColors().getSecondaryColor())
+                            ),
                             onPressed: (){
                               Get.to(() => Transactions());
                             },
@@ -335,7 +358,7 @@ class HomeWidgetFinance extends StatelessWidget {
                                 SizedBox(height: 8,),
                                 SizedBox(
                                   height: 40,
-                                  child: Image.asset("assets/home/trans.png", fit: BoxFit.fitHeight,),
+                                  child: Image.asset("assets/icons/transaction.png", fit: BoxFit.fitHeight,),
                                 ),
                                 SizedBox(height: 10,),
                                 Text("Transactions",
@@ -374,12 +397,14 @@ class HomeWidgetFinance extends StatelessWidget {
                       //     ),
                       //   ),
                       // ),
-                      SizedBox(width: 4),
+                      SizedBox(width: 8),
                       Expanded(
                         child: Container(
                           height: 90,
                           child: ElevatedButton(
-                            style: ButtonStyles.primaryButton(),
+                            style: ButtonStyle(
+                                backgroundColor: MaterialStateColor.resolveWith((states) => AppColors().getSecondaryColor())
+                            ),
                             onPressed: (){
                               Get.to(() => Reports());
                             },
@@ -391,7 +416,7 @@ class HomeWidgetFinance extends StatelessWidget {
                                 SizedBox(height: 8,),
                                 SizedBox(
                                   height: 40,
-                                  child: Image.asset("assets/home/report.png", fit: BoxFit.fitHeight,),
+                                  child: Image.asset("assets/icons/report.png", fit: BoxFit.fitHeight,),
                                 ),
                                 SizedBox(height: 10,),
                                 Text("Reports",
@@ -499,7 +524,7 @@ class HomeWidgetFinance extends StatelessWidget {
                       ),
                       SizedBox(height: 5),
                       SizedBox(
-                          height: ClientNotesController.clientNotes.length > 0?Get.height/100*16:230,
+                          height: ClientNotesController.clientNotes.length > 0?90:230,
                           width: Get.width,
                           child: Obx(() => ClientNotesController.clientNotes.length > 0 ? ListView.separated(
                             shrinkWrap: true,
@@ -518,34 +543,31 @@ class HomeWidgetFinance extends StatelessWidget {
                                   Get.to(() => SelectedClientNote(clientId: client['client']['id'],));
                                 },
                                 style: ButtonStyles.matButton(colors.Colors().deepGrey(1), 0),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 25,
-                                      backgroundImage: CachedNetworkImageProvider(HttpClient.s3BaseUrl + client['client']['avatar_url']),
-                                    ),
-                                    SizedBox(height: 10,),
-                                    SizedBox(
-                                      width: Get.width/100*24,
-                                      child: Text("${client['client']['name'].toString().split(" ").first}", textAlign: TextAlign.center,),
-                                    ),
-                                    SizedBox(height: 4,),
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.end,
-                                      children: [
-                                        Text("MVR",
-                                          style: TypographyStyles.normalText(12, Get.isDarkMode ? Colors.white : Colors.black),
-                                        ),
-                                        SizedBox(width: 3,),
-                                        Text("${valueFmt.format(client['income'])}",
-                                          style: TypographyStyles.boldText(18, Get.isDarkMode ? Colors.white : Colors.black),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                child: Container(
+                                  width: Get.width-64,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 25,
+                                        backgroundImage: CachedNetworkImageProvider(HttpClient.s3BaseUrl + client['client']['avatar_url']),
+                                      ),
+                                      SizedBox(width: 10,),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text("${client['client']['name'].toString().capitalize}", textAlign: TextAlign.center,style: TypographyStyles.text(16),),
+                                          SizedBox(height: 4,),
+                                          Text("MVR ${valueFmt.format(client['income'])}",
+                                            style: TypographyStyles.text(14),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               );
                             },
@@ -567,36 +589,68 @@ class HomeWidgetFinance extends StatelessWidget {
                   physics: NeverScrollableScrollPhysics(),
                   itemCount: transactions.length,
                   separatorBuilder: (context, index){
-                    return Divider(color: colors.Colors().darkGrey(1),);
+                    return SizedBox(height: 8,);
                   },
                   itemBuilder: (context,index){
-                    return Padding(
-                      padding: EdgeInsets.symmetric(vertical: 5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  child: Text('${transactions[index]['type']} - ${transactions[index]['description']}',
-                                    style: TypographyStyles.normalText(16, Get.isDarkMode ? Colors.white : Colors.black),
-                                    overflow: TextOverflow.ellipsis,
+                    // return Padding(
+                    //   padding: EdgeInsets.symmetric(vertical: 5),
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //     crossAxisAlignment: CrossAxisAlignment.start,
+                    //     children: [
+                    //       Expanded(
+                    //         child: Column(
+                    //           mainAxisSize: MainAxisSize.min,
+                    //           crossAxisAlignment: CrossAxisAlignment.start,
+                    //           children: [
+                    //             SizedBox(
+                    //               child: Text('${transactions[index]['type']} - ${transactions[index]['description']}',
+                    //                 style: TypographyStyles.normalText(16, Get.isDarkMode ? Colors.white : Colors.black),
+                    //                 overflow: TextOverflow.ellipsis,
+                    //               ),
+                    //               width: Get.width/100*70,
+                    //             ),
+                    //             SizedBox(height: 2,),
+                    //             Text("${DateFormat("MMM dd,yyyy - HH:mm").format(DateTime.parse(transactions[index]['created_at']))}",
+                    //               style: TypographyStyles.normalText(12, Get.isDarkMode ? colors.Colors().lightCardBG.withOpacity(0.6) : colors.Colors().darkGrey(0.7),),
+                    //             )
+                    //           ],
+                    //         ),
+                    //       ),
+                    //       Text((Utils.formatCurrency.format(transactions[index]['amount'])).toString(),style: TypographyStyles.walletTransactions(16, transactions[index]['type']),),
+                    //     ],
+                    //   ),
+                    // );
+                    return  Container(
+                      padding: EdgeInsets.all(16),
+                      decoration: BoxDecoration(color: AppColors().getSecondaryColor(),borderRadius: BorderRadius.circular(10)),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    child: Text('${transactions[index]['type']} - ${transactions[index]['description']}',
+                                      style: TypographyStyles.normalText(16, Get.isDarkMode ? Colors.white : Colors.black),
+                                    ),
+                                    width: Get.width/100*70,
                                   ),
-                                  width: Get.width/100*70,
-                                ),
-                                SizedBox(height: 2,),
-                                Text("${DateFormat("MMM dd,yyyy - HH:mm").format(DateTime.parse(transactions[index]['created_at']))}",
-                                  style: TypographyStyles.normalText(12, Get.isDarkMode ? colors.Colors().lightCardBG.withOpacity(0.6) : colors.Colors().darkGrey(0.7),),
-                                )
-                              ],
+                                  SizedBox(height: 8,),
+                                  Text("${DateFormat("MMM dd,yyyy - HH:mm").format(DateTime.parse(transactions[index]['created_at']).toLocal())}",
+                                    style: TypographyStyles.text(14),
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                          Text((Utils.formatCurrency.format(transactions[index]['amount'])).toString(),style: TypographyStyles.walletTransactions(16, transactions[index]['type']),),
-                        ],
+                            Text((Utils.formatCurrency.format(transactions[index]['amount'])).toString(),style: TypographyStyles.walletTransactions(16, transactions[index]['type']),),
+                          ],
+                        ),
                       ),
                     );
                   },

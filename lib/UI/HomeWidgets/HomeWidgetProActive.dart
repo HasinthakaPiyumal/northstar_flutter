@@ -15,6 +15,8 @@ import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:north_star/Utils/PopUps.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 
+import '../../components/Buttons.dart';
+
 class HomeWidgetProActive extends StatelessWidget{
 
   const HomeWidgetProActive({Key? key}) : super(key: key);
@@ -122,11 +124,11 @@ class HomeWidgetProActive extends StatelessWidget{
             children: [
               SizedBox(height: 5),
               Card(
-                color: Get.isDarkMode ? colors.Colors().lightBlack(1) : colors.Colors().selectedCardBG,
+                color: AppColors().getSecondaryColor(),
                 elevation: 0,
                 margin: EdgeInsets.zero,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 25),
@@ -156,14 +158,14 @@ class HomeWidgetProActive extends StatelessWidget{
                             Container(
                               width: Get.width,
                               decoration: BoxDecoration(
-                                color: colors.Colors().deepGrey(1),
+                                color: AppColors().getPrimaryColor(reverse: true),
                                 borderRadius: BorderRadius.circular(50),
                               ),
                             ),
                             Container(
                               width: (Get.width - 56)/100*((DateTime.parse(authUser.user['subscription']['valid_till']).difference(DateTime.now()).inDays)/(DateTime.parse(authUser.user['subscription']['valid_till']).difference(DateTime.parse(authUser.user['subscription']['updated_at'])).inDays)*100),
                               decoration: BoxDecoration(
-                                color: colors.Colors().deepYellow(1),
+                                color: AppColors.accentColor,
                                 borderRadius: BorderRadius.circular(50),
                               ),
                             ),
@@ -178,31 +180,18 @@ class HomeWidgetProActive extends StatelessWidget{
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(getDaysRemaining(authUser.user['subscription']['valid_till']) +' days left', style: TypographyStyles.title(18)),
+                              Text(getDaysRemaining(authUser.user['subscription']['valid_till']) +' days left', style: TypographyStyles.text(18)),
                               SizedBox(height: 5,),
                               Text('valid until : ' + DateFormat("dd MMM, yyyy").format(DateTime.parse(authUser.user['subscription']['valid_till'])),
-                                style: TypographyStyles.normalText(14, Get.isDarkMode ? colors.Colors().lightWhite(0.6) : colors.Colors().lightBlack(1)),
+                                style: TypographyStyles.text(14),
                               ),
                             ],
                           ),
-                          MaterialButton(
-                            padding: EdgeInsets.zero,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            color: colors.Colors().deepYellow(1),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 15),
-                              child: Text(
-                                'Extend Package',
-                                textAlign: TextAlign.left,
-                                style: TypographyStyles.boldText(14, Colors.white),
-                              ),
-                            ),
-                            onPressed: () async {
-                              Get.to(()=>HomeWidgetPro(extend: true));
-                            },
-                          ),
+                          Buttons.yellowFlatButton(onPressed: () async {
+                            Get.to(()=>HomeWidgetPro(extend: true));
+                          },
+                          label: "Get Started",
+                          width: 120)
                         ],
                       )
                     ],
@@ -295,14 +284,14 @@ class HomeWidgetProActive extends StatelessWidget{
                                     Container(
                                       width: Get.width,
                                       decoration: BoxDecoration(
-                                        color: colors.Colors().deepGrey(1),
+                                        color: AppColors().getPrimaryColor(reverse: true),
                                         borderRadius: BorderRadius.circular(50),
                                       ),
                                     ),
                                     Container(
                                       width: (Get.width - 56)/100*(endAndTodayDif/endAndStartDif)*100,
                                       decoration: BoxDecoration(
-                                        color: colors.Colors().deepYellow(1),
+                                        color: AppColors.accentColor,
                                         borderRadius: BorderRadius.circular(50),
                                       ),
                                     ),
@@ -318,14 +307,14 @@ class HomeWidgetProActive extends StatelessWidget{
                                     children: [
                                       Text(
                                         "${DateTime.parse(myBookings[index]['end_date']).difference(selectedDateForEquation).inDays} Day(s) Remaining",
-                                        style: TypographyStyles.boldText(15, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
+                                        style: TypographyStyles.text(16),
                                       ),
                                       SizedBox(
                                         height: 5,
                                       ),
                                       Text(
                                         DateFormat("MMM dd,yyyy").format(DateTime.parse(myBookings[index]['start_date'])) + ' - ' + DateFormat("MMM dd,yyyy").format(DateTime.parse(myBookings[index]['end_date'])),
-                                        style: TypographyStyles.normalText(14, Get.isDarkMode ? colors.Colors().lightWhite(0.6) : colors.Colors().lightBlack(1)),
+                                        style: TypographyStyles.text(14),
                                       ),
                                     ],
                                   ),

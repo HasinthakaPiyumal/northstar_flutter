@@ -16,6 +16,8 @@ import 'package:north_star/UI/PrivateDoctor/PrescriptionsManager/ViewPrescriptio
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 
+import '../../components/Buttons.dart';
+
 class SchedulesHistory extends StatelessWidget {
   const SchedulesHistory({Key? key}) : super(key: key);
 
@@ -143,43 +145,35 @@ class SchedulesHistory extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          ElevatedButton(
-                            child: Padding(
-                              padding: EdgeInsets.fromLTRB(0, 5, 5, 5),
-                              child: Row(
-                                children: [
-                                  Text('Add Prescriptions',
-                                    style: TypographyStyles.boldText(15, Colors.black),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            style: ButtonStyles.matRadButton(Themes.mainThemeColor.shade500, 5, 12),
-                            onPressed: (){
-                              Get.to(()=>CreatePrescription(
-                                userData: getUser(list[index]),
-                              ));
-                            },
-                          ),
+                          Expanded(child: Buttons.yellowFlatButton(onPressed: (){
+                            Get.to(()=>CreatePrescription(
+                              userData: getUser(list[index]),
+                            ));
+                          },label: "Add Prescriptions")),
                           SizedBox(width: 10),
-                          ElevatedButton(
-                            child: Padding(
-                              padding: EdgeInsets.fromLTRB(0, 5, 5, 5),
-                              child: Row(
-                                children: [
-                                  Text('VIEW',
-                                    style: TypographyStyles.boldText(15, Colors.black),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            style: ButtonStyles.matRadButton(Themes.mainThemeColor.shade500, 5, 12),
-                            onPressed: (){
-                              Get.to(()=>ViewPrescription(
-                                userData: getUser(list[index]),
-                              ));
-                            },
-                          ),
+                          // ElevatedButton(
+                          //   child: Padding(
+                          //     padding: EdgeInsets.fromLTRB(0, 5, 5, 5),
+                          //     child: Row(
+                          //       children: [
+                          //         Text('VIEW',
+                          //           style: TypographyStyles.boldText(15, Colors.black),
+                          //         ),
+                          //       ],
+                          //     ),
+                          //   ),
+                          //   style: ButtonStyles.matRadButton(Themes.mainThemeColor.shade500, 5, 12),
+                          //   onPressed: (){
+                          //     Get.to(()=>ViewPrescription(
+                          //       userData: getUser(list[index]),
+                          //     ));
+                          //   },
+                          // ),
+                          Expanded(child: Buttons.yellowFlatButton(onPressed: (){
+                            Get.to(()=>ViewPrescription(
+                              userData: getUser(list[index]),
+                            ));
+                          },label: "View")),
                         ],
                       )
                     ],

@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -12,6 +13,7 @@ import 'package:north_star/UI/Members/UserView.dart';
 import 'package:north_star/UI/SharedWidgets/CommonConfirmDialog.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/Utils/PopUps.dart';
+import 'package:north_star/components/Buttons.dart';
 
 class Pending extends StatelessWidget {
   const Pending({Key? key}) : super(key: key);
@@ -267,75 +269,43 @@ print('accepting-->$res');
                                   SizedBox(height: 10),
                                   Text(
                                     requests[index]['description'],
-                                    style: TypographyStyles.normalText(
-                                      14,
-                                      Get.isDarkMode
-                                          ? Themes.mainThemeColorAccent.shade100
-                                              .withOpacity(0.7)
-                                          : colors.Colors().lightBlack(0.6),
+                                    style: TypographyStyles.text(
+                                      14
                                     ),
                                   ),
                                   SizedBox(height: 15),
                                   Row(
                                     children: [
                                       Expanded(
-                                        child: ElevatedButton(
-                                          child: Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 15, horizontal: 20),
-                                            child: Text(
-                                              'Reject',
-                                              style: TypographyStyles.boldText(
-                                                  15, Colors.white),
-                                            ),
-                                          ),
-                                          style: ButtonStyles.matRadButton(
-                                              Colors.black, 5, 12),
-                                          onPressed: () {
-                                            CommonConfirmDialog.confirm(
-                                                    'Reject')
-                                                .then((value) {
-                                              if (value) {
-                                                cancelingReason(
-                                                    requests[index]['id'],
-                                                    requests[index]
-                                                        ['client_id']);
-                                              }
-                                            });
-                                          },
-                                        ),
+                                        child: Buttons.outlineButton(onPressed:  () {
+                                          CommonConfirmDialog.confirm(
+                                              'Reject')
+                                              .then((value) {
+                                            if (value) {
+                                              cancelingReason(
+                                                  requests[index]['id'],
+                                                  requests[index]
+                                                  ['client_id']);
+                                            }
+                                          });
+                                        },label: "Reject"),
                                       ),
                                       SizedBox(
                                         width: 10,
                                       ),
                                       Expanded(
-                                        child: ElevatedButton(
-                                          child: Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 15, horizontal: 20),
-                                            child: Text(
-                                              'Accept',
-                                              style: TypographyStyles.boldText(
-                                                  15, Colors.black),
-                                            ),
-                                          ),
-                                          style: ButtonStyles.matRadButton(
-                                              Themes.mainThemeColor.shade500,
-                                              5,
-                                              12),
-                                          onPressed: () {
-                                            CommonConfirmDialog.confirm(
-                                                    'Accept')
-                                                .then((value) {
-                                              if (value) {
-                                                accept(
-                                                    requests[index]['id'],
-                                                    requests[index]
-                                                        ['client_id']);
-                                              }
-                                            });
-                                          },
-                                        ),
+                                        child: Buttons.yellowFlatButton(onPressed: () {
+                                          CommonConfirmDialog.confirm(
+                                              'Accept')
+                                              .then((value) {
+                                            if (value) {
+                                              accept(
+                                                  requests[index]['id'],
+                                                  requests[index]
+                                                  ['client_id']);
+                                            }
+                                          });
+                                        },label: "Accept"),
                                       ),
                                     ],
                                   ),
