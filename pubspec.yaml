@@ -84,6 +84,7 @@ dependencies:
   pin_code_fields: ^8.0.1
   syncfusion_flutter_pdf: ^24.2.9
   open_file: ^3.3.2
+  app_links: ^5.0.0
 
 #  flutter_zoom_sdk: ^1.1.0+4
 #  flutter_zoom_videosdk: ^1.7.0

@@ -65,7 +65,8 @@ class NSNotification {
     );
   }
 
-  Future readNotification() async {
+  Future readNotification({bool askConfirm = true}) async {
+    if(askConfirm){
     CommonConfirmDialog.confirm('Mark as Read').then((value) async {
       if (value == true) {
         Map res = await httpClient.readOneNotification(this.id);
@@ -77,6 +78,16 @@ class NSNotification {
         }
       }
     });
+    }else{
+      Map res = await httpClient.readOneNotification(this.id);
+      if (res['code'] == 200) {
+        NotificationsController.notifications
+            .firstWhere((notification) => notification.id == this.id)
+            .hasSeen = true;
+        NotificationsController.notifications.refresh();
+      }
+    }
+
   }
 
   Future deleteNotification() async {

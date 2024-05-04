@@ -101,6 +101,8 @@ class _RequestsNotificationsState extends State<RequestsNotifications> {
                 onTap: () {
                   if (selectedList.length > 0) {
                     selectItem(notification);
+                  }else{
+                    notification.readNotification(askConfirm: false);
                   }
                 },
                 child: Row(

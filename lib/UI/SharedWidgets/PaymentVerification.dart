@@ -44,6 +44,7 @@ class _PaymentVerificationState extends State<PaymentVerification> {
     RxInt seconds = timeOutSeconds.obs;
     RxBool isReady = false.obs;
     RxBool isConfirmed = false.obs;
+    RxBool isAlive = true.obs;
 
     void checkPayment({bool notify = false}) async {
       isReady.value = false;
@@ -53,6 +54,10 @@ class _PaymentVerificationState extends State<PaymentVerification> {
       if (res['code'] == 200) {
         isReady.value = true;
         isConfirmed.value = res['data']['confirmed'];
+        isAlive.value = res['data']['is_alive'];
+        if(isAlive.value){
+
+        }
         if(isConfirmed.value){
           Future.delayed(Duration(seconds: 2),()=>Get.offAll(Layout()));
         }

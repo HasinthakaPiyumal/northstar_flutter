@@ -80,6 +80,8 @@ class _AllNotificationsState extends State<AllNotifications> {
                               onTap: () {
                                 if (selectedList.length > 0) {
                                   selectItem(notification);
+                                }else{
+                                  notification.readNotification(askConfirm: false);
                                 }
                               },
                               child: Row(

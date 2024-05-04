@@ -145,7 +145,7 @@ class _HomeWidgetNotificationsState extends State<HomeWidgetNotifications> with 
                     margin: EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(color:Get.isDarkMode? AppColors.primary2Color:Colors.white,borderRadius: BorderRadius.circular(8)),
                     child: Row(children: [
-                      Expanded(child: Buttons.yellowFlatButton(useDefaultFont:true,label: "All Notifications ${NotificationsController.getUnreadNotificationsCount() > 0?'(${NotificationsController.getUnreadRequestNotificationsCount()})':''}",onPressed: (){tabController.animateTo(0);},backgroundColor: index==0?AppColors.accentColor:Colors.transparent,textColor: index==0?AppColors.textOnAccentColor:Get.isDarkMode?Colors.white:Colors.black)),
+                      Expanded(child: Buttons.yellowFlatButton(useDefaultFont:true,label: "All Notifications ${NotificationsController.getUnreadNotificationsCount() > 0?'(${NotificationsController.getUnreadNotificationsCount()})':''}",onPressed: (){tabController.animateTo(0);},backgroundColor: index==0?AppColors.accentColor:Colors.transparent,textColor: index==0?AppColors.textOnAccentColor:Get.isDarkMode?Colors.white:Colors.black)),
                       SizedBox(width: 5,),
                       Expanded(child: Buttons.yellowFlatButton(useDefaultFont:true,label: "Requests ${NotificationsController.getUnreadRequestNotificationsCount() > 0?'(${NotificationsController.getUnreadRequestNotificationsCount()})':''}",onPressed: (){tabController.animateTo(1);},backgroundColor: index==1?AppColors.accentColor:Colors.transparent,textColor: index==1?AppColors.textOnAccentColor:Get.isDarkMode?Colors.white:Colors.black)),
                     ],),),

@@ -16,6 +16,7 @@ import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:north_star/Utils/PopUps.dart';
 
+import '../../../Styles/ThemeBdayaStyles.dart';
 import '../../../components/Buttons.dart';
 
 class CreateVideoSession extends StatelessWidget {
@@ -169,7 +170,43 @@ class CreateVideoSession extends StatelessWidget {
                     onTap: () {
                       DatePickerBdaya.showDateTimePicker(
                         context,
-                        theme: DatePickerThemes.mainTheme(),
+                        theme: ThemeBdayaStyles.main(),
+                        showTitleActions: true,
+                        minTime: DateTime.now(),
+                        currentTime: DateTime.now(),
+                        onChanged: (date) {
+                          print('change $date');
+                        },
+                        onConfirm: (date) {
+                          print('confirm $date');
+                          meetingDateTime.value = date.toUtc().toString();
+                          print(date.isUtc);
+                          print(date.timeZoneOffset);
+                          dateTime.text = DateFormat("dd MMM, yyyy")
+                                  .format(date)
+                                  .toString() +
+                              " at " +
+                              DateFormat("h:mm a").format(date).toString();
+                        },
+                      );
+                    },
+                  ),
+                  SizedBox(height: 16),
+                  TextField(
+                    controller: dateTime,
+                    readOnly: true,
+                    decoration: InputDecoration(
+                      labelText: 'Meeting Duration',
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.all(14.0),
+                        child: SvgPicture.asset("assets/svgs/time.svg",width: 14,height: 14,color: AppColors().getPrimaryColor(reverse: true),),
+                      ),
+                      border: UnderlineInputBorder(),
+                    ),
+                    onTap: () {
+                      DatePickerBdaya.showDateTimePicker(
+                        context,
+                        theme: ThemeBdayaStyles.main(),
                         showTitleActions: true,
                         minTime: DateTime.now(),
                         currentTime: DateTime.now(),
