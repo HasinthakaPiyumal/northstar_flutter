@@ -9,6 +9,7 @@ import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
+import 'package:north_star/UI/HomeWidgets/HomeWidgetClass.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetClasses.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetCalories.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetClientNotes.dart';
@@ -621,9 +622,9 @@ class Home extends StatelessWidget {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => Doctors()));
                             }, 'doctors', 'Medical Professionals'),
                             homeWidgetButton(() {
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeWidgetVideoSessions()));
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeWidgetClass()));
                               // Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetVideoSessions());
-                            }, 'sessions', 'Video Sessions'),
+                            }, 'classes-videos', 'Classes'),
                           ],
                         ))
                     : SizedBox(),
@@ -689,17 +690,16 @@ class Home extends StatelessWidget {
                     ? Container(
                         padding: const EdgeInsets.all(8),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             homeWidgetButton(() {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetVendingMachine()));
                             }, 'vending', 'Vending Machine'),
+                            SizedBox(width: 4,),
                             homeWidgetButton(() {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => FamilyLink()));
                             }, 'family', 'Family Link'),
-                            homeWidgetButton(() {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => Classes()));
-                            }, 'class', 'Gym Classes'),
+
                           ],
                         ))
                     : SizedBox(),
