@@ -23,6 +23,7 @@ import '../../../Styles/AppColors.dart';
 import '../../../Styles/SignUpStyles.dart';
 import '../../../Styles/ThemeBdayaStyles.dart';
 import '../../../components/SessionTimePicker.dart';
+import '../../SharedWidgets/PaymentSummary.dart';
 import '../../SharedWidgets/PaymentVerification.dart';
 
 class ScheduleForClient extends StatelessWidget {
@@ -43,6 +44,10 @@ class ScheduleForClient extends StatelessWidget {
 
     DateTime now = DateTime.now();
     late DateTime selectedDateTime = DateTime(now.year,now.month,now.day,0,0);
+
+    String getChargingMethod(){
+      return doctor['doctor']['charge_type'] == 'SESSION' ? '(Per Session)' : '(Per Hour)';
+    }
 
     void payWithCard(DateTime dateTimeOfBooking,double total,String clientId)async {
       Map res = await httpClient.doctorMeeting({
@@ -87,6 +92,41 @@ class ScheduleForClient extends StatelessWidget {
         showSnack('Booking Failed',
             'Something went wrong. Please try again later.');
       }
+    }
+
+    void validateAndGo(DateTime dateTimeOfBooking, double total){
+
+      if(selectedClient.isEmpty){
+        showSnack("Incomplete Information", "Please select a client for scheduling the meeting.",status: PopupNotificationStatus.warning);
+        return;
+      }
+      if(dateTime.text.isEmpty){
+        showSnack("Incomplete Information", "Please choose a date that falls before the scheduled meeting.",status: PopupNotificationStatus.warning);
+        return;
+      }
+      if(startTime.text.isEmpty){
+        showSnack("Incomplete Information", "Please select a time that precedes the scheduled meeting.",status: PopupNotificationStatus.warning);
+        return;
+      }
+      if(titleController.text.isEmpty){
+        showSnack("Incomplete Information", "Please provide a reason for scheduling the meeting.",status: PopupNotificationStatus.warning);
+        return;
+      }
+      if(descriptionController.text.isEmpty){
+        showSnack("Incomplete Information", "Please provide a additional details for scheduling the meeting.",status: PopupNotificationStatus.warning);
+        return;
+      }
+      Get.to(()=>PaymentSummary(
+        orderDetails: [
+          SummaryItem(head: 'Client',value: selectedClient.value['name'].toString().capitalize.toString(),),
+          SummaryItem(head: 'Doctor',value: 'Dr. ' + doctor['name'].toString().capitalize.toString(),),
+          SummaryItem(head: 'Rate${getChargingMethod()}',value: 'MVR ' + doctor['doctor']['hourly_rate'].toStringAsFixed(2),),
+          SummaryItem(head: 'Appointment Time',value: '${dateTime.text} ${startTime.text}',),
+        ],
+        total: total,
+        payByCard: (){payWithCard(dateTimeOfBooking,total,selectedClient.value['id'].toString());},
+        payByWallet: (){payWithEWallet(dateTimeOfBooking,total,selectedClient.value['id'].toString());},
+      ));
     }
 
     void confirmAndPay(DateTime dateTimeOfBooking, double total) async{
@@ -325,10 +365,6 @@ class ScheduleForClient extends StatelessWidget {
         print(res);
         return [];
       }
-    }
-
-    String getChargingMethod(){
-      return doctor['doctor']['charge_type'] == 'SESSION' ? '(Per Session)' : '(Per Hour)';
     }
 
     return Scaffold(
@@ -614,7 +650,7 @@ class ScheduleForClient extends StatelessWidget {
               child: CircularProgressIndicator(),
             ),
             onPressed: () {
-              confirmAndPay(
+              validateAndGo(
                   selectedDateTime,
                   double.parse(
                       doctor['doctor']['hourly_rate'].toString()));

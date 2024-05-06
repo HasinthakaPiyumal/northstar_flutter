@@ -6,6 +6,7 @@ import 'package:lottie/lottie.dart';
 import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
+import 'package:north_star/UI/SharedWidgets/PaymentFailed.dart';
 import 'package:north_star/Utils/PopUps.dart';
 import 'package:north_star/components/CircularProgressBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -49,14 +50,15 @@ class _PaymentVerificationState extends State<PaymentVerification> {
     void checkPayment({bool notify = false}) async {
       isReady.value = false;
       Map res = await httpClient.paymentVerify(transactionId.value);
-      print('print paymentStatus');
+      print('print paymentStatus with alive');
       print(res);
       if (res['code'] == 200) {
         isReady.value = true;
-        isConfirmed.value = res['data']['confirmed'];
+        isConfirmed.value = res['data']['confirmed']??false;
         isAlive.value = res['data']['is_alive'];
-        if(isAlive.value){
-
+        print("Is alive ${isAlive.value}");
+        if(!isAlive.value){
+            Get.off(PaymentFailed());
         }
         if(isConfirmed.value){
           Future.delayed(Duration(seconds: 2),()=>Get.offAll(Layout()));
@@ -66,7 +68,7 @@ class _PaymentVerificationState extends State<PaymentVerification> {
               "Payment Status",
               isConfirmed.value
                   ? "Payment completed successfully"
-                  : "Payment is still pending");
+                  : "Payment is still pending",status:isConfirmed.value?PopupNotificationStatus.success:PopupNotificationStatus.info);
         }
       } else {
         isReady.value = true;
@@ -99,7 +101,7 @@ class _PaymentVerificationState extends State<PaymentVerification> {
         showSnack("Something went wrong", "Something went wrong. Please try again shortly.");
         return;
       }
-      await launchUrlString(transactionUrl.value);
+      await launchUrlString(transactionUrl.value,mode: LaunchMode.externalApplication);
       startTimer();
       isReady.value = true;
     }
@@ -129,8 +131,8 @@ class _PaymentVerificationState extends State<PaymentVerification> {
               : SingleChildScrollView(
                   child: Column(
                     children: [
+
                       Container(
-                        
                         height: 270,
                         width: Get.width - 40,
                         margin:
@@ -155,11 +157,17 @@ class _PaymentVerificationState extends State<PaymentVerification> {
                               SizedBox(
                                 height: 10,
                               ),
-                              Text(
-                                '#${transactionId.value}',
-                                style: TextStyle(
-                                    color: AppColors.accentColor,
-                                    decoration: TextDecoration.underline),
+                              InkWell(
+                                onTap: ()async{
+                                  await launchUrlString(transactionUrl.value,mode: LaunchMode.externalApplication);
+                                },
+                                splashColor: Colors.transparent,
+                                child: Text(
+                                  '#${transactionId.value}',
+                                  style: TextStyle(
+                                      color: AppColors.accentColor,
+                                      decoration: TextDecoration.underline),
+                                ),
                               )
                             ]),
                       ),
