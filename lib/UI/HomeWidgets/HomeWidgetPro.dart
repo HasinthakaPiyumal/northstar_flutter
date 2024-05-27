@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -22,7 +23,9 @@ import 'package:north_star/components/MaterialBottomSheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../components/Buttons.dart';
 import '../../components/CouponApply.dart';
+import '../SharedWidgets/PaymentSummary.dart';
 import '../SharedWidgets/PaymentVerification.dart';
 import 'PurchaseSummary.dart';
 
@@ -157,6 +160,68 @@ class HomeWidgetPro extends StatelessWidget {
         showSnack("Booking Failed",res['data']['message'] );
       }
       ready.value = true;
+    }
+
+    void validateAndGo(Map plan){
+
+      dynamic plan = plansList[selectedPackage.value];
+      var formatter = DateFormat('yyyy-MM-dd');
+      String valid = authUser.user['subscription']!=null?authUser.user['subscription']['valid_till']:formatter.format(DateTime.now().toLocal());
+      var data = {
+        "plan_name":plan['name'],
+        "price":getPlanPrice(plan).toStringAsFixed(2),
+        "discount_percentage":((couponValue.value)/getPlanPrice(plan)*100).toStringAsFixed(2),
+        "discount_amount":(getPlanPrice(plan)-couponValue.value).toStringAsFixed(2),
+        "validation":plan['duration_unit']=='lifetime'?'Life Time':"${plan['duration_amount']} ${plan['duration_unit']}",
+        "starting_date":valid,
+        "expire_date":plan['duration_unit']=='lifetime'?'Life Time':formatter.format(addTimeUnitToDate(DateTime.parse(valid),plan['duration_amount'],plan['duration_unit']).toLocal()).toString(),
+      };
+      Widget headerWidget = Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Container(
+          padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(color: Get.isDarkMode?AppColors.primary2Color:Colors.white,borderRadius: BorderRadius.circular(10)),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Plan",style: TypographyStyles.title(16),),
+              SizedBox(height: 10,),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [Text("Plan Name",style: TextStyle(fontSize: 16,color: Get.isDarkMode?Colors.white.withOpacity(0.5):Colors.black.withOpacity(0.5))),Text(data['plan_name'],style:TypographyStyles.text(16))]),
+              SizedBox(height: 8,),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [Text("Plan Validation",style: TextStyle(fontSize: 16,color: Get.isDarkMode?Colors.white.withOpacity(0.5):Colors.black.withOpacity(0.5))),Text(data['validation'],style:TypographyStyles.text(16))]),
+              SizedBox(height: 8,),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [Text("Starting Date",style: TextStyle(fontSize: 16,color: Get.isDarkMode?Colors.white.withOpacity(0.5):Colors.black.withOpacity(0.5))),Text(data['starting_date'],style:TypographyStyles.text(16))]),
+              SizedBox(height: 8,),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [Text("Expire Date",style: TextStyle(fontSize: 16,color: Get.isDarkMode?Colors.white.withOpacity(0.5):Colors.black.withOpacity(0.5))),Text(data['expire_date'],style:TypographyStyles.text(16))]),
+            ],
+          ),),
+      );
+
+      Get.to(()=>PaymentSummary(
+        orderDetails: [
+           SummaryItem(head: 'Plan Price',value: "MVR ${data['price']}",),
+        ],
+        total: getPlanPrice(plan),//storeHelper.getCartTotal(),
+        payByCard: (){subscribeNow(plan,(){});},
+        payByWallet: ()async{
+          var data = {
+            'planId': plansList[selectedPackage.value]['id'],
+            'couponCode': '${couponCode.value}',
+            'payment_type': 2
+          };
+          Map res = await httpClient.proMemberActivate(data);
+          print(res);
+          if (res['code'] == 200) {
+            Get.to(() => Layout());
+            showSnack('Successfully Subscribed',
+                'You have successfully upgraded your membership plan.');
+          } else {
+            showSnack('Error', 'Something went wrong.');
+          }
+        },
+        headerWidget:headerWidget ,
+        isCouponAvailable: true,
+      ));
     }
 
     void confirmAndPay(Map plan) async {
@@ -847,57 +912,13 @@ class HomeWidgetPro extends StatelessWidget {
                                     ],
                                   ),
                                 ),
-                                child: MaterialButton(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 17,
-                                  ),
-                                  minWidth: double.infinity,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5.0),
-                                  ),
-                                  child: Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 18),
-                                    child: Obx(() => ready.value
-                                        ? Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Image.asset(
-                                                'assets/images/crown.png',
-                                                height: 30,
-                                              ),
-                                              SizedBox(
-                                                width: 15,
-                                              ),
-                                              Text(
-                                                extend ? 'EXTEND' : 'UPGRADE',
-                                                textAlign: TextAlign.left,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .labelLarge!
-                                                    .copyWith(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                        color: Colors.white),
-                                              ),
-                                            ],
-                                          )
-                                        : Container(
-                                            child: CircularProgressIndicator(
-                                              strokeWidth: 3,
-                                              valueColor:
-                                                  AlwaysStoppedAnimation<Color>(
-                                                      Colors.white),
-                                            ),
-                                          )),
-                                  ),
+                                child: Buttons.yellowTextIconButton(
+                                  label:extend ? 'EXTEND' : 'UPGRADE',
                                   onPressed: () async {
                                     if (plansList[selectedPackage.value]
                                             ['price'] >
                                         0) {
-                                      confirmAndPay(
+                                      validateAndGo(
                                           plansList[selectedPackage.value]);
                                     } else {
                                       CommonConfirmDialog.confirm(
@@ -907,6 +928,9 @@ class HomeWidgetPro extends StatelessWidget {
                                       });
                                     }
                                   },
+                                    icon: Icons.accessibility_new_outlined,
+                                  svg:'assets/svgs/upgrade.svg',
+                                  width: Get.width
                                 ),
                               ),
                             ],

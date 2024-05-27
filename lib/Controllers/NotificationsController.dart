@@ -9,6 +9,7 @@ import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetNotifications.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationsController {
   static RxList<NSNotification> notifications = RxList<NSNotification>([]);
@@ -127,10 +128,14 @@ class NotificationsController {
     ));
   }
 
-  static void showNotificationsPrompt() {
+  static void showNotificationsPrompt()async {
     int currentLastNotificationId = notifications.first.id;
+    String preferenceName = "lastNotificationId";
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    lastNotificationId = (await prefs.getInt(preferenceName))??0;
     if (getUnreadNotificationsCount() > 0 && lastNotificationId!=currentLastNotificationId) {
       lastNotificationId = currentLastNotificationId;
+      prefs.setInt(preferenceName, lastNotificationId);
       Get.dialog(
           AlertDialog(
         titlePadding: EdgeInsets.zero,

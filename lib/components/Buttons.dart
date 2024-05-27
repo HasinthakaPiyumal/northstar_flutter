@@ -177,6 +177,7 @@ class Buttons {
     double width = 264,
     double height = 40,
     Color backgroundColor = AppColors.accentColor,
+    Color textColor = AppColors.textOnAccentColor,
     bool buttonFit = false,
     String svg = "",
     String fontFamily = 'Bebas Neue',

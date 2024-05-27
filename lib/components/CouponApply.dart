@@ -106,7 +106,7 @@ class CouponApply extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Buttons.yellowTextIconButton(
+    return Buttons.outlineTextIconButton(
         icon: couponValue.value > 0 ?Icons.clear:Icons.confirmation_number,
         backgroundColor: couponValue.value > 0 ?Colors.redAccent:AppColors.accentColor ,
         textColor: couponValue.value > 0 ?Colors.white:AppColors.textOnAccentColor,

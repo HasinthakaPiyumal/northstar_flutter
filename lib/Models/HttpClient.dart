@@ -1457,6 +1457,8 @@ class HttpClient {
   Future<Map> newChatNotification(Map data) async {
     Response response =
         await post('/meeting/chats/chat-notifications/new-message', data);
+    print("======New message notification ids");
+    print(data);
     return {
       "code": response.statusCode,
       "data": response.data,

@@ -78,7 +78,8 @@ class ChatThread extends StatelessWidget {
         message.clear();
         sending.value = false;
         List users = [];
-        chatData['clients'].forEach((client) {
+        print(chatData);
+        chatData['clients']??[].forEach((client) {
           if (client['client_id'].toString() != authUser.id.toString()) {
             users.add(client['client_id'].toString());
           }
@@ -524,6 +525,7 @@ class ChatThread extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(100),
                                 onTap: () {
                                   if (message.text.isNotEmpty) {
+                                    print("sending msg");
                                     sendMessage();
                                   }
                                 },

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Controllers/TaxController.dart';
+import 'package:north_star/Utils/PopUps.dart';
+import 'package:north_star/components/CouponApply.dart';
 
 import '../../Models/HttpClient.dart';
 import '../../Styles/AppColors.dart';
@@ -15,13 +17,16 @@ class PaymentSummary extends StatelessWidget {
     required this.total,
     this.headerWidget = const SizedBox(),
     required this.payByCard,
-    required this.payByWallet
+    required this.payByWallet,
+    this.isCouponAvailable = false
   });
   Widget headerWidget;
   final Function payByCard;
   final Function payByWallet;
   final List<SummaryItem> orderDetails;
   final double total;
+
+  bool isCouponAvailable;
 
 
   @override
@@ -43,7 +48,12 @@ class PaymentSummary extends StatelessWidget {
     getWalletData();
     void proceedNow(){
       if(isWallet.value){
-        payByWallet();
+        if(walletData['balance']>=total){
+          payByWallet();
+        }else{
+          showSnack('Insufficient Balance',
+              'You do not have sufficient balance to pay for this booking.',status: PopupNotificationStatus.error);
+        }
       }else{
         payByCard();
       }
@@ -56,6 +66,7 @@ class PaymentSummary extends StatelessWidget {
         child: Obx(
               () => ready.value
               ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Container(child: headerWidget),
             Container(
               padding: EdgeInsets.all(16),
               margin: EdgeInsets.all(16),
@@ -67,7 +78,6 @@ class PaymentSummary extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(child: headerWidget),
                   Text(
                     "Summary",
                     style: TypographyStyles.title(20),
@@ -257,9 +267,16 @@ class PaymentSummary extends StatelessWidget {
       ),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.all(16),
-        child: Buttons.yellowFlatButton(onPressed: (){
-          proceedNow();
-        },label: 'payment proceed now'),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            isCouponAvailable?CouponApply(type: 1, typeId: 1, couponValue: 0.0.obs, payingAmount: 100, couponCode: "111".obs):SizedBox(),
+            SizedBox(height: isCouponAvailable?16:0,),
+            Buttons.yellowFlatButton(onPressed: (){
+              proceedNow();
+            },label: 'payment proceed now',width: Get.width),
+          ],
+        ),
       ),
     );
   }

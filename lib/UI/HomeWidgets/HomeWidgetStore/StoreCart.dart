@@ -1,7 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:marquee/marquee.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/StoreHelper.dart';
 import 'package:north_star/Styles/AppColors.dart';
@@ -21,6 +25,7 @@ import 'package:north_star/Utils/CustomColors.dart' as colors;
 
 import '../../../Utils/PopUps.dart';
 import '../../Layout.dart';
+import '../../SharedWidgets/PaymentSummary.dart';
 import '../../SharedWidgets/PaymentVerification.dart';
 class StoreCart extends StatelessWidget {
   const StoreCart({Key? key}) : super(key: key);
@@ -47,6 +52,98 @@ class StoreCart extends StatelessWidget {
       }
       print('===res');
       print(res);
+    }
+
+    void payWithWallet()async{
+      Map res = await httpClient.purchaseCart({'payment_type':2});
+      print(res);
+      if (res['code'] == 200) {
+        Get.off(() => MyOrders());
+        print('Purchasing Success ---> $res');
+        showSnack('Purchasing Successful', 'Your cart has been successfully Purchased.');
+      } else {
+        showSnack('Purchasing Failed',
+            'Something went wrong. Please try again later.');
+      }
+    }
+
+    void validateAndGo(){
+
+      if(storeHelper.cart.length==0){
+        showSnack("Cart is empty", "Please add items for cart and try again.",status: PopupNotificationStatus.warning);
+        return;
+      }
+
+      Widget headerWidget = Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: ListView.separated(
+          separatorBuilder: (context,index){
+            return SizedBox();
+          },
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemBuilder: (context, index) {
+            return Container(
+                margin: EdgeInsets.symmetric(vertical: 4),
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.primary2Color,
+                  borderRadius: BorderRadius.circular(5)
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                      ClipRRect(
+                        borderRadius:BorderRadius.circular(5),
+                        child: CachedNetworkImage(
+                          imageUrl: HttpClient.s3ResourcesBaseUrl+storeHelper.cart[index]['product']
+                            ['image_path'],
+                            placeholder: (context, url) =>
+                                CircularProgressIndicator(),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
+                          width: 64,
+                          height: 64,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+
+                    SizedBox(width: 20,),
+                    Container(
+                      width: Get.width-148,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(storeHelper.cart[index]['product']['name'].toString().capitalize.toString(),style: TypographyStyles.title(16),),
+                          // SizedBox(height: 8,),
+                          (Get.width-148)/7<storeHelper.cart[index]['product']['description'].length?Container(width:Get.width-148,height: 20,child: Marquee(blankSpace: 20,pauseAfterRound: Duration(seconds: 10),text: '${storeHelper.cart[index]['product']['description']}',style: TypographyStyles.text(14),)):Text('${storeHelper.cart[index]['product']['description']}',style: TypographyStyles.text(14),),
+                          Text('MVR ${storeHelper.cart[index]['product']['price']}',style: TypographyStyles.smallBoldTitle(20),),
+                          // Row(
+                          //   children: [
+                          //     Spacer(),
+                          //     // Text('X ${storeHelper.cart[index]['product']['quantity']}',style: TypographyStyles.text(14),),
+                          //   ],
+                          // )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+            );
+          }, itemCount:storeHelper.cart.length,
+        ),
+      );
+
+      Get.to(()=>PaymentSummary(
+        orderDetails: [
+          SummaryItem(head: 'Item count',value: '${storeHelper.cart.length}',),
+        ],
+        total: storeHelper.getCartTotal(),
+        payByCard: (){payByCard();},
+        payByWallet: (){payWithWallet();},
+        headerWidget:headerWidget ,
+      ));
     }
 
     void confirmAndPay() async{
@@ -327,7 +424,7 @@ class StoreCart extends StatelessWidget {
                             width: Get.width,
                             padding: EdgeInsets.symmetric(horizontal: 16),
                             child: Buttons.yellowFlatButton(
-                                onPressed: confirmAndPay, label: "Purchase"))
+                                onPressed: validateAndGo, label: "Purchase"))
                         : Container(
                             color: Get.isDarkMode
                                 ? AppColors.primary2Color
