@@ -2,7 +2,7 @@ name: north_star
 description: a personal fitness app
 
 publish_to: 'none'
-version: 10.0.0+4
+version: 10.0.0+5
 
 environment:
   sdk: ">=2.15.0 <3.0.0"

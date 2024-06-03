@@ -26,7 +26,7 @@ class LocalNotificationsController {
         AndroidNotificationDetails(
       'Reminders',
       'Reminders',
-      groupKey: 'com.northstar.fitness.reminders',
+      groupKey: 'mv.northstar.fitness.reminders',
       channelDescription: 'channel description',
       importance: Importance.max,
       priority: Priority.max,
