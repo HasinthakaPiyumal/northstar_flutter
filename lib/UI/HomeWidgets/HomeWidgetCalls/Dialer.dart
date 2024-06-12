@@ -6,6 +6,7 @@ import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/UI/Members/VoiceCallUI.dart';
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
+import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 
 class Dialer extends StatelessWidget {
   const Dialer({Key? key}) : super(key: key);
@@ -67,26 +68,38 @@ class Dialer extends StatelessWidget {
                       ),
                     ),
                     title: Text(contacts[index]['user']['name'].toString().capitalize.toString()),
-                    trailing: Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(200),
-                        color: AppColors.accentColor,
-                      ),
-                      child: IconButton(
-                        icon: Icon(Icons.call,size:20,
-                            color: AppColors.textOnAccentColor),
-                        onPressed: () {
-                          Get.to(() =>
-                                  VoiceCallUI(user: contacts[index]['user']))
-                              ?.then((value) {
-                            // Get.back();
-                            // print(value);
-                          });
-                        },
-                      ),
-                    ),
+                    // trailing: Container(
+                    //   width: 36,
+                    //   height: 36,
+                    //   decoration: BoxDecoration(
+                    //     borderRadius: BorderRadius.circular(200),
+                    //     color: AppColors.accentColor,
+                    //   ),
+                    //   child: IconButton(
+                    //     icon: Icon(Icons.call,size:20,
+                    //         color: AppColors.textOnAccentColor),
+                    //     onPressed: () {
+                    //       Get.to(() =>
+                    //               VoiceCallUI(user: contacts[index]['user']))
+                    //           ?.then((value) {
+                    //         // Get.back();
+                    //         // print(value);
+                    //       });
+                    //     },
+                    //   ),
+                    // ),
+                    trailing: ZegoSendCallInvitationButton(
+                      isVideoCall: true,
+                      //You need to use the resourceID that you created in the subsequent steps.
+                      //Please continue reading this document.
+                      resourceID: "NS_Signal",
+                      invitees: [
+                        ZegoUIKitUser(
+                          id: contacts[index]['user']['id'],
+                          name: contacts[index]['user']['name'],
+                        ),
+                      ],
+                    )
                   ),
                 );
               },

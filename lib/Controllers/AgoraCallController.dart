@@ -134,7 +134,7 @@ class AgoraCallController {
 
     await agoraEngine.enableAudio();
     await agoraEngine.enableLocalAudio(true);
-    var channelName = Uuid().v4();
+    var channelName = "${user['id']}<=>${authUser.id}";
     print(user);
     callData.setCallData(
         id: '${user['id']}',
@@ -190,6 +190,7 @@ class AgoraCallController {
         endTime = DateTime.now();
         timer.cancel();
         duration.value = Duration(seconds: 0);
+
         try {
           // callUpdater.cancel();
           timer.cancel();
@@ -198,8 +199,7 @@ class AgoraCallController {
           print(e);
         }
         // Get.back(closeOverlays: true, canPop: false);
-      },
-          onLeaveChannel: (connection, state) async {
+      }, onLeaveChannel: (connection, state) async {
         try {
           // callUpdater.cancel();
           // await httpClient.updateCallLog({
@@ -298,10 +298,31 @@ class AgoraCallController {
   //   isJoined = false;
   //   Get.back();
   // }
+  static Future<void> endCall({bool back = false}) async {
+    print('ending calls');
+    print(agoraEngine);
+    if (agoraEngine == null) {
+      return;
+    }
+    await agoraEngine.leaveChannel();
+    accepted.value = false;
+    isJoined = false;
+    callStatus.value = 'Disconnected';
+    callConnectionStatus = 'Not Connected';
+    try {
+      // callUpdater.cancel();
+      // timer.cancel();
+      duration.value = Duration(seconds: 0);
+    } catch (e) {
+      print(e);
+    }
+  }
+
   static void leaveCall({bool back = false}) async {
     print('call data ${callData.id}');
     print('Call Data ${CallData().id}');
     callMessage(callData.id, callData.channelName, CallEvents.DisconnectCall);
+
     await agoraEngine.leaveChannel();
     accepted.value = false;
     isJoined = false;

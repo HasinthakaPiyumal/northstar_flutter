@@ -32,13 +32,15 @@ void processCall(dynamic data,String uuid) async {
       print(int.parse('${callData.id}')==int.parse(data["caller"]));
       if(int.parse('${callData.id}')==int.parse(data["caller"])){
         AgoraCallController.rejectCall();
-        // await FlutterCallkitIncoming.endAllCalls();
+        await FlutterCallkitIncoming.endAllCalls();
       }
     }else if(data["method"]==CallEvents.DisconnectCall.index.toString()){
       print('===Call disconnect');
+      print(int.parse('${callData.id}')==int.parse(data["caller"]));
+      print('${int.parse('${callData.id}')} ${int.parse(data["caller"])}');
       if(int.parse('${callData.id}')==int.parse(data["caller"])){
-        AgoraCallController.leaveCall();
-        // FlutterCallkitIncoming.endAllCalls();
+        AgoraCallController.leaveCall(back: true);
+        FlutterCallkitIncoming.endAllCalls();
       }
     }
   }
@@ -145,6 +147,10 @@ void setupNotificationAction() async{
       case Event.actionCallAccept:
       // TODO: Handle this case.
         print("answer clicked 00");
+        try{await AgoraCallController.endCall();}
+        catch(c){
+          print(c);
+        }
         await FlutterCallkitIncoming.endAllCalls();
         Get.to(()=>CallView(callData: {"channel":event.body['extra']['channel'],"from":{"avatar_url":event.body['extra']['avatar'],"name":event.body['extra']['name']}},));
         break;

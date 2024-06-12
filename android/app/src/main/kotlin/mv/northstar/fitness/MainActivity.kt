@@ -1,4 +1,4 @@
-package com.northstar.fitness
+package mv.northstar.fitness
 
 import io.flutter.embedding.android.FlutterActivity
 

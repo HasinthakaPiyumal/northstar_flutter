@@ -13,12 +13,12 @@ class CallView extends StatefulWidget {
 }
 
 class _CallView extends State<CallView> {
-  @override
-  void dispose() {
-    // Ensure that the ringtone and vibration are stopped when the screen is disposed
-    print("Disposing incoming call");
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   // Ensure that the ringtone and vibration are stopped when the screen is disposed
+  //   print("Disposing incoming call");
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {

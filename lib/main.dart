@@ -28,6 +28,12 @@ import 'Controllers/CallConrtoller.dart';
 import 'Controllers/FirebaseMessageController.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
+import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
+import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
+
+/// define a navigator key
+final navigatorKey = GlobalKey<NavigatorState>();
+
 bool isLoggedIn = false;
 bool isDarkMode = true;
 
@@ -44,6 +50,9 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('en_US', null);
+
+  /// set navigator key to ZegoUIKitPrebuiltCallInvitationService
+  ZegoUIKitPrebuiltCallInvitationService().setNavigatorKey(navigatorKey);
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitDown,
@@ -91,12 +100,20 @@ Future<void> main() async {
   //   }
   // });
   setupNotificationAction();
-  runApp(
-    ChangeNotifierProvider(
-      create: (_) => ThemeProvider(currentTheme), // Initial theme
-      child: NorthStar(),
-    ),
-  );
+  // call the useSystemCallingUI
+  ZegoUIKit().initLog().then((value) {
+    ZegoUIKitPrebuiltCallInvitationService().useSystemCallingUI(
+      [ZegoUIKitSignalingPlugin()],
+    );
+
+    runApp(
+      ChangeNotifierProvider(
+        create: (_) => ThemeProvider(currentTheme), // Initial theme
+        child: NorthStar(navigatorKey: navigatorKey,),
+      ),
+    );
+  });
+
 }
 
 Future checkAuth() async {
@@ -141,7 +158,8 @@ Future checkAuth() async {
 }
 
 class NorthStar extends StatelessWidget {
-  NorthStar();
+  final GlobalKey<NavigatorState> navigatorKey;
+  NorthStar({  required this.navigatorKey});
 
   @override
   Widget build(BuildContext context) {
@@ -156,6 +174,7 @@ class NorthStar extends StatelessWidget {
 
     return GetMaterialApp(
         title: 'North Star',
+        navigatorKey: navigatorKey,
         defaultTransition: Transition.rightToLeftWithFade,
         transitionDuration: Duration(milliseconds: 200),
         debugShowCheckedModeBanner: false,

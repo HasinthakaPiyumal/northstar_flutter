@@ -1,7 +1,10 @@
 import 'dart:convert';
 
+import 'package:north_star/Controllers/ZegoCloudController.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
+import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
 
 class AuthUser {
   late int id;
@@ -19,6 +22,13 @@ class AuthUser {
     email = userObj['email'];
     role = userObj['role'];
     user = userObj;
+    ZegoUIKitPrebuiltCallInvitationService().init(
+      appID: ZegoCloudController.appID /*input your AppID*/,
+      appSign: ZegoCloudController.appSign /*input your AppSign*/,
+      userID: userObj['id'],
+      userName: userObj['name'],
+      plugins: [ZegoUIKitSignalingPlugin()],
+    );
   }
 
   Future<bool> saveUser(Map<String, dynamic> user) async {
@@ -33,6 +43,7 @@ class AuthUser {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('user', jsonEncode({}));
     await prefs.setString('token', '');
+    ZegoUIKitPrebuiltCallInvitationService().uninit();
     return true;
   }
 
