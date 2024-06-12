@@ -20,7 +20,7 @@ dependencies:
   shared_preferences: ^2.0.15
   cached_network_image: ^3.2.1
   flutter_markdown: ^0.6.10+2
-  zego_uikit_prebuilt_call:
+  zego_uikit_prebuilt_call: ^4.12.1
   #  flutter_zoom_sdk: ^1.1.0+4
 #  syncfusion_flutter_charts: ^20.2.38
 #  syncfusion_flutter_gauges: ^20.2.38
