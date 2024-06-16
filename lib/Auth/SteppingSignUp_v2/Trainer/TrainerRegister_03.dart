@@ -271,7 +271,7 @@ class _TrainerRegisterThreeState extends State<TrainerRegisterThree> {
                       borderSide: BorderSide(color: Colors.white),
                     ),
                     label: Row(children: [Text(
-                      "Shipping Address",
+                      "About Us",
                       style:  TextStyle(
                         color: isDark ? Colors.white70 : Colors.black54,
                         fontWeight: FontWeight.w500,

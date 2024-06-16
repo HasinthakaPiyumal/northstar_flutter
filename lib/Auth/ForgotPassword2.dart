@@ -110,6 +110,14 @@ class _ForgotPassword2State extends State<ForgotPassword2> {
     TextEditingController rPassword = new TextEditingController();
 
     void resetAndGoHome() async {
+      if(password.text.length<8){
+        showSnack("Password Validation", "Your password must be at least 8 characters long.",status: PopupNotificationStatus.warning);
+        return;
+      }
+      if(password.text!=rPassword.text){
+        showSnack("Password Mismatch", "The passwords you entered do not match. Please ensure that both passwords are the same.",status: PopupNotificationStatus.warning);
+        return;
+      }
       Map res = await httpClient.forgotPasswordStepTwo(
           // '${code1.text}${code2.text}${code3.text}${code4.text}${code5.text}${code6.text}',
           pin,
@@ -121,7 +129,7 @@ class _ForgotPassword2State extends State<ForgotPassword2> {
         showSnack('Password Reset is Successful!',
             'You may now login with your new password.');
       } else {
-        showSnack('Error', res['data']);
+        showSnack('Something went wrong', res['data'],status: PopupNotificationStatus.error);
       }
     }
 

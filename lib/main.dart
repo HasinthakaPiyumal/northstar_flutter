@@ -8,23 +8,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-// import 'package:flutter_zoom_videosdk/native/zoom_videosdk.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Plugins/HttpClient.dart';
 import 'package:north_star/Styles/AppColors.dart';
-import 'package:north_star/Styles/Themes.dart';
-import 'package:north_star/UI/Members/IncomingVoiceCallUI.dart';
 import 'package:north_star/UI/SplashScreen.dart';
-import 'package:north_star/components/Buttons.dart';
 import 'package:north_star/firebase_options.dart';
-// import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
-import 'Controllers/CallConrtoller.dart';
 import 'Controllers/FirebaseMessageController.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -75,31 +69,12 @@ Future<void> main() async {
 
   await checkAuth();
 
-  // await OneSignal.shared.setLogLevel(OSLogLevel.debug, OSLogLevel.none);
 
-  // await OneSignal.shared.setAppId("813517cd-7999-4c5b-92c5-8a1554ae9984");
-  // await OneSignal.shared.setAppId("d8154a83-a601-4611-9416-17cdd2f0e6bb"); correct
-
-  // await OneSignal.shared
-  //     .promptUserForPushNotificationPermission()
-  //     .then((accepted) {
-  //   print("Accepted permission: $accepted");
-  // });
 
   final currentTheme =
       isDarkMode ? ThemeAll().darkTheme : ThemeAll().lightTheme;
 
-  // OneSignal.shared.setNotificationWillShowInForegroundHandler(
-  //     (OSNotificationReceivedEvent event) {
-  //       print(event.notification.body);
-  //   if (event.notification.body == 'Incoming Call!' && isLoggedIn) {
-  //     Get.to(() =>
-  //         IncomingVoiceCallUI(callData: event.notification.additionalData));
-  //   } else {
-  //     event.complete(event.notification);
-  //   }
-  // });
-  setupNotificationAction();
+
   // call the useSystemCallingUI
   ZegoUIKit().initLog().then((value) {
     ZegoUIKitPrebuiltCallInvitationService().useSystemCallingUI(

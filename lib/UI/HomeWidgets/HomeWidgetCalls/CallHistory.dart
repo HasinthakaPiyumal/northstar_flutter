@@ -7,8 +7,8 @@ import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
+import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 
-import '../../Members/VoiceCallUI.dart';
 
 class CallHistory extends StatelessWidget {
   const CallHistory({Key? key}) : super(key: key);
@@ -18,12 +18,16 @@ class CallHistory extends StatelessWidget {
     RxList callHistory = [].obs;
 
     Future<void> getCallHistory() async {
+      print('call hsitory');
       Map res = await httpClient.getCallHistory();
+      print('call hsitory');
       if (res['code'] == 200) {
         callHistory.value = res['data'];
         print('call history');
         print(res['data']);
       }
+      else print(res);
+
     }
     String formatSecondsToMinSize(int seconds) {
       int minutes = seconds ~/ 60;
@@ -111,27 +115,20 @@ class CallHistory extends StatelessWidget {
                                   Text(formatSecondsToMinSize(callHistory[index]['duration']),style:TypographyStyles.textWithWeight(14, FontWeight.w400)),
                             ],
                           ),
-                          trailing: Container(
-                            width: 36,
-                            height: 36,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(200),
-                              color: AppColors.accentColor,
-                            ),
-                            child: IconButton(
-                              icon: Icon(Icons.call,
-                                  size: 20, color: AppColors.textOnAccentColor),
-                              onPressed: () {
-                                // print(callHistory[index]['created_at']);
-                                Get.to(() => VoiceCallUI(
-                                        user: callHistory[index]['receiver']))
-                                    ?.then((value) {
-                                      getCallHistory();
-                                  // Get.back();
-                                  // print(value);
-                                });
-                              },
-                            ),
+                          trailing: ZegoSendCallInvitationButton(
+                            isVideoCall: false,
+                            //You need to use the resourceID that you created in the subsequent steps.
+                            //Please continue reading this document.
+                            resourceID: "NS_Signal",
+                            buttonSize: Size(36,36),
+                            iconSize: Size(36,36),
+                            unclickableBackgroundColor: AppColors.accentColor,
+                            invitees: [
+                              ZegoUIKitUser(
+                                id: '${callHistory[index]['receiver']['id']}',
+                                name: callHistory[index]['receiver']['name'],
+                              ),
+                            ],
                           ),
                         ),
                       ),

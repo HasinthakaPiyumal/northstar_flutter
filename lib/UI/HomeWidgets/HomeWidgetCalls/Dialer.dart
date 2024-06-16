@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Styles/AppColors.dart';
-import 'package:north_star/UI/Members/VoiceCallUI.dart';
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 
@@ -89,13 +88,16 @@ class Dialer extends StatelessWidget {
                     //   ),
                     // ),
                     trailing: ZegoSendCallInvitationButton(
-                      isVideoCall: true,
+                      isVideoCall: false,
                       //You need to use the resourceID that you created in the subsequent steps.
                       //Please continue reading this document.
                       resourceID: "NS_Signal",
+                      buttonSize: Size(36,36),
+                      iconSize: Size(36,36),
+                      unclickableBackgroundColor: AppColors.accentColor,
                       invitees: [
                         ZegoUIKitUser(
-                          id: contacts[index]['user']['id'],
+                          id: '${contacts[index]['user']['id']}',
                           name: contacts[index]['user']['name'],
                         ),
                       ],

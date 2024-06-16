@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:north_star/Auth/AuthHome.dart';
-import 'package:north_star/Controllers/CallConrtoller.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Utils/PopUps.dart';
@@ -29,9 +28,7 @@ Future<void> firebaseMessagingHandler(
     RemoteMessage message, String? uuid) async {
   print(
       'channel---> ${MessageChannel.Logout} ${MessageChannel.Logout == message.data['channel']}');
-  if (MessageChannel.Call.index.toString() == message.data['channel']) {
-    processCall(message.data, uuid!);
-  } else if (MessageChannel.Logout.index.toString() ==
+  if (MessageChannel.Logout.index.toString() ==
       message.data['channel']) {
     await CommonAuthUtils.signOut(redirect: false);
     showLogoutDialog();
@@ -42,7 +39,7 @@ Future<void> firebaseMessagingHandler(
 }
 
 Future<void> initFirebase(Uuid uuid) async {
-  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   print("=================== Firebase initializing =======================");
   FirebaseMessaging.onMessage.listen((RemoteMessage msg) async {
     print(

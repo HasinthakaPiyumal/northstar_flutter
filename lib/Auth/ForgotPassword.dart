@@ -22,8 +22,8 @@ class ForgotPassword extends StatelessWidget {
       if (res['code'] == 200) {
         isReady.value = true;
         Get.to(() => ForgotPassword2(mail:email.text));
-        showSnack('An email has been sent to you with the 6 Digit CODE.',
-            'An email has been sent to you with the 6 Digit CODE. Enter it to reset your password.');
+        showSnack('Successfully Sent OTP',
+            'An email has been sent to you with the 6 Digit CODE. Enter it to reset your password.',status: PopupNotificationStatus.info);
       } else {
         isReady.value = true;
         showSnack('Error', 'Please use the correct email address');

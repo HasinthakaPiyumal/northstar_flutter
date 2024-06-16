@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:marquee/marquee.dart';
 import 'package:north_star/Auth/CommonAuthUtils.dart';
 import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/UI/SharedWidgets/CommonConfirmDialog.dart';
