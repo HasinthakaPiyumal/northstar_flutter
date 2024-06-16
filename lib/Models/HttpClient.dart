@@ -725,12 +725,12 @@ class HttpClient {
   }
 
   //Search Members
-  Future<Map> searchMembers(String pattern) async {
+  Future<Map> searchMembers(String pattern,{bool onlyPrimary = false}) async {
     if (pattern.isEmpty) {
       pattern = "ALL";
     }
     Response response =
-        await post('/trainer/clients/search', {'search_key': pattern});
+        await post('/trainer/clients/search', {'search_key': pattern,'onlyPrimary':onlyPrimary});
     return {
       "code": response.statusCode,
       "data": response.data,

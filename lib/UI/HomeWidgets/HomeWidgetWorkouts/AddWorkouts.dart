@@ -46,7 +46,7 @@ class AddWorkouts extends StatelessWidget {
     }
 
     Future<List> searchClient(pattern) async {
-      Map res = await httpClient.searchMembers(pattern);
+      Map res = await httpClient.searchMembers(pattern,onlyPrimary: true);
       if (res['code'] == 200) {
         return res['data'];
       } else {
