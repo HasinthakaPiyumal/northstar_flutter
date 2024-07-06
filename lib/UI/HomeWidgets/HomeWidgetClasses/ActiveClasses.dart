@@ -6,6 +6,7 @@ import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetClasses/CreateClass.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetClasses/EditClass.dart';
+import 'package:north_star/UI/SharedWidgets/CommonConfirmDialog.dart';
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:north_star/components/Buttons.dart';
 
@@ -28,6 +29,17 @@ class ActiveClasses extends StatelessWidget {
         ready.value = true;
         print(res);
       }
+    }
+
+    void deleteClass(int classId){
+      CommonConfirmDialog.confirm("Remove").then((value)async{
+        if(value){
+          await httpClient.deleteClass(classId);
+          getData();
+        }
+
+      }
+      );
     }
     getData();
     return Obx(()=> ready.value?SingleChildScrollView(
@@ -74,7 +86,11 @@ class ActiveClasses extends StatelessWidget {
                         children: [
                           Buttons.yellowFlatButton(onPressed: (){
                             Get.to(()=>EditClass(classData: cls))?.then((value) => getData());
-                          },label:'Edit Details',width: 120)
+                          },label:'Edit Details',width: 120),
+                          SizedBox(width: 8,),
+                          Buttons.outlineButton(onPressed: (){
+                            deleteClass(cls['id']);
+                          },label:'Remove',width: 120)
                         ],
                       )
                     ],

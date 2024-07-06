@@ -6,6 +6,7 @@ import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/NSNotification.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+
 class HttpClient {
   Dio dio = Dio();
 
@@ -27,7 +28,7 @@ class HttpClient {
       'https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/gym-galleries/';
   // static String s3ResourcesBaseUrl =
   //     'https://north-star-storage.s3.ap-southeast-1.amazonaws.c om/';
-      static String s3ResourcesBaseUrl =
+  static String s3ResourcesBaseUrl =
       'https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/';
 
   Map<String, dynamic> headers = {
@@ -496,14 +497,12 @@ class HttpClient {
 
   //Get Commercial gym Plans
   Future<Map> getGymPlans(int id) async {
-    Response response =
-        await post('/commercial-gym/plan/list',{"id":id});
+    Response response = await post('/commercial-gym/plan/list', {"id": id});
     return {
       "code": response.statusCode,
       "data": response.data,
     };
   }
-
 
   Future<Map> searchGymServices(data) async {
     Response response =
@@ -538,6 +537,7 @@ class HttpClient {
       "data": response.data,
     };
   }
+
   //Get Exclusive Gym Unconfirmed Bookings for service
   Future<Map> getUnconfirmedBookingsForService(gymID) async {
     Response response =
@@ -560,6 +560,7 @@ class HttpClient {
       "data": response.data,
     };
   }
+
   Future<Map> deleteUnconfirmedBookingsForService(id) async {
     Response response = await post(
         '/fitness/exclusive-gyms/actions/delete-unconfirmed-booking',
@@ -579,6 +580,7 @@ class HttpClient {
       "data": response.data,
     };
   }
+
   Future<Map> deleteAllUnconfirmedBookingsForService() async {
     Response response = await post(
         '/fitness/exclusive-gyms/actions/delete-all-unconfirmed-booking',
@@ -612,6 +614,7 @@ class HttpClient {
       "data": response.data,
     };
   }
+
   Future<Map> makeAScheduleForService(
       serviceID, clientIDs, DateTime startTime) async {
     print({
@@ -633,20 +636,22 @@ class HttpClient {
     };
   }
 
-  Future<Map> confirmSchedules(scheduleIds, num amount, int gymID,String coupon,int type) async {
+  Future<Map> confirmSchedules(
+      scheduleIds, num amount, int gymID, String coupon, int type) async {
     Response response = await post('/exclusive-gyms/pay-now', {
       "amount": amount,
       "trainer_id": authUser.id,
       "gym_id": gymID,
       "schedule_ids": scheduleIds,
       "couponCode": coupon,
-      "paymentType":type
+      "paymentType": type
     });
     return {
       "code": response.statusCode,
       "data": response.data,
     };
   }
+
   Future<Map> confirmSchedulesForService(Map data) async {
     Response response = await post('/gym-service/pay-now', data);
     return {
@@ -662,6 +667,7 @@ class HttpClient {
       "data": response.data,
     };
   }
+
   Future<Map> serviceBooking(Map data) async {
     Response response = await post('/commercial-gyms/pay-now', data);
     return {
@@ -725,12 +731,12 @@ class HttpClient {
   }
 
   //Search Members
-  Future<Map> searchMembers(String pattern,{bool onlyPrimary = false}) async {
+  Future<Map> searchMembers(String pattern, {bool onlyPrimary = false}) async {
     if (pattern.isEmpty) {
       pattern = "ALL";
     }
-    Response response =
-        await post('/trainer/clients/search', {'search_key': pattern,'onlyPrimary':onlyPrimary});
+    Response response = await post('/trainer/clients/search',
+        {'search_key': pattern, 'onlyPrimary': onlyPrimary});
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -847,6 +853,7 @@ class HttpClient {
       "data": response.data,
     };
   }
+
   //Payments.
   Future<Map> proMemberActivate(Map data) async {
     Response response = await post('/pro-member/activate', data);
@@ -919,11 +926,12 @@ class HttpClient {
   Future<Map> getRtcToken(data) async {
     // Response response = await post('/meeting/voice-call/actions/rtcToken',data);
 
-    var headers = {
-      'Content-Type': 'application/json'
-    };
+    var headers = {'Content-Type': 'application/json'};
     print(data);
-    var request = http.Request('GET', Uri.parse('https://token.northstar.mv/rtc/${data['channelName']}/publisher/uid/${data['uid']}'));
+    var request = http.Request(
+        'GET',
+        Uri.parse(
+            'https://token.northstar.mv/rtc/${data['channelName']}/publisher/uid/${data['uid']}'));
     request.body = json.encode(data);
     request.headers.addAll(headers);
 
@@ -1021,6 +1029,7 @@ class HttpClient {
       "data": response.data,
     };
   }
+
   Future<Map> updateCallLog(var data) async {
     Response response = await post('/calls/actions/update', data);
     print('Updating response');
@@ -1229,8 +1238,10 @@ class HttpClient {
       "data": response.data,
     };
   }
+
   Future<Map> doctorMeeting(Map data) async {
-    Response response = await post('/payments/doctor-meeting-payment/pay-now',data);
+    Response response =
+        await post('/payments/doctor-meeting-payment/pay-now', data);
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -1467,12 +1478,13 @@ class HttpClient {
 
   //ECOM Related
   Future<Map> purchaseCart(Map data) async {
-    Response response = await post('/cart/pay-now',data);
+    Response response = await post('/cart/pay-now', data);
     return {
       "code": response.statusCode,
       "data": response.data,
     };
   }
+
   //ECOM Related
   Future<Map> getOrderHistory() async {
     Response response = await get('/ecom/products/get/user/order');
@@ -1481,6 +1493,7 @@ class HttpClient {
       "data": response.data,
     };
   }
+
   //ECOM Related
   Future<Map> getMyCart() async {
     Response response = await get('/ecom/cart/actions/get');
@@ -1660,9 +1673,9 @@ class HttpClient {
       "data": response.data,
     };
   }
+
   Future<Map> getFinanceSummary() async {
-    Response response =
-        await get('/fitness/trainer-finance/summery');
+    Response response = await get('/fitness/trainer-finance/summery');
     print(response);
     return response.data;
   }
@@ -1737,6 +1750,7 @@ class HttpClient {
     print(response.data);
     return {"code": response.statusCode, "data": response.data};
   }
+
   Future<Map> acceptOrRejectFamilyLink(dynamic data) async {
     print(data);
     Response response = await post('/family-link/actions/accept/invite', data);
@@ -1747,6 +1761,7 @@ class HttpClient {
     Response response = await post('/family-link/actions/add', data);
     return {"code": response.statusCode, "data": response.data};
   }
+
   Future<Map> updateFamilyLink(dynamic data) async {
     Response response = await post('/family-link/actions/update', data);
     return {"code": response.statusCode, "data": response.data};
@@ -1756,10 +1771,10 @@ class HttpClient {
     Response response = await post('/family-link/actions/invite', data);
     return {"code": response.statusCode, "data": response.data};
   }
+
   Future<Map> getFamilyMembers(int id) async {
-    Response response = await post('/family-link/actions/member/search', {
-      "family_id":id
-    });
+    Response response =
+        await post('/family-link/actions/member/search', {"family_id": id});
     return {"code": response.statusCode, "data": response.data};
   }
 
@@ -1779,27 +1794,20 @@ class HttpClient {
   }
 
   Future<Map> getAssignListFamilyLink(int id) async {
-    Response response = await post('/family-link/actions/create/list', {
-      "family_id":id
-    });
+    Response response =
+        await post('/family-link/actions/create/list', {"family_id": id});
     return {"code": response.statusCode, "data": response.data};
   }
 
-  Future<Map> acceptOrRejectListFamilyLink(int id,int status) async {
-    Response response = await post('/family-link/actions/assign/acceptOrReject', {
-      "assign_id":id,
-      "status" : status
-    });
+  Future<Map> acceptOrRejectListFamilyLink(int id, int status) async {
+    Response response = await post('/family-link/actions/assign/acceptOrReject',
+        {"assign_id": id, "status": status});
     return {"code": response.statusCode, "data": response.data};
   }
 
   Future<Map> deleteFamilyLink(int id) async {
-    Response response = await post('/delete', {
-    "tableId": 18, "resultId":id
-    });
-    print({
-      "tableId": 18, "resultId":id
-    });
+    Response response = await post('/delete', {"tableId": 18, "resultId": id});
+    print({"tableId": 18, "resultId": id});
     return {"code": response.statusCode, "data": response.data};
   }
 
@@ -1814,6 +1822,7 @@ class HttpClient {
     Response response = await get('/faq/get/all');
     return {"code": response.statusCode, "data": response.data};
   }
+
   Future<Map> addHelpContact(dynamic data, XFile? file) async {
     late FormData form;
     if (file != null) {
@@ -1833,20 +1842,17 @@ class HttpClient {
     }
     print(form.fields);
     try {
-      var response =
-      await dio.post('/faq/user/contact', data: form);
+      var response = await dio.post('/faq/user/contact', data: form);
       return {"code": response.statusCode, "data": response.data};
     } on DioError catch (e) {
       print('=====e.message');
       print(e.response.toString());
-      return {"code": -1, "data": "Something went wrong",'error':e.response};
+      return {"code": -1, "data": "Something went wrong", 'error': e.response};
     }
   }
 
   Future<Map> paymentVerify(String id) async {
-    Response response = await post('/payments/verify', {
-      "transaction_id": id
-    });
+    Response response = await post('/payments/verify', {"transaction_id": id});
     return {"code": response.statusCode, "data": response.data};
   }
 
@@ -1855,28 +1861,39 @@ class HttpClient {
     Response response = await get('/fitness/trainer-class/classes/active');
     return {"code": response.statusCode, "data": response.data};
   }
+
   Future<Map> getRejectedClasses() async {
     Response response = await get('/fitness/trainer-class/classes/rejected');
     return {"code": response.statusCode, "data": response.data};
   }
+
   Future<Map> createClass(data) async {
-    Response response = await post('/fitness/trainer-class/add',data);
+    Response response = await post('/fitness/trainer-class/add', data);
     return {"code": response.statusCode, "data": response.data};
   }
+
+  Future<Map> deleteClass(classId) async {
+    Response response =
+        await post('/delete', {"tableId": 22, "resultId": classId});
+    return {"code": response.statusCode, "data": response.data};
+  }
+
   Future<Map> editClass(data) async {
-    Response response = await post('/fitness/trainer-class/update',data);
+    Response response = await post('/fitness/trainer-class/update', data);
     return {"code": response.statusCode, "data": response.data};
   }
 
   // ====== Vending Machine Start =======
 
   Future<Map> purchaseDrink(Map data) async {
-    Response response = await post('/payments/vendor-machine-payment/pay-now',data);
+    Response response =
+        await post('/payments/vendor-machine-payment/pay-now', data);
     return {
       "code": response.statusCode,
       "data": response.data,
     };
   }
+
   Future<Map> getVendingOrderHistory() async {
     Response response = await get('/ecom/vendor-order/view');
     return {
@@ -1887,7 +1904,7 @@ class HttpClient {
   // ====== Vending Machine End =======
 
   Future<Map> updateDeviceToken(String token) async {
-    Response response = await post('/update/device-token',{'token':token});
+    Response response = await post('/update/device-token', {'token': token});
     return {
       "code": response.statusCode,
       "data": response.data,

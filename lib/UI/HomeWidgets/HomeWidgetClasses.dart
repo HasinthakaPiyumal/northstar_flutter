@@ -44,15 +44,15 @@ class _ClassesState extends State<Classes> with SingleTickerProviderStateMixin {
         ),
         body: Column(
           children: [
-            Container(
-              padding: EdgeInsets.all(8),
-              margin: EdgeInsets.symmetric(horizontal: 16),
-              decoration: BoxDecoration(color:Get.isDarkMode? AppColors.primary2Color:Colors.white,borderRadius: BorderRadius.circular(8)),
-              child: Row(children: [
-              Expanded(child: Buttons.yellowFlatButton(useDefaultFont:true,label: "Active",onPressed: (){tabController.animateTo(0);},backgroundColor: index==0?AppColors.accentColor:Colors.transparent,textColor: index==0?AppColors.textOnAccentColor:Get.isDarkMode?Colors.white:Colors.black)),
-                SizedBox(width: 5,),
-              Expanded(child: Buttons.yellowFlatButton(useDefaultFont:true,label: "Rejected",onPressed: (){tabController.animateTo(1);},backgroundColor: index==1?AppColors.accentColor:Colors.transparent,textColor: index==1?AppColors.textOnAccentColor:Get.isDarkMode?Colors.white:Colors.black)),
-            ],),),
+            // Container(
+            //   padding: EdgeInsets.all(8),
+            //   margin: EdgeInsets.symmetric(horizontal: 16),
+            //   decoration: BoxDecoration(color:Get.isDarkMode? AppColors.primary2Color:Colors.white,borderRadius: BorderRadius.circular(8)),
+            //   child: Row(children: [
+            //   Expanded(child: Buttons.yellowFlatButton(useDefaultFont:true,label: "Active",onPressed: (){tabController.animateTo(0);},backgroundColor: index==0?AppColors.accentColor:Colors.transparent,textColor: index==0?AppColors.textOnAccentColor:Get.isDarkMode?Colors.white:Colors.black)),
+            //     SizedBox(width: 5,),
+            //   Expanded(child: Buttons.yellowFlatButton(useDefaultFont:true,label: "Rejected",onPressed: (){tabController.animateTo(1);},backgroundColor: index==1?AppColors.accentColor:Colors.transparent,textColor: index==1?AppColors.textOnAccentColor:Get.isDarkMode?Colors.white:Colors.black)),
+            // ],),),
             Expanded(
               child: TabBarView(
                 controller: tabController,
