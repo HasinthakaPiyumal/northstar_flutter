@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:intl_phone_field/phone_number.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Styles/ButtonStyles.dart';
@@ -13,11 +15,23 @@ import 'package:north_star/Utils/PopUps.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 
 import '../../Styles/AppColors.dart';
+import '../../Styles/PickerDialogStyles.dart';
 import '../../components/Buttons.dart';
 import '../../components/Radios.dart';
 
-class CompleteUserProfile extends StatelessWidget {
+class CompleteUserProfile extends StatefulWidget {
   const CompleteUserProfile({Key? key}) : super(key: key);
+
+  @override
+  State<CompleteUserProfile> createState() => _CompleteUserProfileState();
+}
+
+class _CompleteUserProfileState extends State<CompleteUserProfile> {
+
+  TextEditingController _contactPersonController = TextEditingController();
+  TextEditingController _emergencyContactController = TextEditingController();
+
+  RxString emergencyContact = "".obs;
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +62,8 @@ class CompleteUserProfile extends StatelessWidget {
       'Hormonal Disorders'
     ].obs;
 
+    RxString initialCountry = 'MV'.obs;
+
     TextEditingController hController = new TextEditingController();
 
     void saveAdditionalData() async {
@@ -56,8 +72,11 @@ class CompleteUserProfile extends StatelessWidget {
         "health_conditions": jsonEncode(selectedHealthConditions.value),
         "marital_status": marital.value,
         "children": noOfChildren.toString(),
+        "emergency_contact_name": _contactPersonController.text,
+        "emergency_contact_phone": emergencyContact.value,
       });
 
+      print(_emergencyContactController.text);
       if (res['code'] == 200) {
         authUser.user['client']['is_complete'] = 1;
         Get.back();
@@ -78,6 +97,19 @@ class CompleteUserProfile extends StatelessWidget {
         if(userData['marital_status'] != null){
           marital.value = userData['marital_status'];
         }
+        if(userData['emergency_contact_name'] != null){
+          _contactPersonController.text = userData['emergency_contact_name'];
+        }
+        print('emergency_contact_name');
+        print(userData['emergency_contact_name']);
+
+        if(userData['emergency_contact_phone'] != null){
+          PhoneNumber phoneNumberObject = await PhoneNumber.fromCompleteNumber(completeNumber: userData['emergency_contact_phone']);
+          _emergencyContactController.text = phoneNumberObject.number;
+          initialCountry.value = phoneNumberObject.countryISOCode;
+          emergencyContact.value = phoneNumberObject.completeNumber;
+        }
+
 
         if(userData['children'] != null){
           noOfChildren.value = userData['children'];
@@ -219,8 +251,74 @@ class CompleteUserProfile extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
+                    height: 30,
+                  ),
+                  Text(
+                    'Emergency Contact',
+                    style: TypographyStyles.title(17),
+                  ),
+                  SizedBox(
                     height: 20,
                   ),
+                  TextFormField(
+                    controller: _contactPersonController,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.person_2_outlined,
+                          color: Get.isDarkMode ? Colors.white : Colors.black, size: 18),
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Get.isDarkMode ? Colors.white : Colors.black),
+                      ),
+                      label: Row(children: [Text(
+                        "Contact Person",
+                        style:  TextStyle(
+                          color: Get.isDarkMode ? Colors.white70 : Colors.black54,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: 'Poppins',
+                          fontSize: 16,
+                        ),),
+                        Text(" *",style: TextStyle(color: Colors.red),)
+                      ],),
+                      contentPadding: EdgeInsets.only(bottom: 0),
+                    ),
+                    style: TextStyle(color: Get.isDarkMode ? Colors.white : Colors.black),
+                  ),
+                  SizedBox(height: 20),
+                  Theme(
+                    data: Theme.of(context).copyWith(
+                        listTileTheme: ListTileThemeData()
+                    ),
+                    child: Obx(()=> IntlPhoneField(
+                        controller: _emergencyContactController,
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.call_outlined,
+                              color: Get.isDarkMode ? Colors.white : Colors.black, size: 18),
+                          border: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Get.isDarkMode ? Colors.white : Colors.black),
+                          ),
+                          label: Row(children: [Text(
+                            "Emergency Contact",
+                            style:  TextStyle(
+                              color: Get.isDarkMode ? Colors.white70 : Colors.black54,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: 'Poppins',
+                              fontSize: 16,
+                            ),),
+                            Text(" *",style: TextStyle(color: Colors.red),)
+                          ],),
+                          contentPadding: EdgeInsets.only(bottom: 0),
+                        ),
+                        style: TextStyle(color: Get.isDarkMode ? Colors.white : Colors.black),
+                        pickerDialogStyle: PickerDialogStyles.main(),
+                        initialCountryCode: initialCountry.value,
+                        onChanged: (phone) {
+                            emergencyContact.value = "${phone.completeNumber}";
+                        },
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 20),
+
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

@@ -136,7 +136,7 @@ class _LayoutState extends State<Layout> {
                       : Buttons.bottomNavbarButton(label: "Calories",pathname: "calories.svg"),
                   authUser.role == 'trainer'
                       ?
-                  Buttons.bottomNavbarButton(label: "eWallet",pathname: "ewallet.svg")
+                  Buttons.bottomNavbarButton(label: "E-gift",pathname: "ewallet.svg")
                       : Buttons.bottomNavbarButton(label: "Health",pathname: "health.svg"),
                   authUser.role == 'trainer'
                       ? Buttons.bottomNavbarButton(label: "Profile",pathname: "profile.svg")

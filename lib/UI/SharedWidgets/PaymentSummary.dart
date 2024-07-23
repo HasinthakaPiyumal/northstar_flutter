@@ -184,7 +184,7 @@ class PaymentSummary extends StatelessWidget {
                                 MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "Ewallet",
+                                    "E-gift",
                                     style: TypographyStyles.text(16),
                                   ),
                                   !isWallet.value

@@ -720,10 +720,15 @@ class _TrainerProfileState extends State<TrainerProfile> {
                                               TypographyStyles.textWithWeight(
                                                   14, FontWeight.w400)),
                                       SizedBox(height: 28),
-                                      Text(data.value['address'],
-                                          style:
-                                              TypographyStyles.textWithWeight(
-                                                  14, FontWeight.w400)),
+                                      Container(
+                                        width:Get.width-220,
+                                        child: Text(data.value['address'],
+                                            style:
+                                                TypographyStyles.textWithWeight(
+                                                    14, FontWeight.w400),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
                                       SizedBox(height: 28),
                                       Text(
                                           CountryPickerUtils

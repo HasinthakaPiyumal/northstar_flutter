@@ -79,7 +79,9 @@ class ChatThread extends StatelessWidget {
         sending.value = false;
         List users = [];
         print(chatData);
-        chatData['clients']??[].forEach((client) {
+        print('chatData');
+        chatData['clients']!.forEach((client) {
+          print('printing user');
           if (client['client_id'].toString() != authUser.id.toString()) {
             users.add(client['client_id'].toString());
           }
@@ -87,10 +89,12 @@ class ChatThread extends StatelessWidget {
         if (authUser.role == 'client') {
           users.add(chatData['owner_id'].toString());
         }
-
+        print('printing users');
+        print(users);
         await httpClient.newChatNotification({
           'clients': users,
           'title': authUser.name + ': ' + tempMSG.toString(),
+          'chat_id':chatID
         });
       });
     }
@@ -120,6 +124,7 @@ class ChatThread extends StatelessWidget {
           await httpClient.newChatNotification({
             'clients': users,
             'title': authUser.name + ': ' + tempMSG.toString(),
+            'chat_id':chatID
           });
         }
 

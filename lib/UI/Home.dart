@@ -802,7 +802,7 @@ class Home extends StatelessWidget {
                           } else {
                             Navigator.push(context, MaterialPageRoute(builder: (context) => Wallet()));
                           }
-                        }, 'ewallet', 'eWallet'),
+                        }, 'ewallet', 'E-gift'),
                         homeWidgetButton(() {
                           if (authUser.user['subscription'] == null) {
                             // Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeWidgetPro());

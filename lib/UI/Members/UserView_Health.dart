@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:north_star/Controllers/CommonDataController.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Models/NSNotification.dart';
@@ -59,6 +60,14 @@ late Map data = {};
     TextEditingController thighs = new TextEditingController();
     TextEditingController lArm = new TextEditingController();
     TextEditingController rArm = new TextEditingController();
+
+    void getCommonData()async{
+      if(userID==authUser.id){
+        await CommonDataController().getData();
+        weightController.text = CommonDataController.weight.toString();
+        heightController.text = CommonDataController.height.toString();
+      }
+    }
 
     void sendNotificationAfterChangingClientDataByTrainer(int clientId) {
       print("Client updated");
@@ -147,11 +156,20 @@ late Map data = {};
     }
 
     void saveBMIPI() async {
+      if(heightController.text=='' || weightController.text=='') {
+        showSnack("Incomplete information", "Please provide Weight and Height",status: PopupNotificationStatus.error);
+        return;
+      }
       readyButton.value = true;
       Map res = await httpClient.saveHealthData(
           {'weight': weightController.text, 'height': heightController.text},
           userID,
           'bmi-pi');
+      CommonDataController.height = int.parse(heightController.text);
+      CommonDataController.weight = int.parse(weightController.text);
+      if(userID==authUser.id){
+        CommonDataController().updateCommonData();
+      }
       print(res);
       if(res['code']==200){
         sendNotificationAfterChangingClientDataByTrainer(userID);
@@ -174,6 +192,10 @@ late Map data = {};
         'gender': authUser.user['gender'],
         'weight': weightController.text,
       }, userID, 'fat-mm');
+      CommonDataController.weight = int.parse(weightController.text);
+      if(userID==authUser.id){
+        CommonDataController().updateCommonData();
+      }
       if(res['code']==200){
         sendNotificationAfterChangingClientDataByTrainer(userID);
       }
@@ -253,7 +275,9 @@ late Map data = {};
       }
     }
 
+
     void updateBMIPI() {
+      getCommonData();
       Get.defaultDialog(
         radius: 8.0,
         title: 'Update BMI & PI',
@@ -299,6 +323,7 @@ late Map data = {};
     }
 
     void updateFATMM() {
+      getCommonData();
       Get.defaultDialog(
         radius: 8.0,
         title: 'Update BodyFat',

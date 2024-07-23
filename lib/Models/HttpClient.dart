@@ -1470,6 +1470,7 @@ class HttpClient {
         await post('/meeting/chats/chat-notifications/new-message', data);
     print("======New message notification ids");
     print(data);
+    print(response);
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -1910,6 +1911,17 @@ class HttpClient {
       "data": response.data,
     };
   }
+
+  // Common Data APIS
+  Future<Map> getCommonData() async {
+    Response response = await get('/user-common-data/${authUser.id}');
+    return {"code": response.statusCode, "data": response.data};
+  }
+  Future<Map> updateCommonData(data) async {
+    Response response = await post('/user-common-data/${authUser.id}',data);
+    return {"code": response.statusCode, "data": response.data};
+  }
+
 }
 
 HttpClient httpClient = HttpClient();

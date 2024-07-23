@@ -25,6 +25,8 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
 
+import 'UI/Chats/ChatHome.dart';
+
 /// define a navigator key
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -39,6 +41,14 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print('Background Message ===> 1 ${message.messageId}');
   firebaseMessagingHandler(message, Uuid().v4());
   print('Background Message ===> 2 ${message.messageId}');
+}
+
+
+void _handleMessage(RemoteMessage message) {
+  print(message.data);
+  if (message.data['notification_type'] == 'chat-notify') {
+    Get.to(()=>ChatHome());
+  }
 }
 
 Future<void> main() async {
@@ -59,6 +69,17 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    print("click notification 01");
+    _handleMessage(message);
+  });
+  FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
+    print("click notification 02");
+    if (message != null) {
+      _handleMessage(message);
+    }
+  });
 
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
 

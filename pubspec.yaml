@@ -88,9 +88,9 @@ dependencies:
   app_links: ^5.0.0
   zego_uikit_signaling_plugin: ^2.0.3
   zego_uikit_prebuilt_call: ^3.1.0
+  intl_phone_number_input:
+  flutter_cached_pdfview: ^0.4.2
 
-#  flutter_zoom_sdk: ^1.1.0+4
-#  flutter_zoom_videosdk: ^1.7.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

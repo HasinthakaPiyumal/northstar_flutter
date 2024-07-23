@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Models/AuthUser.dart';
@@ -69,6 +70,7 @@ Widget clientHomeTrainerRequest() {
                         color: Color(0xff1C1C1C),
                         borderRadius: BorderRadius.circular(12),
                       ),
+                      margin:EdgeInsets.only(top:20),
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
                         child: Column(
@@ -91,8 +93,11 @@ Widget clientHomeTrainerRequest() {
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children :[
-                                          Text(clientData['requests'][index]['trainer']['name'],style: TypographyStyles.title(16),
-                                            overflow: TextOverflow.fade,
+                                          Container(
+                                            width:Get.width-207,
+                                            child: Text(clientData['requests'][index]['trainer']['name'],style: TypographyStyles.title(16),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
                                           ),
                                           SizedBox(height: 5,),
                                           Text(clientData['requests'][index]['trainer']['email'], style: TypographyStyles.text(13),

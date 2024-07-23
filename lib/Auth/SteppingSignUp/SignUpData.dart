@@ -45,9 +45,9 @@ class SignUpData {
       "country_code": this.countryCode,
       "currency": this.currency,
 
-      //Client
-      "emergency_contact_name": this.eContactName,
-      "emergency_contact_phone": this.eContactPhone,
+      // //Client
+      // "emergency_contact_name": this.eContactName,
+      // "emergency_contact_phone": this.eContactPhone,
     };
   }
 

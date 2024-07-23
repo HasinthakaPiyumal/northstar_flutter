@@ -26,8 +26,8 @@ class _MedicalProRegisterSecondState extends State<MedicalProRegisterSecond> {
 
   TextEditingController _countryController = TextEditingController();
   TextEditingController _addressController = TextEditingController();
-  TextEditingController _contactPersonController = TextEditingController();
-  TextEditingController _emergencyContactController = TextEditingController();
+  // TextEditingController _contactPersonController = TextEditingController();
+  // TextEditingController _emergencyContactController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
 
@@ -56,8 +56,8 @@ class _MedicalProRegisterSecondState extends State<MedicalProRegisterSecond> {
 
     if (_countryController.text.isEmpty ||
         _addressController.text.isEmpty ||
-        _contactPersonController.text.isEmpty ||
-        _emergencyContactController.text.isEmpty ||
+        // _contactPersonController.text.isEmpty ||
+        // _emergencyContactController.text.isEmpty ||
         _passwordController.text.isEmpty ||
         _confirmPasswordController.text.isEmpty) {
       showSnack('Incomplete information', 'Please enter correct information',status: PopupNotificationStatus.warning);
@@ -73,8 +73,8 @@ class _MedicalProRegisterSecondState extends State<MedicalProRegisterSecond> {
       }
       // signUpData.countryCode = _countryController.text;
       signUpData.address = _addressController.text;
-      signUpData.eContactName = _contactPersonController.text;
-      signUpData.eContactPhone = emergencyContact;
+      // signUpData.eContactName = _contactPersonController.text;
+      // signUpData.eContactPhone = emergencyContact;
       signUpData.password = _passwordController.text;
       signUpData.passwordConfirmation = _confirmPasswordController.text;
 
@@ -279,63 +279,63 @@ class _MedicalProRegisterSecondState extends State<MedicalProRegisterSecond> {
                   style: TextStyle(color: isDark?Colors.white:Colors.black),
                 ),
                 SizedBox(height: contentHeight),
-                TextFormField(
-                  controller: _contactPersonController,
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.person_2_outlined,
-                        color: isDark?Colors.white:Colors.black, size: 18),
-                    border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                    ),
-                    label: Row(children: [Text(
-                      "Contact Person",
-                      style:  TextStyle(
-                        color: isDark ? Colors.white70 : Colors.black54,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: 'Poppins',
-                        fontSize: 16,
-                      ),),
-                      Text(" *",style: TextStyle(color: Colors.red),)
-                    ],),
-                    contentPadding: EdgeInsets.only(bottom: 0),
-                  ),
-                  style: TextStyle(color: isDark?Colors.white:Colors.black),
-                ),
-                SizedBox(height: contentHeight),
-                Theme(
-                  data: Theme.of(context).copyWith(
-                      listTileTheme: ListTileThemeData()
-                  ),
-                  child: IntlPhoneField(
-                    controller: _emergencyContactController,
-                    pickerDialogStyle: PickerDialogStyles.main(),
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.call_outlined,
-                          color: isDark?Colors.white:Colors.black, size: 18),
-                      border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
-                      ),
-                      label: Row(children: [Text(
-                        "Emergency Contact",
-                        style:  TextStyle(
-                          color: isDark ? Colors.white70 : Colors.black54,
-                          fontWeight: FontWeight.w500,
-                          fontFamily: 'Poppins',
-                          fontSize: 16,
-                        ),),
-                        Text(" *",style: TextStyle(color: Colors.red),)
-                      ],),
-                      contentPadding: EdgeInsets.only(bottom: 0),
-                    ),
-                    style: TextStyle(color: isDark?Colors.white:Colors.black),
-                    initialCountryCode: 'MV',
-                    onChanged: (phone) {
-                      setState(() {
-                        emergencyContact = "${phone.completeNumber}";
-                      });
-                    },
-                  ),
-                ),
+                // TextFormField(
+                //   controller: _contactPersonController,
+                //   decoration: InputDecoration(
+                //     prefixIcon: Icon(Icons.person_2_outlined,
+                //         color: isDark?Colors.white:Colors.black, size: 18),
+                //     border: UnderlineInputBorder(
+                //       borderSide: BorderSide(color: Colors.white),
+                //     ),
+                //     label: Row(children: [Text(
+                //       "Contact Person",
+                //       style:  TextStyle(
+                //         color: isDark ? Colors.white70 : Colors.black54,
+                //         fontWeight: FontWeight.w500,
+                //         fontFamily: 'Poppins',
+                //         fontSize: 16,
+                //       ),),
+                //       Text(" *",style: TextStyle(color: Colors.red),)
+                //     ],),
+                //     contentPadding: EdgeInsets.only(bottom: 0),
+                //   ),
+                //   style: TextStyle(color: isDark?Colors.white:Colors.black),
+                // ),
+                // SizedBox(height: contentHeight),
+                // Theme(
+                //   data: Theme.of(context).copyWith(
+                //       listTileTheme: ListTileThemeData()
+                //   ),
+                //   child: IntlPhoneField(
+                //     controller: _emergencyContactController,
+                //     pickerDialogStyle: PickerDialogStyles.main(),
+                //     decoration: InputDecoration(
+                //       prefixIcon: Icon(Icons.call_outlined,
+                //           color: isDark?Colors.white:Colors.black, size: 18),
+                //       border: UnderlineInputBorder(
+                //         borderSide: BorderSide(color: Colors.white),
+                //       ),
+                //       label: Row(children: [Text(
+                //         "Emergency Contact",
+                //         style:  TextStyle(
+                //           color: isDark ? Colors.white70 : Colors.black54,
+                //           fontWeight: FontWeight.w500,
+                //           fontFamily: 'Poppins',
+                //           fontSize: 16,
+                //         ),),
+                //         Text(" *",style: TextStyle(color: Colors.red),)
+                //       ],),
+                //       contentPadding: EdgeInsets.only(bottom: 0),
+                //     ),
+                //     style: TextStyle(color: isDark?Colors.white:Colors.black),
+                //     initialCountryCode: 'MV',
+                //     onChanged: (phone) {
+                //       setState(() {
+                //         emergencyContact = "${phone.completeNumber}";
+                //       });
+                //     },
+                //   ),
+                // ),
                 // TextFormField(
                 //   controller: _emergencyContactController,
                 //   decoration: InputDecoration(

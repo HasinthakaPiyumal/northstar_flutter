@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:north_star/UI/Layout.dart';
 import 'package:north_star/UI/WelcomeScreens/welcome_v2.dart';
@@ -7,6 +9,7 @@ import 'package:north_star/Utils/notification_service.dart';
 import 'package:uuid/uuid.dart';
 
 import '../Controllers/FirebaseMessageController.dart';
+import 'Chats/ChatHome.dart';
 
 class SplashScreen extends StatefulWidget {
 
@@ -41,10 +44,12 @@ class _SplashScreenState extends State<SplashScreen> {
     return null;
   }
 
+
   @override
   void initState() {
     super.initState();
     _uuid = const Uuid();
+
     runSplash();
   }
 

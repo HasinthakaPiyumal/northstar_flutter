@@ -180,7 +180,7 @@ class ScheduleForClient extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'Pay with eWallet',
+                        'Pay with E-gift',
                         style: TypographyStyles.boldText(
                             14, AppColors.textOnAccentColor),
                       ),
@@ -188,7 +188,7 @@ class ScheduleForClient extends StatelessWidget {
                         height: 3,
                       ),
                       Text(
-                        '(eWallet Balance: ${walletData['balance'].toStringAsFixed(2)})',
+                        '(E-gift Balance: ${walletData['balance'].toStringAsFixed(2)})',
                         style: TypographyStyles.normalText(
                             12, AppColors.textOnAccentColor),
                       ),
