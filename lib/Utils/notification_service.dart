@@ -4,8 +4,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get/get.dart';
 import 'package:north_star/Controllers/FirebaseMessageController.dart';
 import 'package:uuid/uuid.dart';
+
+import '../UI/Chats/ChatHome.dart';
 
 class NotificationServices{
   FirebaseMessaging messaging = FirebaseMessaging.instance;
@@ -96,15 +99,20 @@ class NotificationServices{
       iOS: iosInitSettings
     );
 
-    await _flutterLocalNotificationsPlugin.initialize(initSettings,onDidReceiveBackgroundNotificationResponse: (payload){
+    await _flutterLocalNotificationsPlugin.initialize(initSettings,
+        onDidReceiveBackgroundNotificationResponse: (payload){
+      handleMessage(context,message);
+    },
+    onDidReceiveNotificationResponse: (payload){
       handleMessage(context,message);
     });
   }
 
   void handleMessage(BuildContext context,RemoteMessage message){
-    print("In handle message function"); 
-    if(message.data['type']=='text'){
-       
+    print("In handle message function");
+    print(message.data);
+    if (message.data['notification_type'] == 'chat-notify') {
+      Get.to(()=>ChatHome(selectedChatId: message.data['chat_id']));
     }
   }
 
@@ -139,7 +147,7 @@ class NotificationServices{
     );
 
     Future.delayed(Duration.zero,(){
-      _flutterLocalNotificationsPlugin.show(0, 
+      _flutterLocalNotificationsPlugin.show(0,
       message.notification!.title.toString(), message.notification!.body.toString(), notificationDetails);
     });
 

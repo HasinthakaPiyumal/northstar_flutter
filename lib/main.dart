@@ -44,12 +44,12 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 
-void _handleMessage(RemoteMessage message) {
-  print(message.data);
-  if (message.data['notification_type'] == 'chat-notify') {
-    Get.to(()=>ChatHome());
-  }
-}
+// void _handleMessage(RemoteMessage message) {
+//   print(message.data);
+//   if (message.data['notification_type'] == 'chat-notify') {
+//     Get.to(()=>ChatHome());
+//   }
+// }
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -70,16 +70,16 @@ Future<void> main() async {
   );
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-    print("click notification 01");
-    _handleMessage(message);
-  });
-  FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
-    print("click notification 02");
-    if (message != null) {
-      _handleMessage(message);
-    }
-  });
+  // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+  //   print("click notification 01");
+  //   _handleMessage(message);
+  // });
+  // FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
+  //   print("click notification 02");
+  //   if (message != null) {
+  //     _handleMessage(message);
+  //   }
+  // });
 
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
 
@@ -153,10 +153,47 @@ Future checkAuth() async {
   }
 }
 
-class NorthStar extends StatelessWidget {
+class NorthStar extends StatefulWidget {
   final GlobalKey<NavigatorState> navigatorKey;
   NorthStar({  required this.navigatorKey});
 
+  @override
+  State<NorthStar> createState() => _NorthStarState();
+}
+
+class _NorthStarState extends State<NorthStar> {
+  Future<void> setupInteractedMessage() async {
+    // Get any messages which caused the application to open from
+    // a terminated state.
+    RemoteMessage? initialMessage =
+    await FirebaseMessaging.instance.getInitialMessage();
+
+    // If the message also contains a data property with a "type" of "chat",
+    // navigate to a chat screen
+    print('initialMessage====');
+    print(initialMessage);
+    if (initialMessage != null) {
+      _handleMessage(initialMessage);
+    }
+
+    // Also handle any interaction when the app is in the background via a
+    // Stream listener
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
+  }
+
+  void _handleMessage(RemoteMessage message) {
+    print(message.data);
+    print('Message Click Handling');
+    if (message.data['notification_type'] == 'chat-notify') {
+      Get.to(()=>ChatHome(selectedChatId: message.data['chat_id'],));
+    }
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setupInteractedMessage();
+  }
   @override
   Widget build(BuildContext context) {
     precacheImage(AssetImage("assets/appicons/Northstar.png"), context);
@@ -170,7 +207,7 @@ class NorthStar extends StatelessWidget {
 
     return GetMaterialApp(
         title: 'North Star',
-        navigatorKey: navigatorKey,
+        navigatorKey: widget.navigatorKey,
         defaultTransition: Transition.rightToLeftWithFade,
         transitionDuration: Duration(milliseconds: 200),
         debugShowCheckedModeBanner: false,

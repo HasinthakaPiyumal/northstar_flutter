@@ -306,38 +306,38 @@ class _DoctorPrivateProfileState extends State<DoctorPrivateProfile> {
                     ),
                   ),
                   SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: ElevatedButton(
-                      style: ButtonStyles.matRadButton(Get.isDarkMode ? AppColors.primary2Color : colors.Colors().selectedCardBG, 0, 10,showBorder: true),
-                      onPressed: (){
-                        Get.to(()=>DoctorSettings());
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10),
-                        child: Row(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Image.asset(
-                                  "assets/icons/setting-pink.png",
-                                  width: 36,
-                                  height: 36,
-                                ),
-                                SizedBox(width: 10,),
-                                Text("Schedule Settings",
-                                  style: TypographyStyles.text(15),
-                                ),
-                              ],
-                            ),
-                                Icon(Icons.arrow_forward_ios, size: 15,)
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 10),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 16),
+                  //   child: ElevatedButton(
+                  //     style: ButtonStyles.matRadButton(Get.isDarkMode ? AppColors.primary2Color : colors.Colors().selectedCardBG, 0, 10,showBorder: true),
+                  //     onPressed: (){
+                  //       Get.to(()=>DoctorSettings());
+                  //     },
+                  //     child: Padding(
+                  //       padding: EdgeInsets.symmetric(vertical: 10),
+                  //       child: Row(
+                  //         children: [
+                  //           Row(
+                  //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //             children: [
+                  //               Image.asset(
+                  //                 "assets/icons/setting-pink.png",
+                  //                 width: 36,
+                  //                 height: 36,
+                  //               ),
+                  //               SizedBox(width: 10,),
+                  //               Text("Schedule Settings",
+                  //                 style: TypographyStyles.text(15),
+                  //               ),
+                  //             ],
+                  //           ),
+                  //               Icon(Icons.arrow_forward_ios, size: 15,)
+                  //         ],
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                  // SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: ElevatedButton(

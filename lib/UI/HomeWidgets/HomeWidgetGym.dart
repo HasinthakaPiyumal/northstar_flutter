@@ -15,6 +15,7 @@ import 'package:north_star/UI/HomeWidgets/HomeWidgetGym/GymView.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetGym/UnlockDoorQR.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 
+import 'DoorQRView.dart';
 import 'HomeWidgetGym/Services.dart';
 
 class HomeWidgetGym extends StatelessWidget {
@@ -350,6 +351,7 @@ class HomeWidgetGym extends StatelessWidget {
                                           children: [
                                             // Container(
                                             //   height: 90,
+                                            //   height: 90,
                                             //   child: ElevatedButton(
                                             //     style: ElevatedButton.styleFrom(
                                             //         foregroundColor:
@@ -379,9 +381,10 @@ class HomeWidgetGym extends StatelessWidget {
                                             InkWell(
                                               onTap: () {
                                                 //unlockGym(myBookings[index]['gym_id']);
+                                                // Get.to(()=>DoorQRView());
                                                 Get.to(() => UnlockDoorQR(
-                                                    gymID: myBookings[index]
-                                                        ['gym_id']));
+                                                    QR: myBookings[index]
+                                                    ['user']['qr_id'].toString()));
                                               },
                                               child: Container(
                                                   width: 102,
@@ -623,8 +626,8 @@ class HomeWidgetGym extends StatelessWidget {
                                               onTap: () {
                                                 //unlockGym(myBookings[index]['gym_id']);
                                                 Get.to(() => UnlockDoorQR(
-                                                    gymID: myBookings[index]
-                                                        ['gym_id']));
+                                                    QR: myBookings[index]
+                                                        ['user']['qr_id'].toString()));
                                               },
                                               child: Container(
                                                   width: 102,

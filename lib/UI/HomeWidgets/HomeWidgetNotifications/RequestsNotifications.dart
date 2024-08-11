@@ -58,6 +58,7 @@ class _RequestsNotificationsState extends State<RequestsNotifications> {
       String email = notification.data['sender_email'];
       CommonConfirmDialog.confirm('Invite').then((value) async {
         if(value){
+          notification.deleteSelectedNotification();
           Map res = await httpClient.inviteMember({
             'email': email,
             'trainer_id': authUser.id.toString(),
@@ -204,7 +205,6 @@ class _RequestsNotificationsState extends State<RequestsNotifications> {
                                 Expanded(
                                   child: Buttons.yellowFlatButton(
                                     onPressed: notification.type != NSNotificationTypes.ClientRequestWeb ? (){
-                                      notification.deleteSelectedNotification();
                                       sendInvite(notification);
                                     }:(){},
                                       label:"Invite"

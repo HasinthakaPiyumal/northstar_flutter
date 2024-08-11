@@ -13,7 +13,9 @@ import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:simple_speed_dial/simple_speed_dial.dart';
 
 class ChatHome extends StatelessWidget {
-  const ChatHome({Key? key}) : super(key: key);
+  String selectedChatId= '';
+  ChatHome({Key? key,this.selectedChatId=''}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +26,16 @@ class ChatHome extends StatelessWidget {
 
 
 
-    void getFirebaseChats() async{
+    Future<void> getFirebaseChats() async{
       ready.value = false;
+      dynamic selectedChatData;
+      dynamic selectedChatTitle;
       if(tempChats.length > 0){
         tempChats.forEach((element) async{
+          if(element['chat_id']==selectedChatId){
+            selectedChatData=element;
+            selectedChatTitle=element['title'];
+          }
         element['unread_count'] = 0;
         QuerySnapshot firebaseChats = await firestore.collection('chats').doc(element['chat_id']).collection('messages').get();
         int chatUnreadCount = 0;
@@ -39,8 +47,21 @@ class ChatHome extends StatelessWidget {
         element['unread_count'] = chatUnreadCount;
         chats.add(element);
         ready.value = tempChats.length == chats.length;
+
       });
-      
+        print('chats loaded');
+        if(selectedChatId!=''){
+          selectedChatId = '';
+          print('selectedChatTitle');
+          print(selectedChatTitle);
+          print('selectedChatData');
+          print(selectedChatData);
+          Get.to(() => ChatThread(
+            name: selectedChatTitle,
+            chatID: selectedChatData['chat_id'].toString(),
+            chatData: selectedChatData,
+          ));
+        }
       } else {
         ready.value = true;
       }
@@ -58,7 +79,7 @@ class ChatHome extends StatelessWidget {
         print(res['data']);
         tempChats.value = res['data'];
         print(tempChats.length);
-        getFirebaseChats();
+        await getFirebaseChats();
       } else {
         ready.value = true;
       }

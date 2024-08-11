@@ -90,6 +90,7 @@ dependencies:
   zego_uikit_prebuilt_call: ^3.1.0
   intl_phone_number_input:
   flutter_cached_pdfview: ^0.4.2
+  qr_flutter: ^4.1.0
 
 dev_dependencies:
   flutter_test:

@@ -80,14 +80,16 @@ class ChatThread extends StatelessWidget {
         List users = [];
         print(chatData);
         print('chatData');
-        chatData['clients']!.forEach((client) {
-          print('printing user');
-          if (client['client_id'].toString() != authUser.id.toString()) {
-            users.add(client['client_id'].toString());
-          }
-        });
+
         if (authUser.role == 'client') {
           users.add(chatData['owner_id'].toString());
+        }else{
+          chatData['clients'].forEach((client) {
+            print('printing user');
+            if (client['client_id'].toString() != authUser.id.toString()) {
+              users.add(client['client_id'].toString());
+            }
+          });
         }
         print('printing users');
         print(users);

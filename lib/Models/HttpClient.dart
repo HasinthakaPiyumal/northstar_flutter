@@ -1157,6 +1157,15 @@ class HttpClient {
       "data": response.data,
     };
   }
+  Future<Map> getAdminWorkoutPresets() async {
+    Response response = await post('/fitness/workout-presets/get', {
+      'trainer_id': 1,
+    });
+    return {
+      "code": response.statusCode,
+      "data": response.data,
+    };
+  }
 
   Future<Map> deleteWorkoutPresets(workoutId) async {
     Response response = await post('/fitness/workout-presets/delete', {
@@ -1905,7 +1914,9 @@ class HttpClient {
   // ====== Vending Machine End =======
 
   Future<Map> updateDeviceToken(String token) async {
+    print("Updating Device Token - Server");
     Response response = await post('/update/device-token', {'token': token});
+    print(response);
     return {
       "code": response.statusCode,
       "data": response.data,

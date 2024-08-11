@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
@@ -19,6 +21,7 @@ import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/components/Buttons.dart';
 
 import '../../components/CircularProgressBar.dart';
+import 'HomeWidgetWorkouts/AdminWorkoutPreset.dart';
 
 class HomeWidgetWorkouts extends StatelessWidget {
   const HomeWidgetWorkouts({Key? key}) : super(key: key);
@@ -178,6 +181,13 @@ class HomeWidgetWorkouts extends StatelessWidget {
                       ],
                     ),
                   ),
+
+            Padding(
+              padding: const EdgeInsets.only(left:20,top:20,right:20),
+              child: Buttons.yellowFlatButton(onPressed: () {
+                            Get.to(() => AdminWorkoutPresets());
+                            },width: Get.width,label: "Admin Preset"),
+            ),
 
             SizedBox(height: 20),
 
