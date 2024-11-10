@@ -29,53 +29,95 @@ class AuthUser {
     var config = ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall();
 
     ZegoUIKitPrebuiltCallInvitationService().init(
-      appID: ZegoCloudController.appID /*input your AppID*/,
-      appSign: ZegoCloudController.appSign /*input your AppSign*/,
-      userID: '${userObj['id']}',
-      userName: userObj['name'],
-      plugins: [ZegoUIKitSignalingPlugin()],
-      requireConfig: (ZegoCallInvitationData data) {
-        var config = ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall();
-        config.onOnlySelfInRoom = (s)async{
-          print('removed from room');
-          if(ZegoCloudController.isOutgoing){
-            int duration = DateTime.now().difference(ZegoCloudController.timeStamp).inSeconds;
-            print({'receiver_id': ZegoCloudController.calleeId, 'duration': duration, 'status': "Outgoing"});
-            httpClient.saveCallLog({'receiver_id': ZegoCloudController.calleeId, 'duration': duration, 'status': "Outgoing"});
-          }
-          Get.back();
-        };
-        config.onHangUp = (){
-          print('Hanguping');
-          if(ZegoCloudController.isOutgoing){
-            int duration = DateTime.now().difference(ZegoCloudController.timeStamp).inSeconds;
-            print({'receiver_id': ZegoCloudController.calleeId, 'duration': duration, 'status': "Outgoing"});
-            httpClient.saveCallLog({'receiver_id': ZegoCloudController.calleeId, 'duration': duration, 'status': "Outgoing"});
-          }
-          Get.back();
-        };
-        // config.avatarBuilder = (BuildContext context, Size size,
-        //     ZegoUIKitUser? user, Map extraInfo) {
-        //   return user != null
-        //       ? Container(
-        //     decoration: BoxDecoration(
-        //       shape: BoxShape.circle,
-        //       image: DecorationImage(
-        //         image: NetworkImage(
-        //           'https://your_server/app/avatar/${user.id}.png',
-        //         ),
-        //       ),
-        //     ),
-        //   )
-        //       : const SizedBox();
-        // };
-        return config;
-      },
-      events: ZegoUIKitPrebuiltCallInvitationEvents(
-        onIncomingCallAcceptButtonPressed: (){
-          ZegoCloudController.isOutgoing = false;
+        appID: ZegoCloudController.appID /*input your AppID*/,
+        appSign: ZegoCloudController.appSign /*input your AppSign*/,
+        userID: '${userObj['id']}',
+        userName: userObj['name'],
+        plugins: [ZegoUIKitSignalingPlugin()],
+        requireConfig: (ZegoCallInvitationData data) {
+          var config = ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall();
+          // config.onOnlySelfInRoom = (s) async {
+          //   print('removed from room');
+          //   if (ZegoCloudController.isOutgoing) {
+          //     int duration = DateTime.now()
+          //         .difference(ZegoCloudController.timeStamp)
+          //         .inSeconds;
+          //     print({
+          //       'receiver_id': ZegoCloudController.calleeId,
+          //       'duration': duration,
+          //       'status': "Outgoing"
+          //     });
+          //     httpClient.saveCallLog({
+          //       'receiver_id': ZegoCloudController.calleeId,
+          //       'duration': duration,
+          //       'status': "Outgoing"
+          //     });
+          //   }
+          //   Get.back();
+          // };
+          // config.onHangUp = () {
+          //   print('Hanguping');
+          //   if (ZegoCloudController.isOutgoing) {
+          //     int duration = DateTime.now()
+          //         .difference(ZegoCloudController.timeStamp)
+          //         .inSeconds;
+          //     print({
+          //       'receiver_id': ZegoCloudController.calleeId,
+          //       'duration': duration,
+          //       'status': "Outgoing"
+          //     });
+          //     httpClient.saveCallLog({
+          //       'receiver_id': ZegoCloudController.calleeId,
+          //       'duration': duration,
+          //       'status': "Outgoing"
+          //     });
+          //   }
+          //   Get.back();
+          // };
+          // config.avatarBuilder = (BuildContext context, Size size,
+          //     ZegoUIKitUser? user, Map extraInfo) {
+          //   return user != null
+          //       ? Container(
+          //     decoration: BoxDecoration(
+          //       shape: BoxShape.circle,
+          //       image: DecorationImage(
+          //         image: NetworkImage(
+          //           'https://your_server/app/avatar/${user.id}.png',
+          //         ),
+          //       ),
+          //     ),
+          //   )
+          //       : const SizedBox();
+          // };
+          return config;
         },
-        onOutgoingCallAccepted: (callId,ZegoCallUser user)async{
+        events: ZegoUIKitPrebuiltCallEvents(
+          onCallEnd: (ZegoCallEndEvent event, VoidCallback defaultAction) {
+            print('Call ended with reason: ${event.reason}');
+            if (ZegoCloudController.isOutgoing) {
+              int duration = DateTime.now()
+                  .difference(ZegoCloudController.timeStamp)
+                  .inSeconds;
+              print({
+                'receiver_id': ZegoCloudController.calleeId,
+                'duration': duration,
+                'status': "Outgoing"
+              });
+              httpClient.saveCallLog({
+                'receiver_id': ZegoCloudController.calleeId,
+                'duration': duration,
+                'status': "Outgoing"
+              });
+            }
+            Get.back();
+            // Call the default action to ensure proper cleanup
+            defaultAction();
+          },
+        ),
+        invitationEvents: ZegoUIKitPrebuiltCallInvitationEvents(
+            onIncomingCallAcceptButtonPressed: () {
+          ZegoCloudController.isOutgoing = false;
+        }, onOutgoingCallAccepted: (callId, ZegoCallUser user) async {
           print("======================");
           print("onOutgoingCallAccepted");
           ZegoCloudController.isOutgoing = true;
@@ -83,37 +125,32 @@ class AuthUser {
           ZegoCloudController.calleeId = int.parse(user.id);
           // Map res = await httpClient.saveCallLog(
           //     {'receiver_id': user.id, 'duration': 0, 'status': "Outgoing"});
-        },
-        onOutgoingCallCancelButtonPressed: ()async{
+        }, onOutgoingCallCancelButtonPressed: () async {
           print("======================");
           print("onOutgoingCallCancelButtonPressed");
           // Map res = await httpClient.saveCallLog(
           //     {'receiver_id': user.id, 'duration': 0, 'status': "Outgoing"});
-        },
-        onOutgoingCallRejectedCauseBusy: (callId,ZegoCallUser user)async{
+        }, onOutgoingCallRejectedCauseBusy:
+                (callId, ZegoCallUser user, str) async {
           print("======================");
           print("onOutgoingCallRejectedCauseBusy");
           // Map res = await httpClient.saveCallLog(
           //     {'receiver_id': user.id, 'duration': 0, 'status': "Outgoing"});
-        },
-        onOutgoingCallDeclined: (callId,ZegoCallUser user)async{
+        }, onOutgoingCallDeclined: (callId, ZegoCallUser user, str) async {
           print("======================");
           print("onOutgoingCallDeclined");
           // Map res = await httpClient.saveCallLog(
           //     {'receiver_id': user.id, 'duration': 0, 'status': "Outgoing"});
-        },
-        onOutgoingCallTimeout: (s,ss,as)async{
+        }, onOutgoingCallTimeout: (s, ss, as) async {
           print("======================");
           print("onOutgoingCallTimeout");
           // Map res = await httpClient.saveCallLog(
           //     {'receiver_id': user.id, 'duration': 0, 'status': "Outgoing"});
-        },
-        onInvitationUserStateChanged: (ss ){
+        }, onInvitationUserStateChanged: (ss) {
           print("State changed =====");
-        }
-      )
-      // uiConfig:
-    );
+        })
+        // uiConfig:
+        );
     print('Initialized zego cloud signaling');
   }
 
@@ -132,7 +169,6 @@ class AuthUser {
     ZegoUIKitPrebuiltCallInvitationService().uninit();
     return true;
   }
-
 
   Future checkAuth() async {
     Map res = await httpClient.authCheckWithoutTokenRefresh();
