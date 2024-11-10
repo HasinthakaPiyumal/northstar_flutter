@@ -31,6 +31,7 @@ target 'Runner' do
   use_frameworks!
   use_modular_headers!
   $FirebaseSDKVersion = '10.22.0'
+  pod 'PhoneNumberKit', '~> 3.7.6'
   pod 'MLKitCommon', :podspec => 'MLKitCommon.podspec.json'
   pod 'MLKitVision', :podspec => 'MLKitVision.podspec.json'
   pod 'MLKitNaturalLanguage', :podspec => 'MLKitNaturalLanguage.podspec.json'
