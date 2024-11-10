@@ -369,8 +369,19 @@ class HttpClient {
     };
   }
 
-  Future<Map> inviteMember(Map data) async {
-    Response response = await post('/trainer/clients/invite', data);
+  Future<Map> inviteMember(Map data, {bool extend = false}) async {
+    Response response;
+    if (extend) {
+      response = await post('/trainer/contract-period-extend',
+          {
+            'clientId':data['client_id'],
+            'days_count':data['days_count'],
+          });
+    }else{
+      response = await post('/trainer/clients/invite', data);
+
+    }
+
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -731,12 +742,29 @@ class HttpClient {
   }
 
   //Search Members
-  Future<Map> searchMembers(String pattern, {bool onlyPrimary = false}) async {
+  Future<Map> searchMembers(String pattern,
+      {bool onlyPrimary = false, dynamic onlyContracted = true}) async {
     if (pattern.isEmpty) {
       pattern = "ALL";
     }
-    Response response = await post('/trainer/clients/search',
-        {'search_key': pattern, 'onlyPrimary': onlyPrimary});
+    Response response = await post('/trainer/clients/search', {
+      'search_key': pattern,
+      'onlyPrimary': onlyPrimary,
+      'onlyContracted': onlyContracted
+    });
+
+    if (onlyContracted != 'ALL') {
+      if (onlyContracted) {
+        response.data = response.data
+            .where((member) => !member['trainer_contract'].isEmpty)
+            .toList();
+      } else {
+        response.data = response.data
+            .where((member) => member['trainer_contract'].isEmpty)
+            .toList();
+      }
+    }
+    print(response.data);
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -1157,6 +1185,7 @@ class HttpClient {
       "data": response.data,
     };
   }
+
   Future<Map> getAdminWorkoutPresets() async {
     Response response = await post('/fitness/workout-presets/get', {
       'trainer_id': 1,
@@ -1923,16 +1952,27 @@ class HttpClient {
     };
   }
 
+  // Get Pro Widget LIST
+  Future<Map> getProWidgets() async {
+    Response response = await get('/prowidgets');
+    return {"code": response.statusCode, "data": response.data};
+  }
+
   // Common Data APIS
   Future<Map> getCommonData() async {
     Response response = await get('/user-common-data/${authUser.id}');
     return {"code": response.statusCode, "data": response.data};
   }
+
   Future<Map> updateCommonData(data) async {
-    Response response = await post('/user-common-data/${authUser.id}',data);
+    Response response = await post('/user-common-data/${authUser.id}', data);
     return {"code": response.statusCode, "data": response.data};
   }
 
+  Future<Map> sendFcmMessage(data) async {
+    Response response = await post('/fcm/message/send', data);
+    return {"code": response.statusCode, "data": response.data};
+  }
 }
 
 HttpClient httpClient = HttpClient();

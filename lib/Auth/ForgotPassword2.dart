@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Auth/AuthHome.dart';
@@ -113,6 +114,9 @@ class _ForgotPassword2State extends State<ForgotPassword2> {
       if(password.text.length<8){
         showSnack("Password Validation", "Your password must be at least 8 characters long.",status: PopupNotificationStatus.warning);
         return;
+      }if(password.text.length>8){
+        showSnack("Password Validation", "The password may not be greater than 15 characters.",status: PopupNotificationStatus.warning);
+        return;
       }
       if(password.text!=rPassword.text){
         showSnack("Password Mismatch", "The passwords you entered do not match. Please ensure that both passwords are the same.",status: PopupNotificationStatus.warning);
@@ -127,8 +131,9 @@ class _ForgotPassword2State extends State<ForgotPassword2> {
       if (res['code'] == 200) {
         Get.offAll(() => AuthHome());
         showSnack('Password Reset is Successful!',
-            'You may now login with your new password.');
+            'You may now login with your new password.',status: PopupNotificationStatus.success);
       } else {
+        print(res);
         showSnack('Something went wrong', res['data'],status: PopupNotificationStatus.error);
       }
     }
@@ -157,14 +162,14 @@ class _ForgotPassword2State extends State<ForgotPassword2> {
                 ],
               ),
               SizedBox(height: 40),
-              Row(
+              Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('Enter the OTP Sent to ',
                       style: TypographyStyles.text(16)),
                   Text('${widget.mail.toLowerCase()}',
                       style: TypographyStyles.text(16)
-                          .copyWith(decoration: TextDecoration.underline)),
+                          .copyWith(decoration: TextDecoration.underline),overflow: TextOverflow.ellipsis,),
                 ],
               ),
               SizedBox(height: 20),

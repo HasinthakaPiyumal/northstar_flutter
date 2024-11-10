@@ -8,6 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
 
+import '../Controllers/ProWidgetController.dart';
+
 class AuthUser {
   late int id;
   late String name;
@@ -134,6 +136,7 @@ class AuthUser {
 
   Future checkAuth() async {
     Map res = await httpClient.authCheckWithoutTokenRefresh();
+
     if (res['code'] == 200) {
       Map<String, dynamic> userData = res['data']['user'];
       print("====userData");

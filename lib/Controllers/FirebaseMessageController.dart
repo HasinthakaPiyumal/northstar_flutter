@@ -86,34 +86,16 @@ Future<void> saveToken() async {
 
 void sendFCMMessage(String deviceToken, dynamic data) async {
   print('$deviceToken <---Token Data---> $data');
-  final url = Uri.parse('https://fcm.googleapis.com/fcm/send');
 
-  final headers = {
-    'Content-Type': 'application/json',
-    'Authorization':
-        'key=AAAAhwkb0SM:APA91bFru4x8CeD_OoiMfufybQ2Qfmk0bddGZmE634G0CFHYci0VNy34KLVJdac8ZP7cu76aX_Z4R-5Snpqq2vv3UDps6_yhOmKi99fqFtFzjAdCgsXBswCo7xUrE8L4RVglUEi4hP43',
-    // Replace with your FCM server key
-  };
-
-  final message = {
+  final httpData = {
     'data': data,
-    'priority': 'high',
-    'to': deviceToken, // Replace with the recipient device token
-    "content_available": true
+    'to': deviceToken
   };
-
-  print('Sending FCM message------------------\n$message');
-  final response = await http.post(
-    url,
-    headers: headers,
-    body: jsonEncode(message),
-  );
-
-  if (response.statusCode == 200) {
+  Map res = await httpClient.sendFcmMessage(httpData);
+  if (res == 200) {
     print('FCM message sent successfully');
   } else {
-    print('Error sending FCM message: ${response.statusCode}');
-    print(response.body);
+    print('Error sending FCM message: ${res}');
   }
 }
 

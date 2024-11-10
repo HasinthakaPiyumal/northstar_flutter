@@ -14,8 +14,10 @@ import 'package:north_star/UI/HomeWidgets/HomeWidgetCalls.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetNotifications.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetPro.dart';
 import 'package:north_star/UI/Members.dart';
+import 'package:north_star/UI/Members/UserView.dart';
 import 'package:north_star/UI/Members/UserView_Health.dart';
 import 'package:north_star/UI/PrivateDoctor/DoctorHome.dart';
+import 'package:north_star/UI/PrivateTrainer/TrainerHealth.dart';
 import 'package:north_star/UI/PrivateTrainer/TrainerProfile.dart';
 import 'package:north_star/UI/PrivateUser/ClientCalories.dart';
 import 'package:north_star/UI/PrivateUser/ClientProfile.dart';
@@ -90,6 +92,29 @@ class _LayoutState extends State<Layout> {
 
     checkPermissions();
 
+    bool isTrainer = authUser.role=='trainer';
+
+    List<BottomNavigationBarItem> bottomNavigationItems = [];
+      bottomNavigationItems.add(Buttons.bottomNavbarButton(label: "Home",pathname: "home.svg"));
+      bottomNavigationItems.add(Buttons.bottomNavbarButton(label: isTrainer?"Members":"Calories",pathname: isTrainer?"members.svg":"calories.svg"));
+      if(authUser.role=='trainer'){
+        bottomNavigationItems.add(Buttons.bottomNavbarButton(label: "Health",pathname: "health.svg"));
+      }
+      bottomNavigationItems.add(Buttons.bottomNavbarButton(label: isTrainer?"E-gift":"Health",pathname: isTrainer?"ewallet.svg":"health.svg"));
+      bottomNavigationItems.add(Buttons.bottomNavbarButton(label: "Profile",pathname: "profile.svg"),);
+      // authUser.role == 'trainer'
+      //     ? Buttons.bottomNavbarButton(label: "Members",pathname: "members.svg")
+      //     : Buttons.bottomNavbarButton(label: "Calories",pathname: "calories.svg"),
+      // Buttons.bottomNavbarButton(label: "Health",pathname: "ewallet.svg"),
+      // authUser.role == 'trainer'
+      //     ?
+      // Buttons.bottomNavbarButton(label: "E-gift",pathname: "ewallet.svg")
+      //     : Buttons.bottomNavbarButton(label: "Health",pathname: "health.svg"),
+      // authUser.role == 'trainer'
+      //     ? Buttons.bottomNavbarButton(label: "Profile",pathname: "profile.svg")
+      //     : Buttons.bottomNavbarButton(label: "Profile",pathname: "profile.svg"),
+
+
     Widget bNavBar() {
       return WillPopScope(
         onWillPop: () async {
@@ -129,19 +154,7 @@ class _LayoutState extends State<Layout> {
                 unselectedFontSize: 0,
                 showSelectedLabels: false,
                 showUnselectedLabels: false,
-                items: [
-                  Buttons.bottomNavbarButton(label: "Home",pathname: "home.svg"),
-                  authUser.role == 'trainer'
-                      ? Buttons.bottomNavbarButton(label: "Members",pathname: "members.svg")
-                      : Buttons.bottomNavbarButton(label: "Calories",pathname: "calories.svg"),
-                  authUser.role == 'trainer'
-                      ?
-                  Buttons.bottomNavbarButton(label: "E-gift",pathname: "ewallet.svg")
-                      : Buttons.bottomNavbarButton(label: "Health",pathname: "health.svg"),
-                  authUser.role == 'trainer'
-                      ? Buttons.bottomNavbarButton(label: "Profile",pathname: "profile.svg")
-                      : Buttons.bottomNavbarButton(label: "Profile",pathname: "profile.svg"),
-                ]);
+                items: bottomNavigationItems);
           }),
         ),
       );
@@ -243,6 +256,16 @@ class _LayoutState extends State<Layout> {
             ],
           ),
           body: Obx(() {
+            bool isTrainer = authUser.role=='trainer';
+            List<Widget> pages = [];
+            pages.add(Home());
+            pages.add(isTrainer? Members() : UserCalories());
+            if(isTrainer){
+              pages.add(TrainerHealth());
+            }
+            pages.add( isTrainer?Wallet(): UserViewHealth(userID: authUser.id,data:{}));
+            pages.add( isTrainer?TrainerProfile(): ClientProfile());
+
             return PageView(
                 onPageChanged: (index) async {
                   currentPage.value = index;
@@ -250,16 +273,7 @@ class _LayoutState extends State<Layout> {
                   NotificationsController.showNotificationsPrompt();
                 },
                 controller: pgController.value,
-                children: [
-                  Home(),
-                  authUser.role == 'trainer' ? Members() : UserCalories(),
-                  authUser.role == 'trainer'
-                      ? Wallet()
-                      : UserViewHealth(userID: authUser.id,data:{}),
-                  authUser.role == 'trainer'
-                      ? TrainerProfile()
-                      : ClientProfile(),
-                ]);
+                children: pages);
           }),
         ),
       );

@@ -23,11 +23,11 @@ class _HelpAndSupportViewState extends State<HelpAndSupportView> {
     void addComplain() async{
       ready.value = false;
       dynamic data = {
-      'description': descriptionController.value,
+      'description': descriptionController.text,
       'main_faqId': widget.subFaq['mainfaq_id'],
       'sub_faqId': widget.subFaq['id'],
       };
-      if(descriptionController.value ==""){
+      if(descriptionController.text ==""){
         ready.value = true;
         showSnack("Failed","Description can not be empty" );
         return;

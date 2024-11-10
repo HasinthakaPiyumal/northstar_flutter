@@ -2,29 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:im_animations/im_animations.dart';
 import 'package:north_star/Models/AuthUser.dart';
+import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Styles/ButtonStyles.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetPro.dart';
-
+import 'package:north_star/Controllers/ProWidgetController.dart';
 bool enabledProWidgets(String text) {
-  List proWidgets = [
-    'Dashboard',
-    'Exercise Bank',
-    'Todo',
-    'Video Sessions',
-    'Resources',
-    'Doctors',
-    'Calls',
-    'Client Notes',
-    'Fitness Calculator',
-    'Calories',
-    'Lab Reports',
-    'Online Clinic',
-    'Physiotherapy'
-  ];
+  List proWidgets = proWidgetController.list;
 
-  if (proWidgets.contains(text) && authUser.user['subscription'] == null) {
+  if (!proWidgets.contains(text)) {
     return false;
   } else {
     return true;

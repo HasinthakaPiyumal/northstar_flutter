@@ -36,6 +36,7 @@ import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../Controllers/ProWidgetController.dart';
 import '../Styles/AppColors.dart';
 import 'HomeWidgets/HomeWidgetDoctors.dart';
 import 'HomeWidgets/HomeWidgetProActive.dart';
@@ -105,6 +106,8 @@ class Home extends StatelessWidget {
       ready.value = false;
       Map res = await httpClient.getHomeData('0');
 
+      await proWidgetController.getProWidget();
+
       if (res['code'] == 200) {
         homeData.value = res['data'];
         ready.value = true;
@@ -116,6 +119,7 @@ class Home extends StatelessWidget {
     void getHomeDataTrainer() async {
       ready.value = false;
       Map res = await httpClient.getHomeTrainerData();
+      await proWidgetController.getProWidget();
 
       if (res['code'] == 200) {
         homeDataTrainer.value = res['data'];
@@ -658,7 +662,7 @@ class Home extends StatelessWidget {
                           children: [
                             homeWidgetButton(() {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetStore()));
-                            }, 'shop', 'Stores'),
+                            }, 'shop', 'Store'),
                             homeWidgetButton(() {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => UserCalories()));
                             }, 'calorie', 'Calories'),

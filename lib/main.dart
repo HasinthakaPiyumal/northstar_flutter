@@ -25,6 +25,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
 
+import 'Controllers/ProWidgetController.dart';
 import 'UI/Chats/ChatHome.dart';
 
 /// define a navigator key
