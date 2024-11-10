@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart' as flutter;
-import 'package:carousel_slider/carousel_slider.dart' as carousel_slider;
+import 'package:flutter/material.dart';
+import 'package:carousel_slider_plus/carousel_slider_plus.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +21,7 @@ class DoctorProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    carousel_slider.CarouselController _carouselController = new carousel_slider.CarouselController();
+    CarouselSliderController _carouselController = new CarouselSliderController();
 
     if (doctor["therapy__qualifications"].length == 0) {
       doctor["therapy__qualifications"]
@@ -180,9 +180,9 @@ class DoctorProfile extends StatelessWidget {
             Stack(
               alignment: Alignment.center,
               children: [
-                carousel_slider.CarouselSlider(
-                  carouselController: _carouselController,
-                  options: carousel_slider.CarouselOptions(
+                CarouselSlider(
+                  controller: _carouselController,
+                  options: CarouselOptions(
                     height: 144,
                     autoPlay: true,
                     enableInfiniteScroll: doctor["therapy__qualifications"].length > 1,
