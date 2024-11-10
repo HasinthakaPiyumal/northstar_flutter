@@ -1,8 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider_plus/carousel_slider_plus.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
-import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Controllers/NotificationsController.dart';
 import 'package:north_star/Models/AuthUser.dart';
@@ -10,7 +8,6 @@ import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetClass.dart';
-import 'package:north_star/UI/HomeWidgets/HomeWidgetClasses.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetCalories.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetClientNotes.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetFinance.dart';

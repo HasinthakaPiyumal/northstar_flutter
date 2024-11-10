@@ -85,8 +85,8 @@ class _LayoutState extends State<Layout> {
       FlutterLocalNotificationsPlugin fNP = FlutterLocalNotificationsPlugin();
       await fNP
           .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>()
-          ?.requestPermission();
+              AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission();
+
       await LocalNotificationsController.init();
     }
 
