@@ -25,21 +25,21 @@ class ViewAndEditToDo extends StatelessWidget {
         Share.share(
             '${selectedToDo["todo"]}\n\n${selectedToDo["notes"]}\n${DateFormat("yyyy-MM-dd hh:mm a").format(DateTime.parse(selectedToDo["endDate"]))}');
       } else {
-        final response = await http.get(Uri.parse('${HttpClient.s3ResourcesBaseUrl}${selectedToDo["image"]}'));
+        final response = await http.get(Uri.parse(
+            '${HttpClient.s3ResourcesBaseUrl}${selectedToDo["image"]}'));
         // await http.get(Uri.parse("https://placehold.co/600x400@3x.png"));
 
         if (response.statusCode == 200) {
           final directory = await getTemporaryDirectory();
-          final filePath = '${directory.path}/image.png';
-
-          final File file = File(filePath);
+          final filePath = '${directory.path}/shared_image.png';
+          final file = File(filePath);
           await file.writeAsBytes(response.bodyBytes);
 
-          Share.shareFiles(
-            [filePath],
-            text: '${selectedToDo["todo"]}\n\n${selectedToDo["notes"]}\n${DateFormat("yyyy-MM-dd hh:mm a").format(DateTime.parse(selectedToDo["endDate"]))}',
+          await Share.shareXFiles(
+            [XFile(filePath)],
+            text:
+                '${selectedToDo["todo"]}\n\n${selectedToDo["notes"]}\n${DateFormat("yyyy-MM-dd hh:mm a").format(DateTime.parse(selectedToDo["endDate"]))}',
             subject: '${selectedToDo["todo"]}'.capitalizeFirst as String,
-            mimeTypes: ['image/*'],
             sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
           );
         } else {
@@ -112,7 +112,8 @@ class ViewAndEditToDo extends StatelessWidget {
                       ),
                     ),
                     Visibility(
-                        visible: selectedToDo["image"] != null && selectedToDo["image"]!='',
+                        visible: selectedToDo["image"] != null &&
+                            selectedToDo["image"] != '',
                         child: Container(
                             padding: EdgeInsets.only(bottom: 16),
                             width: Get.width,
@@ -120,7 +121,8 @@ class ViewAndEditToDo extends StatelessWidget {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(10),
                               child: CachedNetworkImage(
-                                imageUrl: '${HttpClient.s3ResourcesBaseUrl}${selectedToDo["image"]}',
+                                imageUrl:
+                                    '${HttpClient.s3ResourcesBaseUrl}${selectedToDo["image"]}',
                                 fit: BoxFit.cover,
                               ),
                             ))),
