@@ -29,16 +29,18 @@ flutter_ios_podfile_setup
 
 target 'Runner' do
   use_frameworks!
-  use_modular_headers!
+  # Remove use_modular_headers! to avoid the modular header issue globally
+
   $FirebaseSDKVersion = '10.22.0'
   pod 'PhoneNumberKit', '~> 3.7.6'
   pod 'MLKitCommon', :podspec => 'MLKitCommon.podspec.json'
   pod 'MLKitVision', :podspec => 'MLKitVision.podspec.json'
   pod 'MLKitNaturalLanguage', :podspec => 'MLKitNaturalLanguage.podspec.json'
-  # pod 'FirebaseFirestore', :git => 'https://github.com/invertase/firestore-ios-sdk-frameworks.git', :tag => '10.10.0'
-  # Add Firebase modules with modular headers set to false
+
+  # Firebase modules - explicitly set modular headers to false to prevent issues
   pod 'Firebase/Crashlytics', :modular_headers => false
   pod 'Firebase/Core', :modular_headers => false
+
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
 
@@ -46,8 +48,12 @@ post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
     target.build_configurations.each do |config|
+      # Disable bitcode
       config.build_settings['ENABLE_BITCODE'] = 'NO'
+      # Enable non-modular includes
+      config.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
     end
+
     # Start of the permission_handler configuration
     target.build_configurations.each do |config|
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
@@ -56,6 +62,8 @@ post_install do |installer|
         'PERMISSION_MICROPHONE=1',
       ]
     end
+
+    # Adjust BoringSSL-GRPC flags to avoid warnings
     if target.name == 'BoringSSL-GRPC'
       target.source_build_phase.files.each do |file|
         if file.settings && file.settings['COMPILER_FLAGS']
@@ -65,11 +73,5 @@ post_install do |installer|
         end
       end
     end
-    # End of the permission_handler configuration
   end
 end
-
-# target 'OneSignalNotificationServiceExtension' do
-#   use_frameworks!
-#   pod 'OneSignalXCFramework', '>= 3.4.3', '< 4.0'
-# end
