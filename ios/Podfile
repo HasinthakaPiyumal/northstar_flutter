@@ -1,5 +1,7 @@
+# Uncomment this line to define a global platform for your project
 platform :ios, '15.6'
 
+# CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
 project 'Runner', {
@@ -26,42 +28,31 @@ require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelpe
 flutter_ios_podfile_setup
 
 target 'Runner' do
-  use_frameworks! # Remove use_modular_headers! globally
-
+  use_frameworks!
+  use_modular_headers!
   $FirebaseSDKVersion = '10.22.0'
-
-  # Firebase modules with modular headers set to false explicitly
-  pod 'Firebase/Crashlytics', :modular_headers => false
-  pod 'Firebase/Core', :modular_headers => false
-  pod 'Firebase/Messaging', :modular_headers => false
-
-  # Other dependencies
   pod 'PhoneNumberKit', '~> 3.7.6'
   pod 'MLKitCommon', :podspec => 'MLKitCommon.podspec.json'
   pod 'MLKitVision', :podspec => 'MLKitVision.podspec.json'
   pod 'MLKitNaturalLanguage', :podspec => 'MLKitNaturalLanguage.podspec.json'
-
+  # pod 'FirebaseFirestore', :git => 'https://github.com/invertase/firestore-ios-sdk-frameworks.git', :tag => '10.10.0'
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
-
     target.build_configurations.each do |config|
-      # Allow non-modular headers in framework modules
-      config.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
-      config.build_settings['ENABLE_BITCODE'] = 'NO'  # Disable bitcode
+      config.build_settings['ENABLE_BITCODE'] = 'NO'
     end
-
-    # Additional adjustments for Firebase-specific issues
-    if target.name.start_with?('firebase_') || target.name.start_with?('Firebase')
-      target.build_configurations.each do |config|
-        config.build_settings['DEFINES_MODULE'] = 'YES'  # Ensure Firebase modules are treated as modules
-      end
+    # Start of the permission_handler configuration
+    target.build_configurations.each do |config|
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
+        '$(inherited)',
+        'PERMISSION_CAMERA=1',
+        'PERMISSION_MICROPHONE=1',
+      ]
     end
-
-    # Adjust BoringSSL-GRPC flags to avoid warnings
     if target.name == 'BoringSSL-GRPC'
       target.source_build_phase.files.each do |file|
         if file.settings && file.settings['COMPILER_FLAGS']
@@ -71,5 +62,6 @@ post_install do |installer|
         end
       end
     end
+    # End of the permission_handler configuration
   end
 end
