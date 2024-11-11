@@ -36,6 +36,9 @@ target 'Runner' do
   pod 'MLKitVision', :podspec => 'MLKitVision.podspec.json'
   pod 'MLKitNaturalLanguage', :podspec => 'MLKitNaturalLanguage.podspec.json'
   # pod 'FirebaseFirestore', :git => 'https://github.com/invertase/firestore-ios-sdk-frameworks.git', :tag => '10.10.0'
+  # Add Firebase modules with modular headers set to false
+  pod 'Firebase/Crashlytics', :modular_headers => false
+  pod 'Firebase/Core', :modular_headers => false
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
 
