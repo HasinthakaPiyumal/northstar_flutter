@@ -52,11 +52,11 @@ dependencies:
   flutter_svg: ^2.0.7
   wakelock_plus: ^1.1.1
 
-  firebase_crashlytics: ^3.0.17
-  firebase_core: ^2.8.0
-  cloud_firestore: ^4.4.5
-  firebase_storage: ^11.0.16
-  firebase_messaging: 14.6.4
+  firebase_crashlytics: ^4.1.4
+  firebase_core: ^3.7.0
+  cloud_firestore: ^5.4.5
+  firebase_storage: ^12.3.5
+  firebase_messaging: 15.1.4
   logger: ^2.0.2+1
   agora_uikit:
   simple_pip_mode: ^0.8.0
@@ -66,7 +66,7 @@ dependencies:
   pin_code_fields: ^8.0.1
   syncfusion_flutter_pdf: ^27.1.58
   open_file: ^3.3.2
-  app_links: ^5.0.0
+  app_links: ^6.3.2
   flutter_cached_pdfview: ^0.4.2
   qr_flutter: ^4.1.0
   
