@@ -33,9 +33,12 @@ target 'Runner' do
   $FirebaseSDKVersion = '10.22.0'
   pod 'PhoneNumberKit', '~> 3.7.6'
   # pod 'MLKitCommon', :podspec => 'MLKitCommon.podspec.json'
-  pod 'MLKitCommon', '~> 12.0.0'
+  # pod 'MLKitCommon', '~> 12.0.0'
+  pod 'MLKitCommon', '~> 9.0'
+  pod 'MLKitNaturalLanguage', '~> 4.2.0'
+
   pod 'MLKitVision', :podspec => 'MLKitVision.podspec.json'
-  pod 'MLKitNaturalLanguage', :podspec => 'MLKitNaturalLanguage.podspec.json'
+  # pod 'MLKitNaturalLanguage', :podspec => 'MLKitNaturalLanguage.podspec.json'
   # pod 'FirebaseFirestore', :git => 'https://github.com/invertase/firestore-ios-sdk-frameworks.git', :tag => '10.10.0'
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
