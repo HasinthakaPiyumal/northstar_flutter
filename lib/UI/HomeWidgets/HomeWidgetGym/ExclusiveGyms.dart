@@ -31,7 +31,7 @@ class ExclusiveGyms extends StatelessWidget {
       gyms.value = res['data'];
       print(res['data']);
       print('value----------');
-      if(pattern==''){
+      if (pattern == '') {
         allGyms.value = res['data'];
 
         List tempList = [];
@@ -144,23 +144,39 @@ class ExclusiveGyms extends StatelessWidget {
                           hideOnEmpty: true,
                           hideOnError: true,
                           hideOnLoading: true,
-                          textFieldConfiguration: TextFieldConfiguration(
-                              decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.search),
-                                suffixIcon: IconButton(color: AppColors.accentColor,onPressed: () { filterGyms(); }, icon: Container(padding: EdgeInsets.all(8),decoration:BoxDecoration(borderRadius:BorderRadius.circular(5),color:AppColors.accentColor,),child: SvgPicture.asset("assets/svgs/mi_filter.svg")),),
-                            labelText: 'Search Gyms...',
-                            border: UnderlineInputBorder(
-                          ))),
+                          builder: (context, controller, focusNode) {
+                            return TextField(
+                                controller: controller,
+                                focusNode: focusNode,
+                                decoration: InputDecoration(
+                                    prefixIcon: Icon(Icons.search),
+                                    suffixIcon: IconButton(
+                                      color: AppColors.accentColor,
+                                      onPressed: () {
+                                        filterGyms();
+                                      },
+                                      icon: Container(
+                                          padding: EdgeInsets.all(8),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            color: AppColors.accentColor,
+                                          ),
+                                          child: SvgPicture.asset(
+                                              "assets/svgs/mi_filter.svg")),
+                                    ),
+                                    labelText: 'Search Gyms...',
+                                    border: UnderlineInputBorder()));
+                          },
                           suggestionsCallback: (pattern) async {
                             return await searchGyms(pattern);
                           },
                           itemBuilder: (context, suggestion) {
                             return Container();
                           },
-                          onSuggestionSelected: (suggestion) {},
+                          onSelected: (suggestion) {},
                         ),
                       ),
-
                     ],
                   ),
                   Obx(
@@ -230,7 +246,8 @@ class ExclusiveGyms extends StatelessWidget {
                                     radius: 28,
                                     child: ClipOval(
                                       child: CachedNetworkImage(
-                                        imageUrl: HttpClient.s3BaseUrl +gyms[index]['user']['avatar_url'],
+                                        imageUrl: HttpClient.s3BaseUrl +
+                                            gyms[index]['user']['avatar_url'],
                                         placeholder: (context, url) =>
                                             Container(
                                           height: 28,

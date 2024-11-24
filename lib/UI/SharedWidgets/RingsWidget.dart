@@ -132,7 +132,7 @@ Widget ringsWidget(Map homeData){
 }
 
 
-Widget ringsChartCalories(Map macrosData){
+Widget ringsChartCalories(Map macrosData,{String radius = "63"}){
   return SfCircularChart(
       margin: EdgeInsets.zero,
       series:  <RadialBarSeries<ChartData, int>>[
@@ -140,7 +140,7 @@ Widget ringsChartCalories(Map macrosData){
           useSeriesColor: true,
           trackOpacity: 0.175,
           maximumValue: 100,
-          radius: "63",
+          radius: radius,
           innerRadius: "15",
           gap: "3",
           cornerStyle: CornerStyle.bothCurve,

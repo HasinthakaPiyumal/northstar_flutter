@@ -26,7 +26,7 @@ class HomeWidgetStore extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     RxList<dynamic> cat = RxList<dynamic>([
-      {'id': 0, 'name': 'All','image_path':'all'}
+      {'id': 0, 'name': 'All', 'image_path': 'all'}
     ]);
     RxBool ready = false.obs;
     RxList products = [].obs;
@@ -119,19 +119,22 @@ class HomeWidgetStore extends StatelessWidget {
                 hideOnEmpty: true,
                 hideOnError: true,
                 hideOnLoading: true,
-                textFieldConfiguration: TextFieldConfiguration(
-                    autofocus: false,
-                    decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.search),
-                        labelText: 'Search Store...',
-                        border: UnderlineInputBorder())),
+                builder: (context, controller, focusNode) {
+                  return TextField(
+                      controller: controller,
+                      focusNode: focusNode,
+                      decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.search),
+                          labelText: 'Search Store...',
+                          border: UnderlineInputBorder()));
+                },
                 suggestionsCallback: (pattern) async {
                   return await searchStore(pattern);
                 },
                 itemBuilder: (context, suggestion) {
                   return Container();
                 },
-                onSuggestionSelected: (suggestion) {},
+                onSelected: (suggestion) {},
               ),
             ),
             SizedBox(height: 16.0),
@@ -184,19 +187,24 @@ class HomeWidgetStore extends StatelessWidget {
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
-                                        cat[index]['image_path']!="all"?Container(
-                                          height: 48,
-                                          width: 48,
-                                          child: CachedNetworkImage(
-                                            imageUrl:
-                                                HttpClient.s3ResourcesBaseUrl+cat[index]['image_path'],
-                                            fit: BoxFit.cover,
-                                          ),
-                                          color: Get.isDarkMode
-                                              ? Themes
-                                                  .mainThemeColorAccent.shade100
-                                              : colors.Colors().lightBlack(0.4),
-                                        ):Icon(Icons.clear_all_outlined),
+                                        cat[index]['image_path'] != "all"
+                                            ? Container(
+                                                height: 48,
+                                                width: 48,
+                                                child: CachedNetworkImage(
+                                                  imageUrl: HttpClient
+                                                          .s3ResourcesBaseUrl +
+                                                      cat[index]['image_path'],
+                                                  fit: BoxFit.cover,
+                                                ),
+                                                color: Get.isDarkMode
+                                                    ? Themes
+                                                        .mainThemeColorAccent
+                                                        .shade100
+                                                    : colors.Colors()
+                                                        .lightBlack(0.4),
+                                              )
+                                            : Icon(Icons.clear_all_outlined),
                                         SizedBox(
                                           height: 8,
                                         ),
@@ -268,101 +276,114 @@ class HomeWidgetStore extends StatelessWidget {
                       children: [
                         MasonryGridView.count(
                           crossAxisCount: 2,
-                          itemCount: products.where((product)=>selectedCategory.value == product['CategoryId'] || selectedCategory.value == 0).length,
+                          itemCount: products
+                              .where((product) =>
+                                  selectedCategory.value ==
+                                      product['CategoryId'] ||
+                                  selectedCategory.value == 0)
+                              .length,
                           mainAxisSpacing: 12,
                           crossAxisSpacing: 12,
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
                           padding: EdgeInsets.symmetric(horizontal: 16),
                           itemBuilder: (_, index) {
-                            dynamic lists = products.where((product)=>selectedCategory.value == product['CategoryId'] || selectedCategory.value == 0).toList();
-                            return  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      color: Get.isDarkMode
-                                          ? AppColors.primary2Color
-                                          : Colors.white,
-                                    ),
-                                    child: Material(
-                                      color: Colors.transparent,
-                                      child: InkWell(
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
-                                        onTap: () {
-                                          Get.to(() => StoreItemView(
-                                              product: lists[index]));
-                                        },
-                                        child: Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 8),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                            dynamic lists = products
+                                .where((product) =>
+                                    selectedCategory.value ==
+                                        product['CategoryId'] ||
+                                    selectedCategory.value == 0)
+                                .toList();
+                            return Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                color: Get.isDarkMode
+                                    ? AppColors.primary2Color
+                                    : Colors.white,
+                              ),
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  onTap: () {
+                                    Get.to(() =>
+                                        StoreItemView(product: lists[index]));
+                                  },
+                                  child: Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 8),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              padding: EdgeInsets.fromLTRB(
+                                                  0, 8, 0, 0),
+                                              width: Get.width,
+                                              height: Get.height * 0.15,
+                                              child: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(8.0),
+                                                child: CachedNetworkImage(
+                                                  imageUrl: HttpClient
+                                                          .s3ResourcesBaseUrl +
+                                                      lists[index]
+                                                          ['image_path'],
+                                                  fit: BoxFit.cover,
+                                                  placeholder: (context, url) =>
+                                                      LoadingAndEmptyWidgets
+                                                          .loadingWidget(),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(height: 10),
+                                            Text(
+                                              "${lists[index]['name'].toString().capitalize}",
+                                              style: TypographyStyles.text(16),
+                                            ),
+                                            SizedBox(height: 8),
+                                          ],
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(bottom: 10),
+                                          child: Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    padding:
-                                                        EdgeInsets.fromLTRB(
-                                                            0, 8, 0, 0),
-                                                    width: Get.width,
-                                                    height: Get.height * 0.15,
-                                                    child: ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8.0),
-                                                      child: CachedNetworkImage(
-                                                        imageUrl: HttpClient
-                                                                .s3ResourcesBaseUrl +
-                                                            lists[index]
-                                                                ['image_path'],
-                                                        fit: BoxFit.cover,
-                                                        placeholder: (context,
-                                                                url) =>
-                                                            LoadingAndEmptyWidgets
-                                                                .loadingWidget(),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(height: 10),
-                                                  Text(
-                                                    "${lists[index]['name'].toString().capitalize}",
-                                                    style:
-                                                        TypographyStyles.text(
-                                                            16),
-                                                  ),
-                                                  SizedBox(height: 8),
-                                                ],
+                                              Text(
+                                                // authUser.user['currency'] +
+                                                'MVR ' +
+                                                    lists[index]['price']
+                                                        .toStringAsFixed(2),
+                                                style: TypographyStyles
+                                                    .smallBoldTitle(20),
                                               ),
-                                              Padding(
-                                                padding:
-                                                    EdgeInsets.only(bottom: 10),
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      // authUser.user['currency'] +
-                                                          'MVR ' +
-                                                              lists[index]['price'].toStringAsFixed(2),
-                                                      style: TypographyStyles.smallBoldTitle(
-                                                          20),
-                                                    ),
-                                                    IconButton(
-                                                        onPressed: () {  },
-                                                    icon: Container(child: SvgPicture.asset("assets/svgs/cart.svg",width: 24,height: 24,color:  AppColors().getPrimaryColor(reverse: true),)))
-                                                  ],
-                                                ),
-                                              ),
+                                              IconButton(
+                                                  onPressed: () {},
+                                                  icon: Container(
+                                                      child: SvgPicture.asset(
+                                                    "assets/svgs/cart.svg",
+                                                    width: 24,
+                                                    height: 24,
+                                                    color: AppColors()
+                                                        .getPrimaryColor(
+                                                            reverse: true),
+                                                  )))
                                             ],
                                           ),
                                         ),
-                                      ),
+                                      ],
                                     ),
-                                  );
+                                  ),
+                                ),
+                              ),
+                            );
                           },
                         ),
                       ],

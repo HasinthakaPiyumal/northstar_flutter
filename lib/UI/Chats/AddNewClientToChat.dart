@@ -52,14 +52,18 @@ class AddNewClientToChat extends StatelessWidget {
           child: Column(
             children: [
               TypeAheadField(
-                textFieldConfiguration: TextFieldConfiguration(
-                    autofocus: true,
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.search),
-                      labelText: 'Search Member...',
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
-                    )
-                ),
+                builder: (context, controller, focusNode){
+                   return TextField(
+                        controller: controller,
+                        focusNode: focusNode,
+                        autofocus: true,
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.search),
+                          labelText: 'Search Member...',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.0)),
+                        ));
+                  },
                 suggestionsCallback: (pattern) async {
                   print(pattern);
                   return await searchMembers(pattern);
@@ -75,7 +79,7 @@ class AddNewClientToChat extends StatelessWidget {
                     ),
                   );
                 },
-                onSuggestionSelected: (suggestion) {
+                onSelected: (suggestion) {
                   var jsonObj = jsonDecode(jsonEncode(suggestion));
                   print(jsonObj['user_id'].toString());
                   if(!clientsIndex.contains(jsonObj['user_id'].toString())){

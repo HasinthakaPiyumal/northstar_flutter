@@ -35,8 +35,6 @@ class CreateVideoSession extends StatelessWidget {
 
     RxString meetingDateTime = "".obs;
 
-
-
     String _formatMeetingDateTime(dynamic dateTime) {
       // Assuming dateTime is a DateTime object or a string in a specific format
       // Convert the dateTime to a formatted string
@@ -119,16 +117,17 @@ class CreateVideoSession extends StatelessWidget {
                   ),
                   SizedBox(height: 16),
                   TypeAheadField(
-                    suggestionsBoxDecoration: SuggestionsBoxDecoration(
-                        color: Get.isDarkMode
-                            ? AppColors.primary2Color
-                            : Colors.white),
-                    textFieldConfiguration: TextFieldConfiguration(
-                        decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.search),
-                      labelText: 'Search Members...',
-                      border: UnderlineInputBorder(),
-                    )),
+                    builder: (context, controller, focusNode) {
+                      return TextField(
+                          controller: controller,
+                          focusNode: focusNode,
+                          autofocus: true,
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(Icons.search),
+                            labelText: 'Search Members...',
+                            border: UnderlineInputBorder(),
+                          ));
+                    },
                     suggestionsCallback: (pattern) async {
                       print(pattern);
                       return await searchMembers(pattern);
@@ -141,7 +140,7 @@ class CreateVideoSession extends StatelessWidget {
                         subtitle: Text(jsonObj['user']['email']),
                       );
                     },
-                    onSuggestionSelected: (suggestion) {
+                    onSelected: (suggestion) {
                       var jsonObj = jsonDecode(jsonEncode(suggestion));
 
                       var already = selectedMembers.firstWhereOrNull(
@@ -163,7 +162,12 @@ class CreateVideoSession extends StatelessWidget {
                       labelText: 'Meeting Start Time',
                       prefixIcon: Padding(
                         padding: const EdgeInsets.all(14.0),
-                        child: SvgPicture.asset("assets/svgs/birthday.svg",width: 14,height: 14,color: AppColors().getPrimaryColor(reverse: true),),
+                        child: SvgPicture.asset(
+                          "assets/svgs/birthday.svg",
+                          width: 14,
+                          height: 14,
+                          color: AppColors().getPrimaryColor(reverse: true),
+                        ),
                       ),
                       border: UnderlineInputBorder(),
                     ),
@@ -199,7 +203,12 @@ class CreateVideoSession extends StatelessWidget {
                       labelText: 'Meeting Duration',
                       prefixIcon: Padding(
                         padding: const EdgeInsets.all(14.0),
-                        child: SvgPicture.asset("assets/svgs/time.svg",width: 14,height: 14,color: AppColors().getPrimaryColor(reverse: true),),
+                        child: SvgPicture.asset(
+                          "assets/svgs/time.svg",
+                          width: 14,
+                          height: 14,
+                          color: AppColors().getPrimaryColor(reverse: true),
+                        ),
                       ),
                       border: UnderlineInputBorder(),
                     ),
@@ -293,7 +302,8 @@ class CreateVideoSession extends StatelessWidget {
               )),
         ],
       ),
-      bottomNavigationBar: Obx(()=> Padding(
+      bottomNavigationBar: Obx(
+        () => Padding(
           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
           child: Container(
               height: 44,
@@ -303,7 +313,7 @@ class CreateVideoSession extends StatelessWidget {
                   },
                   icon: Icons.video_call_outlined,
                   label: 'create video session',
-              isLoading:isCreating.value)),
+                  isLoading: isCreating.value)),
         ),
       ),
     );

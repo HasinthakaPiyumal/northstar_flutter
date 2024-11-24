@@ -10,6 +10,7 @@ import 'package:north_star/UI/HomeWidgets/HomeWidgetWorkouts/ViewGymLibrary.dart
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../Styles/AppColors.dart';
+
 class GymWorkouts extends StatelessWidget {
   const GymWorkouts({Key? key}) : super(key: key);
 
@@ -63,8 +64,7 @@ class GymWorkouts extends StatelessWidget {
       }
     }
 
-
-    void filterAll(String pattern) async{
+    void filterAll(String pattern) async {
       ready.value = false;
       List workoutsFresh = await searchWorkouts(pattern);
 
@@ -72,70 +72,64 @@ class GymWorkouts extends StatelessWidget {
       workoutsFresh.forEach((element) {
         List cats = element['categories'];
         cats.removeWhere((item) => !selectedCategories.contains(item));
-        if(cats.length == selectedCategories.length){
+        if (cats.length == selectedCategories.length) {
           workouts.add(element);
-          print('Filtered');          
+          print('Filtered');
         }
       });
-      ready.value= true;
+      ready.value = true;
     }
 
-    
-
-    void showFilter(){
+    void showFilter() {
       Get.bottomSheet(
         Card(
-          color: Get.isDarkMode?AppColors.primary2Color:Colors.white,
-        child: Column(
-          children: [
-            SizedBox(height: 16),
-            Row(
-              children: [
-                SizedBox(width: 8),
-                Text('Select Categories', style: TypographyStyles.title(18)),
-                Spacer(),
-                TextButton(
-                  child: Text('Done'),
-                  onPressed: () {
-                    filterAll(searchPattern);
-                    Get.back();
-                  },
-                ),
-                SizedBox(width: 8),
-              ],
-            ),
-            SizedBox(height: 8),
-            Divider(),
-
-            Expanded(
-              child: ListView.builder(
-                itemCount: categories.length,
-                itemBuilder: ((context, index) {
-                  return Obx(()=>CheckboxListTile(
-                    checkColor: Colors.white,
-                    activeColor: Themes.mainThemeColor,
-                    value: selectedCategories.contains(categories[index]),
-                    title: Text(categories[index]),
-                    onChanged: (bool? value) {
-                      if (value == true) {
-                        selectedCategories.add(categories[index]);
-                      } else {
-                        selectedCategories.remove(categories[index]);
-                      }
+          color: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
+          child: Column(
+            children: [
+              SizedBox(height: 16),
+              Row(
+                children: [
+                  SizedBox(width: 8),
+                  Text('Select Categories', style: TypographyStyles.title(18)),
+                  Spacer(),
+                  TextButton(
+                    child: Text('Done'),
+                    onPressed: () {
+                      filterAll(searchPattern);
+                      Get.back();
                     },
-                  ));
-                }),
+                  ),
+                  SizedBox(width: 8),
+                ],
               ),
-            )
-          ],
+              SizedBox(height: 8),
+              Divider(),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: categories.length,
+                  itemBuilder: ((context, index) {
+                    return Obx(() => CheckboxListTile(
+                          checkColor: Colors.white,
+                          activeColor: Themes.mainThemeColor,
+                          value: selectedCategories.contains(categories[index]),
+                          title: Text(categories[index]),
+                          onChanged: (bool? value) {
+                            if (value == true) {
+                              selectedCategories.add(categories[index]);
+                            } else {
+                              selectedCategories.remove(categories[index]);
+                            }
+                          },
+                        ));
+                  }),
+                ),
+              )
+            ],
+          ),
         ),
-      ),
-      isDismissible: false,
-
+        isDismissible: false,
       );
     }
-
-    
 
     searchWorkouts('LIMIT25RESULTS');
 
@@ -143,7 +137,10 @@ class GymWorkouts extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: Text('Gym Bank',style: TypographyStyles.title(20),),
+        title: Text(
+          'Gym Bank',
+          style: TypographyStyles.title(20),
+        ),
       ),
       body: Column(
         children: [
@@ -154,22 +151,23 @@ class GymWorkouts extends StatelessWidget {
             children: [
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: 16,
-                    right: 4
-                  ),
+                  padding: const EdgeInsets.only(left: 16, right: 4),
                   child: TypeAheadField(
                     hideOnEmpty: true,
                     hideOnError: true,
                     hideOnLoading: true,
-                    textFieldConfiguration: TextFieldConfiguration(
-                        autofocus: true,
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.search),
-                          labelText: 'Search Workouts...',
-                          border: UnderlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.0)),
-                        )),
+                    builder: (context, controller, focusNode) {
+                      return TextField(
+                          controller: controller,
+                          focusNode: focusNode,
+                          autofocus: true,
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(Icons.search),
+                            labelText: 'Search Workouts...',
+                            border: UnderlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0)),
+                          ));
+                    },
                     suggestionsCallback: (pattern) async {
                       searchPattern = pattern;
                       return await searchWorkouts(pattern);
@@ -177,7 +175,7 @@ class GymWorkouts extends StatelessWidget {
                     itemBuilder: (context, suggestion) {
                       return Container();
                     },
-                    onSuggestionSelected: (suggestion) {},
+                    onSelected: (suggestion) {},
                   ),
                 ),
               ),
@@ -212,9 +210,11 @@ class GymWorkouts extends StatelessWidget {
                       itemBuilder: (context, index) {
                         return Card(
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                          color: Get.isDarkMode?AppColors.primary2Color:Colors.white,
+                          color: Get.isDarkMode
+                              ? AppColors.primary2Color
+                              : Colors.white,
                           child: InkWell(
                             onTap: () {
                               Get.to(() =>
@@ -243,10 +243,10 @@ class GymWorkouts extends StatelessWidget {
                                         const EdgeInsets.fromLTRB(8, 10, 8, 8),
                                     child: Center(
                                       child: Text(
-                                            workouts[index]['title'],
-                                            textAlign: TextAlign.center,
-                                            style: TypographyStyles.title(14),
-                                          ),
+                                        workouts[index]['title'],
+                                        textAlign: TextAlign.center,
+                                        style: TypographyStyles.title(14),
+                                      ),
                                     ))
                               ],
                             ),

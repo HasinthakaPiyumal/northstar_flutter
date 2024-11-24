@@ -41,7 +41,7 @@ class Services extends StatelessWidget {
       print('gym services 1 $gyms');
       gyms.value = tempGyms;
       print('gym services 1.5 $gyms');
-      print(pattern=='');
+      print(pattern == '');
       print(pattern);
       if (pattern == '') {
         allGyms.value = tempGyms;
@@ -146,20 +146,37 @@ class Services extends StatelessWidget {
                           hideOnEmpty: true,
                           hideOnError: true,
                           hideOnLoading: true,
-                          textFieldConfiguration: TextFieldConfiguration(
-                              decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.search),
-                                suffixIcon: IconButton(color: AppColors.accentColor,onPressed: () { filterGyms(); }, icon: Container(padding: EdgeInsets.all(8),decoration:BoxDecoration(borderRadius:BorderRadius.circular(5),color:AppColors.accentColor,),child: SvgPicture.asset("assets/svgs/mi_filter.svg")),),
-                            labelText: 'Search Gyms...',
-                            border: UnderlineInputBorder()
-                          )),
+                          builder: (context, controller, focusNode) {
+                            return TextField(
+                                controller: controller,
+                                focusNode: focusNode,
+                                decoration: InputDecoration(
+                                    prefixIcon: Icon(Icons.search),
+                                    suffixIcon: IconButton(
+                                      color: AppColors.accentColor,
+                                      onPressed: () {
+                                        filterGyms();
+                                      },
+                                      icon: Container(
+                                          padding: EdgeInsets.all(8),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            color: AppColors.accentColor,
+                                          ),
+                                          child: SvgPicture.asset(
+                                              "assets/svgs/mi_filter.svg")),
+                                    ),
+                                    labelText: 'Search Gyms...',
+                                    border: UnderlineInputBorder()));
+                          },
                           suggestionsCallback: (pattern) async {
                             return await searchGyms(pattern);
                           },
                           itemBuilder: (context, suggestion) {
                             return Container();
                           },
-                          onSuggestionSelected: (suggestion) {},
+                          onSelected: (suggestion) {},
                         ),
                       ),
                     ],
@@ -202,64 +219,73 @@ class Services extends StatelessWidget {
                 ],
               )),
           Expanded(
-            child: Obx(() => ready.value
-                ? gyms.length>0?ListView.builder(
-                    itemCount: gyms.length,
-                    itemBuilder: (_, index) {
-                      print(gyms[index]);
-                      return Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-                        child: Card(
-                          shadowColor: Colors.black.withOpacity(0.5),
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                          color: Get.isDarkMode
-                              ? AppColors.primary2Color
-                              : Colors.white,
-                          child: InkWell(
-                              onTap: () {
-                                Get.to(() => GymView(gymObj: gyms[index]));
-                              },
-                              borderRadius: BorderRadius.circular(10),
-                              child: Container(
-                                margin: EdgeInsets.symmetric(vertical: 8),
-                                child: ListTile(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16)),
-                                  leading: CircleAvatar(
-                                    radius: 28,
-                                    child: ClipOval(
-                                      child: CachedNetworkImage(
-                                        imageUrl: HttpClient.s3BaseUrl +gyms[index]['user']['avatar_url'],
-                                        placeholder: (context, url) =>
-                                            Container(
+              child: Obx(
+            () => ready.value
+                ? gyms.length > 0
+                    ? ListView.builder(
+                        itemCount: gyms.length,
+                        itemBuilder: (_, index) {
+                          print(gyms[index]);
+                          return Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 2),
+                            child: Card(
+                              shadowColor: Colors.black.withOpacity(0.5),
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              color: Get.isDarkMode
+                                  ? AppColors.primary2Color
+                                  : Colors.white,
+                              child: InkWell(
+                                  onTap: () {
+                                    Get.to(() => GymView(gymObj: gyms[index]));
+                                  },
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Container(
+                                    margin: EdgeInsets.symmetric(vertical: 8),
+                                    child: ListTile(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(16)),
+                                      leading: CircleAvatar(
+                                        radius: 28,
+                                        child: ClipOval(
+                                          child: CachedNetworkImage(
+                                            imageUrl: HttpClient.s3BaseUrl +
+                                                gyms[index]['user']
+                                                    ['avatar_url'],
+                                            placeholder: (context, url) =>
+                                                Container(
                                               height: 28,
                                               width: 28,
-                                              child: CircularProgressIndicator(),
+                                              child:
+                                                  CircularProgressIndicator(),
                                             ),
-                                        width: 56,
-                                        height: 56,
-                                        errorWidget: (context, url, error) =>
-                                            Icon(Icons.error),
+                                            width: 56,
+                                            height: 56,
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    Icon(Icons.error),
+                                          ),
+                                        ),
+                                      ),
+                                      title: Text(
+                                          gyms[index]['gym_services']['name'],
+                                          style: TypographyStyles.title(18)),
+                                      subtitle: Padding(
+                                        padding: EdgeInsets.only(top: 5),
+                                        child:
+                                            Text("${gyms[index]['gym_name']}"),
+                                        //, ${CountryPickerUtils.getCountryByIsoCode(gyms[index]['gym_country']).name
                                       ),
                                     ),
-                                  ),
-                                  title: Text(
-                                      gyms[index]['gym_services']['name'],
-                                      style: TypographyStyles.title(18)),
-                                  subtitle: Padding(
-                                    padding: EdgeInsets.only(top: 5),
-                                    child: Text("${gyms[index]['gym_name']}"),
-                                    //, ${CountryPickerUtils.getCountryByIsoCode(gyms[index]['gym_country']).name
-                                  ),
-                                ),
-                              )),
-                        ),
-                      );
-                    },
-                  ):LoadingAndEmptyWidgets.emptyWidget()
+                                  )),
+                            ),
+                          );
+                        },
+                      )
+                    : LoadingAndEmptyWidgets.emptyWidget()
                 : LoadingAndEmptyWidgets.loadingWidget(),
           ))
         ],

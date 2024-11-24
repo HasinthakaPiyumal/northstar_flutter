@@ -21,6 +21,7 @@ class HomeWidgetCalories extends StatelessWidget {
   Widget build(BuildContext context) {
     RxBool ready = false.obs;
     RxList macrosData = [].obs;
+    RxMap<int, bool> isCollapsedMap = <int, bool>{}.obs;
 
     void getAllUserMacrosData() async {
       Map res = await httpClient.getHomeWidgetCalories();
@@ -28,402 +29,437 @@ class HomeWidgetCalories extends StatelessWidget {
       if (res['code'] == 200) {
         macrosData.value = res['data'];
         macrosData.removeWhere((element) => element['user_id'] == authUser.id);
+        for (var item in macrosData) {
+          isCollapsedMap[item['user_id']] = true;
+        }
         ready.value = true;
-        print('==Macros data');
-        print(res['data']);
       } else {
-        print(res);
         ready.value = true;
       }
     }
 
-    getAllUserMacrosData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getAllUserMacrosData();
+    });
 
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          title: Text(
-            'Live Dashboard',
-            style: TypographyStyles.title(20),
-          ),
-          centerTitle: true,
-          actions: [
-            TextButton(
-                onPressed: () {
-                  Get.to(() => WatchData(userId: authUser.id));
-                },
-                child: Text(
-                  '  My Data  ',
-                  style: TextStyle(color: AppColors.accentColor),
-                ))
-          ]),
-      body: Obx(() => ready.value
-          ? macrosData.length > 0
-              ? Column(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        child: ListView.builder(
-                          itemCount: macrosData.length,
-                          itemBuilder: (_, index) {
-                            Widget mainItem = Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 16.0, right: 16.0, bottom: 16.0),
-                              child: Material(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                color: Get.isDarkMode
-                                    ? AppColors.primary2Color
-                                    : Colors.white,
-                                child: InkWell(
-                                  borderRadius: BorderRadius.circular(16),
-                                  onTap: () {
-                                    Get.to(() => UserView(
-                                        userID: macrosData[index]['user']
-                                            ['id']));
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(16)),
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 20, horizontal: 16),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: Text(
+          'Live Dashboard',
+          style: TypographyStyles.title(20),
+        ),
+        centerTitle: true,
+        actions: [
+          TextButton(
+            onPressed: () {
+              Get.to(() => WatchData(userId: authUser.id));
+            },
+            child: Text(
+              '  My Data  ',
+              style: TextStyle(color: AppColors.accentColor),
+            ),
+          )
+        ],
+      ),
+      body: Obx(() {
+        if (!ready.value) return LoadingAndEmptyWidgets.loadingWidget();
+        if (macrosData.isEmpty) return LoadingAndEmptyWidgets.emptyWidget();
+
+        return Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                itemCount: macrosData.length,
+                itemBuilder: (_, index) {
+                  var userData = macrosData[index];
+                  return Padding(
+                    padding: const EdgeInsets.only(
+                        left: 16.0, right: 16.0, bottom: 16.0),
+                    child: Material(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      color: Get.isDarkMode
+                          ? AppColors.primary2Color
+                          : Colors.white,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(10),
+                        onTap: () {
+                          Get.to(() =>
+                              UserView(userID: userData['user']['id']));
+                        },
+                        child: Obx(() {
+                          bool isCollapsed =
+                              isCollapsedMap[userData['user_id']] ?? true;
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 20, horizontal: 16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
                                       children: [
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: Column(
+
+                                        Expanded(
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              CircleAvatar(
+                                                radius: 24,
+                                                backgroundImage:
+                                                CachedNetworkImageProvider(
+                                                  HttpClient.s3BaseUrl +
+                                                      userData['user']['avatar_url'],
+                                                ),
+                                              ),
+                                              SizedBox(height: 5,),
+                                              Column(
                                                 crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                CrossAxisAlignment.start,
                                                 children: [
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Column(
-                                                          children: [
-                                                            CircleAvatar(
-                                                                radius: 24,
-                                                                backgroundImage:
-                                                                    CachedNetworkImageProvider(
-                                                                  HttpClient
-                                                                          .s3BaseUrl +
-                                                                      macrosData[index]
-                                                                              [
-                                                                              'user']
-                                                                          [
-                                                                          'avatar_url'],
-                                                                )),
-                                                            SizedBox(
-                                                              height: 10,
-                                                            ),
-                                                            Text(
-                                                                macrosData[index]
-                                                                        ['user']
-                                                                    ['name'],
-                                                                style:
-                                                                    TypographyStyles
-                                                                        .title(
-                                                                            20)),
-                                                            Text(
-                                                                'Weight ' +
-                                                                    macrosData[
-                                                                            index]
-                                                                        [
-                                                                        'fit_category'] +
-                                                                    ' / ' +
-                                                                    macrosData[
-                                                                            index]
-                                                                        [
-                                                                        'fit_program'] +
-                                                                    ' Fitness Program',
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style: TypographyStyles
-                                                                    .textWithWeight(
-                                                                        13,
-                                                                        FontWeight
-                                                                            .w300)),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Container(
-                                                        height: 126,
-                                                        width: 126,
-                                                        child:
-                                                            ringsChartCalories(
-                                                                macrosData[
-                                                                    index]),
-                                                      ),
-                                                    ],
+                                                  Text(
+                                                    userData['user']['name'],
+                                                    style: TypographyStyles.title(
+                                                        18),
                                                   ),
-                                                  // ListTile(
-                                                  //   contentPadding:
-                                                  //       EdgeInsets.zero,
-                                                  //   leading: CircleAvatar(
-                                                  //       radius: 28,
-                                                  //       backgroundImage:
-                                                  //           CachedNetworkImageProvider(
-                                                  //         HttpClient.s3BaseUrl +
-                                                  //             macrosData[index]
-                                                  //                     ['user'][
-                                                  //                 'avatar_url'],
-                                                  //       )),
-                                                  //   title: Text(
-                                                  //     macrosData[index]['user']
-                                                  //         ['name'],
-                                                  //     style: TextStyle(
-                                                  //         fontWeight:
-                                                  //             FontWeight.bold),
-                                                  //   ),
-                                                  //   subtitle: Text(
-                                                  //       'Weight ' +
-                                                  //           macrosData[index][
-                                                  //               'fit_category'] +
-                                                  //           ' | ' +
-                                                  //           macrosData[index][
-                                                  //               'fit_program'] +
-                                                  //           ' Fitness Program',
-                                                  //       style: TextStyle(
-                                                  //           fontSize: 12,
-                                                  //           color: Themes
-                                                  //               .mainThemeColorAccent
-                                                  //               .shade300)),
-                                                  // ),
-                                                  SizedBox(height: 8),
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Container(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 30),
-                                                          height: 98,
-                                                          decoration: BoxDecoration(
-                                                              color: macrosData[
-                                                                              index]
-                                                                          [
-                                                                          'daily_calories'] >
-                                                                      macrosData[
-                                                                              index]
-                                                                          [
-                                                                          'target_calories']
-                                                                  ? Colors.red
-                                                                  : Colors
-                                                                      .green,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          5)),
-                                                          child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              Text('Current',
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                        16,
-                                                                    fontFamily:
-                                                                        'Poppins',
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w300,
-                                                                  )),
-                                                              Text(
-                                                                  macrosData[index]
-                                                                          [
-                                                                          'daily_calories']
-                                                                      .toString(),
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                        20,
-                                                                    fontFamily:
-                                                                        'Poppins',
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600,
-                                                                  )),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      SizedBox(width: 8),
-                                                      Expanded(
-                                                        child: Container(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 30),
-                                                          height: 98,
-                                                          decoration: BoxDecoration(
-                                                              color: Get
-                                                                      .isDarkMode
-                                                                  ? AppColors
-                                                                      .primary1Color
-                                                                  : AppColors
-                                                                      .baseColor,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          5)),
-                                                          child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              Text('Target',
-                                                                  style: TypographyStyles
-                                                                      .text(
-                                                                          16)),
-                                                              Text(
-                                                                macrosData[index]
-                                                                        [
-                                                                        'target_calories']
-                                                                    .toString(),
-                                                                style:
-                                                                    TypographyStyles
-                                                                        .title(
-                                                                            20),
-                                                              )
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      SizedBox(width: 8),
-                                                    ],
-                                                  ),
-                                                  SizedBox(height: 15),
-                                                  Center(
-                                                      child: Text(
-                                                    'Last Updated on: ' +
-                                                        Utils.dateFormat(
-                                                            macrosData[index]
-                                                                ['updated_at']),
-                                                    textAlign: TextAlign.center,
+                                                  SizedBox(height: 5,),
+                                                  Text(
+                                                    'Weight ${userData['fit_category']} / ${userData['fit_program']} Fitness Program',
                                                     style: TypographyStyles
-                                                        .textWithWeight(13,
-                                                            FontWeight.w300),
-                                                  )),
-                                                  SizedBox(height: 5),
+                                                        .textWithWeight(
+                                                        13, FontWeight.w300),
+                                                  ),
+                                                  SizedBox(height: 5,),
+                                                  Text(
+                                                    '${(userData['user']['health_conditions']?.length ?? 0).toString()} Health Conditions',
+                                                    style:
+                                                    TypographyStyles.text(16),
+                                                  ),
                                                 ],
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
-                                        WatchDataWidget(
-                                              macrosData[index]['user_id']),
-
+                                        GestureDetector(
+                                          onTap:(){
+                                            showMacroDataModal(context,userData);
+                                          },
+                                          child: Container(
+                                            height: 126,
+                                            width: 126,
+                                            child: ringsChartCalories(userData),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 8),
+                                    Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'Target Calories',
+                                          style: TypographyStyles.text(14),
+                                        ),
+                                        Text(
+                                          '${userData['daily_calories']}/${userData['target_calories']}',
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 10),
+                                    SizedBox(
+                                      height: 10,
+                                      width: Get.width,
+                                      child: Stack(
+                                        children: [
+                                          Container(
+                                            width: Get.width,
+                                            decoration: BoxDecoration(
+                                              color: AppColors()
+                                                  .getPrimaryColor(
+                                                  reverse: true),
+                                              borderRadius:
+                                              BorderRadius.circular(50),
+                                            ),
+                                          ),
+                                          Container(
+                                            width: (userData['daily_calories'] /
+                                                userData[
+                                                'target_calories']) *
+                                                (Get.width - 60),
+                                            decoration: BoxDecoration(
+                                              color: Color(0xff68FC80),
+                                              borderRadius:
+                                              BorderRadius.circular(50),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  isCollapsedMap[userData['user_id']] =
+                                  !isCollapsed;
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 20.0,right: 20,bottom: 20),
+                                  child: Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 10),
+                                    decoration: ShapeDecoration(
+                                      color: Get.isDarkMode
+                                          ? AppColors.primary1Color
+                                          : Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(isCollapsed
+                                            ? Icons.keyboard_arrow_down
+                                            : Icons.keyboard_arrow_up),
+                                        Text(isCollapsed
+                                            ? 'See More'
+                                            : 'See Less'),
                                       ],
                                     ),
                                   ),
                                 ),
                               ),
-                            );
-
-                            // if (index != macrosData.length - 1) {
-                            //   return mainItem;
-                            // }
-                            return Column(
-                              children: [
-                                mainItem,
-                                macrosData[index]["today_workout"]!=null?Container(
-                                  padding: EdgeInsets.symmetric(vertical: 16),
-                                  margin: EdgeInsets.only(bottom: 16,left: 16,right: 16),
-                                  decoration: BoxDecoration(
-                                      color: Get.isDarkMode
-                                          ? AppColors.primary2Color
-                                          : Colors.white,
-                                      borderRadius: BorderRadius.circular(10)),
+                              if (!isCollapsed)
+                                Padding(
+                                  padding: const EdgeInsets.all( 20),
                                   child: Column(
                                     children: [
-                                      Text(
-                                        "Today Workout",
-                                        style: TypographyStyles.title(20),
-                                      ),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          CircularProgressBar(
-                                            progress: macrosData[index]["today_workout"]['progress']/100,
-                                            radius: 50,
-                                            strokeWidth: 6,
-                                            fontSize: 20,
-                                          ),
-                                          Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Container(
-                                                padding: EdgeInsets.all(8),
-                                                width:Get.width-224,
-                                                decoration: BoxDecoration(
-                                                    color: Get.isDarkMode
-                                                        ? AppColors
+                                      WatchDataWidget(userData['user_id']),
+                                      if (userData["today_workout"] != null)
+                                        Column(
+                                          children: [
+                                            Text(
+                                              "Today Workout",
+                                              style:
+                                              TypographyStyles.title(20),
+                                            ),
+                                            SizedBox(height: 20),
+                                            Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                CircularProgressBar(
+                                                  progress: userData[
+                                                  "today_workout"]
+                                                  ['progress'] /
+                                                      100,
+                                                  radius: 50,
+                                                  strokeWidth: 6,
+                                                  fontSize: 20,
+                                                ),
+                                                Column(
+                                                  children: [
+                                                    Container(
+                                                      padding:
+                                                      EdgeInsets.all(8),
+                                                      width: Get.width - 224,
+                                                      decoration:
+                                                      BoxDecoration(
+                                                        color: Get.isDarkMode
+                                                            ? AppColors
                                                             .primary1Color
-                                                        : AppColors.baseColor,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10)),
-                                                child: Column(children: [
-                                                  Text("Exercise",style: TypographyStyles.textWithWeight(14, FontWeight.w300),),
-                                                  Text(macrosData[index]["today_workout"]['exercisesCount'].toString(),style: TypographyStyles.title(20),),
-                                                ],),
-                                              ),
-                                              SizedBox(height: 8,),
-                                              Container(
-                                                padding: EdgeInsets.all(8),
-                                                width:Get.width-224,
-                                                decoration: BoxDecoration(
-                                                    color: Get.isDarkMode
-                                                        ? AppColors
+                                                            : AppColors
+                                                            .baseColor,
+                                                        borderRadius:
+                                                        BorderRadius
+                                                            .circular(10),
+                                                      ),
+                                                      child: Column(
+                                                        children: [
+                                                          Text(
+                                                            "Exercise",
+                                                            style: TypographyStyles
+                                                                .textWithWeight(
+                                                                14,
+                                                                FontWeight
+                                                                    .w300),
+                                                          ),
+                                                          Text(
+                                                            userData["today_workout"]
+                                                            [
+                                                            'exercisesCount']
+                                                                .toString(),
+                                                            style: TypographyStyles
+                                                                .title(20),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 8),
+                                                    Container(
+                                                      padding:
+                                                      EdgeInsets.all(8),
+                                                      width: Get.width - 224,
+                                                      decoration:
+                                                      BoxDecoration(
+                                                        color: Get.isDarkMode
+                                                            ? AppColors
                                                             .primary1Color
-                                                        : AppColors.baseColor,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10)),
-                                                child: Column(children: [
-                                                  Text("Remaining",style: TypographyStyles.textWithWeight(14, FontWeight.w300),),
-
-                                                  Text(macrosData[index]["today_workout"]['remainingCount'].toString(),style: TypographyStyles.title(20),),
-                                                ],),
-                                              )
-                                            ],
-                                          )
-                                        ],
-                                      )
+                                                            : AppColors
+                                                            .baseColor,
+                                                        borderRadius:
+                                                        BorderRadius
+                                                            .circular(10),
+                                                      ),
+                                                      child: Column(
+                                                        children: [
+                                                          Text(
+                                                            "Remaining",
+                                                            style: TypographyStyles
+                                                                .textWithWeight(
+                                                                14,
+                                                                FontWeight
+                                                                    .w300),
+                                                          ),
+                                                          Text(
+                                                            userData["today_workout"]
+                                                            [
+                                                            'remainingCount']
+                                                                .toString(),
+                                                            style: TypographyStyles
+                                                                .title(20),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                     ],
                                   ),
-                                ):Container()
-                              ],
-                            );
-                          },
-                        ),
+                                ),
+                            ],
+                          );
+                        }),
                       ),
                     ),
-                  ],
-                )
-              : LoadingAndEmptyWidgets.emptyWidget()
-          : LoadingAndEmptyWidgets.loadingWidget()),
+                  );
+                },
+              ),
+            ),
+          ],
+        );
+      }),
     );
   }
+}
+void showMacroDataModal(BuildContext context,dynamic userData) {
+  showDialog(
+    context: context,
+    barrierDismissible: true, // Dismiss on outside tap
+    builder: (BuildContext context) {
+      return Dialog(
+
+        backgroundColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Container(
+          // width: Get.width,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Title and Close Button
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Macro Data',
+                    style: TypographyStyles.title(16),
+                  ),
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          color: AppColors.accentColor
+                        ),
+                        child: Icon(Icons.close, color: AppColors.textOnAccentColor)
+                    ), // Close icon
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Container(
+                    height: 80,
+                    width: 80,
+                    child: ringsChartCalories(userData,radius: "48"),
+                  ),
+                  const SizedBox(width: 16),
+                  // Macro details
+                  Expanded(
+                    child: Column(
+                      children: [
+                        macroItem('Calorie Intake', '${userData['daily_calories']}', const Color(0xFF5576E3)),
+                        macroItem('Carbs', '${userData['daily_carbs']}/${userData['target_carbs']}g', const Color(0xFFF5BB1D)),
+                        macroItem('Proteins', '${userData['daily_protein']}/${userData['target_protein']}g', const Color(0xFFEC2F2F)),
+                        macroItem('Fat','${userData['daily_fat']}/${userData['target_fat']}g',  const Color(0xFF1FC52A) ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+Widget macroItem(String title, String value, Color color) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 4),
+    child: Row(
+      children: [
+        Container(
+          width: 16,
+          height: 16,
+          decoration: BoxDecoration(
+            // shape: BoxShape.circle,
+            color: color,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            title,
+            style: TypographyStyles.text(14),
+          ),
+        ),
+        Text(
+          value,
+          style: TypographyStyles.text(14),
+        ),
+      ],
+    ),
+  );
 }

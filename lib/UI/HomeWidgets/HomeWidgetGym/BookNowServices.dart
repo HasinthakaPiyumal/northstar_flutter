@@ -68,14 +68,16 @@ class BookNowServices extends StatelessWidget {
             ),
             SizedBox(height: 16),
             TypeAheadField(
-              suggestionsBoxDecoration:
-                  SuggestionsBoxDecoration(color: AppColors.primary2Color),
-              textFieldConfiguration: TextFieldConfiguration(
+        builder: (context, controller, focusNode){
+      return TextField(
+          controller: controller,
+          focusNode: focusNode,
+          autofocus: true,
                   decoration: InputDecoration(
                 prefixIcon: Icon(Icons.search),
                 labelText: 'Search Members...',
                 border: UnderlineInputBorder(),
-              )),
+              ));},
               suggestionsCallback: (pattern) async {
                 print(pattern);
                 return await searchMembers(pattern);
@@ -88,7 +90,7 @@ class BookNowServices extends StatelessWidget {
                   subtitle: Text(jsonObj['user']['email']),
                 );
               },
-              onSuggestionSelected: (suggestion) {
+              onSelected: (suggestion) {
                 var jsonObj = jsonDecode(jsonEncode(suggestion));
                 var already = selectedMembers.firstWhereOrNull(
                     (element) => element['user_id'] == jsonObj['user_id']);

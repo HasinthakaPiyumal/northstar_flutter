@@ -56,7 +56,6 @@ class Home extends StatelessWidget {
     RxList carouselList = [].obs;
     RxInt carouselTime = 6.obs;
 
-    print("home loading===");
 
     // if()
 

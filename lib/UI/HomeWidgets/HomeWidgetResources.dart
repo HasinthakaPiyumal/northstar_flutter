@@ -24,7 +24,7 @@ class HomeWidgetResources extends StatelessWidget {
     RxString selectedCategory = "All".obs;
     RxList selectedCategoryResources = [].obs;
 
-    Future<List> searchResources(String pattern) async{
+    Future<List> searchResources(String pattern) async {
       ready.value = false;
       if (pattern.isEmpty) {
         Map res = await httpClient.resourceSearch('ALL');
@@ -36,10 +36,8 @@ class HomeWidgetResources extends StatelessWidget {
         Map res = await httpClient.resourceSearch(pattern);
         resources.value = res['data'];
         selectedCategoryResources.value = resources;
-        print(
-          'Search Results: ${resources.length}' +
-          'Search Results2 ${selectedCategoryResources.length}'
-        );
+        print('Search Results: ${resources.length}' +
+            'Search Results2 ${selectedCategoryResources.length}');
         ready.value = true;
         return [];
       }
@@ -58,10 +56,10 @@ class HomeWidgetResources extends StatelessWidget {
     Future<void> sortResourcesToSelectedCategory() async {
       selectedCategoryResources.value = [];
       for (var element in resources) {
-        if(selectedCategory.value == "All"){
+        if (selectedCategory.value == "All") {
           selectedCategoryResources.add(element);
         } else {
-          if(element['category'] == selectedCategory.value){
+          if (element['category'] == selectedCategory.value) {
             selectedCategoryResources.add(element);
           }
         }
@@ -82,21 +80,34 @@ class HomeWidgetResources extends StatelessWidget {
               height: 64,
               child: TextButton(
                 style: TextButton.styleFrom(
-                    backgroundColor: Get.isDarkMode ? colors.Colors().darkGrey(1) : colors.Colors().selectedCardBG,
+                    backgroundColor: Get.isDarkMode
+                        ? colors.Colors().darkGrey(1)
+                        : colors.Colors().selectedCardBG,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16)
-                    )
-                ),
-                onPressed: (){
-                  Get.to(()=>ViewNewsLetters());
+                        borderRadius: BorderRadius.circular(16))),
+                onPressed: () {
+                  Get.to(() => ViewNewsLetters());
                 },
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Newsletter',style: TypographyStyles.normalText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),),
-                      Icon(Icons.arrow_forward,color: Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
+                      Text(
+                        'Newsletter',
+                        style: TypographyStyles.normalText(
+                          16,
+                          Get.isDarkMode
+                              ? Themes.mainThemeColorAccent.shade100
+                              : colors.Colors().lightBlack(1),
+                        ),
+                      ),
+                      Icon(
+                        Icons.arrow_forward,
+                        color: Get.isDarkMode
+                            ? Themes.mainThemeColorAccent.shade100
+                            : colors.Colors().lightBlack(1),
+                      ),
                     ],
                   ),
                 ),
@@ -107,104 +118,139 @@ class HomeWidgetResources extends StatelessWidget {
               hideOnEmpty: true,
               hideOnError: true,
               hideOnLoading: true,
-              textFieldConfiguration: TextFieldConfiguration(
-                  autofocus: false,
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.search),
-                    labelText: 'Search Resources...',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
-                  )
-              ),
+              builder: (context, controller, focusNode) {
+                return TextField(
+                    controller: controller,
+                    focusNode: focusNode,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.search),
+                      labelText: 'Search Resources...',
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0)),
+                    ));
+              },
               suggestionsCallback: (pattern) async {
                 return await searchResources(pattern);
               },
               itemBuilder: (context, suggestion) {
                 return Container();
               },
-              onSuggestionSelected: (suggestion) {},
+              onSelected: (suggestion) {},
             ),
             SizedBox(height: 16),
-
             SizedBox(
               height: 40,
-              child: Obx(() => ListView.builder(
-                shrinkWrap: true,
-                itemCount: categories.length,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Obx(()=>Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ElevatedButton(
-                              style: selectedCategory.value == categories[index] ? ButtonStyles.selectedBookingButton(50) : Get.isDarkMode ? ButtonStyles.notSelectedBookingButton(50) : ButtonStyles.notSelectedBookingButtonLightTheme(50),
-                              onPressed: (){
-                                selectedCategory.value = categories[index];
-                                sortResourcesToSelectedCategory();
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 5,),
-                                child: Text(
-                                  categories[index],
-                                  style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1)),
-                                ),
-                              )
-                          ),
-                          SizedBox(width: 5,),
-                        ],
-                      )),
-                    ],
-                  );
-                },
-              ),),
-            ),
-
-            SizedBox(height: 16),
-
-            Expanded(
-              child: Obx(()=> ready.value ? MasonryGridView.count(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16.0,
-                mainAxisSpacing: 10.0,
-                itemCount: selectedCategoryResources.length,
-                itemBuilder: (_,index){
-                  return InkWell(
-                    onTap: (){
-                      print(selectedCategoryResources[index]);
-                      Get.to(()=> ViewResourceDoc(data: selectedCategoryResources[index], image: selectedCategoryResources[index]['image'], index: index,));
-                    },
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+              child: Obx(
+                () => ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: categories.length,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Container(
-                          width: Get.width/100*50,
-                          height: Get.width/100*50 - 24,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Hero(
-                              tag: 'image$index',
-                              child: CachedNetworkImage(
-                                imageUrl: HttpClient.s3ResourcesBaseUrl + selectedCategoryResources[index]['image'],
-                                placeholder: (context, url) => Center(child: CircularProgressIndicator()),
-                                errorWidget: (context, url, error) => Icon(Icons.error),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(selectedCategoryResources[index]['title'], textAlign: TextAlign.start,
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        )
+                        Obx(() => Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                ElevatedButton(
+                                    style: selectedCategory.value ==
+                                            categories[index]
+                                        ? ButtonStyles.selectedBookingButton(50)
+                                        : Get.isDarkMode
+                                            ? ButtonStyles
+                                                .notSelectedBookingButton(50)
+                                            : ButtonStyles
+                                                .notSelectedBookingButtonLightTheme(
+                                                    50),
+                                    onPressed: () {
+                                      selectedCategory.value =
+                                          categories[index];
+                                      sortResourcesToSelectedCategory();
+                                    },
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 5,
+                                      ),
+                                      child: Text(
+                                        categories[index],
+                                        style: TypographyStyles.boldText(
+                                            16,
+                                            Get.isDarkMode
+                                                ? Themes.mainThemeColorAccent
+                                                    .shade100
+                                                : colors.Colors()
+                                                    .lightBlack(1)),
+                                      ),
+                                    )),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                              ],
+                            )),
                       ],
-                    ),
-                  );
-                },
-              ): Center(child: CircularProgressIndicator()),
+                    );
+                  },
+                ),
+              ),
+            ),
+            SizedBox(height: 16),
+            Expanded(
+              child: Obx(
+                () => ready.value
+                    ? MasonryGridView.count(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 16.0,
+                        mainAxisSpacing: 10.0,
+                        itemCount: selectedCategoryResources.length,
+                        itemBuilder: (_, index) {
+                          return InkWell(
+                            onTap: () {
+                              print(selectedCategoryResources[index]);
+                              Get.to(() => ViewResourceDoc(
+                                    data: selectedCategoryResources[index],
+                                    image: selectedCategoryResources[index]
+                                        ['image'],
+                                    index: index,
+                                  ));
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: Get.width / 100 * 50,
+                                  height: Get.width / 100 * 50 - 24,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Hero(
+                                      tag: 'image$index',
+                                      child: CachedNetworkImage(
+                                        imageUrl:
+                                            HttpClient.s3ResourcesBaseUrl +
+                                                selectedCategoryResources[index]
+                                                    ['image'],
+                                        placeholder: (context, url) => Center(
+                                            child: CircularProgressIndicator()),
+                                        errorWidget: (context, url, error) =>
+                                            Icon(Icons.error),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    selectedCategoryResources[index]['title'],
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                )
+                              ],
+                            ),
+                          );
+                        },
+                      )
+                    : Center(child: CircularProgressIndicator()),
               ),
             )
           ],

@@ -126,25 +126,19 @@ Future checkAuth() async {
     Map res = await httpClient.authCheck();
 
     if (res['code'] == 200) {
-      print('Printing token inner 1');
       isLoggedIn = true;
       httpClient.setToken(token);
-      print(res['data']['token']);
       client.changeToken(res['data']['token']);
-      print('Printing token inner 2');
       Map<String, dynamic> userData = res['data']['user'];
       if (res['data']['user']['subscription'] != null) {
         DateTime expDate =
             DateTime.parse(res['data']['user']['subscription']['valid_till']);
         if (expDate.isBefore(DateTime.now())) {
-          print('Subscription is expired');
           userData.remove('subscription');
         } else {
-          print('Subscription is valid');
         }
       }
       authUser.saveUser(userData);
-      print('Printing token inner 3');
 
       // client.changeToken(res['data']['token']);
       httpClient.setToken(res['data']['token']);
@@ -171,7 +165,6 @@ class _NorthStarState extends State<NorthStar> {
 
     // If the message also contains a data property with a "type" of "chat",
     // navigate to a chat screen
-    print('initialMessage====');
     print(initialMessage);
     if (initialMessage != null) {
       _handleMessage(initialMessage);
@@ -183,8 +176,6 @@ class _NorthStarState extends State<NorthStar> {
   }
 
   void _handleMessage(RemoteMessage message) {
-    print(message.data);
-    print('Message Click Handling');
     if (message.data['notification_type'] == 'chat-notify') {
       Get.to(()=>ChatHome(selectedChatId: message.data['chat_id'],));
     }
@@ -201,10 +192,6 @@ class _NorthStarState extends State<NorthStar> {
 
     final themeProvider = Provider.of<ThemeProvider>(context);
     final themeData = themeProvider.getTheme();
-
-    print("Primary Color: ${ThemeAll().lightTheme.primaryColor}");
-    print(
-        "Scaffold Background Color: ${ThemeAll().lightTheme.scaffoldBackgroundColor}");
 
     return GetMaterialApp(
         title: 'North Star',

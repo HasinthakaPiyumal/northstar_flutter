@@ -91,15 +91,18 @@ class NewChat extends StatelessWidget {
               ),
               SizedBox(height: 16),
               TypeAheadField(
-                textFieldConfiguration: TextFieldConfiguration(
-                    autofocus: true,
+    builder: (context, controller, focusNode){
+    return TextField(
+    controller: controller,
+    focusNode: focusNode,
+    autofocus: true,
 
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.search),
                       labelText: 'Search Members...',
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
                     )
-                ),
+                );},
                 suggestionsCallback: (pattern) async {
                   print(pattern);
                   return await searchMembers(pattern);
@@ -115,7 +118,7 @@ class NewChat extends StatelessWidget {
                     ),
                   );
                 },
-                onSuggestionSelected: (suggestion) {
+                onSelected: (suggestion) {
                   var jsonObj = jsonDecode(jsonEncode(suggestion));
                   var already = selectedClients.firstWhereOrNull((element) => element['user_id'] == jsonObj['user_id']);
                   if (already == null){

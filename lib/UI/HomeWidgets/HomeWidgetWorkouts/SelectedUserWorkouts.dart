@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:north_star/Controllers/ClientsWorkoutsController.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Plugins/Utils.dart';
@@ -16,54 +18,24 @@ import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/components/CircularProgressBar.dart';
 
 class SelectedUserWorkouts extends StatelessWidget {
-  final int clientID;
+  final Map workoutsData;
 
-  const SelectedUserWorkouts({Key? key, required this.clientID})
+  const SelectedUserWorkouts(
+      {Key? key, required this.workoutsData, required this.index})
       : super(key: key);
 
+  final int index;
   @override
   Widget build(BuildContext context) {
-    RxList workouts = [].obs;
+    RxMap workouts = RxMap(workoutsData['workouts']);
+    RxBool ready = true.obs;
 
-    RxBool ready = false.obs;
-    RxBool userReady = false.obs;
-
-    var selectedUserData = {};
-
-    void getWorkouts() async {
-      ready.value = false;
-      Map res = await httpClient.getWorkoutsClient(clientID);
-      if (res['code'] == 200) {
-        workouts.value = res['data'];
-print("---workouts");
-print(workouts);
-        workouts.removeWhere((element) => element['user_id'] != clientID);
-
-        ready.value = true;
-      } else {
-        ready.value = true;
+    void reloadWorkouts() {
+      print(ClientsWorkoutsController.workouts);
+      if(ClientsWorkoutsController.workouts[index]['user']['id']==workoutsData['user']['id']) {
+        workouts.value = RxMap(ClientsWorkoutsController.workouts[index]['workouts']);
       }
     }
-
-    void getData() async {
-      Map res = await httpClient.getOneUser(clientID.toString());
-      if (res['code'] == 200) {
-        selectedUserData = res['data'];
-        print(selectedUserData);
-        userReady.value = true;
-      } else {
-        userReady.value = true;
-      }
-    }
-
-    void deleteWorkouts(int id) async {
-      ready.value = false;
-      await httpClient.deleteWorkout(id);
-      getWorkouts();
-    }
-
-    getWorkouts();
-    getData();
 
     return Scaffold(
       appBar: AppBar(
@@ -82,31 +54,24 @@ print(workouts);
         centerTitle: true,
         title: Row(
           children: [
-            Obx(() => userReady.value
-                ? CircleAvatar(
-                    radius: 22,
-                    backgroundImage: CachedNetworkImageProvider(
-                      HttpClient.s3BaseUrl +
-                          selectedUserData['user']['avatar_url'],
-                    ),
-                  )
-                : CircularProgressIndicator()),
+            CircleAvatar(
+              radius: 22,
+              backgroundImage: CachedNetworkImageProvider(
+                HttpClient.s3BaseUrl + workoutsData['user']['avatar_url'],
+              ),
+            ),
             SizedBox(
               width: 15,
             ),
-            Obx(
-              () => userReady.value
-                  ? Text(
-                      selectedUserData['user']['name'],
-                      style: TypographyStyles.boldText(
-                        18,
-                        Get.isDarkMode
-                            ? Themes.mainThemeColorAccent.shade100
-                            : colors.Colors().lightBlack(1),
-                      ),
-                    )
-                  : SizedBox(),
-            ),
+            Text(
+              workoutsData['user']['name'],
+              style: TypographyStyles.boldText(
+                18,
+                Get.isDarkMode
+                    ? Themes.mainThemeColorAccent.shade100
+                    : colors.Colors().lightBlack(1),
+              ),
+            )
           ],
         ),
       ),
@@ -119,8 +84,17 @@ print(workouts);
               ? workouts.length > 0
                   ? Expanded(
                       child: ListView.builder(
-                        itemCount: workouts.length,
+                        itemCount: workouts.entries.length,
                         itemBuilder: (_, index) {
+                          String date = workouts.entries.elementAt(index).key;
+                          print(workouts.entries.elementAt(index).value);
+                          List presets =
+                              workouts.entries.elementAt(index).value;
+                          Map report =
+                              WorkoutHelper().calculateWorkoutStats(presets);
+                          print("Card printing===");
+                          print(date);
+                          print(report);
                           return Card(
                             margin: EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 8),
@@ -131,21 +105,15 @@ print(workouts);
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: InkWell(
-                              onLongPress: authUser.role == 'trainer'
-                                  ? () {
-                                      CommonConfirmDialog.confirm('Delete')
-                                          .then((value) {
-                                        if (value) {
-                                          deleteWorkouts(workouts[index]['id']);
-                                        }
-                                      });
-                                    }
-                                  : null,
                               borderRadius: BorderRadius.circular(12),
                               onTap: () {
-                                Get.to(() => WorkoutDays(
-                                        workoutData: workouts[index]))
-                                    ?.then((value) => {getWorkouts()});
+                                if (presets.length > 0) {
+                                  Get.to(() =>
+                                          WorkoutDays(workoutData: presets))
+                                      ?.then((value) {
+                                    reloadWorkouts();
+                                  });
+                                }
                                 // Get.to(() => ViewWorkout(
                                 //         workoutData: workouts[index]))
                                 //     ?.then((value) => {getWorkouts()});
@@ -166,66 +134,71 @@ print(workouts);
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          workouts[index]['title'],
+                                          date,
                                           style: TypographyStyles.title(16),
                                         ),
                                         SizedBox(
                                           height: 10,
                                         ),
                                         Text(
-                                          "Last Update - " +
-                                              Utils.dateFormat(workouts[index]
-                                                      ['updated_at'])
-                                                  .toString()
-                                                  .split(' ')[0],
-                                          style: TypographyStyles.normalText(
-                                            14,
-                                            Get.isDarkMode
-                                                ? Themes.mainThemeColorAccent
-                                                    .shade500
-                                                : colors.Colors().lightBlack(1),
-                                          ),
-                                        ),
-                                        workouts[index]['completed_steps'] ==
-                                                workouts[index]['steps']
-                                            ? Container(
-                                                height: 44,
-                                                padding:
-                                                    EdgeInsets.only(top: 10),
-                                                child: ElevatedButton(
-                                                    style: ElevatedButton.styleFrom(
-                                                        foregroundColor:
-                                                            Colors.black,
-                                                        backgroundColor:
-                                                            AppColors
-                                                                .accentColor,
-                                                        elevation: 0,
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        20))),
-                                                    onPressed: () {
-                                                      Get.to(() =>
-                                                          ViewWorkoutFeedback(
-                                                            data:
-                                                                workouts[index],
-                                                            viewOnly: true,
-                                                          ));
-                                                    },
-                                                    child: Text(
-                                                      'View Feedback',
-                                                      style: TextStyle(
-                                                          color: AppColors.textOnAccentColor),
-                                                    )),
-                                              )
-                                            : SizedBox(),
+                                          presets.length == 0
+                                              ? 'Rest Day'
+                                              : '${presets.length} Presets Added',
+                                          style: TypographyStyles.text(16),
+                                        )
+                                        // Text(
+                                        //   "Last Update - ${workouts[index]['updated_at']}",
+                                        //       // Utils.dateFormat(workouts[index]
+                                        //       //         ['updated_at'])
+                                        //       //     .toString()
+                                        //       //     .split(' ')[0],
+                                        //   style: TypographyStyles.normalText(
+                                        //     14,
+                                        //     Get.isDarkMode
+                                        //         ? Themes.mainThemeColorAccent
+                                        //             .shade500
+                                        //         : colors.Colors().lightBlack(1),
+                                        //   ),
+                                        // ),
                                       ],
                                     )),
-                                    CircularProgressBar(
-                                        progress: workouts[index]
-                                                ['completed_steps'] /
-                                            workouts[index]['steps'])
+                                    presets.length>0?CircularProgressBar(
+                                        progress: report['completedSteps'] /
+                                            report['totalSteps']):Container(
+                                      height: 54,
+                                      width: 68,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10),
+                                          color: AppColors.blue),
+                                      child: Center(
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              DateFormat.MMM()
+                                                  .format(DateTime.parse(date))
+                                                  .toString(),
+                                              textAlign: TextAlign.center,
+                                              style: TypographyStyles.text(16).copyWith(
+                                                color: AppColors.textOnAccentColor,
+                                                height: 1.25,
+                                              ),
+                                            ),
+                                            Text(
+                                              DateTime.parse(date)
+                                                  .day
+                                                  .toString(),
+                                              textAlign: TextAlign.center,
+                                              style: TypographyStyles.title(18)
+                                                  .copyWith(
+                                                  color:
+                                                  AppColors.textOnAccentColor,
+                                                  height: 1.25),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    )
                                   ],
                                 ),
                               ),
@@ -242,6 +215,33 @@ print(workouts);
   }
 }
 
+class WorkoutHelper {
+  Map<String, int> calculateWorkoutStats(List workouts) {
+    int feedbackCount = 0;
+    int totalSteps = 0;
+    int completedSteps = 0;
+
+    for (var workout in workouts) {
+      // Retrieve 'steps' and 'completed_steps' as num and convert to int
+      num steps = workout['steps'] ?? 0;
+      num completed = workout['completed_steps'] ?? 0;
+
+      totalSteps += steps.toInt();
+      completedSteps += completed.toInt();
+
+      // Check if feedback is not null
+      if (workout['feedback'] != null) {
+        feedbackCount += 1;
+      }
+    }
+
+    return {
+      'feedbackCount': feedbackCount,
+      'totalSteps': totalSteps,
+      'completedSteps': completedSteps,
+    };
+  }
+}
 //
 // Row(
 // mainAxisAlignment: MainAxisAlignment.end,

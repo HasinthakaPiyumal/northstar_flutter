@@ -1,7 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
 import 'package:north_star/Models/AuthUser.dart';
@@ -23,7 +21,7 @@ class Members extends StatelessWidget {
     RxBool ready = false.obs;
 
     Future<List> searchMembers(String pattern) async {
-      Map res = await httpClient.searchMembers(pattern,onlyContracted: 'ALL');
+      Map res = await httpClient.searchMembers(pattern, onlyContracted: 'ALL');
       if (res['code'] == 200) {
         members.value = res['data'];
       }
@@ -54,20 +52,22 @@ class Members extends StatelessWidget {
                 hideOnEmpty: true,
                 hideOnError: true,
                 hideOnLoading: true,
-                textFieldConfiguration: TextFieldConfiguration(
-                    autofocus: false,
+    builder: (context, controller, focusNode){
+    return TextField(
+    controller: controller,
+    focusNode: focusNode,
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.search),
                       labelText: 'Search Members...',
                       border: UnderlineInputBorder(),
-                    )),
+                    ));},
                 suggestionsCallback: (pattern) async {
                   return await searchMembers(pattern);
                 },
                 itemBuilder: (context, suggestion) {
                   return Container();
                 },
-                onSuggestionSelected: (suggestion) {},
+                onSelected: (suggestion) {},
               ),
             ),
             SizedBox(height: 16),
@@ -141,22 +141,36 @@ class Members extends StatelessWidget {
                                             : Text(members[index]['user']
                                                 ['email']),
                                         trailing: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.end,
-
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
                                           children: [
                                             GestureDetector(
-                                              onTap: (){
-                                                Get.to(AddMember(extend: true,extendingId: members[index]['user']['id'],extendingEmail: members[index]['user']['email'],));
+                                              onTap: () {
+                                                Get.to(AddMember(
+                                                  extend: true,
+                                                  extendingId: members[index]
+                                                      ['user']['id'],
+                                                  extendingEmail: members[index]
+                                                      ['user']['email'],
+                                                ));
                                               },
                                               child: Container(
                                                 width: 23,
                                                 height: 23,
-                                                margin: EdgeInsets.only(bottom: 5),
+                                                margin:
+                                                    EdgeInsets.only(bottom: 5),
                                                 decoration: BoxDecoration(
                                                     borderRadius:
-                                                        BorderRadius.circular(5),
-                                                    color: AppColors.accentColor),
-                                                child: Icon(Icons.edit,size: 15,color: AppColors.textOnAccentColor,),
+                                                        BorderRadius.circular(
+                                                            5),
+                                                    color:
+                                                        AppColors.accentColor),
+                                                child: Icon(
+                                                  Icons.edit,
+                                                  size: 15,
+                                                  color: AppColors
+                                                      .textOnAccentColor,
+                                                ),
                                               ),
                                             ),
                                             Container(
@@ -176,61 +190,81 @@ class Members extends StatelessWidget {
                                           ],
                                         ),
                                       ),
-                                      !members[index]['trainer_contract'].isEmpty? Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 14),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                'Package Time',
-                                                style: TypographyStyles.text(14),
+                                      !members[index]['trainer_contract']
+                                              .isEmpty
+                                          ? Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 14),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    'Package Time',
+                                                    style:
+                                                        TypographyStyles.text(
+                                                            14),
+                                                  ),
+                                                  Text(
+                                                      '${DateTime.parse(members[index]['trainer_contract'][0]['valid_till']).difference(DateTime.now()).inDays} days remaining'),
+                                                ],
                                               ),
-                                              Text('${DateTime.parse(members[index]['trainer_contract'][0]['valid_till']).difference(DateTime.now()).inDays} days remaining'),
-                                            ],
-                                          ),
-                                        ):SizedBox(),
-
-                                        !members[index]['trainer_contract'].isEmpty? Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 14,
-                                              right: 14,
-                                              top: 8,
-                                              bottom: 20),
-                                          child: SizedBox(
-                                            height: 10,
-                                            width: Get.width,
-                                            child: Stack(
-                                              children: [
-                                                Container(
-                                                  width: Get.width,
-                                                  decoration: BoxDecoration(
-                                                    color: AppColors()
-                                                        .getPrimaryColor(
-                                                            reverse: true),
-                                                    borderRadius:
-                                                        BorderRadius.circular(50),
-                                                  ),
+                                            )
+                                          : SizedBox(),
+                                      !members[index]['trainer_contract']
+                                              .isEmpty
+                                          ? Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 14,
+                                                  right: 14,
+                                                  top: 8,
+                                                  bottom: 20),
+                                              child: SizedBox(
+                                                height: 10,
+                                                width: Get.width,
+                                                child: Stack(
+                                                  children: [
+                                                    Container(
+                                                      width: Get.width,
+                                                      decoration: BoxDecoration(
+                                                        color: AppColors()
+                                                            .getPrimaryColor(
+                                                                reverse: true),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(50),
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      width: (Get.width - 56) /
+                                                          100 *
+                                                          ((DateTime.parse(members[index]['trainer_contract'][0]['valid_till'])
+                                                                  .difference(
+                                                                      DateTime
+                                                                          .now())
+                                                                  .inDays) /
+                                                              (DateTime.parse(members[index]
+                                                                          ['trainer_contract'][0][
+                                                                      'valid_till'])
+                                                                  .difference(
+                                                                      DateTime.parse(members[index]['trainer_contract'][0]['created_at']))
+                                                                  .inDays) *
+                                                              100),
+                                                      decoration: BoxDecoration(
+                                                        color:
+                                                            Color(0xff68FC80),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(50),
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
-                                                Container(
-                                                  width: (Get.width - 56) /
-                                                      100 *
-                                                      ((DateTime.parse(members[index]['trainer_contract'][0]['valid_till'])
-                                                              .difference(
-                                                                  DateTime.now())
-                                                              .inDays) /
-                                                          (DateTime.parse(members[index]['trainer_contract'][0]['valid_till']).difference(DateTime.parse(members[index]['trainer_contract'][0]['created_at'])).inDays )*100),
-                                                  decoration: BoxDecoration(
-                                                    color: Color(0xff68FC80),
-                                                    borderRadius:
-                                                        BorderRadius.circular(50),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ):SizedBox()
+                                              ),
+                                            )
+                                          : SizedBox()
                                     ],
                                   ),
                                 ),

@@ -8,6 +8,7 @@ class AppColors {
   static const Color backgroundColor = Color(0xFFE5E5E5);
   static const Color primary1ColorLight = Color(0xFFF2F2F2);
   static const Color primary2ColorLight = Color(0xFFFFFFFF);
+  static const Color blue = Color(0xFFAACBFD);
 
   static const Color textOnAccentColor = Color(0xFF1B1F24);
 

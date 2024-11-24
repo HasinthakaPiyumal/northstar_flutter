@@ -26,9 +26,7 @@ class CommonAuthUtils {
         print('Subscription valid');
       }
     }
-    print(userData);
     authUser.saveUser(userData);
-    print(authUser.id);
     httpClient.setToken(res['data']['token']);
     client.changeToken(res['data']['token']);
     // OneSignalClient.changeExternalUser(

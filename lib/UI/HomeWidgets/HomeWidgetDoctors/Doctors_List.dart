@@ -49,26 +49,29 @@ class DoctorsList extends StatelessWidget {
                 hideOnEmpty: true,
                 hideOnError: true,
                 hideOnLoading: true,
-                textFieldConfiguration: TextFieldConfiguration(
-                    autofocus: false,
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.search,
-                          color: Get.isDarkMode
-                              ? AppColors.textColorDark
-                              : AppColors.textColorLight),
-                      labelText: 'Search Medical Professionals...',
-                      labelStyle: TypographyStyles.title(16),
-                      border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
-                      ),
-                    )),
+                builder: (context, controller, focusNode) {
+                  return TextField(
+                      controller: controller,
+                      focusNode: focusNode,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.search,
+                            color: Get.isDarkMode
+                                ? AppColors.textColorDark
+                                : AppColors.textColorLight),
+                        labelText: 'Search Medical Professionals...',
+                        labelStyle: TypographyStyles.title(16),
+                        border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                      ));
+                },
                 suggestionsCallback: (pattern) async {
                   return await searchDoctors(pattern);
                 },
                 itemBuilder: (context, suggestion) {
                   return Container();
                 },
-                onSuggestionSelected: (suggestion) {},
+                onSelected: (suggestion) {},
               ),
             ),
             SizedBox(height: 20),
@@ -92,7 +95,9 @@ class DoctorsList extends StatelessWidget {
                                     // height: 131,
                                     padding: const EdgeInsets.all(10),
                                     decoration: ShapeDecoration(
-                                      color: Get.isDarkMode?AppColors.primary2Color:Colors.white,
+                                      color: Get.isDarkMode
+                                          ? AppColors.primary2Color
+                                          : Colors.white,
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(5)),
@@ -171,7 +176,7 @@ class DoctorsList extends StatelessWidget {
                                                         width: double.infinity,
                                                         padding:
                                                             const EdgeInsets
-                                                                    .only(
+                                                                .only(
                                                                 left: 10,
                                                                 top: 10,
                                                                 bottom: 4),
@@ -188,18 +193,19 @@ class DoctorsList extends StatelessWidget {
                                                             Expanded(
                                                               child: Text(
                                                                 "${doctors[index]['doctor']['speciality'].toString().capitalizeFirst}",
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Color(
-                                                                      0xFFFFB700),
-                                                                  fontSize: 16,
-                                                                  fontFamily:
-                                                                      'Poppins',
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w700,
-                                                                      overflow: TextOverflow.ellipsis
-                                                                ),
+                                                                style: TextStyle(
+                                                                    color: Color(
+                                                                        0xFFFFB700),
+                                                                    fontSize:
+                                                                        16,
+                                                                    fontFamily:
+                                                                        'Poppins',
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w700,
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis),
                                                               ),
                                                             ),
                                                           ],
@@ -209,7 +215,7 @@ class DoctorsList extends StatelessWidget {
                                                         child: Padding(
                                                           padding:
                                                               const EdgeInsets
-                                                                      .only(
+                                                                  .only(
                                                                   left: 10),
                                                           child: Text(
                                                             "Dr. ${doctors[index]['name'].toString().capitalize}",

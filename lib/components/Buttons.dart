@@ -240,6 +240,10 @@ class Buttons {
   static Widget iconButton({
     required IconData icon,
     required VoidCallback onPressed,
+    Color backgroundColor = AppColors.primary2Color,
+    Color iconColor = AppColors.accentColor,
+    double iconSize = 24,
+    double padding = 10,
   }) {
     return Material(
       borderRadius: BorderRadius.circular(100),
@@ -247,14 +251,15 @@ class Buttons {
         borderRadius: BorderRadius.circular(100),
         onTap: onPressed,
         child: Ink(
-          padding: EdgeInsets.all(10),
+          padding: EdgeInsets.all(padding),
           decoration: ShapeDecoration(
             shape: CircleBorder(),
-            color: AppColors.primary2Color,
+            color: backgroundColor,
           ),
           child: Icon(
             icon,
-            color: AppColors.accentColor,
+            color: iconColor,
+            size: iconSize,
           ),
         ),
       ),

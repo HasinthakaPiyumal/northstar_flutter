@@ -62,13 +62,11 @@ class _LayoutState extends State<Layout> {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       int val = prefs.getInt(preferenceName)!;
       currentPage.value = val;
-      print('$preferenceName $val ------> Getting');
       return prefs.getInt(preferenceName);
     }
 
     Future<void> saveSelectedTabIndex(int index) async {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      print('$preferenceName $index ------> Setting');
       prefs.setInt(preferenceName, index);
     }
     taxController.refresh();

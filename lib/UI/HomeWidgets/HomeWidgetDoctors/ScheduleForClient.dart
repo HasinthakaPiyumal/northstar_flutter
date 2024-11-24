@@ -457,13 +457,18 @@ class ScheduleForClient extends StatelessWidget {
                       hideOnEmpty: true,
                       hideOnError: true,
                       hideOnLoading: true,
-                      textFieldConfiguration: TextFieldConfiguration(
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.search),
-                            labelText: 'Search Clients...',
-                            border: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white),
-                      ))),
+                      builder: (context, controller, focusNode){
+                        return TextField(
+                            controller: controller,
+                            focusNode: focusNode,
+                            autofocus: true,
+                            decoration: InputDecoration(
+                                prefixIcon: Icon(Icons.search),
+                                labelText: 'Search Clients...',
+                                border: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white),
+                                )));
+                      },
                       suggestionsCallback: (pattern) async {
                         print(pattern);
                         return await searchClient(pattern);
@@ -481,7 +486,7 @@ class ScheduleForClient extends StatelessWidget {
                           subtitle: Text(jsonObj['user']['email'].toString()),
                         );
                       },
-                      onSuggestionSelected: (suggestion) {
+                      onSelected: (suggestion) {
                         var jsonObj = jsonDecode(jsonEncode(suggestion));
                         selectedClient.value = jsonObj['user'];
                         print(jsonObj);

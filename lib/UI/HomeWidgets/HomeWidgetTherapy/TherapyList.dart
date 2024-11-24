@@ -61,8 +61,10 @@ class TherapyList extends StatelessWidget {
                 hideOnEmpty: true,
                 hideOnError: true,
                 hideOnLoading: true,
-                textFieldConfiguration: TextFieldConfiguration(
-                    autofocus: false,
+    builder: (context, controller, focusNode){
+    return TextField(
+    controller: controller,
+    focusNode: focusNode,
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.search,
                           color: Get.isDarkMode
@@ -73,14 +75,14 @@ class TherapyList extends StatelessWidget {
                       border: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.white),
                       ),
-                    )),
+                    ));},
                 suggestionsCallback: (pattern) async {
                   return await searchDoctors(pattern);
                 },
                 itemBuilder: (context, suggestion) {
                   return Container();
                 },
-                onSuggestionSelected: (suggestion) {},
+                onSelected: (suggestion) {},
               ),
             ),
             SizedBox(height: 20),

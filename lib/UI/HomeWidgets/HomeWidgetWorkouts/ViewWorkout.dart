@@ -19,6 +19,8 @@ class ViewWorkout extends StatelessWidget {
   final Map workoutData;
   @override
   Widget build(BuildContext context) {
+    print("view workout workoutData");
+    print(workoutData);
     RxInt pageIndex = 0.obs;
     RxBool ready = true.obs;
     RxMap workout = {}.obs;
@@ -118,7 +120,7 @@ class ViewWorkout extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        '/ 0'+ workout['steps'].toString(),
+                        '/ 0'+ workout['workout_plan'].length.toString(),
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,

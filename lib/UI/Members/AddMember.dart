@@ -10,10 +10,11 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../../Styles/TypographyStyles.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 class AddMember extends StatelessWidget {
-  AddMember({Key? key, this.extend = false,this.extendingId = 0,this.extendingEmail = ""}) : super(key: key);
+  AddMember({Key? key, this.extend = false,this.extendingId = 0,this.extendingEmail = "",this.onSuccess}) : super(key: key);
   final bool extend;
   final int extendingId;
   final String extendingEmail;
+  final VoidCallback? onSuccess;
   @override
   Widget build(BuildContext context) {
     RxBool ready = true.obs;
@@ -49,6 +50,7 @@ class AddMember extends StatelessWidget {
 
 
       if (res['code'] == 200) {
+        onSuccess?.call();
         Get.back();
         showSnack('Info', res['data']['message']);
         print(res);

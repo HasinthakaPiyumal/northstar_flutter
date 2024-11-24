@@ -50,7 +50,6 @@ class NSNotification {
   });
 
   factory NSNotification.fromJson(Map<String, dynamic> json) {
-    print("json data ${json['data'].runtimeType}");
 
     return NSNotification(
       id: json['id'],

@@ -27,10 +27,7 @@ class NotificationsController {
   static Future<bool> getNotifications() async {
     ready.value = false;
     Map res = await httpClient.getNotifications();
-    print('printing notification ${res['data']}');
     if (res['code'] == 200) {
-      print('notification loeader -->$res');
-      print(authUser.name);
       notifications.value = List<NSNotification>.from(
           res['data'].map((x) => NSNotification.fromJson(x))).toList();
       notifications.sort((a, b) => b.createdAt.compareTo(a.createdAt));

@@ -186,15 +186,18 @@ class EditMeal extends StatelessWidget {
                   hideOnEmpty: true,
                   hideOnError: true,
                   hideOnLoading: true,
-                  textFieldConfiguration: TextFieldConfiguration(
+    builder: (context, controller, focusNode){
+    return TextField(
+    controller: controller,
+    focusNode: focusNode,
+    autofocus: true,
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.search),
                         labelText: 'Search Foods...',
                         hintText: 'Start Typing to Search Foods...',
                         border: UnderlineInputBorder(),
                       )
-                  ),
-                  suggestionsBoxDecoration: SuggestionsBoxDecoration(color: Get.isDarkMode?AppColors.primary2Color:Colors.white),
+                  );},
                   suggestionsCallback: (pattern) async {
                     return await searchFoods(pattern);
                   },
@@ -206,7 +209,7 @@ class EditMeal extends StatelessWidget {
                       subtitle: Text(jsonObj['calories'].toString() + ' Cals'),
                     );
                   },
-                  onSuggestionSelected: (suggestion) {
+                  onSelected: (suggestion) {
 
                     var jsonObj = jsonDecode(jsonEncode(suggestion));
 

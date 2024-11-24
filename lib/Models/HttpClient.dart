@@ -256,7 +256,6 @@ class HttpClient {
   //GetMyProfile
   Future<Map> getMyProfile() async {
     Response response = await get('/users/me');
-    print('Printing headers ---> $headers');
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -341,9 +340,7 @@ class HttpClient {
 
   //Upload Avatar
   Future<Map> uploadAvatar(XFile avatar) async {
-    print(avatar);
     Response response = await fileUpload('/users/file-uploads/avatar', avatar);
-    print(response);
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -436,7 +433,7 @@ class HttpClient {
   Future<Map> getHomeWidgetCalories() async {
     Response response =
         await get('/fitness/' + authUser.id.toString() + '/all-macros-data');
-    print(response.data);
+    
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -764,7 +761,7 @@ class HttpClient {
             .toList();
       }
     }
-    print(response.data);
+    
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -1070,12 +1067,25 @@ class HttpClient {
   }
 
   //Workouts
-  Future<Map> addWorkout(Map data) async {
-    Response response = await post('/fitness/workouts/add-new', data);
-    return {
-      "code": response.statusCode,
-      "data": response.data,
-    };
+  Future<Map> addWorkout(Map<String,dynamic> data) async {
+    try {
+      var workouts = data['workouts'].map((item) => jsonEncode(item)).toList();
+
+      var formData = FormData.fromMap({
+      'workouts[]': workouts,
+        'trainer_id': data['trainer_id'],
+        'selecte_users[]': data['selecte_users']
+      });
+      print(formData);
+      var response = await dio.post('/fitness/workouts/add-new', data: formData);
+      print(response);
+      return {"code": response.statusCode, "data": response.data};
+    } on Exception catch (e) {
+      // TODO
+      print("==========");
+      print(e);
+      return {"code": 500, "data": e};
+    }
   }
 
   Future<Map> deleteWorkout(int id) async {
@@ -1089,7 +1099,7 @@ class HttpClient {
   //Get Workouts
   Future<Map> getWorkout() async {
     Response response =
-        await get('/fitness/workouts/${authUser.role}/${authUser.id}');
+        await get('/fitness/presets/${authUser.role}/${authUser.id}');
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -1107,7 +1117,8 @@ class HttpClient {
   }
 
   Future<Map> getWorkoutsClient(int clientID) async {
-    Response response = await get('/fitness/workouts/client/$clientID');
+    // Response response = await get('/fitness/workouts/client/$clientID');
+    Response response = await get('/fitness/presets/trainer/$clientID');
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -1786,7 +1797,7 @@ class HttpClient {
   Future<Map> getFamiliLinks(dynamic data) async {
     Response response = await post('/family-link/actions/search', data);
     print("Family link list ==");
-    print(response.data);
+    
     return {"code": response.statusCode, "data": response.data};
   }
 

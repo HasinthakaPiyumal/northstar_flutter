@@ -59,7 +59,7 @@ class AddWorkoutPreset extends StatelessWidget {
         'title': title.text,
         'description': description.text,
         'workout_id': id,
-        'day_count':days.text.isEmpty ?1:days.text
+        'day_count': workouts.length
       });
 
       if (res['code'] == 200) {
@@ -82,7 +82,7 @@ class AddWorkoutPreset extends StatelessWidget {
       if (editWorkoutObject != null) {
         title.text = editWorkoutObject['title'];
         description.text = editWorkoutObject['description'];
-        days.text = editWorkoutObject['day_count'].toString();
+        // days.text = editWorkoutObject['day_count'].toString();
         workouts.value = editWorkoutObject['workout_plan'];
       }
     }
@@ -149,19 +149,21 @@ class AddWorkoutPreset extends StatelessWidget {
                     maxLength: 250,
                     decoration: InputDecoration(labelText: 'Description'),
                   ),
-                  SizedBox(height: 25),
-                  Obx(()=> TextField(
-                      controller: days,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(labelText: 'Days'),
-                      enabled: workouts.isEmpty,
-                      onTap: (){
-                        if(workouts.isNotEmpty){
-                          showSnack("Can't edit days count", "You can not edit when workout created. Please clear workouts to edit day count");
-                        }
-                      },
-                    ),
-                  ),
+                  // SizedBox(height: 25),
+                  // Obx(
+                  //   () => TextField(
+                  //     controller: days,
+                  //     keyboardType: TextInputType.number,
+                  //     decoration: InputDecoration(labelText: 'Days'),
+                  //     enabled: workouts.isEmpty,
+                  //     onTap: () {
+                  //       if (workouts.isNotEmpty) {
+                  //         showSnack("Can't edit days count",
+                  //             "You can not edit when workout created. Please clear workouts to edit day count");
+                  //       }
+                  //     },
+                  //   ),
+                  // ),
                   SizedBox(height: 25),
                   Row(
                     children: [
@@ -181,13 +183,17 @@ class AddWorkoutPreset extends StatelessWidget {
                     hideOnEmpty: true,
                     hideOnError: true,
                     hideOnLoading: true,
-                    textFieldConfiguration: TextFieldConfiguration(
-                        decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.search),
-                      labelText: 'Search Workouts...',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0)),
-                    )),
+                    builder: (context, controller, focusNode) {
+                      return TextField(
+                          controller: controller,
+                          focusNode: focusNode,
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(Icons.search),
+                            labelText: 'Search Workouts...',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0)),
+                          ));
+                    },
                     suggestionsCallback: (pattern) async {
                       return await searchWorkouts(pattern);
                     },
@@ -215,7 +221,7 @@ class AddWorkoutPreset extends StatelessWidget {
                         ),
                       );
                     },
-                    onSuggestionSelected: (suggestion) {
+                    onSelected: (suggestion) {
                       var jsonObj = jsonDecode(jsonEncode(suggestion));
                       var already = workouts.firstWhereOrNull(
                           (element) => element['id'] == jsonObj['id']);
@@ -242,172 +248,210 @@ class AddWorkoutPreset extends StatelessWidget {
                         physics: NeverScrollableScrollPhysics(),
                         itemCount: workouts.length,
                         itemBuilder: (context, index) {
+                          RxBool isExpanded = false.obs;
+                          void onChangeExpansion(val){
+                              isExpanded.value = val;
+                          }
                           return Padding(
                             padding: EdgeInsets.only(top: 10),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  color: Get.isDarkMode
-                                      ? AppColors.primary2Color
-                                      : colors.Colors().selectedCardBG,
-                                  borderRadius: BorderRadius.circular(8)),
-                              child: Column(
-                                children: [
-                                  SizedBox(height: 8),
-                                  ListTile(
-                                    leading: ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: CachedNetworkImage(
-                                        imageUrl:
-                                            HttpClient.s3ResourcesBaseUrl +
-                                                workouts[index]
-                                                    ['preview_animation_url'],
-                                        placeholder: (context, url) =>
-                                            CircularProgressIndicator(),
-                                      ),
-                                    ),
-                                    title: Text(
-                                      workouts[index]['title'],
-                                      style: TypographyStyles.title(16),
-                                    ),
-                                    trailing: IconButton(
-                                      icon: Icon(Icons.highlight_remove_rounded,
-                                          color: Colors.red),
-                                      onPressed: () {
-                                        workouts.removeAt(index);
-                                      },
-                                    ),
-                                  ),
-                                  SizedBox(height: 8),
-                                  Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 15),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        SizedBox(width: 4),
-                                        Expanded(
-                                          child: TextField(
-                                            controller: TextEditingController(
-                                                text: workouts[index]
-                                                        ['repetitions']
-                                                    .toString()),
-                                            keyboardType: TextInputType.number,
-                                            onChanged: (newValue) {
-                                              workouts[index]['repetitions'] =
-                                                  int.parse(newValue);
-                                            },
-                                            cursorColor: Colors.black,
-                                            decoration: InputDecoration(
-                                              border: UnderlineInputBorder(),
-                                              contentPadding:
-                                                  EdgeInsets.symmetric(
-                                                      horizontal: 10),
-                                              labelText: 'Reps',
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(width: 20),
-                                        Expanded(
-                                          child: TextField(
-                                            controller: TextEditingController(
-                                                text: checkNullGetOne(
-                                                    workouts[index]['weight']
-                                                        .toString())),
-                                            keyboardType:
-                                                TextInputType.numberWithOptions(
-                                              decimal: true,
-                                            ),
-                                            onChanged: (newValue) {
-                                              workouts[index]['weight'] =
-                                                  double.parse(newValue);
-                                            },
-                                            decoration: InputDecoration(
-                                              border: UnderlineInputBorder(),
-                                              contentPadding:
-                                                  EdgeInsets.symmetric(
-                                                      horizontal: 10),
-                                              labelText: 'Weight (kg)',
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(width: 20),
-                                        Expanded(
-                                          child: TextField(
-                                            controller: TextEditingController(
-                                                text: checkNullGetOne(
-                                                    workouts[index]['sets']
-                                                        .toString())),
-                                            keyboardType: TextInputType.number,
-                                            onChanged: (newValue) {
-                                              workouts[index]['sets'] =
-                                                  int.parse(newValue);
-                                            },
-                                            decoration: InputDecoration(
-                                              border: UnderlineInputBorder(),
-                                              contentPadding:
-                                                  EdgeInsets.symmetric(
-                                                      horizontal: 10),
-                                              labelText: 'Sets',
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(width: 4),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(height: 4),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 15.0, vertical: 10),
-                                    child: TextField(
-                                      controller: TextEditingController(
-                                          text:
-                                              workouts[index]['notes'] ?? '1'),
-                                      onChanged: (newValue) {
-                                        workouts[index]['notes'] = newValue;
-                                      },
-                                      decoration: InputDecoration(
-                                        border: UnderlineInputBorder(),
-                                        contentPadding: EdgeInsets.symmetric(
-                                            horizontal: 10, vertical: 8),
-                                        labelText: 'Notes',
-                                      ),
-                                    ),
-                                  ), Container(
-                                    decoration: BoxDecoration(
+                            child: ExpansionTile(
+                              onExpansionChanged: onChangeExpansion,
+                              showTrailingIcon: false,
+                              collapsedBackgroundColor:Colors.transparent,
+                              backgroundColor: Get.isDarkMode
+                                  ? AppColors.primary2Color
+                                  : Colors.white,
+                              collapsedIconColor: AppColors.textOnAccentColor,
+                              iconColor: AppColors.textOnAccentColor,
+                              tilePadding: EdgeInsets.zero,
+                              title: Container(
+                                  padding: EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
                                       color: AppColors.accentColor,
-                                      borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10),bottomRight: Radius.circular(10))
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(workouts[index]['title'],
+                                          textAlign: TextAlign.center,
+                                          style: TypographyStyles.title(18)
+                                              .copyWith(
+                                                  color: AppColors
+                                                      .textOnAccentColor)),
+                                      Obx(()=> Icon(isExpanded.value?Icons.keyboard_arrow_up_rounded:Icons.keyboard_arrow_down_rounded))
+                                    ],
+                                  )),
+                              children: [
+                                SizedBox(height: 8),
+                                ListTile(
+                                  leading: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: CachedNetworkImage(
+                                      imageUrl: HttpClient.s3ResourcesBaseUrl +
+                                          workouts[index]
+                                              ['preview_animation_url'],
+                                      placeholder: (context, url) =>
+                                          CircularProgressIndicator(),
                                     ),
-                                    child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 15.0, vertical: 10),
-                                        child: Row(
-                                          children: [
-                                            Text("Day: ",style: TypographyStyles.title(16).copyWith(color: AppColors.textOnAccentColor),),
-                                            SizedBox(width: 20,),
-                                            Expanded(
-                                              child: DropdownButtonWithBorder(
-                                                items: List.generate(int.parse(days.text.isEmpty? '1':days.text), (index) => (index+1).toString()),
-                                                selectedValue: workouts[index]['day'].toString(),
-                                                onChanged: (String val) {
-                                                  print("printing date ${val}");
-                                                  workouts[index]['day'] =
-                                                      int.parse(val);
-                                                },
-                                                color: AppColors.textOnAccentColor,
-                                                backgroundColor: Colors.white,
-                                                width: Get.width,
-                                              ),
-                                            ),
-                                          ],
+                                  ),
+                                  title: Text(
+                                    workouts[index]['title'],
+                                    style: TypographyStyles.title(16),
+                                  ),
+                                  trailing: IconButton(
+                                    icon: Icon(Icons.highlight_remove_rounded,
+                                        color: Colors.red),
+                                    onPressed: () {
+                                      workouts.removeAt(index);
+                                    },
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 15),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SizedBox(width: 4),
+                                      Expanded(
+                                        child: TextField(
+                                          controller: TextEditingController(
+                                              text: workouts[index]
+                                                      ['repetitions']
+                                                  .toString()),
+                                          keyboardType: TextInputType.number,
+                                          onChanged: (newValue) {
+                                            workouts[index]['repetitions'] =
+                                                int.parse(newValue);
+                                          },
+                                          cursorColor: Colors.black,
+                                          decoration: InputDecoration(
+                                            border: UnderlineInputBorder(),
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                    horizontal: 10),
+                                            labelText: 'Reps',
+                                          ),
                                         ),
                                       ),
+                                      SizedBox(width: 20),
+                                      Expanded(
+                                        child: TextField(
+                                          controller: TextEditingController(
+                                              text: checkNullGetOne(
+                                                  workouts[index]['weight']
+                                                      .toString())),
+                                          keyboardType:
+                                              TextInputType.numberWithOptions(
+                                            decimal: true,
+                                          ),
+                                          onChanged: (newValue) {
+                                            workouts[index]['weight'] =
+                                                double.parse(newValue);
+                                          },
+                                          decoration: InputDecoration(
+                                            border: UnderlineInputBorder(),
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                    horizontal: 10),
+                                            labelText: 'Weight (kg)',
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: 20),
+                                      Expanded(
+                                        child: TextField(
+                                          controller: TextEditingController(
+                                              text: checkNullGetOne(
+                                                  workouts[index]['sets']
+                                                      .toString())),
+                                          keyboardType: TextInputType.number,
+                                          onChanged: (newValue) {
+                                            workouts[index]['sets'] =
+                                                int.parse(newValue);
+                                          },
+                                          decoration: InputDecoration(
+                                            border: UnderlineInputBorder(),
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                    horizontal: 10),
+                                            labelText: 'Sets',
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: 4),
+                                    ],
                                   ),
-
-                                  SizedBox(height: 4),
-                                ],
-                              ),
+                                ),
+                                SizedBox(height: 4),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15.0, vertical: 10),
+                                  child: TextField(
+                                    controller: TextEditingController(
+                                        text: workouts[index]['notes'] ?? '1'),
+                                    onChanged: (newValue) {
+                                      workouts[index]['notes'] = newValue;
+                                    },
+                                    decoration: InputDecoration(
+                                      border: UnderlineInputBorder(),
+                                      contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 10, vertical: 8),
+                                      labelText: 'Notes',
+                                    ),
+                                  ),
+                                ),
+                                // Container(
+                                //   decoration: BoxDecoration(
+                                //       color: AppColors.accentColor,
+                                //       borderRadius: BorderRadius.only(
+                                //           bottomLeft: Radius.circular(10),
+                                //           bottomRight: Radius.circular(10))),
+                                //   child: Padding(
+                                //     padding: const EdgeInsets.symmetric(
+                                //         horizontal: 15.0, vertical: 10),
+                                //     child: Row(
+                                //       children: [
+                                //         Text(
+                                //           "Day: ",
+                                //           style: TypographyStyles.title(16)
+                                //               .copyWith(
+                                //                   color: AppColors
+                                //                       .textOnAccentColor),
+                                //         ),
+                                //         SizedBox(
+                                //           width: 20,
+                                //         ),
+                                //         // Expanded(
+                                //         //   child: DropdownButtonWithBorder(
+                                //         //     items: List.generate(
+                                //         //         int.parse(days.text.isEmpty
+                                //         //             ? '1'
+                                //         //             : days.text),
+                                //         //         (index) =>
+                                //         //             (index + 1).toString()),
+                                //         //     selectedValue: workouts[index]
+                                //         //             ['day']
+                                //         //         .toString(),
+                                //         //     onChanged: (String val) {
+                                //         //       print("printing date ${val}");
+                                //         //       workouts[index]['day'] =
+                                //         //           int.parse(val);
+                                //         //     },
+                                //         //     color:
+                                //         //         AppColors.textOnAccentColor,
+                                //         //     backgroundColor: Colors.white,
+                                //         //     width: Get.width,
+                                //         //   ),
+                                //         // ),
+                                //       ],
+                                //     ),
+                                //   ),
+                                // ),
+                                SizedBox(height: 4),
+                              ],
                             ),
                           );
                         },

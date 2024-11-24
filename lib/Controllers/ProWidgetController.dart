@@ -21,8 +21,6 @@ class ProWidgetController{
     Map data = await httpClient.getProWidgets();
     if(data['code']==200){
       list = data['data'];
-      print('pro widget list');
-      print(list);
     }
   }
 }

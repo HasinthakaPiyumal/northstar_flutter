@@ -19,8 +19,6 @@ class AuthUser {
   late Map user;
 
   void _setUser(Map<String, dynamic> userObj) {
-    print('====userObj');
-    print(userObj);
     id = userObj['id'];
     name = userObj['name'];
     email = userObj['email'];
@@ -93,7 +91,6 @@ class AuthUser {
         },
         events: ZegoUIKitPrebuiltCallEvents(
           onCallEnd: (ZegoCallEndEvent event, VoidCallback defaultAction) {
-            print('Call ended with reason: ${event.reason}');
             if (ZegoCloudController.isOutgoing) {
               int duration = DateTime.now()
                   .difference(ZegoCloudController.timeStamp)
@@ -118,8 +115,6 @@ class AuthUser {
             onIncomingCallAcceptButtonPressed: () {
           ZegoCloudController.isOutgoing = false;
         }, onOutgoingCallAccepted: (callId, ZegoCallUser user) async {
-          print("======================");
-          print("onOutgoingCallAccepted");
           ZegoCloudController.isOutgoing = true;
           ZegoCloudController.timeStamp = DateTime.now();
           ZegoCloudController.calleeId = int.parse(user.id);
@@ -151,13 +146,11 @@ class AuthUser {
         })
         // uiConfig:
         );
-    print('Initialized zego cloud signaling');
   }
 
   Future<bool> saveUser(Map<String, dynamic> user) async {
     _setUser(user);
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    print('Saving user printing-->$user');
     await prefs.setString('user', jsonEncode(user));
     return true;
   }
@@ -175,8 +168,6 @@ class AuthUser {
 
     if (res['code'] == 200) {
       Map<String, dynamic> userData = res['data']['user'];
-      print("====userData");
-      print(userData);
       authUser.saveUser(userData);
     }
   }

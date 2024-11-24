@@ -1,140 +1,119 @@
 import 'dart:convert';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
-import 'package:north_star/Models/NSNotification.dart';
-import 'package:north_star/Plugins/Utils.dart';
 import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/ButtonStyles.dart';
-import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
-import 'package:north_star/Utils/CustomColors.dart' as colors;
+import 'package:north_star/UI/HomeWidgets/HomeWidgetWorkouts/WorkoutAddMemberSelection.dart';
+import 'package:north_star/UI/SharedWidgets/CommonConfirmDialog.dart';
 import 'package:north_star/Utils/PopUps.dart';
+import 'package:north_star/components/Buttons.dart';
+import 'package:north_star/components/MaterialBottomSheet.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class AddWorkouts extends StatelessWidget {
-  const AddWorkouts(
-      {Key? key, required this.workoutList, required this.workoutID})
+  AddWorkouts({Key? key, required this.workoutList, required this.workoutID})
       : super(key: key);
 
   final List workoutList;
   final int workoutID;
 
+  Rxn<DateTime> selectedStartDate = Rxn<DateTime>();
+  Rxn<DateTime> selectedEndDate = Rxn<DateTime>();
+
+  RxList presetCalender = [].obs;
+  bool isDateSettedProgrammatically = false;
+
+  final DateRangePickerController _controller = DateRangePickerController();
+
   @override
   Widget build(BuildContext context) {
-    RxList workoutPlan = [].obs;
-    String title = '';
-    String description = '';
-    int days = 0;
-    String lastUpdatedDate = '';
-    RxList selectedUsers = authUser.role == 'client' ? [authUser].obs : [].obs;
-    RxBool ready = false.obs;
-
-    Future<List> searchWorkoutPresets(pattern) async {
-      Map res = await httpClient.searchWorkoutPresets(pattern);
-
-      if (res['code'] == 200) {
-        return res['data'];
-      } else {
-        print(res['data']);
-        return [];
+    void preparePresetCalender() {
+      print(selectedStartDate.value == null || selectedEndDate.value == null);
+      print(selectedStartDate.value);
+      print(selectedEndDate.value);
+      if (selectedStartDate.value == null || selectedEndDate.value == null) {
+        return;
       }
-    }
+      DateTime currentDate = selectedStartDate.value!;
 
-    Future<List> searchClient(pattern) async {
-      Map res = await httpClient.searchMembers(pattern,onlyPrimary: true);
-      if (res['code'] == 200) {
-        return res['data'];
-      } else {
-        print(res['data']);
-        return [];
-      }
-    }
+      presetCalender.clear();
 
-    void saveWorkout() async {
-      ready.value = false;
-      bool success = false;
-      for (Map element in selectedUsers) {
-        Map res = await httpClient.addWorkout({
-          'workout_id': workoutID.toString(),
-          'workouts': json.encode(workoutPlan),
-          'count': workoutPlan.length.toString(),
-          'client_name': element['name'].toString(),
-          'client_email': element['email'].toString(),
-          'user_id': element['id'],
-          'trainer_id': authUser.id,
-          'title': title,
-          'description': description,
-          'day_count':days
+      while (currentDate.isBefore(selectedEndDate.value!) ||
+          currentDate.isAtSameMomentAs(selectedEndDate.value!)) {
+        presetCalender.add({
+          'date': currentDate.toIso8601String(),
+          'presets': null,
+          'presetTitle': null,
+          'presetDescription': null,
+          'isRestDate': null,
         });
 
-        if (res['code'] == 200) {
-          print(res['data']);
-          success = true;
-        } else {
-          print(res['data']);
-          showSnack("Something went wrong", res['data']['error']);
-          return;
-        }
-
-        httpClient.sendNotification(
-            element['id'],
-            'New Workout Schedule Assigned!',
-            'You have a new workout schedule assigned to you!',
-            NSNotificationTypes.WorkoutsAssigned, {});
-      }
-
-      if (success) {
-        Get.back();
-        showSnack('Success!', 'Schedule has been added.');
-        ready.value = true;
-      } else {
-        ready.value = true;
+        currentDate = currentDate.add(Duration(days: 1));
       }
     }
 
-    void addToMe() async {
-      ready.value = false;
-      bool success = false;
+    void setPresetDate({
+      required dynamic date,
+      String? title,
+      String? description,
+      List? presets,
+    }) {
+      // Determine if it's a rest date
+      bool isRestDate =
+          (title == null && description == null && presets == null)
+              ? true
+              : false;
+      date = DateTime.parse(date);
+      // Find the index of the date in presetCalender
+      int index = presetCalender.indexWhere(
+          (element) => DateTime.parse(element['date']).isAtSameMomentAs(date));
 
-      Map res = await httpClient.addWorkout({
-        'workout_id': workoutID.toString(),
-        'workouts': json.encode(workoutPlan),
-        'count': workoutPlan.length.toString(),
-        'client_name': authUser.name.toString(),
-        'client_email': authUser.email.toString(),
-        'user_id': authUser.id,
-        'trainer_id': authUser.id,
-        'title': title,
-        'description': description,
-        'day_count':days
-      });
-
-      if (res['code'] == 200) {
-        print('httpClient.addWorkout');
-        print(res['data']);
-        success = true;
+      if (index != -1) {
+        // If the date exists, update its properties
+        presetCalender[index] = {
+          'date': date.toIso8601String(),
+          'presets': presets,
+          'presetTitle': title,
+          'presetDescription': description,
+          'isRestDate': isRestDate,
+        };
       } else {
-        print(res['data']);
+        // If the date does not exist, add a new entry
+        presetCalender.add({
+          'date': date.toIso8601String(),
+          'presets': presets,
+          'presetTitle': title,
+          'presetDescription': description,
+          'isRestDate': isRestDate,
+        });
       }
+    }
 
-      httpClient.sendNotification(
-          authUser.id,
-          'New Workout Schedule Assigned!',
-          'You have a new workout schedule assigned to you!',
-          NSNotificationTypes.WorkoutsAssigned, {});
-
-      if (success) {
-        Get.back();
-        showSnack('Success!', 'Schedule has been added.');
-        ready.value = true;
-      } else {
-        ready.value = true;
-      }
+    void openPresetPane(date) {
+      print(date);
+      MaterialBottomSheet(
+          DateFormat('MMMM d, yyyy').format(DateTime.parse(date['date'])),
+          child: WorkoutPresetPicker(
+            prevPresets: date['presets'] ?? [],
+            onPick: ({
+              required presets,
+              required description,
+              required title,
+            }) {
+              setPresetDate(
+                  date: date['date'],
+                  title: title,
+                  presets: presets,
+                  description: description);
+            },
+          ));
     }
 
     return Scaffold(
@@ -146,311 +125,228 @@ class AddWorkouts extends StatelessWidget {
           style: TypographyStyles.title(20),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
-        child: ListView(
-          //crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Workout Preset',
-                    style: TypographyStyles.boldText(
-                      16,
-                      Get.isDarkMode
-                          ? Themes.mainThemeColorAccent.shade500
-                          : colors.Colors().lightBlack(1),
-                    )),
-                Obx(
-                  () => Visibility(
-                    child: InkWell(
-                      onTap: () {
-                        workoutPlan.clear();
-                      },
-                      child: Text(
-                        "Clear",
-                        style: TypographyStyles.boldText(
-                            16, Themes.mainThemeColor.shade500),
-                      ),
-                    ),
-                    visible: workoutPlan.isNotEmpty,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            Obx(() => workoutPlan.isNotEmpty
-                ? Container(
-                    padding: EdgeInsets.fromLTRB(15, 8, 8, 8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: Get.isDarkMode
-                          ? colors.Colors().deepGrey(1)
-                          : colors.Colors().selectedCardBG,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                title,
-                                style: TypographyStyles.boldText(
-                                    16,
-                                    Get.isDarkMode
-                                        ? Themes.mainThemeColorAccent.shade100
-                                        : colors.Colors().lightBlack(1)),
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                "Last Edit - " +
-                                    (DateFormat("dd/MM/yyyy HH:mm").format(
-                                            DateTime.parse(Utils.dateFormat(
-                                                lastUpdatedDate))))
-                                        .toString(),
-                                style: TypographyStyles.normalText(
-                                    14,
-                                    Get.isDarkMode
-                                        ? Themes.mainThemeColorAccent.shade500
-                                        : colors.Colors().deepGrey(1)),
-                              ),
-                            ]),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: SizedBox(
-                            height: 80,
-                            width: 80,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Workouts',
-                                  style: TypographyStyles.boldText(
-                                      12, Themes.mainThemeColorAccent.shade100),
-                                ),
-                                SizedBox(
-                                  height: 7,
-                                ),
-                                Text(
-                                  '${NumberFormat('00').format(workoutPlan.length)}',
-                                  style: TypographyStyles.boldText(
-                                      20, Themes.mainThemeColorAccent.shade100),
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  )
-                : TypeAheadField(
-                    hideOnEmpty: true,
-                    hideOnError: true,
-                    hideOnLoading: true,
-                    textFieldConfiguration: TextFieldConfiguration(
-                        decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.search),
-                      labelText: 'Search Workout Presets...',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0)),
-                    )),
-                    suggestionsCallback: (pattern) async {
-                      print(pattern);
-                      return await searchWorkoutPresets(pattern);
-                    },
-                    itemBuilder: (context, suggestion) {
-                      var jsonObj = jsonDecode(jsonEncode(suggestion));
+      body: SingleChildScrollView(
+        child: Container(
+          margin: EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Select Date Range',
+                style: TypographyStyles.title(18),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                padding: EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Get.isDarkMode
+                        ? AppColors.primary2Color
+                        : AppColors.primary2ColorLight),
+                child: SfDateRangePicker(
+                  controller: _controller,
+                  initialSelectedRange: null,
+                  minDate: DateTime.now(),
+                  // ca
+                  onSelectionChanged:
+                      (DateRangePickerSelectionChangedArgs args) async {
 
-                      return Container(
-                        height: 96,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: ListTile(
-                                tileColor: Colors.transparent,
-                                title: Text(jsonObj['title']),
-                                subtitle: Text(jsonObj['description']),
-                              ),
-                            )
-                          ],
-                        ),
-                      );
-                    },
-                    onSuggestionSelected: (suggestion) {
-                      Map jsonObj = jsonDecode(jsonEncode(suggestion));
-                      print(jsonObj);
-                      title = jsonObj['title'];
-                      description = jsonObj['description'];
-                      days = jsonObj['day_count'];
-                      lastUpdatedDate = jsonObj['updated_at'];
-                      List workouts = jsonObj['workout_plan'];
-                      workouts.forEach((element) {
-                        element['repetitions'] = 1;
-                        element['has_completed'] = false;
+                    if (!isDateSettedProgrammatically) {
+
+                      bool canSetCalender = true;
+                      presetCalender.forEach((currentPreset) {
+                        if (currentPreset['presets'] != null ||
+                            currentPreset['isRestDate'] != null) {
+                          canSetCalender = false;
+                        }
                       });
-                      workoutPlan.value = workouts;
-                    },
-                  )),
-            SizedBox(
-              height: 25,
-            ),
-            Visibility(
-                visible: authUser.role == 'trainer',
-                child: Text('Add Member',
-                    style: TypographyStyles.boldText(
-                      16,
-                      Get.isDarkMode
-                          ? Themes.mainThemeColorAccent.shade500
-                          : colors.Colors().lightBlack(1),
-                    ))),
-            Visibility(
-                visible: authUser.role == 'trainer',
-                child: SizedBox(height: 16)),
-            authUser.role == 'trainer'
-                ? TypeAheadField(
-                    hideOnEmpty: true,
-                    hideOnError: true,
-                    hideOnLoading: true,
-                    textFieldConfiguration: TextFieldConfiguration(
-                        decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.search),
-                      labelText: 'Search Members...',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0)),
-                    )),
-                    suggestionsCallback: (pattern) async {
-                      print(pattern);
-                      return await searchClient(pattern);
-                    },
-                    itemBuilder: (context, suggestion) {
-                      var jsonObj = jsonDecode(jsonEncode(suggestion));
-
-                      return Container(
-                        padding: const EdgeInsets.all(8),
-                        height: 64,
-                        child: Row(
-                          children: [
-                            CircleAvatar(
-                                backgroundImage: CachedNetworkImageProvider(
-                              HttpClient.s3BaseUrl +
-                                  jsonObj['user']['avatar_url'],
-                            )),
-                            Expanded(
-                              child: ListTile(
-                                tileColor: Colors.transparent,
-                                title: Text(jsonObj['user']['name']),
-                                // subtitle: Text(jsonObj['calories'].toString() + ' Cals'),
-                              ),
-                            )
-                          ],
-                        ),
-                      );
-                    },
-                    onSuggestionSelected: (suggestion) {
-                      var jsonObj = jsonDecode(jsonEncode(suggestion));
-                      var doesExist = selectedUsers.firstWhereOrNull(
-                          (element) => element['id'] == jsonObj['user_id']);
-                      if (doesExist == null) {
-                        print(jsonObj['user']);
-                        selectedUsers.add(jsonObj['user']);
-                      } else {
-                        showSnack(
-                            'User Already Selected', 'User already selected');
+                      if (!canSetCalender) {
+                        canSetCalender = await CommonConfirmDialog.confirm(
+                            "Yes",
+                            message:
+                                'Are you sure you want to clear all current calendar dates and set new dates?');
                       }
-                    },
-                  )
-                : SizedBox(),
-            SizedBox(height: 16),
-            Visibility(
-              visible: authUser.role == 'trainer',
-              child: Obx(() => ListView.builder(
+
+                      if (canSetCalender) {
+                        if (args.value is PickerDateRange) {
+                          print("=======args");
+                          print(args);
+                          print(canSetCalender);
+                          selectedStartDate.value =
+                              args.value.startDate ?? DateTime.now();
+                          selectedEndDate.value =
+                              args.value.endDate ?? args.value.startDate ??DateTime.now();
+                        }
+                        preparePresetCalender();
+                      } else {
+                        isDateSettedProgrammatically = true;
+                        _controller.selectedRange = PickerDateRange(
+                          selectedStartDate.value,
+                          selectedEndDate.value,
+                        );
+                      }
+                    }else{
+                      isDateSettedProgrammatically = false;
+                    }
+                  },
+
+                  monthCellStyle: DateRangePickerMonthCellStyle(
+                    textStyle: TypographyStyles.text(16),
+                    disabledDatesTextStyle: TypographyStyles.text(16),
+                    todayTextStyle:
+                        TypographyStyles.normalText(16, AppColors.accentColor),
+                  ),
+                  selectionMode: DateRangePickerSelectionMode.extendableRange,
+                  headerStyle: DateRangePickerHeaderStyle(
+                    backgroundColor: Colors.transparent,
+                    textStyle: TypographyStyles.boldText(
+                      20,
+                      Get.isDarkMode ? Colors.white : Colors.black,
+                    ),
+                  ),
+                  showNavigationArrow: true,
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Text(
+                'Add Preset Calender',
+                style: TypographyStyles.title(18),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Obx(
+                () => ListView.builder(
+                    itemCount: presetCalender.length,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: selectedUsers.length,
                     itemBuilder: (context, index) {
-                      return Padding(
-                        padding: EdgeInsets.only(bottom: 10),
+                      dynamic date = presetCalender[index];
+                      return GestureDetector(
+                        onTap: () {
+                          openPresetPane(date);
+                        },
                         child: Container(
+                          margin: EdgeInsets.only(bottom: 20),
+                          padding: EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(10),
                             color: Get.isDarkMode
-                                ? Colors.black
-                                : colors.Colors().selectedCardBG,
+                                ? AppColors.primary2Color
+                                : AppColors.primary2ColorLight,
                           ),
-                          padding: EdgeInsets.symmetric(
-                              vertical: 15, horizontal: 15),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  CircleAvatar(
-                                    backgroundImage: CachedNetworkImageProvider(
-                                      HttpClient.s3BaseUrl +
-                                          selectedUsers[index]['avatar_url'],
+                          child: Row(children: [
+                            Container(
+                              height: 54,
+                              width: 68,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: date['presets'] != null
+                                      ? AppColors.accentColor
+                                      : AppColors.blue),
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      DateFormat.MMM()
+                                          .format(DateTime.parse(date['date']))
+                                          .toString(),
+                                      textAlign: TextAlign.center,
+                                      style: TypographyStyles.text(16).copyWith(
+                                        color: AppColors.textOnAccentColor,
+                                        height: 1.25,
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: 15,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        selectedUsers[index]['name'],
-                                        style: TypographyStyles.boldText(
-                                            16,
-                                            Get.isDarkMode
-                                                ? Themes.mainThemeColorAccent
-                                                    .shade100
-                                                : colors.Colors()
-                                                    .lightBlack(1)),
-                                      ),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text(
-                                        selectedUsers[index]['email'],
-                                        style: TypographyStyles.normalText(
-                                            14,
-                                            Get.isDarkMode
-                                                ? Themes.mainThemeColorAccent
-                                                    .shade300
-                                                : colors.Colors()
-                                                    .lightBlack(1)),
-                                      ),
-                                    ],
-                                  ),
+                                    Text(
+                                      DateTime.parse(date['date'])
+                                          .day
+                                          .toString(),
+                                      textAlign: TextAlign.center,
+                                      style: TypographyStyles.title(18)
+                                          .copyWith(
+                                              color:
+                                                  AppColors.textOnAccentColor,
+                                              height: 1.25),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                      date['presetTitle'] != null
+                                          ? date['presetTitle']
+                                          : date['isRestDate'] != null
+                                              ? date['isRestDate']
+                                                  ? 'Rest Day'
+                                                  : 'Empty for now'
+                                              : 'Empty for now',
+                                      style: TypographyStyles.text(18),
+                                      overflow: TextOverflow.ellipsis),
+                                  Visibility(
+                                      visible:
+                                          date['presetDescription'] != null,
+                                      child: Text(
+                                          date['presetDescription'] ?? '-',
+                                          style: TypographyStyles.text(14),
+                                          overflow: TextOverflow.ellipsis))
                                 ],
                               ),
-                              IconButton(
+                            ),
+                            Buttons.iconButton(
+                                icon: Icons.add,
+                                iconColor: AppColors.textOnAccentColor,
+                                iconSize: 24,
+                                padding: 4,
+                                backgroundColor: date['presets'] != null
+                                    ? AppColors.accentColor
+                                    : AppColors.blue,
                                 onPressed: () {
-                                  selectedUsers.removeAt(index);
-                                },
-                                icon: Icon(Icons.close),
+                                  openPresetPane(date);
+                                }),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                CommonConfirmDialog.confirm('Make Rest Day')
+                                    .then((value) {
+                                  if (value) {
+                                    setPresetDate(date: date['date']);
+                                  }
+                                });
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: date['isRestDate'] != null &&
+                                          date['isRestDate']
+                                      ? AppColors.accentColor
+                                      : AppColors.blue,
+                                ),
+                                padding: EdgeInsets.all(10),
+                                child: SvgPicture.asset("assets/svgs/zzz.svg"),
                               ),
-                            ],
-                          ),
+                            )
+                          ]),
                         ),
                       );
-                    },
-                  )),
-            ),
-          ],
+                    }),
+              )
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: Container(
@@ -481,21 +377,252 @@ class AddWorkouts extends StatelessWidget {
               ],
             ),
             onPressed: () {
-              print(selectedUsers);
-              if (workoutPlan.length > 0 && selectedUsers.length > 0) {
-                if (authUser.role == 'client') {
-                  addToMe();
-                } else {
-                  saveWorkout();
-                }
-              } else {
+              if (presetCalender.length>0) {
+                bool canGoFurther = true;
+                presetCalender.forEach((currentPreset) {
+                  if (currentPreset['presets'] == null &&
+                      currentPreset['isRestDate'] == null) {
+                    canGoFurther = false;
+                  }
+                });
+                if(canGoFurther) {
+                  Get.to(() => WorkoutAddMemberSelection(
+                      presetCalender: presetCalender));
+                }else{
                 showSnack(
-                    'Workouts List Empty', 'Please add workouts to continue');
+                    'Empty days', 'Please assign either a rest day or a workout day to all days.',status: PopupNotificationStatus.warning);
+              }
+              }else{
+                showSnack(
+                    'Preset Calendar Empty', 'Please add Presets to continue',status: PopupNotificationStatus.warning);
               }
             },
           ),
         ),
       ),
+    );
+  }
+}
+
+class WorkoutPresetPicker extends StatelessWidget {
+  WorkoutPresetPicker({required this.onPick, required this.prevPresets});
+  final Function onPick;
+  final List prevPresets;
+
+  RxList presets = [].obs;
+  bool isSetPresets = false;
+  @override
+  Widget build(BuildContext context) {
+    if (!isSetPresets) {
+      presets.addAll(prevPresets);
+      isSetPresets = true;
+    }
+
+    final double totalHeight = context.mediaQuerySize.height;
+    final double keyboardHeight = context.mediaQueryViewInsets.bottom;
+    final double availableHeight = totalHeight - keyboardHeight;
+
+    Future<List> searchWorkoutPresets(pattern) async {
+      Map res = await httpClient.searchWorkoutPresets(pattern);
+      if (res['code'] == 200) {
+        return res['data'];
+      } else {
+        print(res['data']);
+        return [];
+      }
+    }
+
+    return Container(
+      height: availableHeight - 200,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        TypeAheadField(
+          hideOnEmpty: true,
+          hideOnError: true,
+          hideOnLoading: true,
+          builder: (context, controller, focusNode) {
+            return TextField(
+                controller: controller,
+                focusNode: focusNode,
+                decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.search),
+                  labelText: 'Search Workout Presets...',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0)),
+                ));
+          },
+          suggestionsCallback: (pattern) async {
+            print(pattern);
+            return await searchWorkoutPresets(pattern);
+          },
+          itemBuilder: (context, suggestion) {
+            var jsonObj = jsonDecode(jsonEncode(suggestion));
+
+            return Container(
+              height: 96,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ListTile(
+                      tileColor: Colors.transparent,
+                      title: Text(jsonObj['title']),
+                      subtitle: Text(jsonObj['description']),
+                    ),
+                  )
+                ],
+              ),
+            );
+          },
+          onSelected: (suggestion) {
+            print(suggestion);
+            Map jsonObj = jsonDecode(jsonEncode(suggestion));
+            Map preset = {};
+            preset['title'] = jsonObj['title'];
+            preset['description'] = jsonObj['description'];
+            preset['presetId'] = jsonObj['id'];
+            preset['workout_count'] = jsonObj['workout_plan'].length;
+            var doesExist = presets.firstWhereOrNull(
+                (element) => element['presetId'] == jsonObj['id']);
+            if (doesExist == null) {
+              print(presets);
+              presets.add(preset);
+              print(presets);
+            } else {
+              showSnack('Invalid preset', 'This preset already exist.');
+            }
+          },
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        Obx(() => Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  presets.isEmpty ? 'No Preset Selected Yet' : 'Added Preset',
+                  style: TypographyStyles.text(16),
+                ),
+                TextButton(
+                    child: Text(
+                      'Clear',
+                    ),
+                    onPressed: () {
+                      CommonConfirmDialog.confirm('clear presets')
+                          .then((value) {
+                        if (value) {
+                          presets.clear();
+                        }
+                      });
+                    })
+              ],
+            )),
+        SizedBox(
+          height: 10,
+        ),
+        Expanded(
+          child: SingleChildScrollView(
+            child: Obx(
+              () => Visibility(
+                  visible: presets.isNotEmpty,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: presets.length,
+                    itemBuilder: (context, index) {
+                      Map preset = presets[index];
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 10),
+                        width: Get.width - 35,
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            color: Get.isDarkMode
+                                ? AppColors.primary1Color
+                                : Colors.white,
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${preset['title']}',
+                                    style: TypographyStyles.title(18),
+                                  ),
+                                  Text(
+                                    '${preset['description']}',
+                                    style: TypographyStyles.text(16),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: AppColors.greenAccent),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    'Workout',
+                                    style: TypographyStyles.text(14).copyWith(
+                                        color: AppColors.textOnAccentColor),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  Text(
+                                    preset['workout_count'].toString(),
+                                    style: TypographyStyles.title(18).copyWith(
+                                        color: AppColors.textOnAccentColor),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  )),
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Row(
+          children: [
+            Expanded(
+                child: Buttons.outlineButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    label: "Close")),
+            SizedBox(
+              width: 20,
+            ),
+            Expanded(
+                child: Buttons.yellowFlatButton(
+                    onPressed: () {
+                      if (presets.isNotEmpty) {
+                        print(presets);
+                        onPick(
+                          title: presets.length > 1
+                              ? '${presets.length} Presets Selected'
+                              : presets[0]['title'],
+                          description: presets.length > 1
+                              ? 'Tap to view'
+                              : presets[0]['description'],
+                          presets: presets,
+                        );
+                        Get.back();
+                      } else {
+                        showSnack('Invalid', 'Please select a preset.',
+                            status: PopupNotificationStatus.error);
+                      }
+                    },
+                    label: "Save")),
+          ],
+        )
+      ]),
     );
   }
 }

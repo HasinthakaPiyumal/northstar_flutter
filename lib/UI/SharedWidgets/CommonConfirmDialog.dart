@@ -9,14 +9,14 @@ import '../../components/Buttons.dart';
 
 class CommonConfirmDialog {
 
-  static Future<bool> confirm(String reason,{bool isSameButton = true,String buttonText = ''}) async{
+  static Future<bool> confirm(String reason,{bool isSameButton = true,String buttonText = '',String message=''}) async{
     bool status = false;
     await Get.defaultDialog(
       radius: 6,
       title: 'Confirm Action',
       content: Column(
         children: [
-          Text('Are you sure you want to $reason?',
+          Text(message==''?'Are you sure you want to $reason?':message,
             textAlign: TextAlign.justify,
           ),
           SizedBox(height: 30,),

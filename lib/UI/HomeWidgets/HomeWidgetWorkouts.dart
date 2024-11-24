@@ -1,8 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:north_star/Controllers/ClientsWorkoutsController.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Styles/AppColors.dart';
@@ -16,6 +15,7 @@ import 'package:north_star/UI/HomeWidgets/HomeWidgetWorkouts/ViewWorkout.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetWorkouts/ViewWorkoutFeedBack.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetWorkouts/WorkoutDays.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetWorkouts/WorkoutPresets.dart';
+import 'package:north_star/UI/SharedWidgets/CommonConfirmDialog.dart';
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/components/Buttons.dart';
@@ -29,22 +29,37 @@ class HomeWidgetWorkouts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     RxList workouts = [].obs;
+    RxMap myWorkouts = {}.obs;
+    RxList myTodayWorkouts = [].obs;
     RxBool ready = false.obs;
     RxBool showAddWorkoutToClient = false.obs;
 
     void getWorkouts() async {
       ready.value = false;
       Map res = await httpClient.getWorkout();
+      await ClientsWorkoutsController.getClientsWorkouts();
       Map user = await httpClient.getMyProfile();
       print(user);
-      if(user['code']==200){
-        showAddWorkoutToClient.value = user['data']['physical_trainer_id']==null && user['data']['diet_trainer_id']==null;
-        print(showAddWorkoutToClient.value);
-        print('showAddWorkoutToClient.value');
+      if (user['code'] == 200) {
+        showAddWorkoutToClient.value =
+            user['data']['physical_trainer_id'] == null &&
+                user['data']['diet_trainer_id'] == null;
       }
       if (res['code'] == 200) {
-        workouts.value = res['data'];
-        print(res['data']);
+        if (authUser.role == 'trainer') {
+          workouts.value = ClientsWorkoutsController.workouts;
+        } else {
+          if (!(res['data'] is List<dynamic>)) {
+            print('Map');
+            if (res['data'].entries.length > 0) {
+              Map tempWorkouts = res['data'];
+              myWorkouts.value = res['data'];
+              if (tempWorkouts.isNotEmpty) {
+                myTodayWorkouts.value = tempWorkouts.entries.first.value;
+              }
+            }
+          }
+        }
         ready.value = true;
       } else {
         ready.value = true;
@@ -61,12 +76,17 @@ class HomeWidgetWorkouts extends StatelessWidget {
 
     return Scaffold(
       floatingActionButton: Obx(() {
-        if ( (showAddWorkoutToClient.value&&authUser.role == 'client') || authUser.role == 'trainer') {
+        if ((showAddWorkoutToClient.value && authUser.role == 'client') ||
+            authUser.role == 'trainer') {
           return Container(
             height: 44,
             child: FloatingActionButton.extended(
               onPressed: () async {
-                final result = await Get.to(() => AddWorkouts(workoutList: [], workoutID: -1))?.then((value){getWorkouts();});
+                final result = await Get.to(
+                        () => AddWorkouts(workoutList: [], workoutID: -1))
+                    ?.then((value) {
+                  getWorkouts();
+                });
                 if (result != null) {
                   // Only if a result is returned, perform the following actions.
                   getWorkouts();
@@ -100,571 +120,380 @@ class HomeWidgetWorkouts extends StatelessWidget {
             style: TypographyStyles.title(20),
           )),
       body: SingleChildScrollView(
-
         child: Column(
           children: [
             //authUser.role == 'trainer' ? SizedBox(height: 15) : SizedBox(),
             Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      children: [
-                        Visibility(
-                          visible: (showAddWorkoutToClient.value&&authUser.role == 'client') || authUser.role == 'trainer',
-                          child: Expanded(
-                            child: ElevatedButton(
-                              style: ButtonStyles.matRadButton(
-                                  Get.isDarkMode
-                                      ? AppColors.primary2Color
-                                      : Colors.white,
-                                  0,
-                                  10),
-                              onPressed: () {
-                                Get.to(() => WorkoutPresets());
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(vertical: 20),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SizedBox(
-                                      height: 64,
-                                      child: Image.asset(
-                                          "assets/icons/my_workout.png"),
-                                    ),
-                                    SizedBox(
-                                      height: 20,
-                                    ),
-                                    Text(
-                                      'My Workouts',
-                                      style: TypographyStyles.text(16),
-                                    )
-                                  ],
-                                ),
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                children: [
+                  Visibility(
+                    visible: (showAddWorkoutToClient.value &&
+                            authUser.role == 'client') ||
+                        authUser.role == 'trainer',
+                    child: Expanded(
+                      child: ElevatedButton(
+                        style: ButtonStyles.matRadButton(
+                            Get.isDarkMode
+                                ? AppColors.primary2Color
+                                : Colors.white,
+                            0,
+                            10),
+                        onPressed: () {
+                          Get.to(() => WorkoutPresets());
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 20),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height: 64,
+                                child:
+                                    Image.asset("assets/icons/my_workout.png"),
                               ),
-                            ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Text(
+                                'My Workouts',
+                                style: TypographyStyles.text(16),
+                              )
+                            ],
                           ),
                         ),
-                        Visibility(visible: (showAddWorkoutToClient.value&&authUser.role == 'client') || authUser.role == 'trainer',child: SizedBox(width: 15)),
-                        Expanded(
-                          child: ElevatedButton(
-                            style: ButtonStyles.matRadButton(
-                                Get.isDarkMode
-                                    ? AppColors.primary2Color
-                                    : Colors.white,
-                                0,
-                                10),
-                            onPressed: () {
-                              Get.to(() => GymWorkouts());
-                            },
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 20),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    height: 64,
-                                    child: Image.asset(
-                                        "assets/icons/gym_bank.png"),
-                                  ),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    'Gym Bank',
-                                    style: TypographyStyles.text(16),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
+                  Visibility(
+                      visible: (showAddWorkoutToClient.value &&
+                              authUser.role == 'client') ||
+                          authUser.role == 'trainer',
+                      child: SizedBox(width: 15)),
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ButtonStyles.matRadButton(
+                          Get.isDarkMode
+                              ? AppColors.primary2Color
+                              : Colors.white,
+                          0,
+                          10),
+                      onPressed: () {
+                        Get.to(() => GymWorkouts());
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              height: 64,
+                              child: Image.asset("assets/icons/gym_bank.png"),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Text(
+                              'Gym Bank',
+                              style: TypographyStyles.text(16),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
 
             Padding(
-              padding: const EdgeInsets.only(left:20,top:20,right:20),
-              child: Buttons.yellowFlatButton(onPressed: () {
-                            Get.to(() => AdminWorkoutPresets());
-                            },width: Get.width,label: "Admin Preset"),
+              padding: const EdgeInsets.only(left: 20, top: 20, right: 20),
+              child: Buttons.yellowFlatButton(
+                  onPressed: () {
+                    Get.to(() => AdminWorkoutPresets());
+                  },
+                  width: Get.width,
+                  label: "Admin Preset"),
             ),
 
             SizedBox(height: 20),
 
             Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      children: [
-                        Text('Workout Dashboard',
-                            style: TypographyStyles.title(20)),
-                      ],
-                    ),
-                  ),
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                children: [
+                  Text('Workout Dashboard', style: TypographyStyles.title(20)),
+                ],
+              ),
+            ),
 
             SizedBox(height: 15),
 
-            Obx(
-              () => ready.value
-                  ? workouts.length > 0
-                      ? authUser.role == 'trainer'
-                          ? Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16),
-                              child: ListView.builder(
-                                itemCount: workouts.length,
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                itemBuilder: (_, index) {
-                                  return Container(
-                                    padding: EdgeInsets.symmetric(vertical: 8),
-                                    child: Stack(
-                                      children: [
-                                        Container(
-                                          width: double.infinity,
-                                          height: 90,
-                                          decoration: BoxDecoration(
-                                            color: Get.isDarkMode
-                                                ? AppColors.primary2Color
-                                                : Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
+            Obx(() => ready.value
+                ? workouts.length > 0 || myTodayWorkouts.length > 0
+                    ? authUser.role == 'trainer'
+                        ? Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            child: ListView.builder(
+                              itemCount: workouts.length,
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemBuilder: (_, index) {
+                                return Container(
+                                  padding: EdgeInsets.symmetric(vertical: 8),
+                                  child: Stack(
+                                    children: [
+                                      Container(
+                                        width: double.infinity,
+                                        height: 90,
+                                        decoration: BoxDecoration(
+                                          color: Get.isDarkMode
+                                              ? AppColors.primary2Color
+                                              : Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                      AnimatedContainer(
+                                        duration: Duration(milliseconds: 500),
+                                        width: (workouts[index]
+                                                    ['completed_steps'] /
+                                                workouts[index]['totalSteps']) *
+                                            Get.width,
+                                        height: 95,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          gradient: LinearGradient(
+                                            begin: Alignment.topCenter,
+                                            end: Alignment.bottomCenter,
+                                            colors: Get.isDarkMode
+                                                ? [
+                                                    //Color(0xFF3E8F00),
+                                                    Color(0xFF6EBB35),
+                                                    Color(0xFF3E8F00),
+                                                  ]
+                                                : [
+                                                    Color(0xFFB6FF92),
+                                                    Color(0xFFB6FF92),
+                                                  ],
                                           ),
                                         ),
-                                        AnimatedContainer(
-                                          duration: Duration(milliseconds: 500),
-                                          width: (workouts[index]
-                                                      ['completed_steps'] /
-                                                  workouts[index]
-                                                      ['totalSteps']) *
-                                              Get.width,
-                                          height: 95,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                            gradient: LinearGradient(
-                                              begin: Alignment.topCenter,
-                                              end: Alignment.bottomCenter,
-                                              colors: Get.isDarkMode
-                                                  ? [
-                                                      //Color(0xFF3E8F00),
-                                                      Color(0xFF6EBB35),
-                                                      Color(0xFF3E8F00),
-                                                    ]
-                                                  : [
-                                                      Color(0xFFB6FF92),
-                                                      Color(0xFFB6FF92),
-                                                    ],
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          color: Colors.transparent,
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 15, vertical: 20),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              CircleAvatar(
-                                                  radius: 24,
-                                                  backgroundImage:
-                                                      CachedNetworkImageProvider(
-                                                    HttpClient.s3BaseUrl +
-                                                        workouts[index]['user']
-                                                            ['avatar_url'],
-                                                  )),
-                                              SizedBox(
-                                                width: 20,
-                                              ),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    workouts[index]['user']
-                                                            ['name']
-                                                        .toString(),
-                                                    style: TypographyStyles.boldText(
-                                                        14,
-                                                        Get.isDarkMode
-                                                            ? Themes
-                                                                .mainThemeColorAccent
-                                                                .shade100
-                                                            : colors.Colors()
-                                                                .lightBlack(1)),
-                                                  ),
-                                                  Text(
-                                                    "Steps - ${workouts[index]['completed_steps']}/${workouts[index]['totalSteps']}",
-                                                    style: TypographyStyles
-                                                        .normalText(
-                                                            14,
-                                                            Get.isDarkMode
-                                                                ? Themes
-                                                                    .mainThemeColorAccent
-                                                                    .shade100
-                                                                : colors.Colors()
-                                                                    .lightBlack(
-                                                                        1)),
-                                                  ),
-                                                ],
-                                              ),
-                                              Expanded(
-                                                child: SizedBox(
-                                                  width: 20,
-                                                ),
-                                              ),
-                                              CircularProgressBar(
-                                                  progress: workouts[index]
-                                                          ['completed_steps'] /
-                                                      workouts[index]
-                                                          ['totalSteps'])
-                                            ],
-                                          ),
-                                        ),
-                                        Container(
-                                          width: double.infinity,
-                                          height: 95,
-                                          child: Material(
-                                            color: Colors.transparent,
-                                            child: InkWell(
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              onTap: () {
-                                                Get.to(() =>
-                                                    SelectedUserWorkouts(
-                                                        clientID:
-                                                            workouts[index]
-                                                                    ['user']
-                                                                ['id']));
-                                              },
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  );
-                                },
-                              ),
-                            )
-                          : Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16),
-                              child: ListView.builder(
-                                itemCount: workouts.length,
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                itemBuilder: (_, index) {
-                                  return Container(
-                                    padding: EdgeInsets.symmetric(vertical: 8),
-                                    child: Stack(
-                                      children: [
-                                        Container(
-                                          width: double.infinity,
-                                          height: workouts[index]
-                                                          ['completed_steps'] ==
-                                                      workouts[index]
-                                                          ['steps'] &&
-                                                  workouts[index]['feedback'] ==
-                                                      null
-                                              ? 145
-                                              : 90,
-                                          decoration: BoxDecoration(
-                                            color: Get.isDarkMode
-                                                ? AppColors.primary2Color
-                                                : Colors.white,
-                                            borderRadius:
-                                            BorderRadius.circular(10),
-                                          ),
-                                        ),
-                                        AnimatedContainer(
-                                          duration: Duration(milliseconds: 500),
-                                          width: (workouts[index]
-                                                      ['completed_steps'] /
-                                                  workouts[index]['steps']) *
-                                              Get.width,
-                                          height: 95,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                            gradient: LinearGradient(
-                                              begin: Alignment.topCenter,
-                                              end: Alignment.bottomCenter,
-                                              colors: Get.isDarkMode
-                                                  ? [
-                                                      //Color(0xFF3E8F00),
-                                                      Color(0xFF6EBB35),
-                                                      Color(0xFF3E8F00),
-                                                    ]
-                                                  : [
-                                                      Color(0xFFB6FF92),
-                                                      Color(0xFFB6FF92),
-                                                    ],
-                                            ),
-                                          ),
-                                        ),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      ),
+                                      Container(
+                                        color: Colors.transparent,
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 15, vertical: 20),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
                                           children: [
-                                            Container(
-                                              color: Colors.transparent,
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 15, vertical: 15),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      Text(
-                                                        workouts[index]['title']
-                                                            .toString(),
-                                                        style: TypographyStyles
-                                                            .boldText(
-                                                          14,
-                                                          Get.isDarkMode
-                                                              ? Themes
-                                                                  .mainThemeColorAccent
-                                                                  .shade100
-                                                              : colors.Colors()
-                                                                  .lightBlack(1),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(height: 10),
-                                                  Text(
-                                                    "Steps - ${workouts[index]['completed_steps']}/${workouts[index]['steps']}",
-                                                    style: TypographyStyles
-                                                        .normalText(
+                                            CircleAvatar(
+                                                radius: 24,
+                                                backgroundImage:
+                                                    CachedNetworkImageProvider(
+                                                  HttpClient.s3BaseUrl +
+                                                      workouts[index]['user']
+                                                          ['avatar_url'],
+                                                )),
+                                            SizedBox(
+                                              width: 20,
+                                            ),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  workouts[index]['user']
+                                                          ['name']
+                                                      .toString(),
+                                                  style: TypographyStyles.boldText(
                                                       14,
                                                       Get.isDarkMode
                                                           ? Themes
                                                               .mainThemeColorAccent
                                                               .shade100
                                                           : colors.Colors()
-                                                              .lightBlack(1),
-                                                    ),
-                                                  ),
-                                                ],
+                                                              .lightBlack(1)),
+                                                ),
+                                                Text(
+                                                  "Steps - ${workouts[index]['completed_steps']}/${workouts[index]['totalSteps']}",
+                                                  style: TypographyStyles
+                                                      .normalText(
+                                                          14,
+                                                          Get.isDarkMode
+                                                              ? Themes
+                                                                  .mainThemeColorAccent
+                                                                  .shade100
+                                                              : colors.Colors()
+                                                                  .lightBlack(
+                                                                      1)),
+                                                ),
+                                              ],
+                                            ),
+                                            Expanded(
+                                              child: SizedBox(
+                                                width: 20,
                                               ),
                                             ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(right:16.0),
-                                              child: CircularProgressBar(
-                                                  progress: workouts[index]
-                                                  ['completed_steps'] /
-                                                      workouts[index]
-                                                      ['steps']),
-                                            )
+                                            CircularProgressBar(
+                                                progress: workouts[index]
+                                                        ['completed_steps'] /
+                                                    workouts[index]
+                                                        ['totalSteps'])
                                           ],
                                         ),
-                                        Container(
-                                          width: double.infinity,
-                                          height: 95,
-                                          child: Material(
-                                            color: Colors.transparent,
-                                            child: InkWell(
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              onTap: () {
-                                                Get.to(() => WorkoutDays(workoutData: workouts[index],
-                                                ))?.then(
-                                                    (value) => {getWorkouts()});
-                                                //     Get.to(() => ViewWorkout(
-                                                //     workoutData:
-                                                //         workouts[index]))?.then(
-                                                //     (value) => {getWorkouts()});
-                                              },
-                                            ),
+                                      ),
+                                      Container(
+                                        width: double.infinity,
+                                        height: 95,
+                                        child: Material(
+                                          color: Colors.transparent,
+                                          child: InkWell(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            onTap: () {
+                                              Get.to(() => SelectedUserWorkouts(
+                                                  workoutsData: workouts[index],
+                                                  index: index))?.then((value) {
+                                                getWorkouts();
+                                              });
+                                            },
                                           ),
                                         ),
-                                        workouts[index]['completed_steps'] ==
-                                                    workouts[index]['steps'] &&
-                                                workouts[index]['feedback'] ==
-                                                    null
-                                            ? Positioned(
-                                                right: 8,
-                                                bottom: 0,
-                                                child: Column(
-                                                  children: [
-                                                    SizedBox(height: 8),
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.end,
-                                                      children: [
-                                                        Padding(
-                                                          padding: const EdgeInsets.only(bottom: 8.0),
-                                                          child: Buttons
-                                                              .yellowFlatButton(
-                                                            label:"Add Feedback",
-                                                                  width: 140,
-                                                                  height: 36,
-                                                                  onPressed: () {
-                                                            Get.to(() =>
-                                                                    ViewWorkoutFeedback(
-                                                                      data: workouts[
-                                                                          index],
-                                                                      viewOnly:
-                                                                          false,
-                                                                    ))
-                                                                ?.then((value) =>
-                                                                    getWorkouts());
-                                                          }),
-                                                        )
-                                                      ],
-                                                    )
-                                                  ],
-                                                ),
-                                              )
-                                            : SizedBox(),
-                                      ],
-                                    ),
-                                  );
-
-                                  return Container(
-                                    padding: EdgeInsets.symmetric(vertical: 8),
-                                    child: Stack(
-                                      children: [
-                                        Container(
-                                          width: double.infinity,
-                                          height: 90,
-                                          decoration: BoxDecoration(
+                                      )
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          )
+                        : Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            child: ListView.builder(
+                              itemCount: myTodayWorkouts.length,
+                              physics: NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemBuilder: (BuildContext context, int index) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 8.0),
+                                  child: Card(
+                                    child: InkWell(
+                                      onTap: () {
+                                        Get.to(() => ViewWorkout(
+                                            workoutData:
+                                                myTodayWorkouts[index]));
+                                      },
+                                      onLongPress: () {
+                                        CommonConfirmDialog.confirm('delete')
+                                            .then((value) {
+                                          if (value) {
+                                            deleteWorkouts(
+                                                myTodayWorkouts[index]['id']);
+                                          }
+                                        });
+                                      },
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Ink(
+                                        decoration: BoxDecoration(
                                             color: Get.isDarkMode
                                                 ? AppColors.primary2Color
                                                 : Colors.white,
                                             borderRadius:
-                                            BorderRadius.circular(10),
-                                          ),
-                                        ),
-                                        AnimatedContainer(
-                                          duration: Duration(milliseconds: 500),
-                                          width: (workouts[index]
-                                          ['completed_steps'] /
-                                              workouts[index]
-                                              ['totalSteps']) *
-                                              Get.width,
-                                          height: 95,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                            BorderRadius.circular(12),
-                                            gradient: LinearGradient(
-                                              begin: Alignment.topCenter,
-                                              end: Alignment.bottomCenter,
-                                              colors: Get.isDarkMode
-                                                  ? [
-                                                //Color(0xFF3E8F00),
-                                                Color(0xFF6EBB35),
-                                                Color(0xFF3E8F00),
-                                              ]
-                                                  : [
-                                                Color(0xFFB6FF92),
-                                                Color(0xFFB6FF92),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          color: Colors.transparent,
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 15, vertical: 20),
+                                                BorderRadius.circular(10)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(16.0),
                                           child: Row(
                                             mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.center,
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
-                                              CircleAvatar(
-                                                  radius: 24,
-                                                  backgroundImage:
-                                                  CachedNetworkImageProvider(
-                                                    HttpClient.s3BaseUrl +
-                                                        workouts[index]['user']
-                                                        ['avatar_url'],
-                                                  )),
-                                              SizedBox(
-                                                width: 20,
-                                              ),
                                               Column(
                                                 crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                MainAxisAlignment.start,
+                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    workouts[index]['user']
-                                                    ['name']
-                                                        .toString(),
-                                                    style: TypographyStyles.boldText(
-                                                        14,
-                                                        Get.isDarkMode
-                                                            ? Themes
-                                                            .mainThemeColorAccent
-                                                            .shade100
-                                                            : colors.Colors()
-                                                            .lightBlack(1)),
+                                                    myTodayWorkouts[index]
+                                                        ['title'],
+                                                    style:
+                                                        TypographyStyles.title(
+                                                            16),
                                                   ),
                                                   Text(
-                                                    "Steps - ${workouts[index]['completed_steps']}/${workouts[index]['totalSteps']}",
-                                                    style: TypographyStyles
-                                                        .normalText(
-                                                        14,
-                                                        Get.isDarkMode
-                                                            ? Themes
-                                                            .mainThemeColorAccent
-                                                            .shade100
-                                                            : colors.Colors()
-                                                            .lightBlack(
-                                                            1)),
+                                                    'Steps ${myTodayWorkouts[index]['completed_steps']}/${myTodayWorkouts[index]['steps']}',
+                                                    style:
+                                                        TypographyStyles.text(
+                                                            14),
                                                   ),
+                                                  myTodayWorkouts[index][
+                                                              'completed_steps'] ==
+                                                          myTodayWorkouts[index]
+                                                              ['steps']
+                                                      ? Container(
+                                                          height: 44,
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  top: 10),
+                                                          child: ElevatedButton(
+                                                              style: ElevatedButton.styleFrom(
+                                                                  foregroundColor:
+                                                                      Colors
+                                                                          .black,
+                                                                  backgroundColor:
+                                                                      AppColors
+                                                                          .accentColor,
+                                                                  elevation: 0,
+                                                                  shape: RoundedRectangleBorder(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              20))),
+                                                              onPressed: () {
+                                                                Get.to(
+                                                                    () =>
+                                                                        ViewWorkoutFeedback(
+                                                                          data:
+                                                                              myTodayWorkouts[index],
+                                                                          viewOnly:
+                                                                              false,
+                                                                        ))?.then(
+                                                                    (value) {
+                                                                  getWorkouts();
+                                                                });
+                                                              },
+                                                              child: Text(
+                                                                'Add Feedback',
+                                                                style: TextStyle(
+                                                                    color: AppColors
+                                                                        .textOnAccentColor),
+                                                              )),
+                                                        )
+                                                      : SizedBox(),
                                                 ],
                                               ),
-                                              Expanded(
-                                                child: SizedBox(
-                                                  width: 20,
-                                                ),
-                                              ),
                                               CircularProgressBar(
-                                                  progress: workouts[index]
-                                                  ['completed_steps'] /
-                                                      workouts[index]
-                                                      ['totalSteps'])
+                                                  progress: myTodayWorkouts[
+                                                              index]
+                                                          ['completed_steps'] /
+                                                      myTodayWorkouts[index]
+                                                          ['steps'])
                                             ],
                                           ),
                                         ),
-                                        Container(
-                                          width: double.infinity,
-                                          height: 95,
-                                          child: Material(
-                                            color: Colors.transparent,
-                                            child: InkWell(
-                                              borderRadius:
-                                              BorderRadius.circular(12),
-                                              onTap: () {
-                                                Get.to(() =>
-                                                    SelectedUserWorkouts(
-                                                        clientID:
-                                                        workouts[index]
-                                                        ['user']
-                                                        ['id']));
-                                              },
-                                            ),
-                                          ),
-                                        )
-                                      ],
+                                      ),
                                     ),
-                                  );
-                                },
-                              ),
-                            )
-                      : LoadingAndEmptyWidgets.emptyWidget()
-                  : LoadingAndEmptyWidgets.loadingWidget()
-            ),
-            SizedBox(height: 100,)
+                                  ),
+                                );
+                              },
+                            ),
+                          )
+                    : LoadingAndEmptyWidgets.emptyWidget()
+                : LoadingAndEmptyWidgets.loadingWidget()),
+            SizedBox(
+              height: 100,
+            )
           ],
         ),
       ),
@@ -682,3 +511,9 @@ class HomeWidgetWorkouts extends StatelessWidget {
 //     ),
 //   ],
 // ),
+
+class DummyData {
+  Map data = {
+    "2024-11-24": [{}]
+  };
+}

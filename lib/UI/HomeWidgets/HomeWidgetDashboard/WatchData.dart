@@ -43,10 +43,10 @@ class WatchData extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Card(
-                      elevation: 6,
+                      elevation: 0,
                       color: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       child: Container(
                         height: 190,
@@ -173,10 +173,10 @@ class WatchData extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Card(
-                      elevation: 6,
-                      color: Get.isDarkMode ? Color(0xff1C1C1C) : Colors.white,
+                      elevation: 0,
+                      color: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       child: Container(
                         height: 190,
@@ -301,10 +301,10 @@ class WatchData extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Card(
-                      elevation: 6,
-                      color: Get.isDarkMode ? Color(0xff1C1C1C) : Colors.white,
+                      elevation: 0,
+                      color: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       child: Container(
                         height: 190,
