@@ -30,18 +30,12 @@ flutter_ios_podfile_setup
 target 'Runner' do
   use_frameworks!
   use_modular_headers!
-  
-  # Firebase SDK Version
   $FirebaseSDKVersion = '10.22.0'
-
-  # Add MLKit Dependencies with Version Constraints
-  pod 'MLKitCommon', '~> 12.0.0'  # Matches GoogleMLKit/BarcodeScanning
-  pod 'MLKitVision', '~> 12.0.0'
-  pod 'MLKitNaturalLanguage', '~> 12.0.0'  # Ensure compatibility
-
-  # Other Dependencies
   pod 'PhoneNumberKit', '~> 3.7.6'
-
+  pod 'MLKitCommon', :podspec => 'MLKitCommon.podspec.json'
+  pod 'MLKitVision', :podspec => 'MLKitVision.podspec.json'
+  pod 'MLKitNaturalLanguage', :podspec => 'MLKitNaturalLanguage.podspec.json'
+  # pod 'FirebaseFirestore', :git => 'https://github.com/invertase/firestore-ios-sdk-frameworks.git', :tag => '10.10.0'
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
 
@@ -51,7 +45,7 @@ post_install do |installer|
     target.build_configurations.each do |config|
       config.build_settings['ENABLE_BITCODE'] = 'NO'
     end
-    # Permission Handler Configuration
+    # Start of the permission_handler configuration
     target.build_configurations.each do |config|
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
         '$(inherited)',
@@ -59,7 +53,6 @@ post_install do |installer|
         'PERMISSION_MICROPHONE=1',
       ]
     end
-    # Fix for BoringSSL-GRPC warnings
     if target.name == 'BoringSSL-GRPC'
       target.source_build_phase.files.each do |file|
         if file.settings && file.settings['COMPILER_FLAGS']
@@ -69,5 +62,11 @@ post_install do |installer|
         end
       end
     end
+    # End of the permission_handler configuration
   end
 end
+
+# target 'OneSignalNotificationServiceExtension' do
+#   use_frameworks!
+#   pod 'OneSignalXCFramework', '>= 3.4.3', '< 4.0'
+# end
