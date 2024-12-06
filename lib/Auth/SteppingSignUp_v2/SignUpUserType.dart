@@ -66,7 +66,7 @@ class _SignUpUserTypeState extends State<SignUpUserType> {
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             image: AssetImage(
-                                'assets/images/item_backgrounds/type_01.jpeg'),
+                                'assets/images/item_backgrounds/type_01.png'),
                             fit: BoxFit.cover,
                             colorFilter: ColorFilter.mode(
                               Colors.black.withOpacity(0.7599999904632568),
@@ -93,7 +93,7 @@ class _SignUpUserTypeState extends State<SignUpUserType> {
                                         CrossAxisAlignment.center,
                                     children: [
                                       Text(
-                                        'client',
+                                        'Member',
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 26,
@@ -116,7 +116,7 @@ class _SignUpUserTypeState extends State<SignUpUserType> {
                                       SizedBox(
                                         width: Get.width - 148,
                                         child: Text(
-                                          'Lorem ipsum dolor sit amet consectetur. ',
+                                          'Connect with trainers and medical professionals.',
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 16,
@@ -163,7 +163,7 @@ class _SignUpUserTypeState extends State<SignUpUserType> {
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             image: AssetImage(
-                                'assets/images/item_backgrounds/type_02.jpeg'),
+                                'assets/images/item_backgrounds/type_02.png'),
                             fit: BoxFit.cover,
                             colorFilter: ColorFilter.mode(
                               Colors.black.withOpacity(0.7599999904632568),
@@ -190,7 +190,7 @@ class _SignUpUserTypeState extends State<SignUpUserType> {
                                         CrossAxisAlignment.center,
                                     children: [
                                       Text(
-                                        'coach',
+                                        'Trainer',
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 26,
@@ -213,7 +213,7 @@ class _SignUpUserTypeState extends State<SignUpUserType> {
                                       SizedBox(
                                         width: Get.width - 148,
                                         child: Text(
-                                          'Lorem ipsum dolor sit amet consectetur. ',
+                                          'Connect and manage clients.',
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 16,
@@ -260,7 +260,7 @@ class _SignUpUserTypeState extends State<SignUpUserType> {
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             image: AssetImage(
-                                'assets/images/item_backgrounds/type_03.jpeg'),
+                                'assets/images/item_backgrounds/type_03.png'),
                             fit: BoxFit.cover,
                             colorFilter: ColorFilter.mode(
                               Colors.black.withOpacity(0.7599999904632568),
@@ -310,7 +310,7 @@ class _SignUpUserTypeState extends State<SignUpUserType> {
                                       SizedBox(
                                         width: Get.width - 148,
                                         child: Text(
-                                          'Lorem ipsum dolor sit amet consectetur. ',
+                                          'Consult and manage patients.',
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 16,

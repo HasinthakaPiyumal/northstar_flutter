@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:north_star/Auth/AuthHome.dart';
 import 'package:north_star/UI/Layout.dart';
 import 'package:north_star/UI/WelcomeScreens/welcome_v2.dart';
 import 'package:north_star/Utils/notification_service.dart';
@@ -39,7 +40,7 @@ class _SplashScreenState extends State<SplashScreen> {
       saveToken();
       Timer(Duration(seconds: 1), () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>Layout())));
     }else{
-      Timer(Duration(seconds: 1), () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>WelcomeOne())));
+      Timer(Duration(seconds: 1), () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>AuthHome())));
     }
     return null;
   }

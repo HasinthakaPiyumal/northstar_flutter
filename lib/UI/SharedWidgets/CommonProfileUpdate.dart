@@ -30,6 +30,7 @@ class CommonProfileUpdate extends StatelessWidget {
   Widget build(BuildContext context) {
     RxBool ready = true.obs;
     RxString gender = 'male'.obs;
+    RxString trainerType = '1'.obs;
     RxString countryCode = ''.obs;
     String tempPhone = userObj['phone'];
     Country userCountry =
@@ -57,6 +58,7 @@ class CommonProfileUpdate extends StatelessWidget {
 
       if (authUser.role == 'trainer') {
         isInsured.value = userObj['trainer']['is_insured'];
+        trainerType.value = userObj['trainer']['trainer_type'];
       }
     }
 
@@ -75,7 +77,7 @@ class CommonProfileUpdate extends StatelessWidget {
       if (res['code'] == 200) {
         if (authUser.role == 'trainer') {
           Map res2 =
-              await httpClient.updateTrainer({'is_insured': isInsured.value});
+              await httpClient.updateTrainer({'is_insured': isInsured.value,'trainer_type':trainerType.value});
 
           if (res2['code'] == 200) {
             print(res);
@@ -479,6 +481,92 @@ class CommonProfileUpdate extends StatelessWidget {
                                   isChecked: isInsured.value,
                                 ),
                               ]),
+                        ),
+                      ),
+                    ),
+
+                    Obx(()=> Visibility(
+                        visible: userObj['role']=="trainer",
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text('Trainer Type',style: TypographyStyles.textWithWeight(
+                                16, FontWeight.w400)),
+                              ),
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: 15,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      trainerType.value = '1';
+                                    },
+                                    child: Row(
+                                      children: [
+                                        trainerType.value == '1'
+                                            ? Radios.radioChecked()
+                                            : Radios.radio(),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text("Trainer",
+                                            style: TypographyStyles.textWithWeight(
+                                                16, FontWeight.w500))
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 40,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      trainerType.value = '2';
+                                    },
+                                    child: Row(
+                                      children: [
+                                        trainerType.value == '2'
+                                            ? Radios.radioChecked()
+                                            : Radios.radio(),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text("Dietitian",
+                                            style: TypographyStyles.textWithWeight(
+                                                16, FontWeight.w500))
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 40,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      trainerType.value = '3';
+                                    },
+                                    child: Row(
+                                      children: [
+                                        trainerType.value == '3'
+                                            ? Radios.radioChecked()
+                                            : Radios.radio(),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text("Both",
+                                            style: TypographyStyles.textWithWeight(
+                                                16, FontWeight.w500))
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

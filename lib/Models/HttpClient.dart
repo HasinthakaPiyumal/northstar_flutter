@@ -1105,6 +1105,15 @@ class HttpClient {
       "data": response.data,
     };
   }
+  //Get Workouts
+  Future<Map> getMyWorkout() async {
+    Response response =
+        await get('/fitness/presets/client/${authUser.id}');
+    return {
+      "code": response.statusCode,
+      "data": response.data,
+    };
+  }
 
   //Get Workouts by ID
   Future<Map> getWorkoutByID(int id) async {

@@ -156,7 +156,7 @@ class Wallet extends StatelessWidget {
                                       onPressed: (){
                                         Get.defaultDialog(
                                           radius: 8,
-                                          title: 'TopUp Amount',
+                                          title: 'Top Up Amount',
                                           content: Padding(
                                             padding: const EdgeInsets.all(8.0),
                                             child: Column(
@@ -190,7 +190,7 @@ class Wallet extends StatelessWidget {
                                                   keyboardType: TextInputType.number,
                                                   decoration: InputDecoration(
                                                     border: OutlineInputBorder(),
-                                                    labelText: 'TopUp Amount',
+                                                    labelText: 'Top Up Amount',
                                                   ),
                                                 )
                                               ],
@@ -220,7 +220,7 @@ class Wallet extends StatelessWidget {
                                                           ),
                                                         ),
                                                         SizedBox(width: 16),
-                                                        Text('TopUp with Card',
+                                                        Text('Top Up with Card',
                                                           style: TypographyStyles.boldText(15, Themes.mainThemeColor.shade500),
                                                         )
                                                       ]
@@ -241,7 +241,7 @@ class Wallet extends StatelessWidget {
                                         foregroundColor: AppColors.textOnAccentColor,
                                         shape: Themes().roundedBorder(5),
                                       ),
-                                      child: Text('TOPUP CREDITS',style: TextStyle(
+                                      child: Text('Top Up CREDITS',style: TextStyle(
                                         fontSize: 20,
                                         fontFamily: 'Bebas Neue',
                                         fontWeight: FontWeight.w400,

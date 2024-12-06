@@ -912,7 +912,7 @@ class ClientProfile extends StatelessWidget {
               SizedBox(height: 10,),
               Buttons.yellowFlatButton(onPressed: () {
                 Get.to(() => ContactUsPage());
-              },label: "Contact North Start",width: double.infinity),
+              },label: "Contact North Star",width: double.infinity),
               SizedBox(
                 height: 10,
               ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/Utils/PopUps.dart';
+import 'package:north_star/components/Radios.dart';
 
 import '../../../Models/HttpClient.dart';
 import '../../../components/Buttons.dart';
@@ -21,6 +23,7 @@ class _TrainerRegisterThreeState extends State<TrainerRegisterThree> {
 
   TextEditingController _aboutController = TextEditingController();
   bool isInsured = false;
+  RxString trainerType = "1".obs;
 
   String emergencyContact = "";
 
@@ -30,6 +33,7 @@ class _TrainerRegisterThreeState extends State<TrainerRegisterThree> {
     } else {
       signUpData.about = _aboutController.text;
       signUpData.isInsured = isInsured;
+      signUpData.trainerType = trainerType.value;
 
       isLoading.value = true;
       Map res = await httpClient.signUp(signUpData.toTrainerJson());
@@ -261,6 +265,90 @@ class _TrainerRegisterThreeState extends State<TrainerRegisterThree> {
                       ),
                     ),
                   ],
+                ),
+
+                SizedBox(height: 30),
+                Obx(()=> Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text('Trainer Type',style: TypographyStyles.textWithWeight(
+                              16, FontWeight.w400)),
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 15,
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                trainerType.value = '1';
+                              },
+                              child: Row(
+                                children: [
+                                  trainerType.value == '1'
+                                      ? Radios.radioChecked()
+                                      : Radios.radio(),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text("Trainer",
+                                      style: TypographyStyles.textWithWeight(
+                                          16, FontWeight.w500))
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              width: 40,
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                trainerType.value = '2';
+                              },
+                              child: Row(
+                                children: [
+                                  trainerType.value == '2'
+                                      ? Radios.radioChecked()
+                                      : Radios.radio(),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text("Dietitian",
+                                      style: TypographyStyles.textWithWeight(
+                                          16, FontWeight.w500))
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              width: 40,
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                trainerType.value = '3';
+                              },
+                              child: Row(
+                                children: [
+                                  trainerType.value == '3'
+                                      ? Radios.radioChecked()
+                                      : Radios.radio(),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text("Both",
+                                      style: TypographyStyles.textWithWeight(
+                                          16, FontWeight.w500))
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
                 SizedBox(height: contentHeight * 2),
                 TextFormField(

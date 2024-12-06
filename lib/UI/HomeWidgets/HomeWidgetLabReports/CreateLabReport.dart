@@ -56,7 +56,7 @@ class CreateLabReport extends StatelessWidget {
       if (res['code'] == 200) {
         ready.value = false;
         Get.back();
-        showSnack('Note Saved!', 'client notes is saved successfully',status: PopupNotificationStatus.success);
+        showSnack('Note Saved!', 'Member Notes is saved successfully',status: PopupNotificationStatus.success);
       } else {
         showSnack('Something went wrong!', 'please try again',status: PopupNotificationStatus.error);
         ready.value = false;

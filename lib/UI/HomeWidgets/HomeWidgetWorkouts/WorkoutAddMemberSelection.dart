@@ -19,9 +19,8 @@ class WorkoutAddMemberSelection extends StatelessWidget {
   WorkoutAddMemberSelection({required this.presetCalender});
   final List presetCalender;
   final DateFormat formatter = DateFormat('yyyy/MM/dd');
-  RxList selectedUsers = authUser.role == 'client' ? [
-          authUser.user
-        ].obs : [].obs;
+  RxList selectedUsers =
+      authUser.role == 'client' ? [authUser.user].obs : [].obs;
   RxBool ready = true.obs;
   @override
   Widget build(BuildContext context) {
@@ -35,7 +34,7 @@ class WorkoutAddMemberSelection extends StatelessWidget {
       }
     }
 
-    void saveWorkout() async {
+    void saveWorkout({bool toMe = false}) async {
       ready.value = false;
       bool success = false;
 
@@ -49,15 +48,19 @@ class WorkoutAddMemberSelection extends StatelessWidget {
       }).toList();
 
       print(formattedCalendar);
-      Map res = await httpClient.addWorkout(
-          {'selecte_users': selectedUsers.map((user)=>user['id']).toList(), 'workouts': formattedCalendar,'trainer_id':authUser.id});
+      Map res = await httpClient.addWorkout({
+        'selecte_users': toMe?[authUser.id]:selectedUsers.map((user) => user['id']).toList(),
+        'workouts': formattedCalendar,
+        'trainer_id': authUser.id,
+      });
 
       if (res['code'] == 200) {
         print(res['data']);
         success = true;
       } else {
         print(res['data']);
-        showSnack("Something went wrong", res['data']['error'], status: PopupNotificationStatus.error);
+        showSnack("Something went wrong", res['data']['error'],
+            status: PopupNotificationStatus.error);
         return;
       }
       for (Map element in selectedUsers) {
@@ -71,14 +74,15 @@ class WorkoutAddMemberSelection extends StatelessWidget {
       if (success) {
         Get.back();
         Get.back();
-        showSnack('Success!', 'Schedule has been added.', status: PopupNotificationStatus.success);
+        showSnack('Success!', 'Schedule has been added.',
+            status: PopupNotificationStatus.success);
         ready.value = true;
       } else {
         ready.value = true;
       }
     }
 
-    if(authUser.role=='client'){
+    if (authUser.role == 'client') {
       saveWorkout();
     }
     return Scaffold(
@@ -89,60 +93,64 @@ class WorkoutAddMemberSelection extends StatelessWidget {
         margin: EdgeInsets.all(20),
         child: Column(
           children: [
-            authUser.role=='client'?SizedBox():TypeAheadField(
-              hideOnEmpty: true,
-              hideOnError: true,
-              hideOnLoading: true,
-              builder: (context, controller, focusNode) {
-                return TextField(
-                    controller: controller,
-                    focusNode: focusNode,
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.search),
-                      labelText: 'Search Members...',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0)),
-                    ));
-              },
-              suggestionsCallback: (pattern) async {
-                print(pattern);
-                return await searchClient(pattern);
-              },
-              itemBuilder: (context, suggestion) {
-                var jsonObj = jsonDecode(jsonEncode(suggestion));
+            authUser.role == 'client'
+                ? SizedBox()
+                : TypeAheadField(
+                    hideOnEmpty: true,
+                    hideOnError: true,
+                    hideOnLoading: true,
+                    builder: (context, controller, focusNode) {
+                      return TextField(
+                          controller: controller,
+                          focusNode: focusNode,
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(Icons.search),
+                            labelText: 'Search Members...',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0)),
+                          ));
+                    },
+                    suggestionsCallback: (pattern) async {
+                      print(pattern);
+                      return await searchClient(pattern);
+                    },
+                    itemBuilder: (context, suggestion) {
+                      var jsonObj = jsonDecode(jsonEncode(suggestion));
 
-                return Container(
-                  padding: const EdgeInsets.all(8),
-                  height: 64,
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                          backgroundImage: CachedNetworkImageProvider(
-                        HttpClient.s3BaseUrl + jsonObj['user']['avatar_url'],
-                      )),
-                      Expanded(
-                        child: ListTile(
-                          tileColor: Colors.transparent,
-                          title: Text(jsonObj['user']['name']),
-                          // subtitle: Text(jsonObj['calories'].toString() + ' Cals'),
+                      return Container(
+                        padding: const EdgeInsets.all(8),
+                        height: 64,
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                                backgroundImage: CachedNetworkImageProvider(
+                              HttpClient.s3BaseUrl +
+                                  jsonObj['user']['avatar_url'],
+                            )),
+                            Expanded(
+                              child: ListTile(
+                                tileColor: Colors.transparent,
+                                title: Text(jsonObj['user']['name']),
+                                // subtitle: Text(jsonObj['calories'].toString() + ' Cals'),
+                              ),
+                            )
+                          ],
                         ),
-                      )
-                    ],
+                      );
+                    },
+                    onSelected: (suggestion) {
+                      var jsonObj = jsonDecode(jsonEncode(suggestion));
+                      var doesExist = selectedUsers.firstWhereOrNull(
+                          (element) => element['id'] == jsonObj['user_id']);
+                      if (doesExist == null) {
+                        print(jsonObj['user']);
+                        selectedUsers.add(jsonObj['user']);
+                      } else {
+                        showSnack(
+                            'User Already Selected', 'User already selected');
+                      }
+                    },
                   ),
-                );
-              },
-              onSelected: (suggestion) {
-                var jsonObj = jsonDecode(jsonEncode(suggestion));
-                var doesExist = selectedUsers.firstWhereOrNull(
-                    (element) => element['id'] == jsonObj['user_id']);
-                if (doesExist == null) {
-                  print(jsonObj['user']);
-                  selectedUsers.add(jsonObj['user']);
-                } else {
-                  showSnack('User Already Selected', 'User already selected');
-                }
-              },
-            ),
             SizedBox(
               height: 20,
             ),
@@ -248,7 +256,7 @@ class WorkoutAddMemberSelection extends StatelessWidget {
                   width: 10,
                 ),
                 Text(
-                  authUser.role == 'client' ? 'ADD TO ME' : 'SHARE TO MEMBERS',
+                  selectedUsers.length == 0 ? 'ADD TO ME' : 'SHARE TO MEMBERS',
                   style: TextStyle(
                       fontSize: 20, color: AppColors.textOnAccentColor),
                 ),
@@ -258,8 +266,9 @@ class WorkoutAddMemberSelection extends StatelessWidget {
               if (selectedUsers.length > 0) {
                 saveWorkout();
               } else {
-                showSnack('Member List Empty', 'Please add Members to continue',
-                    status: PopupNotificationStatus.warning);
+                saveWorkout(toMe: true);
+                // showSnack('Member List Empty', 'Please add Members to continue',
+                //     status: PopupNotificationStatus.warning);
               }
             },
           ),

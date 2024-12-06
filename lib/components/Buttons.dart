@@ -41,9 +41,13 @@ class Buttons {
             padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
             child: Center(
               child: isLoading
-                  ? CircularProgressIndicator(
-                      color: AppColors.textOnAccentColor,
-                    )
+                  ? SizedBox(
+                width: height-10, // Width of the indicator
+                height:  height-10, // Height of the indicator
+                child: CircularProgressIndicator(
+                  color: AppColors.textOnAccentColor,
+                ),
+              )
                   : svg==''?Text(
                       label,
                       textAlign: TextAlign.center,
@@ -139,6 +143,7 @@ class Buttons {
       double width = 264,
       double height = 40,
       Color backgroundColor = AppColors.accentColor,
+        int fontSize = 16,
       bool buttonFit = false}) {
     return Material(
       color: Colors.transparent,
@@ -162,7 +167,7 @@ class Buttons {
               child: Text(
                 label,
                 textAlign: TextAlign.center,
-                style: TypographyStyles.title(16),
+                style: TypographyStyles.title(fontSize),
               ),
             ),
           ),

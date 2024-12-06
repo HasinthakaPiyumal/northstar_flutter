@@ -100,7 +100,7 @@ class VendingQr extends StatelessWidget {
             SizedBox(height: 4,),
             Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 48.0),
-                child: Text('Scan below QR code for buy you your products',
+                child: Text('Scan the QR code in the vending machine to buy your product',
                   textAlign: TextAlign.center,
                   style: TypographyStyles.text(14),
                 )

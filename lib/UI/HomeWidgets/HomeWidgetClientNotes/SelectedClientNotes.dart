@@ -210,7 +210,7 @@ class _SelectedClientNoteState extends State<SelectedClientNote> {
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
-                  "Completed Client Notes",
+                  "Completed Member Notes",
                   style: TypographyStyles.boldText(
                       16, Get.isDarkMode ? Colors.white : Colors.black),
                 ),

@@ -11,6 +11,7 @@ import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
+import 'package:north_star/components/PdfDownloadButton.dart';
 import 'package:north_star/main.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
@@ -396,7 +397,7 @@ class Reports extends StatelessWidget {
                         ],
                         series: [
                           SplineSeries<IncomeData, DateTime>(
-                            dataSource: incomeChartData.value,
+                            dataSource: incomeChartData,
                             xValueMapper: (IncomeData data, _) => data.date,
                             yValueMapper: (IncomeData data, _) => data.value,
                             markerSettings: MarkerSettings(
@@ -415,6 +416,7 @@ class Reports extends StatelessWidget {
                             ),
                             name: "Expenses",
                           ),
+
                         ],
                       ),
                     ),
@@ -422,6 +424,63 @@ class Reports extends StatelessWidget {
                 ),
               ):Container(height:Get.height/100*40,child: Center(child: LoadingAndEmptyWidgets.loadingWidget())),
          ),
+          Obx(()=> Padding(
+            padding: const EdgeInsets.only(top:20.0,left:20,right:20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Income Report',style: TypographyStyles.title(16),),
+                PdfDownloadButton(
+                    tableName: "Income-${authUser.id}",
+                    tableData: List.generate(
+                      incomeChartData.length + 1,
+                          (index) {
+                        if (index == 0)
+                          return [
+                            "Date",
+                            "Income (MVR)"
+                          ];
+                        index -= 1;
+                        return [
+                          DateFormat("dd MMM").format(incomeChartData[index].date),
+                          incomeChartData[index].value.toString(),
+                        ];
+                      },
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          ),
+          Obx(()=> Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Expense Report',style: TypographyStyles.title(16),),
+                PdfDownloadButton(
+                    tableName: "Expense-${authUser.id}",
+                    tableData: List.generate(
+                      expensesChartData.length + 1,
+                          (index) {
+                        if (index == 0)
+                          return [
+                            "Date",
+                            "Income (MVR)"
+                          ];
+                        index -= 1;
+                        return [
+                          DateFormat("dd MMM").format(expensesChartData[index].date),
+                          expensesChartData[index].value.toString(),
+                        ];
+                      },
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          ),
+
 
 
           SizedBox(height: 20,),

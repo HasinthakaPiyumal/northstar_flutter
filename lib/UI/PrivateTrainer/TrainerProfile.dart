@@ -684,6 +684,9 @@ class _TrainerProfileState extends State<TrainerProfile> {
                                       Text('Has Insurance',
                                           style: TypographyStyles.title(16)),
                                       SizedBox(height: 26),
+                                      Text('Trainer Type',
+                                          style: TypographyStyles.title(16)),
+                                      SizedBox(height: 26),
                                       Text('Registered Date',
                                           style: TypographyStyles.title(16)),
                                     ],
@@ -743,6 +746,14 @@ class _TrainerProfileState extends State<TrainerProfile> {
                                           data.value['trainer']['is_insured']
                                               ? 'Yes'
                                               : 'No',
+                                          style:
+                                              TypographyStyles.textWithWeight(
+                                                  14, FontWeight.w400)),
+                                      SizedBox(height: 28),
+                                      Text(
+                                          data.value['trainer']['trainer_type']=="1"
+                                              ? 'Trainer'
+                                              : data.value['trainer']['trainer_type']=="2"?'Diet':'Both',
                                           style:
                                               TypographyStyles.textWithWeight(
                                                   14, FontWeight.w400)),

@@ -33,10 +33,12 @@ class HomeWidgetWorkouts extends StatelessWidget {
     RxList myTodayWorkouts = [].obs;
     RxBool ready = false.obs;
     RxBool showAddWorkoutToClient = false.obs;
+    RxBool showClientWorkouts = true.obs;
 
     void getWorkouts() async {
       ready.value = false;
       Map res = await httpClient.getWorkout();
+      Map res2 = await httpClient.getMyWorkout();
       await ClientsWorkoutsController.getClientsWorkouts();
       Map user = await httpClient.getMyProfile();
       print(user);
@@ -45,9 +47,19 @@ class HomeWidgetWorkouts extends StatelessWidget {
             user['data']['physical_trainer_id'] == null &&
                 user['data']['diet_trainer_id'] == null;
       }
+
       if (res['code'] == 200) {
         if (authUser.role == 'trainer') {
           workouts.value = ClientsWorkoutsController.workouts;
+          if (!(res2['data'] is List<dynamic>)) {
+            if (res2['data'].entries.length > 0) {
+              Map tempWorkouts = res2['data'];
+              myWorkouts.value = res2['data'];
+              if (tempWorkouts.isNotEmpty) {
+                myTodayWorkouts.value = tempWorkouts.entries.first.value;
+              }
+            }
+          }
         } else {
           if (!(res['data'] is List<dynamic>)) {
             print('Map');
@@ -218,6 +230,17 @@ class HomeWidgetWorkouts extends StatelessWidget {
 
             SizedBox(height: 20),
 
+            // Buttons.outlineButton(
+            //   width: Get.width - 43,
+            //   label: "Today My Workouts",
+            //     onPressed: (){
+            //       Get.to(() => ViewWorkout(
+            //           workoutData:
+            //           myTodayWorkouts[index]));
+            // }),
+            //
+            // SizedBox(height: 20),
+
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Row(
@@ -228,10 +251,35 @@ class HomeWidgetWorkouts extends StatelessWidget {
             ),
 
             SizedBox(height: 15),
+            Obx(
+              () => Visibility(
+                visible: authUser.role == 'trainer',
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 15.0,left: 20,right: 20),
+                  child: Row(
+                    children: [
+                      toggleButton(
+                          label: "My Workouts",
+                          onPressed: () {
+                            showClientWorkouts.value = false;
+                          },
+                          isChecked: showClientWorkouts.value),
+                      SizedBox(width: 10,),
+                      toggleButton(
+                          label: "Client Workouts",
+                          onPressed: () {
+                            showClientWorkouts.value = true;
+                          },
+                          isChecked: !showClientWorkouts.value),
+                    ],
+                  ),
+                ),
+              ),
+            ),
 
             Obx(() => ready.value
                 ? workouts.length > 0 || myTodayWorkouts.length > 0
-                    ? authUser.role == 'trainer'
+                    ? authUser.role == 'trainer' && showClientWorkouts.value
                         ? Padding(
                             padding: EdgeInsets.symmetric(horizontal: 16),
                             child: ListView.builder(
@@ -239,6 +287,7 @@ class HomeWidgetWorkouts extends StatelessWidget {
                               shrinkWrap: true,
                               physics: NeverScrollableScrollPhysics(),
                               itemBuilder: (_, index) {
+                                if(workouts[index]['user']['id']==authUser.id)return SizedBox();
                                 return Container(
                                   padding: EdgeInsets.symmetric(vertical: 8),
                                   child: Stack(
@@ -386,7 +435,9 @@ class HomeWidgetWorkouts extends StatelessWidget {
                                       onTap: () {
                                         Get.to(() => ViewWorkout(
                                             workoutData:
-                                                myTodayWorkouts[index]));
+                                                myTodayWorkouts[index]))?.then((value){
+                                                  getWorkouts();
+                                        });
                                       },
                                       onLongPress: () {
                                         CommonConfirmDialog.confirm('delete')
@@ -516,4 +567,11 @@ class DummyData {
   Map data = {
     "2024-11-24": [{}]
   };
+}
+
+Widget toggleButton({required onPressed, required isChecked, required label}) {
+  return isChecked
+      ? Buttons.outlineButton(onPressed: onPressed, label: label, height: 30,width: 120,fontSize: 14)
+      : Buttons.yellowFlatButton(
+          onPressed: onPressed, label: label, height: 34,width: 140,fontSize: 18);
 }

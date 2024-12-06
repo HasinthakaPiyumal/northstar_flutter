@@ -8,6 +8,7 @@ import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/ButtonStyles.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
+import 'package:north_star/UI/HomeWidgets/HomeWidgetDietaryConsultation/AdminQuestions.dart';
 import 'package:north_star/Utils/PopUps.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
@@ -243,6 +244,10 @@ class AddNewDietaryConsultation extends StatelessWidget {
                   border: OutlineInputBorder(),
                 ),
               ),
+              SizedBox(
+                height: 15,
+              ),
+              // AdminQuestions(onChange: (value){}),
               SizedBox(
                 height: 15,
               ),

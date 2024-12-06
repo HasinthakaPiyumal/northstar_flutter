@@ -19,6 +19,7 @@ class SignUpData {
   late String about;
   late String idNumber;
   late bool isInsured;
+  late String trainerType;
 
   //Client
   late String eContactName;
@@ -70,6 +71,7 @@ class SignUpData {
       "type": 'physical',
       "about": this.about,
       "is_insured": this.isInsured,
+      "trainer_type": this.trainerType,
     };
   }
 

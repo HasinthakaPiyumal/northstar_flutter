@@ -87,7 +87,7 @@ class CreateClientNotes extends StatelessWidget {
         }
 
         Get.back();
-        showSnack('Note Saved!', 'client notes is saved successfully');
+        showSnack('Note Saved!', 'Member Notes is saved successfully');
       } else {
         showSnack('Something went wrong!', 'please try again');
       }
@@ -97,7 +97,7 @@ class CreateClientNotes extends StatelessWidget {
       const DropdownMenuItem(child: Text("Service"), value: "service"),
       const DropdownMenuItem(
           child: Text("Channelling Fee"), value: "Channelling Fee"),
-      const DropdownMenuItem(child: Text("Coach Fee"), value: "Coach Fee"),
+      const DropdownMenuItem(child: Text("Trainer Fee"), value: "Coach Fee"),
       const DropdownMenuItem(
           child: Text("Exclusive Gym Fee"), value: "Exclusive Gym Fee"),
       const DropdownMenuItem(
@@ -114,7 +114,7 @@ class CreateClientNotes extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('New Client Note'),
+        title: Text('New Member Note'),
       ),
       body: SingleChildScrollView(
         child: Padding(

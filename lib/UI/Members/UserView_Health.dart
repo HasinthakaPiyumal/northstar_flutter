@@ -11,9 +11,12 @@ import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetDietaryConsultation.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetLabReports.dart';
+import 'package:north_star/UI/Members/UserView_Progress.dart';
 import 'package:north_star/UI/SharedWidgets/RingsWidget.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/Utils/PopUps.dart';
+
+import 'MemberReportFull.dart';
 
 class UserViewHealth extends StatelessWidget {
 late Map data = {};
@@ -903,6 +906,41 @@ late Map data = {};
                       ),
                     ),
                   ),
+                  Visibility(
+                    visible: authUser.role=='client' && authUser.id == userID,
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 14,right: 14,top:16),
+                      child: Container(
+                        width: Get.width,
+                        height: 60,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Get.to(() => MemberReportFull(userId: userID));
+                          },
+                          style: ButtonStyles.bigPrimaryButton(),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SizedBox(width: 16),
+                              Text(
+                                "View Health Report",
+                                style: TypographyStyles.title(20),
+                              ),
+                              Spacer(),
+                              Icon(
+                                Icons.arrow_forward_outlined,
+                                size: 20,
+                                color: Get.isDarkMode
+                                    ? Themes.mainThemeColorAccent.shade100
+                                    : colors.Colors().lightBlack(1),
+                              ),
+                              SizedBox(width: 16),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                   SizedBox(height: 10),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 14),
@@ -1510,8 +1548,8 @@ late Map data = {};
                                     Visibility(
                                       visible: authUser.role == 'trainer' ||
                                           (authUser.role == 'client' &&
-                                              canIEditAsAClient.value),
-                                      child: canIEditP.value
+                                              canIEditAsAClient.value) || authUser.id == userID,
+                                      child: canIEditP.value || authUser.id == userID
                                           ? ElevatedButton(
                                               style: ButtonStyles
                                                   .bigFlatYellowButton(),
@@ -1617,8 +1655,8 @@ late Map data = {};
                                     Visibility(
                                       visible: authUser.role == 'trainer' ||
                                           (authUser.role == 'client' &&
-                                              canIEditAsAClient.value),
-                                      child: canIEditP.value
+                                              canIEditAsAClient.value)|| authUser.id == userID,
+                                      child: canIEditP.value|| authUser.id == userID
                                           ? ElevatedButton(
                                               style: ButtonStyles
                                                   .bigFlatYellowButton(),

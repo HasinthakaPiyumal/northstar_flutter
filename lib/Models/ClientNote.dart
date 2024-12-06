@@ -86,7 +86,7 @@ class ClientNote{
 
     LocalNotificationsController.showLocalNotification(
       id: this.id,
-      title: 'Client Note Reminder!',
+      title: 'Member Note Reminder!',
       body: this.note,
       scheduledDate: dtx,
     );

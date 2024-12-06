@@ -16,7 +16,7 @@ class ProList {
 }
 
 List<Pro> proItems = [
-  Pro(feature: "Workout", description: "Lorem Ipsum Dolor", image: "assets/proItems/step1.png"),
-  Pro(feature: "Dashboard", description: "Lorem Ipsum Dolor", image: "assets/proItems/step1.png"),
-  Pro(feature: "Dashboard", description: "Lorem Ipsum Dolor", image: "assets/proItems/step1.png"),
+  Pro(feature: "Activate", description: "Pro Plan", image: "assets/proItems/ad_01.png"),
+  Pro(feature: "Virtual Sessions", description: "Consultation / Training", image: "assets/proItems/ad_02.png"),
+  Pro(feature: "Meet Professionals", description: "Trainers / Dietitians", image: "assets/proItems/ad_03.png"),
 ];

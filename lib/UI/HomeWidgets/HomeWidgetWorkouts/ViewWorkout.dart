@@ -310,7 +310,7 @@ class ViewWorkout extends StatelessWidget {
                   ),
                   SizedBox(width: 4,),
                   !workout['workout_plan'][pageIndex.value]['has_completed'] ? Expanded(
-                    child: authUser.role != 'trainer' ? ElevatedButton(
+                    child: authUser.role != 'trainer' || authUser.id==workoutData['user_id'] ? ElevatedButton(
                       onPressed: () {
                         markAsCompleted(workout['workout_plan'][pageIndex.value]);
                       },

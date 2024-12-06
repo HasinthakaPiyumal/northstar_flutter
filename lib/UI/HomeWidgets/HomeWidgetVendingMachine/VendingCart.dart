@@ -315,7 +315,7 @@ class VendingCart extends StatelessWidget {
                                       MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          "Band Card",
+                                          "Bank Card",
                                           style: TypographyStyles.text(16),
                                         ),
                                         isWallet.value

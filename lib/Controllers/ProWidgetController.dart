@@ -9,7 +9,7 @@ class ProWidgetController{
     'Resources',
     'Doctors',
     'Calls',
-    'Client Notes',
+    'Member Notes',
     'Fitness Calculator',
     'Calories',
     'Lab Reports',

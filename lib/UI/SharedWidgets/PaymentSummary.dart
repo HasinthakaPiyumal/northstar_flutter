@@ -154,6 +154,7 @@ class PaymentSummary extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Container(
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     InkWell(
                       onTap: () {
@@ -234,7 +235,7 @@ class PaymentSummary extends StatelessWidget {
                                 MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "Band Card",
+                                    "Bank Card",
                                     style: TypographyStyles.text(16),
                                   ),
                                   isWallet.value
@@ -246,7 +247,7 @@ class PaymentSummary extends StatelessWidget {
                                 height: 10,
                               ),
                               Text(
-                                'Tax amount: MVR ${(taxController.getCalculatedTax(total)).toStringAsFixed(2)}',
+                                'Total amount: MVR ${(taxController.getCalculatedTax(total)+total).toStringAsFixed(2)} (${(taxController.getCalculatedTax(total)).toStringAsFixed(2)})',
                                 style: TypographyStyles.text(12),
                               ),
                               Container(),
