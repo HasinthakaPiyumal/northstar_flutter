@@ -48,7 +48,6 @@ class SelectGymBookingDates extends StatelessWidget {
         bookings.value = res['data'];
         totalPrice.value = double.parse((bookings.length  *clientIds.length * gymObj['gym_services']['price']).toStringAsFixed(2));
         print(gymObj['gym_services']);
-        print("(gymObj['gym_services']['price']).toStringAsFixed(2)");
       } else {
         print(res);
       }

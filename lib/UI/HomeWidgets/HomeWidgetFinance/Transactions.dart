@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Plugins/Utils.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/SharedWidgets/LoadingAndEmptyWidgets.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
+import 'package:north_star/components/PdfDownloadButton.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 import '../../../Styles/AppColors.dart';
@@ -156,7 +158,30 @@ class Transactions extends StatelessWidget {
                         ],
                       ),
                       SizedBox(height: 16,),
-                      Buttons.yellowTextIconButton(onPressed: (){},width: Get.width,label: "Download report",icon:Icons.download_rounded,svg:"assets/svgs/download.svg")
+                      // Buttons.yellowTextIconButton(onPressed: (){},width: Get.width,label: "Download report",icon:Icons.download_rounded,svg:"assets/svgs/download.svg")
+                      Obx(()=> PdfDownloadButton(
+                          tableName: "Recent-Transaction-${authUser.id}",
+                          tableData: List.generate(
+                            transactions.length + 1,
+                                (index) {
+                              if (index == 0)
+                                return [
+                                  "Type",
+                                  "Amount",
+                                  "Description",
+                                  "Time"
+                                ];
+                              index -= 1;
+                              return [
+                                transactions[index]['type'],
+                                (Utils.formatCurrency.format(transactions[index]['amount'])).toString(),
+                                transactions[index]['description'],
+                                DateFormat("MMM dd,yyyy - HH:mm").format(DateTime.parse(transactions[index]['created_at']).toLocal())
+                              ];
+                            },
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),

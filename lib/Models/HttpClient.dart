@@ -533,6 +533,17 @@ class HttpClient {
     };
   }
 
+  //Get Exclusive Gym Availability
+  Future<Map> getAvailableTimeSlots(gymID, DateTime dateTime) async {
+    Response response = await post(
+        '/fitness/exclusive-gyms/actions/get-bookings-timeslots',
+        {"gym_id": gymID, "date": dateTime.toString()});
+    return {
+      "code": response.statusCode,
+      "data": response.data,
+    };
+  }
+
   //Get Exclusive Gym Unconfirmed Bookings
   Future<Map> getUnconfirmedBookings(gymID) async {
     Response response =
@@ -624,13 +635,7 @@ class HttpClient {
   }
 
   Future<Map> makeAScheduleForService(
-      serviceID, clientIDs, DateTime startTime) async {
-    print({
-      "service_id": serviceID,
-      "trainer_id": authUser.id,
-      "client_ids": clientIDs,
-      "start_time": startTime.toString(),
-    });
+      serviceID, clientIDs, DateTime startTime, DateTime endTime) async {
     Response response =
         await post('/fitness/exclusive-gyms/actions/new-booking', {
       "service_id": serviceID,

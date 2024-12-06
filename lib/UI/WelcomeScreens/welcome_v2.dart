@@ -97,7 +97,7 @@ class WelcomeOne extends StatelessWidget {
                     child: Container(
                       width: double.infinity,
                       child: Text(
-                        'Ignite your fitness journey with Northstar: Your ultimate companion for personalized workouts, expert guidance, and a thriving fitness community.',
+                        'Ignite your fitness journey with Northstar Your ultimate companion for personalized workouts, expert guidance, and a thriving fitness community.',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.white,

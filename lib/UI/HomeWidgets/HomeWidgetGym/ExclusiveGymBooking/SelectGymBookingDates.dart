@@ -9,6 +9,7 @@ import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetGym/ExclusiveGymBooking/GymDateAndTime.dart';
 import 'package:north_star/UI/Layout.dart';
+import 'package:north_star/UI/SharedWidgets/PaymentSummary.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/Utils/PopUps.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -116,6 +117,31 @@ class SelectGymBookingDates extends StatelessWidget {
             NSNotificationTypes.GymAppointment, {});
       });
     }
+
+    // Get.to(()=>PaymentSummary(
+    //   orderDetails: [
+    //   ],
+    //   total: getPlanPrice(plan),//storeHelper.getCartTotal(),
+    //   payByCard: (){subscribeNow(plan,(){});},
+    //   payByWallet: ()async{
+    //     var data = {
+    //       'planId': plansList[selectedPackage.value]['id'],
+    //       'couponCode': '${couponCode.value}',
+    //       'payment_type': 2
+    //     };
+    //     Map res = await httpClient.proMemberActivate(data);
+    //     print(res);
+    //     if (res['code'] == 200) {
+    //       Get.to(() => Layout());
+    //       showSnack('Successfully Subscribed',
+    //           'You have successfully upgraded your membership plan.');
+    //     } else {
+    //       showSnack('Error', 'Something went wrong.');
+    //     }
+    //   },
+    //   headerWidget:headerWidget ,
+    //   isCouponAvailable: true,
+    // ));
 
     void confirmAndPay() async {
       Map res = await httpClient.getWallet();

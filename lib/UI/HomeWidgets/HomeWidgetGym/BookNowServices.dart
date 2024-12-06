@@ -12,8 +12,10 @@ import 'package:north_star/UI/HomeWidgets/HomeWidgetGym/ServiceBooking.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetGym/ServiceBooking/GymDateAndTime.dart';
 import 'package:north_star/UI/HomeWidgets/HomeWidgetGym/ServiceBooking/SelectGymBookingDates.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
+import 'package:north_star/Utils/PopUps.dart';
 
 import '../../../components/Buttons.dart';
+import 'ServiceBooking/PickDate.dart';
 
 class BookNowServices extends StatelessWidget {
   const BookNowServices({Key? key, this.gymObj}) : super(key: key);
@@ -63,7 +65,7 @@ class BookNowServices extends StatelessWidget {
             SizedBox(height: 32),
             Row(
               children: [
-                Text('ADD MEMBERS', style: TypographyStyles.title(14)),
+                Text('ADD A MEMBER', style: TypographyStyles.title(14)),
               ],
             ),
             SizedBox(height: 16),
@@ -95,7 +97,8 @@ class BookNowServices extends StatelessWidget {
                 var already = selectedMembers.firstWhereOrNull(
                     (element) => element['user_id'] == jsonObj['user_id']);
                 if (already == null) {
-                  selectedMembers.add(jsonObj);
+                  // selectedMembers.clear();
+                  selectedMembers.value = RxList([jsonObj]);
                   print(jsonObj);
                 } else {
                   print('already added');
@@ -182,9 +185,16 @@ class BookNowServices extends StatelessWidget {
                   List<int> selectedMemberIds = List.generate(
                       selectedMembers.length,
                       (index) => selectedMembers[index]['user_id']);
+                  if(selectedMemberIds.length>0){
+                    Get.to(() => AddBooking(
+                        gymObj: gymObj, clientIds: selectedMemberIds,));
+                    // Get.to(() => SelectGymBookingDates(
+                    //     gymObj: gymObj, clientIds: selectedMemberIds));
+                  }else{
+                    showSnack('No Members are Selected!', 'Please select at least one member' );
+                  }
 
-                  Get.to(() => SelectGymBookingDates(
-                      gymObj: gymObj, clientIds: selectedMemberIds));
+
                   /* Get.to(()=>GymTimeAndPay(
                     gymObj: gymObj,
                     clientIds: selectedMemberIds,

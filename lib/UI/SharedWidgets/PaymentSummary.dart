@@ -18,7 +18,8 @@ class PaymentSummary extends StatelessWidget {
     this.headerWidget = const SizedBox(),
     required this.payByCard,
     required this.payByWallet,
-    this.isCouponAvailable = false
+    this.isCouponAvailable = false,
+
   });
   Widget headerWidget;
   final Function payByCard;
@@ -247,7 +248,7 @@ class PaymentSummary extends StatelessWidget {
                                 height: 10,
                               ),
                               Text(
-                                'Total amount: MVR ${(taxController.getCalculatedTax(total)+total).toStringAsFixed(2)} (${(taxController.getCalculatedTax(total)).toStringAsFixed(2)})',
+                                'Total amount: MVR ${(taxController.getCalculatedTax(total)+total).toStringAsFixed(2)} (GST ${(taxController.getCalculatedTax(total)).toStringAsFixed(2)})',
                                 style: TypographyStyles.text(12),
                               ),
                               Container(),

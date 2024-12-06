@@ -62,7 +62,7 @@ class GymDateAndTime extends StatelessWidget {
       print(selectedStartTime);
       print(gymObj['user_id']);
       Map res = await httpClient.makeAScheduleForService(
-          gymObj['gym_services']['id'], clientIDs, selectedStartTime.value);
+          gymObj['gym_services']['id'], clientIDs, selectedStartTime.value,selectedStartTime.value);
       print(res);
       if (res['code'] == 422) {
         showSnack(

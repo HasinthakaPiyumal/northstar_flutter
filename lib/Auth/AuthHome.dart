@@ -105,7 +105,7 @@ class AuthHome extends StatelessWidget {
                     child: Container(
                       width: double.infinity,
                       child: Text(
-                        'Elevate your fitness with Northstar: Personalized workouts, expert guidance, and a vibrant community to support your goals.',
+                        'Elevate your fitness with Northstar Personalized workouts, expert guidance, and a vibrant community to support your goals.',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: isDark ? Colors.white : Colors.black,
