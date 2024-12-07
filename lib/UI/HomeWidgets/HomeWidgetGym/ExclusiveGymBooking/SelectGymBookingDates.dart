@@ -64,16 +64,16 @@ class SelectGymBookingDates extends StatelessWidget {
       }
     }
 
-    void payByCard() async {
+    void payByCard(coupon) async {
       List ids = [];
       bookings.forEach((element) {
         ids.add(element['id']);
       });
       Map res = await httpClient.confirmSchedules(
           ids,
-          totalHours.value * gymObj['hourly_rate'] - couponValue.value,
+          totalHours.value * gymObj['hourly_rate'],
           gymObj['user_id'],
-          couponCode.value,
+          coupon,
           1
       );
       if(res['code']==200){
@@ -143,291 +143,330 @@ class SelectGymBookingDates extends StatelessWidget {
     //   isCouponAvailable: true,
     // ));
 
-    void confirmAndPay() async {
-      Map res = await httpClient.getWallet();
-
+    void payWithWallet(coupon)async{
+      List temp = [];
+      bookings.forEach((element) {
+        temp.add(element['id']);
+      });
+      Map res = await httpClient.confirmSchedules(
+          temp,
+          totalHours.value * gymObj['hourly_rate'] - couponValue.value,
+          gymObj['user_id'],
+          coupon,
+          2
+      );
       if (res['code'] == 200) {
-        print(res);
-        walletData.value = res['data'];
+        informUser();
+        Get.offAll(() => Layout());
+        showSnack('Schedule Confirmed!',
+            'Your Booking Schedule has been confirmed and paid.');
       } else {
         print(res);
       }
+    }
 
-      Get.defaultDialog(
-          radius: 8,
-          title: '',
-          titlePadding: EdgeInsets.zero,
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: 20,
-          ),
-          content: Obx(()=> Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "BOOKING SUMMARY",
-                  style: TypographyStyles.boldText(
-                      16,
-                      Get.isDarkMode
-                          ? Themes.mainThemeColorAccent.shade100
-                          : colors.Colors().lightBlack(1)),
-                ),
-                SizedBox(height: 30),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Total Bookings',
-                      style: TypographyStyles.normalText(
-                          16,
-                          Get.isDarkMode
-                              ? Themes.mainThemeColorAccent.shade300
-                              : colors.Colors().lightBlack(1)),
-                    ),
-                    Text(
-                      '${bookings.value.length}',
-                      style: TypographyStyles.boldText(
-                          16,
-                          Get.isDarkMode
-                              ? Themes.mainThemeColorAccent.shade100
-                              : colors.Colors().lightBlack(1)),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 4),
-                Divider(
-                  thickness: 1,
-                  color: Themes.mainThemeColorAccent.shade300.withOpacity(0.2),
-                ),
-                SizedBox(height: 4),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Total Hours',
-                      style: TypographyStyles.normalText(
-                        16,
-                        Get.isDarkMode
-                            ? Themes.mainThemeColorAccent.shade300
-                            : colors.Colors().lightBlack(1),
-                      ),
-                    ),
-                    Text(
-                      '${totalHours.value}',
-                      style: TypographyStyles.boldText(
-                        16,
-                        Get.isDarkMode
-                            ? Themes.mainThemeColorAccent.shade100
-                            : colors.Colors().lightBlack(1),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 7,
-                ),
-                Divider(
-                  thickness: 1,
-                  color: Themes.mainThemeColorAccent.shade300.withOpacity(0.2),
-                ),
-                SizedBox(
-                  height: 7,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Total To be Paid',
-                      style: TypographyStyles.normalText(
-                        16,
-                        Get.isDarkMode
-                            ? Themes.mainThemeColorAccent.shade100
-                            : colors.Colors().lightBlack(1),
-                      ),
-                    ),
-                    Text(
-                      'MVR ${totalHours.value * gymObj['hourly_rate'] - couponValue.value}',
-                      style: TypographyStyles.boldText(
-                        20,
-                        Get.isDarkMode
-                            ? Themes.mainThemeColorAccent.shade100
-                            : colors.Colors().lightBlack(1),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 30),
-                RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    text: 'By clicking Pay with Card, you are agreeing to our ',
-                    style: TypographyStyles.normalText(
-                      12,
-                      Get.isDarkMode
-                          ? Themes.mainThemeColorAccent.shade100
-                          : colors.Colors().lightBlack(1),
-                    ),
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: 'Terms & Conditions',
-                        style: TypographyStyles.normalText(
-                            12, Themes.mainThemeColor),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () => launchUrl(Uri.parse(
-                              'https://northstar.mv/terms-conditions/')),
-                      ),
-                      TextSpan(
-                        text: " & ",
-                        style: TypographyStyles.normalText(
-                            12,
-                            Get.isDarkMode
-                                ? Themes.mainThemeColorAccent.shade100
-                                : colors.Colors().lightBlack(1)),
-                      ),
-                      TextSpan(
-                        text: 'Privacy Policy',
-                        style: TypographyStyles.normalText(
-                            12, Themes.mainThemeColor),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () => launchUrl(
-                              Uri.parse('https://northstar.mv/privacy-policy')),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 10),
-                CouponApply(
-                    type: 2,
-                    typeId: gymObj['user_id'],
-                    couponCode: couponCode,
-                    couponValue: couponValue,
-                    payingAmount: totalHours.value * gymObj['hourly_rate'])
-              ],
-            ),
-          ),
-          actions: [
-            Container(
-              width: Get.width,
-              child: ElevatedButton(
-                onPressed: () async {
-                  if (totalHours.value * gymObj['hourly_rate'] - couponValue.value <=
-                      walletData.value['balance']) {
-                    List temp = [];
-                    bookings.forEach((element) {
-                      temp.add(element['id']);
-                    });
-                    Map res = await httpClient.confirmSchedules(
-                      temp,
-                      totalHours.value * gymObj['hourly_rate'] - couponValue.value,
-                      gymObj['user_id'],
-                      couponCode.value,
-                      2
-                    );
-                    if (res['code'] == 200) {
-                      informUser();
-                      Get.offAll(() => Layout());
-                      showSnack('Schedule Confirmed!',
-                          'Your Booking Schedule has been confirmed and paid.');
-                    } else {
-                      print(res);
-                    }
-                  } else {
-                    showSnack('Insufficient Balance',
-                        'You do not have sufficient balance to pay for this booking.');
-                  }
-                },
-                style:
-                    ButtonStyles.matButton(Themes.mainThemeColor.shade500, 0),
-                child: Obx(() => ready.value
-                    ? Padding(
-                        padding: EdgeInsets.symmetric(vertical: 12),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              'Pay with E-gift',
-                              style:
-                                  TypographyStyles.boldText(16, Colors.black),
-                            ),
-                            SizedBox(
-                              height: 3,
-                            ),
-                            Text(
-                              '(E-gift Balance: ${walletData['balance'].toStringAsFixed(2)})',
-                              style:
-                                  TypographyStyles.normalText(13, Colors.black),
-                            ),
-                          ],
-                        ),
-                      )
-                    : LoadingAndEmptyWidgets.loadingWidget()),
-              ),
-            ),
-            Container(
-              width: Get.width,
-              padding: EdgeInsets.only(top: 3),
-              child: ElevatedButton(
-                onPressed: () {
-                  payByCard();
-                },
-                style: SignUpStyles.selectedButton(),
-                child: Obx(() => ready.value
-                    ? Padding(
-                        padding: EdgeInsets.symmetric(vertical: 15),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: 32,
-                                height: 32,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(2),
-                                  child: Image.asset('assets/BMLLogo.jpeg'),
-                                ),
-                              ),
-                              SizedBox(width: 16),
-                              Column(
-                                children: [
-                                  Text(
-                                    'Pay with Card',
-                                    style: TextStyle(
-                                      color: AppColors.accentColor,
-                                      fontSize: 20,
-                                      fontFamily: 'Bebas Neue',
-                                      fontWeight: FontWeight.w400,
-                                      height: 0,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Tax amount: MVR ${(taxController.getCalculatedTax( totalHours.value * gymObj['hourly_rate'] - couponValue.value)).toStringAsFixed(2)}',
-                                    style: TypographyStyles.text(10),
-                                  )
-                                ],
-                              )
-                            ]),
-                      )
-                    : LoadingAndEmptyWidgets.loadingWidget()),
-              ),
-            ),
-            Container(
-              height: 48,
-              width: Get.width,
-              child: TextButton(
-                  onPressed: () => Get.back(),
-                  child: Text(
-                    'Cancel',
-                    style: TypographyStyles.boldText(
-                      14,
-                      Get.isDarkMode
-                          ? Themes.mainThemeColorAccent.shade100
-                          : colors.Colors().lightBlack(1),
-                    ),
-                  )),
-            ),
-            SizedBox(
-              height: 5,
-            ),
-          ]);
+    // void confirmAndPay1() async {
+    //   Map res = await httpClient.getWallet();
+    //
+    //   if (res['code'] == 200) {
+    //     print(res);
+    //     walletData.value = res['data'];
+    //   } else {
+    //     print(res);
+    //   }
+    //
+    //   Get.defaultDialog(
+    //       radius: 8,
+    //       title: '',
+    //       titlePadding: EdgeInsets.zero,
+    //       contentPadding: EdgeInsets.symmetric(
+    //         horizontal: 20,
+    //       ),
+    //       content: Obx(()=> Column(
+    //           crossAxisAlignment: CrossAxisAlignment.start,
+    //           children: [
+    //             Text(
+    //               "BOOKING SUMMARY",
+    //               style: TypographyStyles.boldText(
+    //                   16,
+    //                   Get.isDarkMode
+    //                       ? Themes.mainThemeColorAccent.shade100
+    //                       : colors.Colors().lightBlack(1)),
+    //             ),
+    //             SizedBox(height: 30),
+    //             Row(
+    //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //               children: [
+    //                 Text(
+    //                   'Total Bookings',
+    //                   style: TypographyStyles.normalText(
+    //                       16,
+    //                       Get.isDarkMode
+    //                           ? Themes.mainThemeColorAccent.shade300
+    //                           : colors.Colors().lightBlack(1)),
+    //                 ),
+    //                 Text(
+    //                   '${bookings.value.length}',
+    //                   style: TypographyStyles.boldText(
+    //                       16,
+    //                       Get.isDarkMode
+    //                           ? Themes.mainThemeColorAccent.shade100
+    //                           : colors.Colors().lightBlack(1)),
+    //                 ),
+    //               ],
+    //             ),
+    //             SizedBox(height: 4),
+    //             Divider(
+    //               thickness: 1,
+    //               color: Themes.mainThemeColorAccent.shade300.withOpacity(0.2),
+    //             ),
+    //             SizedBox(height: 4),
+    //             Row(
+    //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //               children: [
+    //                 Text(
+    //                   'Total Hours',
+    //                   style: TypographyStyles.normalText(
+    //                     16,
+    //                     Get.isDarkMode
+    //                         ? Themes.mainThemeColorAccent.shade300
+    //                         : colors.Colors().lightBlack(1),
+    //                   ),
+    //                 ),
+    //                 Text(
+    //                   '${totalHours.value}',
+    //                   style: TypographyStyles.boldText(
+    //                     16,
+    //                     Get.isDarkMode
+    //                         ? Themes.mainThemeColorAccent.shade100
+    //                         : colors.Colors().lightBlack(1),
+    //                   ),
+    //                 ),
+    //               ],
+    //             ),
+    //             SizedBox(
+    //               height: 7,
+    //             ),
+    //             Divider(
+    //               thickness: 1,
+    //               color: Themes.mainThemeColorAccent.shade300.withOpacity(0.2),
+    //             ),
+    //             SizedBox(
+    //               height: 7,
+    //             ),
+    //             Row(
+    //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //               children: [
+    //                 Text(
+    //                   'Total To be Paid',
+    //                   style: TypographyStyles.normalText(
+    //                     16,
+    //                     Get.isDarkMode
+    //                         ? Themes.mainThemeColorAccent.shade100
+    //                         : colors.Colors().lightBlack(1),
+    //                   ),
+    //                 ),
+    //                 Text(
+    //                   'MVR ${totalHours.value * gymObj['hourly_rate'] - couponValue.value}',
+    //                   style: TypographyStyles.boldText(
+    //                     20,
+    //                     Get.isDarkMode
+    //                         ? Themes.mainThemeColorAccent.shade100
+    //                         : colors.Colors().lightBlack(1),
+    //                   ),
+    //                 ),
+    //               ],
+    //             ),
+    //             SizedBox(height: 30),
+    //             RichText(
+    //               textAlign: TextAlign.center,
+    //               text: TextSpan(
+    //                 text: 'By clicking Pay with Card, you are agreeing to our ',
+    //                 style: TypographyStyles.normalText(
+    //                   12,
+    //                   Get.isDarkMode
+    //                       ? Themes.mainThemeColorAccent.shade100
+    //                       : colors.Colors().lightBlack(1),
+    //                 ),
+    //                 children: <TextSpan>[
+    //                   TextSpan(
+    //                     text: 'Terms & Conditions',
+    //                     style: TypographyStyles.normalText(
+    //                         12, Themes.mainThemeColor),
+    //                     recognizer: TapGestureRecognizer()
+    //                       ..onTap = () => launchUrl(Uri.parse(
+    //                           'https://northstar.mv/terms-conditions/')),
+    //                   ),
+    //                   TextSpan(
+    //                     text: " & ",
+    //                     style: TypographyStyles.normalText(
+    //                         12,
+    //                         Get.isDarkMode
+    //                             ? Themes.mainThemeColorAccent.shade100
+    //                             : colors.Colors().lightBlack(1)),
+    //                   ),
+    //                   TextSpan(
+    //                     text: 'Privacy Policy',
+    //                     style: TypographyStyles.normalText(
+    //                         12, Themes.mainThemeColor),
+    //                     recognizer: TapGestureRecognizer()
+    //                       ..onTap = () => launchUrl(
+    //                           Uri.parse('https://northstar.mv/privacy-policy')),
+    //                   ),
+    //                 ],
+    //               ),
+    //             ),
+    //             SizedBox(height: 10),
+    //             // CouponApply(
+    //             //     type: 2,
+    //             //     typeId: gymObj['user_id'],
+    //             //     couponCode: couponCode,
+    //             //     couponValue: couponValue,
+    //             //     payingAmount: totalHours.value * gymObj['hourly_rate'])
+    //           ],
+    //         ),
+    //       ),
+    //       actions: [
+    //         Container(
+    //           width: Get.width,
+    //           child: ElevatedButton(
+    //             onPressed: () async {
+    //               if (totalHours.value * gymObj['hourly_rate'] - couponValue.value <=
+    //                   walletData.value['balance']) {
+    //                 List temp = [];
+    //                 bookings.forEach((element) {
+    //                   temp.add(element['id']);
+    //                 });
+    //                 Map res = await httpClient.confirmSchedules(
+    //                   temp,
+    //                   totalHours.value * gymObj['hourly_rate'] - couponValue.value,
+    //                   gymObj['user_id'],
+    //                   couponCode.value,
+    //                   2
+    //                 );
+    //                 if (res['code'] == 200) {
+    //                   informUser();
+    //                   Get.offAll(() => Layout());
+    //                   showSnack('Schedule Confirmed!',
+    //                       'Your Booking Schedule has been confirmed and paid.');
+    //                 } else {
+    //                   print(res);
+    //                 }
+    //               } else {
+    //                 showSnack('Insufficient Balance',
+    //                     'You do not have sufficient balance to pay for this booking.');
+    //               }
+    //             },
+    //             style:
+    //                 ButtonStyles.matButton(Themes.mainThemeColor.shade500, 0),
+    //             child: Obx(() => ready.value
+    //                 ? Padding(
+    //                     padding: EdgeInsets.symmetric(vertical: 12),
+    //                     child: Column(
+    //                       mainAxisAlignment: MainAxisAlignment.center,
+    //                       mainAxisSize: MainAxisSize.min,
+    //                       children: [
+    //                         Text(
+    //                           'Pay with E-gift',
+    //                           style:
+    //                               TypographyStyles.boldText(16, Colors.black),
+    //                         ),
+    //                         SizedBox(
+    //                           height: 3,
+    //                         ),
+    //                         Text(
+    //                           '(E-gift Balance: ${walletData['balance'].toStringAsFixed(2)})',
+    //                           style:
+    //                               TypographyStyles.normalText(13, Colors.black),
+    //                         ),
+    //                       ],
+    //                     ),
+    //                   )
+    //                 : LoadingAndEmptyWidgets.loadingWidget()),
+    //           ),
+    //         ),
+    //         Container(
+    //           width: Get.width,
+    //           padding: EdgeInsets.only(top: 3),
+    //           child: ElevatedButton(
+    //             onPressed: () {
+    //               payByCard();
+    //             },
+    //             style: SignUpStyles.selectedButton(),
+    //             child: Obx(() => ready.value
+    //                 ? Padding(
+    //                     padding: EdgeInsets.symmetric(vertical: 15),
+    //                     child: Row(
+    //                         mainAxisAlignment: MainAxisAlignment.center,
+    //                         children: [
+    //                           Container(
+    //                             width: 32,
+    //                             height: 32,
+    //                             child: ClipRRect(
+    //                               borderRadius: BorderRadius.circular(2),
+    //                               child: Image.asset('assets/BMLLogo.jpeg'),
+    //                             ),
+    //                           ),
+    //                           SizedBox(width: 16),
+    //                           Column(
+    //                             children: [
+    //                               Text(
+    //                                 'Pay with Card',
+    //                                 style: TextStyle(
+    //                                   color: AppColors.accentColor,
+    //                                   fontSize: 20,
+    //                                   fontFamily: 'Bebas Neue',
+    //                                   fontWeight: FontWeight.w400,
+    //                                   height: 0,
+    //                                 ),
+    //                               ),
+    //                               Text(
+    //                                 'Tax amount: MVR ${(taxController.getCalculatedTax( totalHours.value * gymObj['hourly_rate'] - couponValue.value)).toStringAsFixed(2)}',
+    //                                 style: TypographyStyles.text(10),
+    //                               )
+    //                             ],
+    //                           )
+    //                         ]),
+    //                   )
+    //                 : LoadingAndEmptyWidgets.loadingWidget()),
+    //           ),
+    //         ),
+    //         Container(
+    //           height: 48,
+    //           width: Get.width,
+    //           child: TextButton(
+    //               onPressed: () => Get.back(),
+    //               child: Text(
+    //                 'Cancel',
+    //                 style: TypographyStyles.boldText(
+    //                   14,
+    //                   Get.isDarkMode
+    //                       ? Themes.mainThemeColorAccent.shade100
+    //                       : colors.Colors().lightBlack(1),
+    //                 ),
+    //               )),
+    //         ),
+    //         SizedBox(
+    //           height: 5,
+    //         ),
+    //       ]);
+    // }
+    void confirmAndPay(){
+      Get.to(()=>PaymentSummary(
+        orderDetails: [
+          SummaryItem(head: 'Total Bookings',value: bookings.length.toString(),),
+          SummaryItem(head: 'Total Hours',value: totalHours.value.toString(),),
+          SummaryItem(head: 'Amount',value: 'MVR '+(totalHours.value * gymObj['hourly_rate']).toStringAsFixed(2),),
+        ],
+        total: (totalHours.value * gymObj['hourly_rate']).toDouble(),
+        payByCard: (coupon){payByCard(coupon);},
+        payByWallet: (coupon){payWithWallet(coupon);},
+        isCouponAvailable: true,
+        couponData:{
+          'type': 2,
+          'typeId': gymObj['user_id'],
+        },
+      ));
     }
 
     void deleteUnconfirmedBooking(id) async {

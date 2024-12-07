@@ -127,7 +127,7 @@ class HomeWidgetPro extends StatelessWidget {
       Get.to(()=>PurchaseSummary(onSuccess: onSuccess, data: data,));
     }
 
-    void subscribeNow(Map plan, VoidCallback callback) async {
+    void subscribeNow(Map plan,String? coupon, VoidCallback callback) async {
       print("subscribeNow calling");
       ready.value = false;
       Map durationsMap = {'month': 1, 'year': 12, 'lifetime': 9999};
@@ -135,7 +135,7 @@ class HomeWidgetPro extends StatelessWidget {
       int months = plan['duration_amount'] * durationAmountMultiplier;
       var data = {
         'planId':plansList[selectedPackage.value]['id'],
-        'couponCode': '${couponCode.value}',
+        'couponCode': coupon,
         'payment_type':1
       };
       Map res = await httpClient.proMemberActivate(data);
@@ -202,11 +202,11 @@ class HomeWidgetPro extends StatelessWidget {
            SummaryItem(head: 'Plan Price',value: "MVR ${data['price']}",),
         ],
         total: getPlanPrice(plan),//storeHelper.getCartTotal(),
-        payByCard: (){subscribeNow(plan,(){});},
-        payByWallet: ()async{
+        payByCard: (coupon){subscribeNow(plan,coupon,(){});},
+        payByWallet: (coupon)async{
           var data = {
             'planId': plansList[selectedPackage.value]['id'],
-            'couponCode': '${couponCode.value}',
+            'couponCode': coupon,
             'payment_type': 2
           };
           Map res = await httpClient.proMemberActivate(data);
@@ -219,312 +219,316 @@ class HomeWidgetPro extends StatelessWidget {
             showSnack('Error', 'Something went wrong.');
           }
         },
+        couponData:{
+          'type': 1,
+          'typeId': plansList[selectedPackage.value]['id'],
+        },
         headerWidget:headerWidget ,
         isCouponAvailable: true,
       ));
     }
 
-    void confirmAndPay(Map plan) async {
-      Map res = await httpClient.getWallet();
-      print(plan);
-
-      if (res['code'] == 200) {
-        print(res);
-        walletData.value = res['data'];
-      } else {
-        print(res);
-      }
-
-      Get.defaultDialog(
-          radius: 8,
-          title: '',
-          titlePadding: EdgeInsets.zero,
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: 20,
-          ),
-          content: Obx(() => Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "PURCHASE SUMMARY",
-                    style: TypographyStyles.boldText(
-                      16,
-                      Get.isDarkMode
-                          ? Themes.mainThemeColorAccent.shade100
-                          : colors.Colors().lightBlack(1),
-                    ),
-                  ),
-                  SizedBox(height: 30),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Selected Plan',
-                        style: TypographyStyles.normalText(
-                            16, Themes.mainThemeColorAccent.shade300),
-                      ),
-                      Text(
-                        '${plan['name']}',
-                        style: TypographyStyles.boldText(
-                          16,
-                          Get.isDarkMode
-                              ? Themes.mainThemeColorAccent.shade100
-                              : colors.Colors().lightBlack(1),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 4),
-                  Divider(
-                    thickness: 1,
-                    color:
-                        Themes.mainThemeColorAccent.shade300.withOpacity(0.2),
-                  ),
-                  SizedBox(height: 4),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Discount',
-                        style: TypographyStyles.normalText(
-                            16, Themes.mainThemeColorAccent.shade300),
-                      ),
-                      Text(
-                        'MVR ${couponValue.value}',
-                        style: TypographyStyles.boldText(
-                          16,
-                          Get.isDarkMode
-                              ? Themes.mainThemeColorAccent.shade100
-                              : colors.Colors().lightBlack(1),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 4),
-                  Divider(
-                    thickness: 1,
-                    color:
-                        Themes.mainThemeColorAccent.shade300.withOpacity(0.2),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Total To be Paid',
-                        style: TypographyStyles.normalText(
-                            16, Themes.mainThemeColorAccent.shade300),
-                      ),
-                      Text(
-                        'MVR ${getPlanPrice(plan) - couponValue.value}',
-                        style: TypographyStyles.boldText(
-                          16,
-                          Get.isDarkMode
-                              ? Themes.mainThemeColorAccent.shade100
-                              : colors.Colors().lightBlack(1),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 8),
-                  SizedBox(height: 30),
-                  GestureDetector(
-                    onTap: (){
-                      isAgree.value = !isAgree.value;
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Checkbox(value: isAgree.value, onChanged: (val){
-                          isAgree.value = val!;
-                        },splashRadius: 20,),
-                        Expanded(
-                          child: RichText(
-                            textAlign: TextAlign.left,
-                            text: TextSpan(
-                              text:
-                                  'You are agreeing to our ',
-                              style: TypographyStyles.normalText(
-                                12,
-                                Get.isDarkMode
-                                    ? Themes.mainThemeColorAccent.shade100
-                                    : colors.Colors().lightBlack(1),
-                              ),
-                              children: <TextSpan>[
-                                TextSpan(
-                                  text: 'Terms & Conditions',
-                                  style: TypographyStyles.normalText(
-                                      12, Themes.mainThemeColor),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () => launchUrl(Uri.parse(
-                                        'https://northstar.mv/terms-conditions/')),
-                                ),
-                                TextSpan(
-                                  text: " & ",
-                                  style: TypographyStyles.normalText(
-                                      12,
-                                      Get.isDarkMode
-                                          ? Themes.mainThemeColorAccent.shade100
-                                          : colors.Colors().lightBlack(1)),
-                                ),
-                                TextSpan(
-                                  text: 'Privacy Policy',
-                                  style: TypographyStyles.normalText(
-                                      12, Themes.mainThemeColor),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () => launchUrl(Uri.parse(
-                                        'https://northstar.mv/privacy-policy')),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  CouponApply(
-                      type: 1,
-                      typeId: plan['id'],
-                      couponCode: couponCode,
-                      couponValue: couponValue,
-                      payingAmount: getPlanPrice(plan))
-                ],
-              )),
-          actions: [
-            Container(
-              width: Get.width,
-              child: ElevatedButton(
-                onPressed: () async {
-                  if(!isAgree.value){
-                    showSnack('Terms and Conditions','Please accept the terms and conditions.');
-                    return;
-                  }
-                  if (plansList[selectedPackage.value]['real_price']-couponValue.value <=
-                      walletData['balance']) {
-                        showPurchaseSummary((VoidCallback callback)async{
-                          var data = {
-                            'planId': plansList[selectedPackage.value]['id'],
-                            'couponCode': '${couponCode.value}',
-                            'payment_type': 2
-                          };
-                          Map res = await httpClient.proMemberActivate(data);
-                          print(res);
-                          if (res['code'] == 200) {
-                            callback();
-                            Get.to(() => Layout());
-                            showSnack('Successfully Subscribed',
-                                'You have successfully upgraded your membership plan.');
-                          } else {
-                            callback();
-                            showSnack('Error', 'Something went wrong.');
-                          }
-                        }, 2);
-                  } else {
-                    showSnack('Insufficient Balance',
-                        'You do not have sufficient balance to pay for this booking.');
-                  }
-                },
-                style:
-                    ButtonStyles.matButton(Themes.mainThemeColor.shade500, 0),
-                child: Obx(() => ready.value
-                    ? Padding(
-                        padding: EdgeInsets.symmetric(vertical: 12),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              'Pay with E-gift',
-                              style:
-                                  TypographyStyles.boldText(16, Colors.black),
-                            ),
-                            SizedBox(
-                              height: 3,
-                            ),
-                            Text(
-                              '(E-gift Balance: ${walletData['balance'].toStringAsFixed(2)})',
-                              style:
-                                  TypographyStyles.normalText(13, Colors.black),
-                            ),
-                          ],
-                        ),
-                      )
-                    : LoadingAndEmptyWidgets.loadingWidget()),
-              ),
-            ),
-            Container(
-              width: Get.width,
-              padding: EdgeInsets.only(top: 3),
-              child: ElevatedButton(
-                onPressed: () {
-                  if(!isAgree.value){
-                    showSnack('Terms and Conditions','Please accept the terms and conditions.');
-                    return;
-                  }
-                  Get.back();
-                  showPurchaseSummary((VoidCallback callback){subscribeNow(plan,callback);},1);
-                  // subscribeNow(plan);
-                },
-                style: SignUpStyles.selectedButton(),
-                child: Obx(() => ready.value
-                    ? Padding(
-                        padding: EdgeInsets.symmetric(vertical: 15),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: 32,
-                                height: 32,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(2),
-                                  child: Image.asset('assets/BMLLogo.jpeg'),
-                                ),
-                              ),
-                              SizedBox(width: 16),
-                              Column(
-                                children: [
-                                  Text(
-                                    'Pay with Card',
-                                    style: TextStyle(
-                                      color: AppColors.accentColor,
-                                      fontSize: 20,
-                                      fontFamily: 'Bebas Neue',
-                                      fontWeight: FontWeight.w400,
-                                      height: 0,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Tax amount: MVR ${(taxController.getCalculatedTax(getPlanPrice(plan) - couponValue.value)).toStringAsFixed(2)}',
-                                    style: TypographyStyles.text(10),
-                                  )
-                                ],
-                              )
-                            ]),
-                      )
-                    : LoadingAndEmptyWidgets.loadingWidget()),
-              ),
-            ),
-            Container(
-              height: 48,
-              width: Get.width,
-              child: TextButton(
-                  onPressed: () => Get.back(),
-                  child: Text(
-                    'Cancel',
-                    style: TypographyStyles.boldText(
-                      14,
-                      Get.isDarkMode
-                          ? Themes.mainThemeColorAccent.shade100
-                          : colors.Colors().lightBlack(1),
-                    ),
-                  )),
-            ),
-            SizedBox(height: 5),
-          ]);
-    }
+    // void confirmAndPay(Map plan) async {
+    //   Map res = await httpClient.getWallet();
+    //   print(plan);
+    //
+    //   if (res['code'] == 200) {
+    //     print(res);
+    //     walletData.value = res['data'];
+    //   } else {
+    //     print(res);
+    //   }
+    //
+    //   Get.defaultDialog(
+    //       radius: 8,
+    //       title: '',
+    //       titlePadding: EdgeInsets.zero,
+    //       contentPadding: EdgeInsets.symmetric(
+    //         horizontal: 20,
+    //       ),
+    //       content: Obx(() => Column(
+    //             crossAxisAlignment: CrossAxisAlignment.start,
+    //             children: [
+    //               Text(
+    //                 "PURCHASE SUMMARY",
+    //                 style: TypographyStyles.boldText(
+    //                   16,
+    //                   Get.isDarkMode
+    //                       ? Themes.mainThemeColorAccent.shade100
+    //                       : colors.Colors().lightBlack(1),
+    //                 ),
+    //               ),
+    //               SizedBox(height: 30),
+    //               Row(
+    //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                 children: [
+    //                   Text(
+    //                     'Selected Plan',
+    //                     style: TypographyStyles.normalText(
+    //                         16, Themes.mainThemeColorAccent.shade300),
+    //                   ),
+    //                   Text(
+    //                     '${plan['name']}',
+    //                     style: TypographyStyles.boldText(
+    //                       16,
+    //                       Get.isDarkMode
+    //                           ? Themes.mainThemeColorAccent.shade100
+    //                           : colors.Colors().lightBlack(1),
+    //                     ),
+    //                   ),
+    //                 ],
+    //               ),
+    //               SizedBox(height: 4),
+    //               Divider(
+    //                 thickness: 1,
+    //                 color:
+    //                     Themes.mainThemeColorAccent.shade300.withOpacity(0.2),
+    //               ),
+    //               SizedBox(height: 4),
+    //               Row(
+    //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                 children: [
+    //                   Text(
+    //                     'Discount',
+    //                     style: TypographyStyles.normalText(
+    //                         16, Themes.mainThemeColorAccent.shade300),
+    //                   ),
+    //                   Text(
+    //                     'MVR ${couponValue.value}',
+    //                     style: TypographyStyles.boldText(
+    //                       16,
+    //                       Get.isDarkMode
+    //                           ? Themes.mainThemeColorAccent.shade100
+    //                           : colors.Colors().lightBlack(1),
+    //                     ),
+    //                   ),
+    //                 ],
+    //               ),
+    //               SizedBox(height: 4),
+    //               Divider(
+    //                 thickness: 1,
+    //                 color:
+    //                     Themes.mainThemeColorAccent.shade300.withOpacity(0.2),
+    //               ),
+    //               Row(
+    //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                 children: [
+    //                   Text(
+    //                     'Total To be Paid',
+    //                     style: TypographyStyles.normalText(
+    //                         16, Themes.mainThemeColorAccent.shade300),
+    //                   ),
+    //                   Text(
+    //                     'MVR ${getPlanPrice(plan) - couponValue.value}',
+    //                     style: TypographyStyles.boldText(
+    //                       16,
+    //                       Get.isDarkMode
+    //                           ? Themes.mainThemeColorAccent.shade100
+    //                           : colors.Colors().lightBlack(1),
+    //                     ),
+    //                   ),
+    //                 ],
+    //               ),
+    //               SizedBox(height: 8),
+    //               SizedBox(height: 30),
+    //               GestureDetector(
+    //                 onTap: (){
+    //                   isAgree.value = !isAgree.value;
+    //                 },
+    //                 child: Row(
+    //                   mainAxisAlignment: MainAxisAlignment.center,
+    //                   crossAxisAlignment: CrossAxisAlignment.center,
+    //                   children: [
+    //                     Checkbox(value: isAgree.value, onChanged: (val){
+    //                       isAgree.value = val!;
+    //                     },splashRadius: 20,),
+    //                     Expanded(
+    //                       child: RichText(
+    //                         textAlign: TextAlign.left,
+    //                         text: TextSpan(
+    //                           text:
+    //                               'You are agreeing to our ',
+    //                           style: TypographyStyles.normalText(
+    //                             12,
+    //                             Get.isDarkMode
+    //                                 ? Themes.mainThemeColorAccent.shade100
+    //                                 : colors.Colors().lightBlack(1),
+    //                           ),
+    //                           children: <TextSpan>[
+    //                             TextSpan(
+    //                               text: 'Terms & Conditions',
+    //                               style: TypographyStyles.normalText(
+    //                                   12, Themes.mainThemeColor),
+    //                               recognizer: TapGestureRecognizer()
+    //                                 ..onTap = () => launchUrl(Uri.parse(
+    //                                     'https://northstar.mv/terms-conditions/')),
+    //                             ),
+    //                             TextSpan(
+    //                               text: " & ",
+    //                               style: TypographyStyles.normalText(
+    //                                   12,
+    //                                   Get.isDarkMode
+    //                                       ? Themes.mainThemeColorAccent.shade100
+    //                                       : colors.Colors().lightBlack(1)),
+    //                             ),
+    //                             TextSpan(
+    //                               text: 'Privacy Policy',
+    //                               style: TypographyStyles.normalText(
+    //                                   12, Themes.mainThemeColor),
+    //                               recognizer: TapGestureRecognizer()
+    //                                 ..onTap = () => launchUrl(Uri.parse(
+    //                                     'https://northstar.mv/privacy-policy')),
+    //                             ),
+    //                           ],
+    //                         ),
+    //                       ),
+    //                     ),
+    //                   ],
+    //                 ),
+    //               ),
+    //               SizedBox(
+    //                 height: 10,
+    //               ),
+    //               CouponApply(
+    //                   type: 1,
+    //                   typeId: plan['id'],
+    //                   couponCode: couponCode,
+    //                   couponValue: couponValue,
+    //                   payingAmount: getPlanPrice(plan))
+    //             ],
+    //           )),
+    //       actions: [
+    //         Container(
+    //           width: Get.width,
+    //           child: ElevatedButton(
+    //             onPressed: () async {
+    //               if(!isAgree.value){
+    //                 showSnack('Terms and Conditions','Please accept the terms and conditions.');
+    //                 return;
+    //               }
+    //               if (plansList[selectedPackage.value]['real_price']-couponValue.value <=
+    //                   walletData['balance']) {
+    //                     showPurchaseSummary((VoidCallback callback)async{
+    //                       var data = {
+    //                         'planId': plansList[selectedPackage.value]['id'],
+    //                         'couponCode': '${couponCode.value}',
+    //                         'payment_type': 2
+    //                       };
+    //                       Map res = await httpClient.proMemberActivate(data);
+    //                       print(res);
+    //                       if (res['code'] == 200) {
+    //                         callback();
+    //                         Get.to(() => Layout());
+    //                         showSnack('Successfully Subscribed',
+    //                             'You have successfully upgraded your membership plan.');
+    //                       } else {
+    //                         callback();
+    //                         showSnack('Error', 'Something went wrong.');
+    //                       }
+    //                     }, 2);
+    //               } else {
+    //                 showSnack('Insufficient Balance',
+    //                     'You do not have sufficient balance to pay for this booking.');
+    //               }
+    //             },
+    //             style:
+    //                 ButtonStyles.matButton(Themes.mainThemeColor.shade500, 0),
+    //             child: Obx(() => ready.value
+    //                 ? Padding(
+    //                     padding: EdgeInsets.symmetric(vertical: 12),
+    //                     child: Column(
+    //                       mainAxisAlignment: MainAxisAlignment.center,
+    //                       mainAxisSize: MainAxisSize.min,
+    //                       children: [
+    //                         Text(
+    //                           'Pay with E-gift',
+    //                           style:
+    //                               TypographyStyles.boldText(16, Colors.black),
+    //                         ),
+    //                         SizedBox(
+    //                           height: 3,
+    //                         ),
+    //                         Text(
+    //                           '(E-gift Balance: ${walletData['balance'].toStringAsFixed(2)})',
+    //                           style:
+    //                               TypographyStyles.normalText(13, Colors.black),
+    //                         ),
+    //                       ],
+    //                     ),
+    //                   )
+    //                 : LoadingAndEmptyWidgets.loadingWidget()),
+    //           ),
+    //         ),
+    //         Container(
+    //           width: Get.width,
+    //           padding: EdgeInsets.only(top: 3),
+    //           child: ElevatedButton(
+    //             onPressed: () {
+    //               if(!isAgree.value){
+    //                 showSnack('Terms and Conditions','Please accept the terms and conditions.');
+    //                 return;
+    //               }
+    //               Get.back();
+    //               showPurchaseSummary((VoidCallback callback){subscribeNow(plan,callback);},1);
+    //               // subscribeNow(plan);
+    //             },
+    //             style: SignUpStyles.selectedButton(),
+    //             child: Obx(() => ready.value
+    //                 ? Padding(
+    //                     padding: EdgeInsets.symmetric(vertical: 15),
+    //                     child: Row(
+    //                         mainAxisAlignment: MainAxisAlignment.center,
+    //                         children: [
+    //                           Container(
+    //                             width: 32,
+    //                             height: 32,
+    //                             child: ClipRRect(
+    //                               borderRadius: BorderRadius.circular(2),
+    //                               child: Image.asset('assets/BMLLogo.jpeg'),
+    //                             ),
+    //                           ),
+    //                           SizedBox(width: 16),
+    //                           Column(
+    //                             children: [
+    //                               Text(
+    //                                 'Pay with Card',
+    //                                 style: TextStyle(
+    //                                   color: AppColors.accentColor,
+    //                                   fontSize: 20,
+    //                                   fontFamily: 'Bebas Neue',
+    //                                   fontWeight: FontWeight.w400,
+    //                                   height: 0,
+    //                                 ),
+    //                               ),
+    //                               Text(
+    //                                 'Tax amount: MVR ${(taxController.getCalculatedTax(getPlanPrice(plan) - couponValue.value)).toStringAsFixed(2)}',
+    //                                 style: TypographyStyles.text(10),
+    //                               )
+    //                             ],
+    //                           )
+    //                         ]),
+    //                   )
+    //                 : LoadingAndEmptyWidgets.loadingWidget()),
+    //           ),
+    //         ),
+    //         Container(
+    //           height: 48,
+    //           width: Get.width,
+    //           child: TextButton(
+    //               onPressed: () => Get.back(),
+    //               child: Text(
+    //                 'Cancel',
+    //                 style: TypographyStyles.boldText(
+    //                   14,
+    //                   Get.isDarkMode
+    //                       ? Themes.mainThemeColorAccent.shade100
+    //                       : colors.Colors().lightBlack(1),
+    //                 ),
+    //               )),
+    //         ),
+    //         SizedBox(height: 5),
+    //       ]);
+    // }
 
     void verifyAndGoHome({bool trial = false}) async {
       ready.value = false;

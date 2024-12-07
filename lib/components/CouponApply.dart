@@ -14,11 +14,13 @@ class CouponApply extends StatelessWidget {
   RxDouble couponValue = 0.0.obs;
   dynamic payingAmount = 0;
 
+  final Function(double,String) onApply;
+  final VoidCallback onClear;
+
   CouponApply(
       {required this.type,
       required this.typeId,
-      required this.couponValue,
-      required this.payingAmount, required this.couponCode});
+      required this.payingAmount,required this.onApply,required this.onClear});
 
   TextEditingController coupon = new TextEditingController();
 
@@ -49,7 +51,7 @@ class CouponApply extends StatelessWidget {
         }
         couponValue.value = saving;
         couponCode.value = response['data']['code'];
-        print(couponValue.value);
+        onApply(saving,response['data']['code']);
         Get.back();
         showSnack("Success", 'Successfully applied coupon');
       }
@@ -106,14 +108,18 @@ class CouponApply extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Buttons.outlineTextIconButton(
-        icon: couponValue.value > 0 ?Icons.clear:Icons.confirmation_number,
-        backgroundColor: couponValue.value > 0 ?Colors.redAccent:AppColors.accentColor ,
-        textColor: couponValue.value > 0 ?Colors.white:AppColors.textOnAccentColor,
-        onPressed: () {
-          couponValue.value > 0 ? couponValue.value = 0:open() ;
-        },
-        label: couponValue.value > 0 ? "Remove coupon" : "Apply Coupon",
-        width: Get.width);
+    return Obx(()=> Buttons.outlineTextIconButton(
+          icon: couponValue.value > 0 ?Icons.clear:Icons.confirmation_number,
+          backgroundColor: couponValue.value > 0 ?Colors.redAccent:AppColors.accentColor ,
+          textColor: couponValue.value > 0 ?Colors.white:AppColors.textOnAccentColor,
+          onPressed: () {
+            if(couponValue.value>0){
+              onClear();
+            }
+            couponValue.value > 0 ? couponValue.value = 0:open() ;
+          },
+          label: couponValue.value > 0 ? "Remove coupon" : "Apply Coupon",
+          width: Get.width),
+    );
   }
 }

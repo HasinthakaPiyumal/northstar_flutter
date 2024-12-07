@@ -24,6 +24,7 @@ class HomeWidgetGym extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     RxList myBookings = [].obs;
+    RxList myServices = [].obs;
     DateFormat tmFormat = DateFormat('hh:mm a');
 
     void showInfo(Map data) {
@@ -63,9 +64,23 @@ class HomeWidgetGym extends StatelessWidget {
 
     void getMyComGymBookings() async {
       Map res = await httpClient.getComGymSchedules();
+      print("====");
       if (res['code'] == 200) {
         myBookings.addAll(res['data']);
-        print(res);
+        res['data'].first.keys.forEach((k) {
+          print(k);
+        });
+      }
+    }
+
+    void getMyServiceBookings() async {
+      Map res = await httpClient.getServiceSchedules();
+      print("====");
+      if (res['code'] == 200) {
+        myBookings.addAll(res['data']);
+        res['data'].first.keys.forEach((k) {
+          print(k);
+        });
       }
     }
 
@@ -74,6 +89,7 @@ class HomeWidgetGym extends StatelessWidget {
       if (res['code'] == 200) {
         myBookings.value = res['data'];
       }
+      getMyServiceBookings();
       getMyComGymBookings();
     }
 
@@ -195,6 +211,11 @@ class HomeWidgetGym extends StatelessWidget {
                       ? ListView.builder(
                           itemCount: myBookings.length,
                           itemBuilder: (_, index) {
+                            print("GYM Type");
+                            print(myBookings[index]['type']);
+                            print("GYM Data");
+                            print(myBookings[index]['gym_data']);
+                            print(myBookings[index]['gym']);
                             if (myBookings[index]['type'] != null) {
                               DateTime selectedDateForEquation;
 
@@ -257,13 +278,17 @@ class HomeWidgetGym extends StatelessWidget {
                                                           MainAxisAlignment
                                                               .center,
                                                       children: [
-                                                        Text(
-                                                          "${myBookings[index]['gym_data']['gym_name']}"
-                                                              .capitalize
-                                                              .toString(),
-                                                          style:
-                                                              TypographyStyles
-                                                                  .title(16),
+                                                        SizedBox(
+                                                          width:
+                                                              Get.width - 240,
+                                                          child: Text(
+                                                            "${myBookings[index]['gym_data']['gym_name']}"
+                                                                .capitalize
+                                                                .toString(),
+                                                            style:
+                                                                TypographyStyles
+                                                                    .title(16),
+                                                          ),
                                                         ),
                                                         Text(
                                                           "${CountryPickerUtils.getCountryByIsoCode(myBookings[index]['gym_data']['gym_country']).name}",
@@ -333,8 +358,14 @@ class HomeWidgetGym extends StatelessWidget {
                                               ],
                                             ),
                                             onTap: () {
-                                              Map obj = myBookings[index]['gym_data'];
-                                              obj.addIf(!obj.keys.contains('user'), 'user', {'avatar_url':myBookings[index]['gym']['avatar_url']});
+                                              Map obj =
+                                                  myBookings[index]['gym_data'];
+                                              obj.addIf(
+                                                  !obj.keys.contains('user'),
+                                                  'user', {
+                                                'avatar_url': myBookings[index]
+                                                    ['gym']['avatar_url']
+                                              });
                                               print('Gym view obj');
                                               print(obj);
                                               Get.to(() => GymView(
@@ -384,7 +415,8 @@ class HomeWidgetGym extends StatelessWidget {
                                                 // Get.to(()=>DoorQRView());
                                                 Get.to(() => UnlockDoorQR(
                                                     QR: myBookings[index]
-                                                    ['user']['qr_id'].toString()));
+                                                            ['user']['qr_id']
+                                                        .toString()));
                                               },
                                               child: Container(
                                                   width: 102,
@@ -491,14 +523,19 @@ class HomeWidgetGym extends StatelessWidget {
                                                           MainAxisAlignment
                                                               .center,
                                                       children: [
-                                                        Text(
-                                                          myBookings[index]
-                                                                  ['gym_data']
-                                                              ['gym_name'].toString().capitalize.toString(),
+                                                        SizedBox(
+                                                          width:Get.width-240,
+                                                            child:Text(
+                                                          myBookings[index][
+                                                                      'gym_data']
+                                                                  ['gym_name']
+                                                              .toString()
+                                                              .capitalize
+                                                              .toString(),
                                                           style:
                                                               TypographyStyles
                                                                   .title(16),
-                                                        ),
+                                                        )),
                                                         Text(
                                                           "${CountryPickerUtils.getCountryByIsoCode(myBookings[index]['gym_data']['gym_country']).name}",
                                                           style:
@@ -578,14 +615,25 @@ class HomeWidgetGym extends StatelessWidget {
                                               ],
                                             ),
                                             onTap: () {
-                                              Map obj = myBookings[index]['gym_data'];
-                                              obj.addIf(!obj.keys.contains('user'), 'user', {'avatar_url':myBookings[index]['gym']['avatar_url']});
+                                              Map obj =
+                                                  myBookings[index]['gym_data'];
+                                              obj.addIf(
+                                                  !obj.keys.contains('user'),
+                                                  'user', {
+                                                'avatar_url': myBookings[index]
+                                                    ['gym']['avatar_url']
+                                              });
                                               print('Gym view obj');
                                               print(obj);
+                                              if(myBookings[index]['service_data']!=null){
+                                                obj['gym_gallery']=myBookings[index]['service_data']['gym_gallery'];
+                                                obj["gym_services"] = myBookings[index]['service_data'];
+                                                obj["gym_type"] = "services";
+                                              }
                                               Get.to(() => GymView(
-                                                gymObj: obj,
-                                                viewOnly: true,
-                                              ));
+                                                    gymObj: obj,
+                                                    viewOnly: true,
+                                                  ));
                                             },
                                           ),
                                         ),
@@ -627,7 +675,8 @@ class HomeWidgetGym extends StatelessWidget {
                                                 //unlockGym(myBookings[index]['gym_id']);
                                                 Get.to(() => UnlockDoorQR(
                                                     QR: myBookings[index]
-                                                        ['user']['qr_id'].toString()));
+                                                            ['user']['qr_id']
+                                                        .toString()));
                                               },
                                               child: Container(
                                                   width: 102,

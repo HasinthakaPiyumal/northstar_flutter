@@ -259,12 +259,12 @@ class SelectGymBookingDates extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 10),
-                CouponApply(
-                    type: 3,
-                    typeId: gymObj['user_id'],
-                    couponCode: couponCode,
-                    couponValue: couponValue,
-                    payingAmount: totalPrice.value)
+                // CouponApply(
+                //     type: 3,
+                //     typeId: gymObj['user_id'],
+                //     couponCode: couponCode,
+                //     couponValue: couponValue,
+                //     payingAmount: totalPrice.value)
               ],
             ),
           ),

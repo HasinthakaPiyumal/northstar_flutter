@@ -334,6 +334,7 @@ class WatchDataController {
   }
 
   static Future<bool> requestPermission() async {
+    Health().configure();
     var state = await Health().requestAuthorization(types,permissions: permissions);
     print('Printing health data state ---> $state');
     return state;

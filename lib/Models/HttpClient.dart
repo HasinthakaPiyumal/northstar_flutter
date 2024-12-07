@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/NSNotification.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -535,9 +536,10 @@ class HttpClient {
 
   //Get Exclusive Gym Availability
   Future<Map> getAvailableTimeSlots(gymID, DateTime dateTime) async {
+    String dt = DateFormat('yyyy-MM-dd').format(dateTime);
     Response response = await post(
         '/fitness/exclusive-gyms/actions/get-bookings-timeslots',
-        {"gym_id": gymID, "date": dateTime.toString()});
+        {"service_id": gymID, "date": dt});
     return {
       "code": response.statusCode,
       "data": response.data,
@@ -641,7 +643,7 @@ class HttpClient {
       "service_id": serviceID,
       "client_ids": clientIDs,
       "start_time": startTime.toString(),
-      // "end_time": endTime.toString()
+      "end_time": endTime.toString()
     });
     return {
       "code": response.statusCode,
@@ -712,6 +714,16 @@ class HttpClient {
   Future<Map> getComGymSchedules() async {
     Response response = await get(
         '/fitness/commercial-gyms/actions/get-my-schedules/' +
+            authUser.id.toString());
+    return {
+      "code": response.statusCode,
+      "data": response.data,
+    };
+  }
+  //Get Service Schedule
+  Future<Map> getServiceSchedules() async {
+    Response response = await get(
+        '/fitness/exclusive-gyms/actions/get-my-bookings/' +
             authUser.id.toString());
     return {
       "code": response.statusCode,

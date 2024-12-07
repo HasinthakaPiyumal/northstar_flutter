@@ -1,14 +1,20 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:north_star/Models/HttpClient.dart';
+import 'package:north_star/Models/NSNotification.dart';
 import 'package:north_star/Styles/AppColors.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
+import 'package:north_star/UI/Layout.dart';
+import 'package:north_star/UI/SharedWidgets/PaymentSummary.dart';
+import 'package:north_star/UI/SharedWidgets/PaymentVerification.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:north_star/Utils/PopUps.dart';
 import 'package:north_star/components/DropDownButtonWithBorder.dart';
 import 'package:north_star/components/SessionTimePicker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../../../../Styles/BoxStyles.dart';
@@ -39,6 +45,108 @@ class AddBooking extends StatelessWidget {
     Rx<DateTime> focusedDay = DateTime.now().add(Duration(days: 1)).obs;
 
     RxBool ready = true.obs;
+    RxList bookings = [].obs;
+
+
+    RxString couponCode = "".obs;
+    RxDouble couponValue = 0.0.obs;
+
+    RxDouble totalPrice = 0.0.obs;
+
+    RxBool isAvailable = false.obs;
+
+    void payByCard(coupon) async {
+      ready.value = false;
+      Map res = await httpClient.confirmSchedulesForService({
+        'booking_ids':bookings,
+        'service_id':gymObj['gym_services']['id'],
+        'couponCode':coupon,
+        'paymentType':1
+      });
+
+      print(res);
+      if (res['code'] == 200) {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString("lastTransactionId", res['data']['id']);
+        await prefs.setString("lastTransactionUrl", res['data']['url']);
+        Get.to(()=>PaymentVerification());
+      } else {
+        showSnack("Booking Failed",res['data']['message'] );
+      }
+      ready.value = true;
+    }
+
+    void informUser(){
+      clientIds.forEach((element) {
+        print("Sending notification to client");
+        print('GYM object $gymObj');
+
+        bookings.forEach((bookingElement) {
+          DateTime time = DateFormat("hh:mm a").parse(selectedTime.value);
+
+          DateTime stTime = DateTime(
+            selectedDay.value.year,
+            selectedDay.value.month,
+            selectedDay.value.day,
+            time.hour,
+            time.minute,
+          );
+
+          String formattedStartTime = DateFormat('h:mm a').format(stTime);
+          String formattedDate = DateFormat('EEEE, MMM d').format(stTime);
+
+          String notes = "New Service booked for you at $formattedStartTime on $formattedDate.";
+          httpClient.saveTodo({
+            'user_id': element,
+            'todo': "You have a gym service session!",
+            'notes': notes,
+            'endDate': stTime
+          }, null);
+        });
+        httpClient.sendNotification(
+            element,
+            'You have new booking!',
+            'Your trainer has booked a service for you.',
+            NSNotificationTypes.GymAppointment, {});
+      });
+    }
+
+
+    void payWithWallet(coupon)async{
+        Map res = await httpClient.confirmSchedulesForService({
+          'booking_ids':bookings,
+          'service_id':gymObj['gym_services']['id'],
+          'couponCode':coupon,
+          'paymentType':2
+        });
+        if (res['code'] == 200) {
+          informUser();
+          Get.offAll(() => Layout());
+          showSnack('Schedule Confirmed!',
+              'Your Booking Schedule has been confirmed and paid.');
+        } else {
+          print(res);
+        }
+    }
+
+
+    void validateAndGo(){
+      Get.to(()=>PaymentSummary(
+        orderDetails: [
+          SummaryItem(head: 'Total Hours',value: quantity.value.toString(),),
+          SummaryItem(head: 'Amount',value: "MVR "+(gymObj['gym_services']['price'] * clientIds.length * quantity.value).toStringAsFixed(2),),
+        ],
+        total: (gymObj['gym_services']['price'] * clientIds.length * quantity.value).toDouble(),
+        payByCard: (coupon){payByCard(coupon);},
+        payByWallet: (coupon){payWithWallet(coupon);},
+        isCouponAvailable: true,
+        couponData:{
+          'type': 3,
+          'typeId': gymObj['gym_services']['id'],
+        },
+      ));
+    }
+
 
     String formatTimeWithAMPM(String time) {
       try {
@@ -50,14 +158,6 @@ class AddBooking extends StatelessWidget {
         return time;
       }
     }
-
-    Rx<DateTime> selectedStartTime = DateUtils.dateOnly(
-      DateTime.now().add(
-        Duration(
-          days: 1,
-        ),
-      ),
-    ).obs;
 
     void makeASchedule() async {
       ready.value = false;
@@ -89,15 +189,21 @@ class AddBooking extends StatelessWidget {
       }
 
       if (res['code'] == 200) {
-        Get.back();
+        bookings.value = [res['data']['booking_id']];
+        validateAndGo();
       }
     }
 
     void getAvailableTimeSlots(dateTime) async {
-      Map res = await httpClient.getAvailability(gymObj['user_id'], dateTime);
-      print('res');
+      ready.value = false;
+      Map res = await httpClient.getAvailableTimeSlots(gymObj['gym_services']['id'], dateTime);
+      print('Time slots');
       print(res);
+      print(dateTime.toString());
+      selectedTime.value = "";
+      availableTimes.clear();
       if (res['code'] == 200) {
+        isAvailable.value = true;
         selectedTime.value = "";
         quantity.value = 0;
         String serviceStartTime = gymObj['gym_services']['start_time'];
@@ -112,10 +218,15 @@ class AddBooking extends StatelessWidget {
             };
           },
         );
+        ready.value = true;
+      }else{
+        quantity.value = 0;
+        isAvailable.value = false;
+        ready.value = true;
       }
     }
 
-    getAvailableTimeSlots(DateTime.now());
+    getAvailableTimeSlots(selectedDay.value);
 
     return Scaffold(
         appBar: AppBar(
@@ -206,92 +317,132 @@ class AddBooking extends StatelessWidget {
                 style: TypographyStyles.title(16),
               ),
             ),
-            Obx(() => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            Obx(() => Visibility(
+              visible: isAvailable.value && ready.value,
+              child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Start Time',
+                          textAlign: TextAlign.start,
+                          style: TypographyStyles.text(16),
+                        ),
+                        Container(
+                            width: Get.width - 160,
+                            child: availableTimes
+                                .map((item) => item['availability']
+                                ? formatTimeWithAMPM(
+                                item['time'].toString())
+                                : '-')
+                                .where((time) => time != '-')
+                                .toSet()
+                                .toList().length>0?DropdownButtonWithBorder(
+                                width: Get.width - 200,
+                                items: availableTimes
+                                    .map((item) => item['availability']
+                                        ? formatTimeWithAMPM(
+                                            item['time'].toString())
+                                        : '-')
+                                    .where((time) => time != '-')
+                                    .toSet()
+                                    .toList(),
+                                selectedValue: selectedTime.value != ""
+                                    ? selectedTime.value
+                                    : null,
+                                onChanged: (val) {
+                                  quantity.value = 1;
+                                  selectedTime.value = val;
+                                }):Text('No available time slots',textAlign: TextAlign.end,)),
+                      ],
+                    ),
+                  ),
+            )),
+            Obx(
+              () => Visibility(
+                visible: isAvailable.value && ready.value,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Start Time',
+                        'End Time',
                         textAlign: TextAlign.start,
                         style: TypographyStyles.text(16),
                       ),
-                      Container(
-                          width: Get.width - 160,
-                          child: DropdownButtonWithBorder(
-                              width: Get.width - 200,
-                              items: availableTimes
-                                  .map((item) => item['availability']
-                                      ? formatTimeWithAMPM(
-                                          item['time'].toString())
-                                      : '-')
-                                  .where((time) => time != '-')
-                                  .toSet()
-                                  .toList(),
-                              selectedValue: selectedTime.value != ""
-                                  ? selectedTime.value
-                                  : null,
-                              onChanged: (val) {
-                                quantity.value = 1;
-                                selectedTime.value = val;
-                              })),
+                      Text(
+                        selectedTime.value != ""
+                            ? formatTimeWithAMPM(DateFormat('hh:mm a')
+                                .parse(selectedTime.value)
+                                .add(Duration(hours: quantity.value))
+                                .toString())
+                            : '-',
+                        textAlign: TextAlign.start,
+                        style: TypographyStyles.text(16),
+                      ),
                     ],
                   ),
-                )),
-            Obx(
-              () => Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'End Time',
-                      textAlign: TextAlign.start,
-                      style: TypographyStyles.text(16),
-                    ),
-                    Text(
-                      selectedTime.value != ""
-                          ? formatTimeWithAMPM(DateFormat('hh:mm a')
-                              .parse(selectedTime.value)
-                              .add(Duration(hours: quantity.value))
-                              .toString())
-                          : '-',
-                      textAlign: TextAlign.start,
-                      style: TypographyStyles.text(16),
-                    ),
-                  ],
                 ),
               ),
             ),
-            Obx(() => Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 16.0),
-                      child: Buttons.yellowFlatButton(
-                          onPressed: () {
-                            quantity.value = quantity.value + 1;
-                          },
-                          disabled: selectedTime.value == "" ||
-                              !availableTimes
-                                  .map((item) => item['availability']
-                                      ? formatTimeWithAMPM(
-                                          item['time'].toString())
-                                      : '-')
-                                  .where((time) => time != '-')
-                                  .toSet()
-                                  .toList()
-                                  .contains(formatTimeWithAMPM(
-                                      DateFormat('hh:mm a')
-                                          .parse(selectedTime.value)
-                                          .add(Duration(hours: quantity.value))
-                                          .toString())),
-                          height: 30,
-                          width: 100,
-                          label: 'Add an hour'),
-                    ),
-                  ],
-                )),
+            Obx(() => Visibility(
+              visible: isAvailable.value && ready.value,
+              child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 16.0),
+                        child: Buttons.yellowFlatButton(
+                            onPressed: () {
+                              quantity.value = quantity.value - 1;
+                            },
+                            disabled: quantity.value<2||selectedTime.value == "",
+                            height: 30,
+                            width: 100,
+                            label: 'Remove one hour'),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 16.0),
+                        child: Buttons.yellowFlatButton(
+                            onPressed: () {
+                              quantity.value = quantity.value + 1;
+                            },
+                            disabled: selectedTime.value == "" ||
+                                !availableTimes
+                                    .map((item) => item['availability']
+                                        ? formatTimeWithAMPM(
+                                            item['time'].toString())
+                                        : '-')
+                                    .where((time) => time != '-')
+                                    .toSet()
+                                    .toList()
+                                    .contains(formatTimeWithAMPM(
+                                        DateFormat('hh:mm a')
+                                            .parse(selectedTime.value)
+                                            .add(Duration(hours: quantity.value))
+                                            .toString())),
+                            height: 30,
+                            width: 100,
+                            label: 'Add One Hour'),
+                      ),
+                    ],
+                  ),
+            )),
+            Obx(()=>Visibility(
+              visible: !isAvailable.value && ready.value,
+                child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Center(child: Text("Not available")),
+            ))),
+            Obx(()=>Visibility(
+              visible: !ready.value,
+                child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Center(child: CircularProgressIndicator()),
+            ))),
+
             Obx(
               () => Padding(
                 padding: EdgeInsets.fromLTRB(15, 40, 15, 90),

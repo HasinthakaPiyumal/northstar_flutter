@@ -29,6 +29,7 @@ class Services extends StatelessWidget {
     Future<List> searchGyms(String pattern) async {
       Map res = await httpClient.searchGymServices(pattern);
       gyms.value = res['data'];
+      print(res['data']);
       var tempGyms = [];
       res['data'].forEach((gym) {
         gym["gym_services"].forEach((service) {

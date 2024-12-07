@@ -288,9 +288,15 @@ class PurchaseGymSubscription extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            obj['name'],
-                            style: TypographyStyles.smallBoldTitle(26),
+                          SizedBox(
+                            width: Get.width-92,
+                            child: Text(
+                              obj['name'],
+                              softWrap: true,
+                              textAlign: TextAlign.center,
+                              // overflow: TextOverflow.ellipsis,
+                              style: TypographyStyles.smallBoldTitle(26),
+                            ),
                           ),
                           Visibility(
                             visible: obj["discounted"],

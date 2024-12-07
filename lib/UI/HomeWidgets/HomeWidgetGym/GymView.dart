@@ -28,6 +28,7 @@ class GymView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     RxBool showMoreFacilities = false.obs;
+    gymObj.keys.forEach((k){print(k);});
 
     void open(BuildContext context, final int index) {
       Navigator.push(
@@ -46,13 +47,6 @@ class GymView extends StatelessWidget {
       );
     }
 
-    void testValues() {
-      print(jsonDecode(gymObj['gym_gallery']));
-    }
-    print('===gymObj');
-    print(gymObj);
-
-    testValues();
 
     return Scaffold(
       appBar: AppBar(
