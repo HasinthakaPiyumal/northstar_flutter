@@ -13,7 +13,7 @@ class WatchDataController {
 
   bool enabled = authUser.user['health_data'];
 
-  Health health = Health();
+  HealthFactory health = HealthFactory();
   int daysToGet = 3;
   RxBool ready = false.obs;
 
@@ -195,17 +195,11 @@ class WatchDataController {
       statusText.value = 'Fetching New Data...';
       DateTime to = DateTime.now();
       DateTime from = to.subtract(Duration(days: daysToGet));
-      healthData.value = await health.getHealthDataFromTypes(
-        types: types,
-        startTime: from,
-        endTime: to,
-      );
+      healthData.value = await health.getHealthDataFromTypes(from, to, types);
       var now = DateTime.now();
       List result = await health.getHealthDataFromTypes(
-          types: [HealthDataType.STEPS],
-        startTime: now.subtract(Duration(days: 1)),
-        endTime: now.add(Duration(days: 1)),
-        );
+          now.subtract(Duration(days: 1)), now.add(Duration(days: 1)),
+          [HealthDataType.STEPS]);
       print('===result');
       print('===result.length => ${result.length}');
       print('===healthData.length => ${healthData.length}');
@@ -334,8 +328,7 @@ class WatchDataController {
   }
 
   static Future<bool> requestPermission() async {
-    Health().configure();
-    var state = await Health().requestAuthorization(types,permissions: permissions);
+    var state = await HealthFactory().requestAuthorization(types,permissions: permissions);
     print('Printing health data state ---> $state');
     return state;
   }
