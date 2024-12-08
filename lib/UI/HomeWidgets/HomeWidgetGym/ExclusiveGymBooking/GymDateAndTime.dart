@@ -49,6 +49,18 @@ class GymDateAndTime extends StatelessWidget {
 
     RxList<bool> availability = List.generate(25, (index) => true).obs;
     RxBool ready = true.obs;
+    DateTime combineDateWithTime(DateTime targetDate, DateTime targetTime) {
+      return DateTime(
+        targetDate.year,
+        targetDate.month,
+        targetDate.day,
+        targetTime.hour,
+        targetTime.minute,
+        targetTime.second,
+        targetTime.millisecond,
+        targetTime.microsecond,
+      );
+    }
     void getAvailabilities(dateTime) async {
       Map res = await httpClient.getAvailability(gymObj['user_id'], dateTime);
       if (res['code'] == 200) {
@@ -59,9 +71,13 @@ class GymDateAndTime extends StatelessWidget {
 
     void makeASchedule() async {
       ready.value = false;
+      DateTime combinedST = combineDateWithTime(selectedDay.value, selectedStartTime.value);
+      DateTime combinedET = combineDateWithTime(selectedDay.value, selectedEndTime.value);
       int dateDifferent =
           selectedDay.value.difference(selectedEndTime.value).inDays;
       print("DUration-->$dateDifferent");
+      print(selectedStartTime.value.add(Duration(days: dateDifferent)));
+      print(selectedEndTime.value.add(Duration(days: dateDifferent)));
       selectedStartTime.value =
           selectedStartTime.value.add(Duration(days: dateDifferent));
       selectedEndTime.value =
@@ -72,8 +88,8 @@ class GymDateAndTime extends StatelessWidget {
       Map res = await httpClient.makeASchedule(
         gymObj['user_id'],
         clientIDs,
-        selectedStartTime.value,
-        selectedEndTime.value,
+        combinedST,
+        combinedET,
         hourlyRate,
       );
       print(res);

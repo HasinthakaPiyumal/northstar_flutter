@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -43,6 +42,9 @@ class AddBooking extends StatelessWidget {
     RxInt quantity = 0.obs;
     Rx<DateTime> selectedDay = DateTime.now().add(Duration(days: 1)).obs;
     Rx<DateTime> focusedDay = DateTime.now().add(Duration(days: 1)).obs;
+
+    DateTime serviceStartDateTime = DateTime.parse(gymObj['gym_services']['start_time']+'Z').toLocal();
+    DateTime serviceEndDateTime = DateTime.parse(gymObj['gym_services']['end_time']+'Z').toLocal();
 
     RxBool ready = true.obs;
     RxList bookings = [].obs;
@@ -111,6 +113,18 @@ class AddBooking extends StatelessWidget {
       });
     }
 
+    bool isTimeInRange(DateTime target,DateTime startTime, DateTime endTime) {
+      DateTime now = target;
+
+      if(startTime.isAtSameMomentAs(target))
+        return true;
+
+      if (startTime.isBefore(endTime)) {
+        return now.isAfter(startTime) && now.isBefore(endTime);
+      } else {
+        return now.isAfter(startTime) || now.isBefore(endTime);
+      }
+    }
 
     void payWithWallet(coupon)async{
         Map res = await httpClient.confirmSchedulesForService({
@@ -129,7 +143,6 @@ class AddBooking extends StatelessWidget {
         }
     }
 
-
     void validateAndGo(){
       Get.to(()=>PaymentSummary(
         orderDetails: [
@@ -147,7 +160,6 @@ class AddBooking extends StatelessWidget {
       ));
     }
 
-
     String formatTimeWithAMPM(String time) {
       try {
         DateTime dateTime = DateTime.parse(time);
@@ -159,7 +171,24 @@ class AddBooking extends StatelessWidget {
       }
     }
 
+    DateTime combineDateWithTime(DateTime targetDate, DateTime targetTime) {
+      return DateTime(
+        targetDate.year,
+        targetDate.month,
+        targetDate.day,
+        targetTime.hour,
+        targetTime.minute,
+        targetTime.second,
+        targetTime.millisecond,
+        targetTime.microsecond,
+      );
+    }
+
     void makeASchedule() async {
+      if(selectedTime.value==""){
+        showSnack('No time slot selected!', 'Please select a time slot to book.', status: PopupNotificationStatus.error);
+        return;
+      }
       ready.value = false;
       DateTime time = DateFormat("hh:mm a").parse(selectedTime.value);
 
@@ -169,7 +198,7 @@ class AddBooking extends StatelessWidget {
         selectedDay.value.day,
         time.hour,
         time.minute,
-      );
+      ).toUtc();
 
       DateTime endDT = startDT.add(Duration(hours: quantity.value));
 
@@ -190,34 +219,79 @@ class AddBooking extends StatelessWidget {
 
       if (res['code'] == 200) {
         bookings.value = [res['data']['booking_id']];
+        ready.value = true;
         validateAndGo();
       }
     }
 
     void getAvailableTimeSlots(dateTime) async {
       ready.value = false;
+
+      DateTime startOfDay = DateTime(dateTime.year, dateTime.month, dateTime.day, 0, 0, 0);
+      DateTime endOfDay = DateTime(dateTime.year, dateTime.month, dateTime.day, 23, 59, 59);
+
+      print("Start of the Day: ${startOfDay.toIso8601String()} ${startOfDay.timeZoneName}");
+
+      print("Start Time: ${startOfDay}");
+      print("End Time: ${endOfDay.toString()}");
+      print("End Time: $dateTime");
       Map res = await httpClient.getAvailableTimeSlots(gymObj['gym_services']['id'], dateTime);
       print('Time slots');
       print(res);
-      print(dateTime.toString());
+
       selectedTime.value = "";
       availableTimes.clear();
+
+
       if (res['code'] == 200) {
         isAvailable.value = true;
         selectedTime.value = "";
         quantity.value = 0;
-        String serviceStartTime = gymObj['gym_services']['start_time'];
-        availableTimes.value = List.generate(
-          res['data'].length,
-          (index) {
-            return {
-              'time': DateTime.parse(serviceStartTime).add(
-                Duration(hours: index),
-              ),
-              'availability': res['data'][index]
-            };
-          },
-        );
+        DateTime serviceStartTime = combineDateWithTime(dateTime,DateTime.parse(gymObj['gym_services']['start_time']+'Z').toLocal());
+        DateTime serviceEndTime = combineDateWithTime(dateTime,DateTime.parse(gymObj['gym_services']['end_time']+'Z').toLocal());
+        // availableTimes.value = List.generate(
+        //   res['data'].length,
+        //   (index) {
+        //     print(DateTime.parse(serviceStartTime).toString());
+        //     print(DateTime.parse(serviceStartTime).toLocal().toString());
+        //     return {
+        //       'time': DateTime.parse(serviceStartTime).add(
+        //         Duration(hours: index),
+        //       ),
+        //       'availability': res['data'][index]
+        //     };
+        //   },
+        // );
+        for(int i = 0;i<24;i++){
+          DateTime checkingTime = serviceStartTime.add(
+            Duration(hours: i),
+          );
+          print('checkingTime');
+          print(checkingTime);
+          print(serviceStartTime);
+          print(serviceEndTime);
+          print('isAfter ${serviceEndTime.isBefore(checkingTime)}');
+          if(serviceEndTime.isBefore(checkingTime.add(Duration(hours: 1)))){
+            break;
+          }
+          bool isBooked = false;
+          for(int j = 0;j<res['data'].length;j++){
+            dynamic item = res['data'][j];
+            bool isReserved = isTimeInRange(checkingTime, DateTime.parse(item['start_time']+'Z').toLocal(), DateTime.parse(item['end_time']+'Z').toLocal());
+            print('Is Reserved: $isReserved');
+            print('$isReserved $checkingTime ${DateTime.parse(item['start_time']+'Z').toLocal()} ${DateTime.parse(item['end_time']+'Z').toLocal()}');
+            if(isReserved){
+              isBooked = true;
+              break;
+            }
+          };
+          availableTimes.add(
+              {
+                'time': checkingTime,
+                'availability': !isBooked
+              }
+          );
+        }
         ready.value = true;
       }else{
         quantity.value = 0;
@@ -244,8 +318,8 @@ class AddBooking extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10)),
                 child: Obx(
                   () => TableCalendar(
-                    firstDay: DateTime.now(),
-                    lastDay: DateTime.utc(2030, 3, 14),
+                    firstDay: serviceStartDateTime,
+                    lastDay: serviceEndDateTime,
                     focusedDay: focusedDay.value,
                     calendarStyle: CalendarStyle(
                       isTodayHighlighted: false,
@@ -519,19 +593,21 @@ class AddBooking extends StatelessWidget {
             ),
           ],
         ),
-        bottomSheet: Container(
-            width: Get.width,
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-            color: Theme.of(context).scaffoldBackgroundColor,
-            child: Buttons.yellowFlatButton(
-              label: "confirm",
-              onPressed: () {
-                CommonConfirmDialog.confirm('Confirm').then((value) {
-                  if (value) {
-                    makeASchedule();
-                  }
-                });
-              },
-            )));
+        bottomSheet: Obx(()=> Container(
+              width: Get.width,
+              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+              color: Theme.of(context).scaffoldBackgroundColor,
+              child: Buttons.yellowFlatButton(
+                label: "confirm",
+                isLoading: !ready.value,
+                onPressed: () {
+                  CommonConfirmDialog.confirm('Confirm').then((value) {
+                    if (value) {
+                      makeASchedule();
+                    }
+                  });
+                },
+              )),
+        ));
   }
 }
