@@ -30,33 +30,45 @@ class HomeWidgetVendingMachine extends StatelessWidget {
   Widget build(BuildContext context) {
     RxBool ready = true.obs;
     RxList<dynamic> cat = RxList<dynamic>([
-      {
-        "url":
-            "https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/vending_machine/1.png"
-      },
-      {
-        "url":
-            "https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/vending_machine/2.png"
-      },
-      {
-        "url":
-            "https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/vending_machine/3.png"
-      },
+      // {
+      //   "url":
+      //       "https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/vending_machine/1.png"
+      // },
+      // {
+      //   "url":
+      //       "https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/vending_machine/2.png"
+      // },
+      // {
+      //   "url":
+      //       "https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/vending_machine/3.png"
+      // },
     ]);
     RxList<dynamic> pro = RxList<dynamic>([
-      {
-        "url":
-            "https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/vending_machine/4.png"
-      },
-      {
-        "url":
-            "https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/vending_machine/5.png"
-      },
-      {
-        "url":
-            "https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/vending_machine/6.png"
-      },
+      // {
+      //   "url":
+      //       "https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/vending_machine/4.png"
+      // },
+      // {
+      //   "url":
+      //       "https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/vending_machine/5.png"
+      // },
+      // {
+      //   "url":
+      //       "https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/vending_machine/6.png"
+      // },
     ]);
+
+    void getImages()async{
+      Map res = await httpClient.vendingImages();
+      if(res['code']==200){
+        res['data']['bottom'].forEach((item){
+          cat.add({"url":HttpClient.s3ResourcesBaseUrl+item});
+        });
+        res['data']['top'].forEach((item){
+          pro.add({"url":HttpClient.s3ResourcesBaseUrl+item});
+        });
+      }
+    }
 
     void payWithCard(result) async {
       result['payment_type'] = 1;
@@ -316,7 +328,7 @@ class HomeWidgetVendingMachine extends StatelessWidget {
             ],
           ));
     }
-
+    getImages();
     return Scaffold(
       appBar: AppBar(
         title: Text('Vending Machine'),

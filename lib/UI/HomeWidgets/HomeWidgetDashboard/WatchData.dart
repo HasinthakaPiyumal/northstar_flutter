@@ -35,6 +35,7 @@ class WatchData extends StatelessWidget {
         child: controller.enabled ? SingleChildScrollView(
           child: Column(
             children: [
+              Text('Cloud data from your smart device may take approximately 2 minutes to sync, depending on the network and access conditions.',style: TypographyStyles.text(10),textAlign: TextAlign.center,),
               Obx(() =>
                   Text(controller.statusText.value, style: TextStyle(color: Colors.grey))),
               SizedBox(height: 16),

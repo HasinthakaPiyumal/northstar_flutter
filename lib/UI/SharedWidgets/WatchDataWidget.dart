@@ -138,7 +138,8 @@ class WatchDataWidget extends StatelessWidget {
                 ),
               ),
             ],
-          )
+          ),
+          Text('Cloud data from your smart device may take approximately 2 minutes to sync, depending on the network and access conditions.',style: TypographyStyles.text(10),textAlign: TextAlign.center,),
         ],
       ),
     ): Card(

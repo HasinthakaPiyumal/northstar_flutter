@@ -678,12 +678,16 @@ class Home extends StatelessWidget {
                     ? Container(
                         padding: const EdgeInsets.all(8),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             
                             homeWidgetButton(() {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetStore()));
                             }, 'shop', 'Store'),
+                            SizedBox(width: Get.width/100,),
+                            homeWidgetButton(() {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetVendingMachine()));
+                            }, 'vending', 'Vending Machine'),
                             // homeWidgetButton(() {
                             //   Navigator.push(context, MaterialPageRoute(builder: (context) => Therapy()));
                             // }, 'therapy', 'Physiotherapy'),

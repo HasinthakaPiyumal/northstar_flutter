@@ -1961,6 +1961,15 @@ class HttpClient {
 
   // ====== Vending Machine Start =======
 
+  Future<Map> vendingImages() async {
+    Response response =
+        await get('/vendor-image/list-by-type');
+    return {
+      "code": response.statusCode,
+      "data": response.data,
+    };
+  }
+
   Future<Map> purchaseDrink(Map data) async {
     Response response =
         await post('/payments/vendor-machine-payment/pay-now', data);
