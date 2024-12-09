@@ -15,7 +15,7 @@ class HttpClient {
   // static String baseURL = 'http://175.41.184.146:8081/api';
   static String baseURL = 'https://api.northstar.mv/api';
 //https://api.northstar.mv/api/clients/requests/49/accept
-  static String buildInfo = '9.0.0 Build 1';
+  static String buildInfo = '10.0.2 Build 1';
 
   static String s3BaseUrl =
       'https://north-star-storage-new.s3.ap-southeast-1.amazonaws.com/avatars/';
