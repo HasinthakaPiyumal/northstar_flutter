@@ -86,8 +86,8 @@ class HomeWidgetCalories extends StatelessWidget {
                       child: InkWell(
                         borderRadius: BorderRadius.circular(10),
                         onTap: () {
-                          Get.to(() =>
-                              UserView(userID: userData['user']['id']));
+                          Get.to(
+                              () => UserView(userID: userData['user']['id']));
                         },
                         child: Obx(() {
                           bool isCollapsed =
@@ -103,42 +103,52 @@ class HomeWidgetCalories extends StatelessWidget {
                                   children: [
                                     Row(
                                       children: [
-
                                         Expanded(
                                           child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               CircleAvatar(
                                                 radius: 24,
                                                 backgroundImage:
-                                                CachedNetworkImageProvider(
+                                                    CachedNetworkImageProvider(
                                                   HttpClient.s3BaseUrl +
-                                                      userData['user']['avatar_url'],
+                                                      userData['user']
+                                                          ['avatar_url'],
                                                 ),
                                               ),
-                                              SizedBox(height: 5,),
+                                              SizedBox(
+                                                height: 5,
+                                              ),
                                               Column(
                                                 crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
                                                     userData['user']['name'],
-                                                    style: TypographyStyles.title(
-                                                        18),
+                                                    style:
+                                                        TypographyStyles.title(
+                                                            18),
                                                   ),
-                                                  SizedBox(height: 5,),
+                                                  SizedBox(
+                                                    height: 5,
+                                                  ),
                                                   Text(
                                                     'Weight ${userData['fit_category']} / ${userData['fit_program']} Fitness Program',
                                                     style: TypographyStyles
-                                                        .textWithWeight(
-                                                        13, FontWeight.w300),
+                                                        .textWithWeight(13,
+                                                            FontWeight.w300),
                                                   ),
-                                                  SizedBox(height: 5,),
+                                                  SizedBox(
+                                                    height: 5,
+                                                  ),
                                                   Text(
                                                     '${(userData['user']['health_conditions']?.length ?? 0).toString()} Health Conditions',
                                                     style:
-                                                    TypographyStyles.text(16),
+                                                        TypographyStyles.text(
+                                                            16),
                                                   ),
                                                 ],
                                               ),
@@ -146,8 +156,9 @@ class HomeWidgetCalories extends StatelessWidget {
                                           ),
                                         ),
                                         GestureDetector(
-                                          onTap:(){
-                                            showMacroDataModal(context,userData);
+                                          onTap: () {
+                                            showMacroDataModal(
+                                                context, userData);
                                           },
                                           child: Container(
                                             height: 126,
@@ -160,7 +171,7 @@ class HomeWidgetCalories extends StatelessWidget {
                                     SizedBox(height: 8),
                                     Row(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           'Target Calories',
@@ -182,20 +193,20 @@ class HomeWidgetCalories extends StatelessWidget {
                                             decoration: BoxDecoration(
                                               color: AppColors()
                                                   .getPrimaryColor(
-                                                  reverse: true),
+                                                      reverse: true),
                                               borderRadius:
-                                              BorderRadius.circular(50),
+                                                  BorderRadius.circular(50),
                                             ),
                                           ),
                                           Container(
                                             width: (userData['daily_calories'] /
-                                                userData[
-                                                'target_calories']) *
+                                                    userData[
+                                                        'target_calories']) *
                                                 (Get.width - 60),
                                             decoration: BoxDecoration(
                                               color: Color(0xff68FC80),
                                               borderRadius:
-                                              BorderRadius.circular(50),
+                                                  BorderRadius.circular(50),
                                             ),
                                           ),
                                         ],
@@ -207,10 +218,11 @@ class HomeWidgetCalories extends StatelessWidget {
                               GestureDetector(
                                 onTap: () {
                                   isCollapsedMap[userData['user_id']] =
-                                  !isCollapsed;
+                                      !isCollapsed;
                                 },
                                 child: Padding(
-                                  padding: const EdgeInsets.only(left: 20.0,right: 20,bottom: 20),
+                                  padding: const EdgeInsets.only(
+                                      left: 20.0, right: 20, bottom: 20),
                                   child: Container(
                                     width: double.infinity,
                                     padding: const EdgeInsets.symmetric(
@@ -224,7 +236,8 @@ class HomeWidgetCalories extends StatelessWidget {
                                       ),
                                     ),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Icon(isCollapsed
                                             ? Icons.keyboard_arrow_down
@@ -239,29 +252,27 @@ class HomeWidgetCalories extends StatelessWidget {
                               ),
                               if (!isCollapsed)
                                 Padding(
-                                  padding: const EdgeInsets.all( 20),
+                                  padding: const EdgeInsets.all(20),
                                   child: Column(
                                     children: [
                                       WatchDataWidget(userData['user_id']),
-                                      Text('Cloud data from your smart device may take approximately 2 minutes to sync, depending on the network and access conditions.',style: TypographyStyles.text(10),textAlign: TextAlign.center,),
                                       if (userData["today_workout"] != null)
                                         Column(
                                           children: [
                                             Text(
                                               "Today Workout",
-                                              style:
-                                              TypographyStyles.title(20),
+                                              style: TypographyStyles.title(20),
                                             ),
                                             SizedBox(height: 20),
                                             Row(
                                               mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
+                                                  MainAxisAlignment.spaceEvenly,
                                               children: [
                                                 CircularProgressBar(
-                                                  progress: userData[
-                                                  "today_workout"]
-                                                  ['progress'] /
-                                                      100,
+                                                  progress:
+                                                      userData["today_workout"]
+                                                              ['progress'] /
+                                                          100,
                                                   radius: 50,
                                                   strokeWidth: 6,
                                                   fontSize: 20,
@@ -270,18 +281,17 @@ class HomeWidgetCalories extends StatelessWidget {
                                                   children: [
                                                     Container(
                                                       padding:
-                                                      EdgeInsets.all(8),
+                                                          EdgeInsets.all(8),
                                                       width: Get.width - 224,
-                                                      decoration:
-                                                      BoxDecoration(
+                                                      decoration: BoxDecoration(
                                                         color: Get.isDarkMode
                                                             ? AppColors
-                                                            .primary1Color
+                                                                .primary1Color
                                                             : AppColors
-                                                            .baseColor,
+                                                                .baseColor,
                                                         borderRadius:
-                                                        BorderRadius
-                                                            .circular(10),
+                                                            BorderRadius
+                                                                .circular(10),
                                                       ),
                                                       child: Column(
                                                         children: [
@@ -289,17 +299,18 @@ class HomeWidgetCalories extends StatelessWidget {
                                                             "Exercise",
                                                             style: TypographyStyles
                                                                 .textWithWeight(
-                                                                14,
-                                                                FontWeight
-                                                                    .w300),
+                                                                    14,
+                                                                    FontWeight
+                                                                        .w300),
                                                           ),
                                                           Text(
                                                             userData["today_workout"]
-                                                            [
-                                                            'exercisesCount']
+                                                                    [
+                                                                    'exercisesCount']
                                                                 .toString(),
-                                                            style: TypographyStyles
-                                                                .title(20),
+                                                            style:
+                                                                TypographyStyles
+                                                                    .title(20),
                                                           ),
                                                         ],
                                                       ),
@@ -307,18 +318,17 @@ class HomeWidgetCalories extends StatelessWidget {
                                                     SizedBox(height: 8),
                                                     Container(
                                                       padding:
-                                                      EdgeInsets.all(8),
+                                                          EdgeInsets.all(8),
                                                       width: Get.width - 224,
-                                                      decoration:
-                                                      BoxDecoration(
+                                                      decoration: BoxDecoration(
                                                         color: Get.isDarkMode
                                                             ? AppColors
-                                                            .primary1Color
+                                                                .primary1Color
                                                             : AppColors
-                                                            .baseColor,
+                                                                .baseColor,
                                                         borderRadius:
-                                                        BorderRadius
-                                                            .circular(10),
+                                                            BorderRadius
+                                                                .circular(10),
                                                       ),
                                                       child: Column(
                                                         children: [
@@ -326,17 +336,18 @@ class HomeWidgetCalories extends StatelessWidget {
                                                             "Remaining",
                                                             style: TypographyStyles
                                                                 .textWithWeight(
-                                                                14,
-                                                                FontWeight
-                                                                    .w300),
+                                                                    14,
+                                                                    FontWeight
+                                                                        .w300),
                                                           ),
                                                           Text(
                                                             userData["today_workout"]
-                                                            [
-                                                            'remainingCount']
+                                                                    [
+                                                                    'remainingCount']
                                                                 .toString(),
-                                                            style: TypographyStyles
-                                                                .title(20),
+                                                            style:
+                                                                TypographyStyles
+                                                                    .title(20),
                                                           ),
                                                         ],
                                                       ),
@@ -365,13 +376,13 @@ class HomeWidgetCalories extends StatelessWidget {
     );
   }
 }
-void showMacroDataModal(BuildContext context,dynamic userData) {
+
+void showMacroDataModal(BuildContext context, dynamic userData) {
   showDialog(
     context: context,
     barrierDismissible: true, // Dismiss on outside tap
     builder: (BuildContext context) {
       return Dialog(
-
         backgroundColor: Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
@@ -398,11 +409,10 @@ void showMacroDataModal(BuildContext context,dynamic userData) {
                     onTap: () => Navigator.pop(context),
                     child: Container(
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          color: AppColors.accentColor
-                        ),
-                        child: Icon(Icons.close, color: AppColors.textOnAccentColor)
-                    ), // Close icon
+                            borderRadius: BorderRadius.circular(50),
+                            color: AppColors.accentColor),
+                        child: Icon(Icons.close,
+                            color: AppColors.textOnAccentColor)), // Close icon
                   ),
                 ],
               ),
@@ -412,17 +422,29 @@ void showMacroDataModal(BuildContext context,dynamic userData) {
                   Container(
                     height: 80,
                     width: 80,
-                    child: ringsChartCalories(userData,radius: "48"),
+                    child: ringsChartCalories(userData, radius: "48"),
                   ),
                   const SizedBox(width: 16),
                   // Macro details
                   Expanded(
                     child: Column(
                       children: [
-                        macroItem('Calorie Intake', '${userData['daily_calories']}', const Color(0xFF5576E3)),
-                        macroItem('Carbs', '${userData['daily_carbs']}/${userData['target_carbs']}g', const Color(0xFFF5BB1D)),
-                        macroItem('Proteins', '${userData['daily_protein']}/${userData['target_protein']}g', const Color(0xFFEC2F2F)),
-                        macroItem('Fat','${userData['daily_fat']}/${userData['target_fat']}g',  const Color(0xFF1FC52A) ),
+                        macroItem(
+                            'Calorie Intake',
+                            '${userData['daily_calories']}',
+                            const Color(0xFF5576E3)),
+                        macroItem(
+                            'Carbs',
+                            '${userData['daily_carbs']}/${userData['target_carbs']}g',
+                            const Color(0xFFF5BB1D)),
+                        macroItem(
+                            'Proteins',
+                            '${userData['daily_protein']}/${userData['target_protein']}g',
+                            const Color(0xFFEC2F2F)),
+                        macroItem(
+                            'Fat',
+                            '${userData['daily_fat']}/${userData['target_fat']}g',
+                            const Color(0xFF1FC52A)),
                       ],
                     ),
                   ),
