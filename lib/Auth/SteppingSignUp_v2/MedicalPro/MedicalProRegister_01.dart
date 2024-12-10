@@ -396,7 +396,7 @@ class _MedicalProRegisterFirstState extends State<MedicalProRegisterFirst> {
                       context: context,
                       initialDate: DateTime(2000),
                       firstDate: DateTime(1900),
-                      lastDate: DateTime.now().subtract(Duration(days: 12 * 365)),
+                      lastDate: DateTime.now().subtract(Duration(days: 18 * 365)),
                       // builder: (BuildContext context, Widget? child) {
                       //   return Theme(
                       //     data: isDark

@@ -393,7 +393,7 @@ class _ClientRegisterFirstState extends State<ClientRegisterFirst> {
                       context: context,
                       initialDate: DateTime(2000),
                       firstDate: DateTime(1900),
-                      lastDate: DateTime.now().subtract(Duration(days: 12 * 365)),
+                      lastDate: DateTime.now().subtract(Duration(days: 10 * 365)),
                       // builder: (BuildContext context, Widget? child) {
                       //   return Theme(
                       //     data: isDark
