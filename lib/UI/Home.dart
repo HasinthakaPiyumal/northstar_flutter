@@ -221,14 +221,14 @@ class Home extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 homeWidgetButton(() {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetGym()));
+                                }, 'gym', 'Facilities'),
+                                homeWidgetButton(() {
                                   Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetCalories()));
                                 }, 'dashboard', 'Dashboard'),
                                 homeWidgetButton(() {
                                   Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetWorkouts()));
                                 }, 'workouts', 'Exercise Bank'),
-                                homeWidgetButton(() {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetToDos()));
-                                }, 'todo', 'Todo'),
                               ],
                             ))
                         : SizedBox(),
@@ -615,9 +615,10 @@ class Home extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+
                             homeWidgetButton(() {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetGym()));
-                            }, 'gym', 'Facilities'),
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetToDos()));
+                            }, 'todo', 'Todo'),
                             homeWidgetButton(() {
                               Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeWidgetClass()));
                               // Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetVideoSessions());
@@ -732,6 +733,13 @@ class Home extends StatelessWidget {
                       children: [
                         homeWidgetButton(() {
                           if (authUser.user['subscription'] == null) {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetGym()));
+                          } else {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetGym()));
+                          }
+                        }, 'gym', 'Facilities'),
+                        homeWidgetButton(() {
+                          if (authUser.user['subscription'] == null) {
                             Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetPro()));
                           } else {
                             Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetProActive()));
@@ -749,16 +757,16 @@ class Home extends StatelessWidget {
                           if (authUser.user['subscription'] == null) {
                             Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetPro()));
                           } else {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetWorkouts()));
+                          }
+                        }, 'workouts', 'Exercise Bank'),
+                        homeWidgetButton(() {
+                          if (authUser.user['subscription'] == null) {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetPro()));
+                          } else {
                             Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetToDos()));
                           }
                         }, 'todo', 'Todo'),
-                        homeWidgetButton(() {
-                          if (authUser.user['subscription'] == null) {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetGym()));
-                          } else {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetGym()));
-                          }
-                        }, 'gym', 'Facilities'),
 
                         homeWidgetButton(() {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetVendingMachine()));
@@ -807,13 +815,6 @@ class Home extends StatelessWidget {
                           }
                         }, 'shop', 'Store'),
 
-                        // homeWidgetButton(() {
-                        //   if (authUser.user['subscription'] == null) {
-                        //     Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetPro()));
-                        //   } else {
-                        //     Navigator.push(context, MaterialPageRoute(builder: (context) => HomeWidgetWorkouts()));
-                        //   }
-                        // }, 'workouts', 'Exercise Bank'),
                         //
                         // homeWidgetButton(() {
                         //   if (authUser.user['subscription'] == null) {

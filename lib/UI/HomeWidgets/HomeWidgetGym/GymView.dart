@@ -395,113 +395,117 @@ class GymView extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 20),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color:
-                      Get.isDarkMode ? AppColors.primary2Color : Colors.white,
-                ),
-                width: Get.width,
-                height: viewOnly ? 110 : 178,
-                padding: EdgeInsets.all(20),
-                child: Column(
+              SizedBox(
+                height: 20,
+              )
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar:
+      Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color:
+            Get.isDarkMode ? AppColors.primary2Color : Colors.white,
+          ),
+          width: Get.width,
+          height: viewOnly ? 110 : 178,
+          padding: EdgeInsets.all(20),
+          child: Column(
+            children: [
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                    gymObj['gym_type'] == "exclusive"
+                        ? Expanded(
+                      child: Column(
                         children: [
-                          gymObj['gym_type'] == "exclusive"
-                              ? Expanded(
-                                  child: Column(
-                                    children: [
-                                      RichText(
-                                        text: TextSpan(
-                                          text: 'MVR',
-                                          style: TypographyStyles.title(20),
-                                          children: <TextSpan>[
-                                            TextSpan(
-                                              text: ' ${gymObj['hourly_rate']}',
-                                              style: TypographyStyles.boldText(
-                                                  22,
-                                                  Get.isDarkMode
-                                                      ? Themes
-                                                          .mainThemeColorAccent
-                                                          .shade100
-                                                      : colors.Colors()
-                                                          .lightBlack(1)),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text(
-                                        "HOURLY RATE",
-                                        style: TypographyStyles.textWithWeight(
-                                            16, FontWeight.w400),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              : SizedBox(),
-                          gymObj['gym_type'] == "exclusive"
-                              ? Container(
-                                  width: 2,
-                                  height: 100,
-                                  color: Themes.mainThemeColorAccent.shade300
-                                      .withOpacity(0.2),
-                                )
-                              : SizedBox(),
-                          Expanded(
-                            child: Column(
-                              children: [
-                                Text(
-                                  "${gymObj['capacity']}",
-                                  style: TypographyStyles.title(20),
+                          RichText(
+                            text: TextSpan(
+                              text: 'MVR',
+                              style: TypographyStyles.title(20),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: ' ${gymObj['hourly_rate']}',
+                                  style: TypographyStyles.boldText(
+                                      22,
+                                      Get.isDarkMode
+                                          ? Themes
+                                          .mainThemeColorAccent
+                                          .shade100
+                                          : colors.Colors()
+                                          .lightBlack(1)),
                                 ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  "CAPACITY",
-                                  style: TypographyStyles.textWithWeight(
-                                      16, FontWeight.w400),
-                                )
                               ],
                             ),
                           ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            "HOURLY RATE",
+                            style: TypographyStyles.textWithWeight(
+                                16, FontWeight.w400),
+                          ),
+                        ],
+                      ),
+                    )
+                        : SizedBox(),
+                    gymObj['gym_type'] == "exclusive"
+                        ? Container(
+                      width: 2,
+                      height: 100,
+                      color: Themes.mainThemeColorAccent.shade300
+                          .withOpacity(0.2),
+                    )
+                        : SizedBox(),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Text(
+                            "${gymObj['capacity']}",
+                            style: TypographyStyles.title(20),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            "CAPACITY",
+                            style: TypographyStyles.textWithWeight(
+                                16, FontWeight.w400),
+                          )
                         ],
                       ),
                     ),
-                    viewOnly
-                        ? SizedBox()
-                        : SizedBox(
-                            height: 20,
-                          ),
-                    Visibility(
-                      visible: !viewOnly,
-                      child: Buttons.yellowFlatButton(
-                          onPressed: () {
-
-                            if (gymObj['gym_type'] == 'exclusive') {
-                              Get.to(() => BookNow(gymObj: gymObj));
-                            } else if (gymObj['gym_type'] == 'services') {
-                              Get.to(() => BookNowServices(gymObj: gymObj));
-                            } else {
-                              Get.to(() =>
-                                  PurchaseGymSubscription(gymObj: gymObj));
-                            }
-                          },
-                          label: "BOOK NOW",
-                          width: Get.width),
-                    )
                   ],
                 ),
               ),
-              SizedBox(
+              viewOnly
+                  ? SizedBox()
+                  : SizedBox(
                 height: 20,
+              ),
+              Visibility(
+                visible: !viewOnly,
+                child: Buttons.yellowFlatButton(
+                    onPressed: () {
+
+                      if (gymObj['gym_type'] == 'exclusive') {
+                        Get.to(() => BookNow(gymObj: gymObj));
+                      } else if (gymObj['gym_type'] == 'services') {
+                        Get.to(() => BookNowServices(gymObj: gymObj));
+                      } else {
+                        Get.to(() =>
+                            PurchaseGymSubscription(gymObj: gymObj));
+                      }
+                    },
+                    label: "BOOK NOW",
+                    width: Get.width),
               )
             ],
           ),

@@ -8,6 +8,7 @@ import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:get/get_utils/src/extensions/string_extensions.dart';
 import 'package:intl/intl.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
@@ -73,6 +74,8 @@ class ClientAccountInfo extends StatelessWidget {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                Text('User ID', style: TypographyStyles.title(16)),
+                                SizedBox(height: 24),
                                 Text('Phone', style: TypographyStyles.title(16)),
                                 SizedBox(height: 24),
                                 Text('Birthday', style: TypographyStyles.title(16)),
@@ -92,6 +95,8 @@ class ClientAccountInfo extends StatelessWidget {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
+                                Text(authUser.id.toString(), style: TypographyStyles.text(14)),
+                                SizedBox(height: 24),
                                 Text(data['user']['phone'], style: TypographyStyles.text(14)),
                                 SizedBox(height: 24),
                                 Text(data['user']['birthday'], style: TypographyStyles.text(14)),

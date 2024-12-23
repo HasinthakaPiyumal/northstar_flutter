@@ -532,7 +532,7 @@ class _TrainerProfileState extends State<TrainerProfile> {
                                           padding: const EdgeInsets.all(8.0),
                                           child: TextField(
                                             controller: aboutController,
-                                            maxLength: 250,
+                                            maxLength: 500,
                                             maxLines: null,
                                             decoration: InputDecoration(
                                                 hintText: 'About',
@@ -660,6 +660,9 @@ class _TrainerProfileState extends State<TrainerProfile> {
                                         CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
+                                      Text('User ID',
+                                          style: TypographyStyles.title(16)),
+                                      SizedBox(height: 24),
                                       Text('Phone',
                                           style: TypographyStyles.title(16)),
                                       SizedBox(height: 24),
@@ -695,6 +698,11 @@ class _TrainerProfileState extends State<TrainerProfile> {
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
+                                      Text(authUser.id.toString(),
+                                          style:
+                                              TypographyStyles.textWithWeight(
+                                                  14, FontWeight.w400)),
+                                      SizedBox(height: 28),
                                       Text(data.value['phone'],
                                           style:
                                               TypographyStyles.textWithWeight(
