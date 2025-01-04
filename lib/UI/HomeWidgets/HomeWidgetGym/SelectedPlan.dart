@@ -176,7 +176,7 @@ class SelectedPlan extends StatelessWidget {
             ],
             total: plan["real_price"].toDouble(),
             payByCard: (coupon) {
-              payByCard( coupon);
+              payByCard(coupon);
             },
             payByWallet: payByWallet,
             couponData: {
@@ -441,6 +441,15 @@ class SelectedPlan extends StatelessWidget {
     //       ]
     //   );
     // }
+
+    void initializeDate() {
+      startDateText.text = DateFormat("dd-MM-yyyy").format(DateTime.now());
+      start.value = DateFormat("MMM dd, yyyy").format(DateTime.now());
+      end.value = DateFormat("MMM dd, yyyy")
+          .format(DateTime.now().add(Duration(days: plan['duration_amount'])));
+    }
+
+    initializeDate();
 
     return Scaffold(
       appBar: AppBar(

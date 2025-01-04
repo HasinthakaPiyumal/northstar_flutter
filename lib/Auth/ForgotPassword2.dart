@@ -114,7 +114,7 @@ class _ForgotPassword2State extends State<ForgotPassword2> {
       if(password.text.length<8){
         showSnack("Password Validation", "Your password must be at least 8 characters long.",status: PopupNotificationStatus.warning);
         return;
-      }if(password.text.length>8){
+      }if(password.text.length>15){
         showSnack("Password Validation", "The password may not be greater than 15 characters.",status: PopupNotificationStatus.warning);
         return;
       }
