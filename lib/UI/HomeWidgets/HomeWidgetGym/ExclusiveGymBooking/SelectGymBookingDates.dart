@@ -159,7 +159,7 @@ class SelectGymBookingDates extends StatelessWidget {
         informUser();
         Get.offAll(() => Layout());
         showSnack('Schedule Confirmed!',
-            'Your Booking Schedule has been confirmed and paid.');
+            'You have purchased an exclusive gym membership ${gymObj['gym_name']}');
       } else {
         print(res);
       }

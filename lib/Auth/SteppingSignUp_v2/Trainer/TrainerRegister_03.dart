@@ -353,12 +353,14 @@ class _TrainerRegisterThreeState extends State<TrainerRegisterThree> {
                 SizedBox(height: contentHeight * 2),
                 TextFormField(
                   controller: _aboutController,
-                  maxLines: 4,
+                  maxLines: 8,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
                     ),
-                    label: Row(children: [Text(
+                    label: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [Text(
                       "About",
                       style:  TextStyle(
                         color: isDark ? Colors.white70 : Colors.black54,

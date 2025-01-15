@@ -248,102 +248,102 @@ class _SignUpUserTypeState extends State<SignUpUserType> {
                       ),
                     ),
                     SizedBox(height: 20),
-                    GestureDetector(
-                      onTap: () => setState(() {
-                        value = 3;
-                      }),
-                      child: Container(
-                        width: Get.width,
-                        height: type_height,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 24, vertical: 4),
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage(
-                                'assets/images/item_backgrounds/type_03.png'),
-                            fit: BoxFit.cover,
-                            colorFilter: ColorFilter.mode(
-                              Colors.black.withOpacity(0.7599999904632568),
-                              // Adjust the opacity here (0.0 - 1.0)
-                              BlendMode.darken,
-                            ),
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Row(
-                          children: [
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 5),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'medical professional',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 26,
-                                          fontFamily: 'Bebas Neue',
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 5),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      SizedBox(
-                                        width: Get.width - 148,
-                                        child: Text(
-                                          'Consult and manage patients.',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16,
-                                            fontFamily: 'Poppins',
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Radio(
-                                value: 3,
-                                groupValue: value,
-                                onChanged: (Object? v) {
-                                  setState(() {
-                                    value = 3;
-                                  });
-                                },
-                                activeColor: Colors.amber,
-                                fillColor: MaterialStateProperty.resolveWith(
-                                    (Set states) {
-                                  if (states.contains(MaterialState.disabled)) {
-                                    return Colors.orange.withOpacity(.32);
-                                  }
-                                  return Colors.orange;
-                                }))
-                          ],
-                        ),
-                      ),
-                    ),
+                    // GestureDetector(
+                    //   onTap: () => setState(() {
+                    //     value = 3;
+                    //   }),
+                    //   child: Container(
+                    //     width: Get.width,
+                    //     height: type_height,
+                    //     padding: const EdgeInsets.symmetric(
+                    //         horizontal: 24, vertical: 4),
+                    //     decoration: BoxDecoration(
+                    //       image: DecorationImage(
+                    //         image: AssetImage(
+                    //             'assets/images/item_backgrounds/type_03.png'),
+                    //         fit: BoxFit.cover,
+                    //         colorFilter: ColorFilter.mode(
+                    //           Colors.black.withOpacity(0.7599999904632568),
+                    //           // Adjust the opacity here (0.0 - 1.0)
+                    //           BlendMode.darken,
+                    //         ),
+                    //       ),
+                    //       borderRadius: BorderRadius.circular(10),
+                    //     ),
+                    //     child: Row(
+                    //       children: [
+                    //         Column(
+                    //           mainAxisSize: MainAxisSize.min,
+                    //           mainAxisAlignment: MainAxisAlignment.end,
+                    //           crossAxisAlignment: CrossAxisAlignment.start,
+                    //           children: [
+                    //             Container(
+                    //               padding: const EdgeInsets.symmetric(
+                    //                   horizontal: 20, vertical: 5),
+                    //               child: Row(
+                    //                 mainAxisSize: MainAxisSize.min,
+                    //                 mainAxisAlignment: MainAxisAlignment.start,
+                    //                 crossAxisAlignment:
+                    //                     CrossAxisAlignment.center,
+                    //                 children: [
+                    //                   Text(
+                    //                     'medical professional',
+                    //                     style: TextStyle(
+                    //                       color: Colors.white,
+                    //                       fontSize: 26,
+                    //                       fontFamily: 'Bebas Neue',
+                    //                       fontWeight: FontWeight.w400,
+                    //                     ),
+                    //                   ),
+                    //                 ],
+                    //               ),
+                    //             ),
+                    //             Container(
+                    //               padding: const EdgeInsets.symmetric(
+                    //                   horizontal: 10, vertical: 5),
+                    //               child: Row(
+                    //                 mainAxisSize: MainAxisSize.min,
+                    //                 mainAxisAlignment: MainAxisAlignment.start,
+                    //                 crossAxisAlignment:
+                    //                     CrossAxisAlignment.center,
+                    //                 children: [
+                    //                   SizedBox(
+                    //                     width: Get.width - 148,
+                    //                     child: Text(
+                    //                       'Consult and manage patients.',
+                    //                       style: TextStyle(
+                    //                         color: Colors.white,
+                    //                         fontSize: 16,
+                    //                         fontFamily: 'Poppins',
+                    //                         fontWeight: FontWeight.w500,
+                    //                       ),
+                    //                     ),
+                    //                   ),
+                    //                 ],
+                    //               ),
+                    //             ),
+                    //           ],
+                    //         ),
+                    //         Radio(
+                    //             value: 3,
+                    //             groupValue: value,
+                    //             onChanged: (Object? v) {
+                    //               setState(() {
+                    //                 value = 3;
+                    //               });
+                    //             },
+                    //             activeColor: Colors.amber,
+                    //             fillColor: MaterialStateProperty.resolveWith(
+                    //                 (Set states) {
+                    //               if (states.contains(MaterialState.disabled)) {
+                    //                 return Colors.orange.withOpacity(.32);
+                    //               }
+                    //               return Colors.orange;
+                    //             }))
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
                     SizedBox(height: 50),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,

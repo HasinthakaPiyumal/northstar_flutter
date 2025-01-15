@@ -63,7 +63,7 @@ class StoreCart extends StatelessWidget {
         showSnack('Purchasing Successful', 'Your cart has been successfully Purchased.');
       } else {
         showSnack('Purchasing Failed',
-            'Something went wrong. Please try again later.');
+            res['data']['message'],status: PopupNotificationStatus.error);
       }
     }
 

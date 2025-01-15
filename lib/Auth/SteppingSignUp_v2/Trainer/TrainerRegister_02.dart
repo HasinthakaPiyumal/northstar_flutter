@@ -264,14 +264,14 @@ class _TrainerRegisterSecondState extends State<TrainerRegisterSecond> {
                       borderSide: BorderSide(color: isDark ? Colors.white : Colors.black),
                     ),
                     label: Row(children: [Text(
-                      "Shipping Address",
+                      "Address",
                       style:  TextStyle(
                         color: isDark ? Colors.white70 : Colors.black54,
                         fontWeight: FontWeight.w500,
                         fontFamily: 'Poppins',
                         fontSize: 16,
                       ),),
-                      Text(" *",style: TextStyle(color: Colors.red),)
+                      // Text(" *",style: TextStyle(color: Colors.red),)
                     ],),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),

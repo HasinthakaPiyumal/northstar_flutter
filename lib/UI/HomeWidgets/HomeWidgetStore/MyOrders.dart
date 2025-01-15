@@ -21,7 +21,9 @@ class MyOrders extends StatelessWidget {
       print(res['code'] == 200);
       if (res['code'] == 200) {
         orders.value = res['data'];
+        print('order history');
         print(res['data']);
+        print('order history');
       }
     }
 
@@ -75,7 +77,20 @@ class MyOrders extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                          Text('${product['name'].toString().capitalizeFirst}', style: TypographyStyles.text(18),textAlign: TextAlign.start,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('${product['name'].toString().capitalizeFirst}', style: TypographyStyles.text(18),textAlign: TextAlign.start,),
+                               Container(
+                                  padding: EdgeInsets.all(5),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.accentColor,
+                                    borderRadius: BorderRadius.circular(10)
+                                  ),
+                                  child: Text(orders[index]['product_id'].toString(),style: TypographyStyles.text(13).copyWith(color: AppColors.textOnAccentColor),),
+                                ),
+                            ],
+                          ),
                           SizedBox(height: 8,),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,

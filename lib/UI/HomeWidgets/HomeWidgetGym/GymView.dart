@@ -4,10 +4,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:north_star/Models/AuthUser.dart';
 import 'package:north_star/Models/HttpClient.dart';
 import 'package:north_star/Styles/ButtonStyles.dart';
 import 'package:north_star/Styles/Themes.dart';
 import 'package:north_star/Styles/TypographyStyles.dart';
+import 'package:north_star/UI/HomeWidgets/HomeWidgetGym/ServiceBooking/PickDate.dart';
 import 'package:north_star/Utils/CustomColors.dart' as colors;
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -498,7 +500,12 @@ class GymView extends StatelessWidget {
                       if (gymObj['gym_type'] == 'exclusive') {
                         Get.to(() => BookNow(gymObj: gymObj));
                       } else if (gymObj['gym_type'] == 'services') {
-                        Get.to(() => BookNowServices(gymObj: gymObj));
+                        if(authUser.role=='client'){
+                          Get.to(() => AddBooking(
+                            gymObj: gymObj, clientIds: [authUser.id],));
+                        }else{
+                          Get.to(() => BookNowServices(gymObj: gymObj));
+                        }
                       } else {
                         Get.to(() =>
                             PurchaseGymSubscription(gymObj: gymObj));

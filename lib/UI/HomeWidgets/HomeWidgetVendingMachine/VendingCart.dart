@@ -42,6 +42,7 @@ class VendingCart extends StatelessWidget {
       result['payment_type'] = 1;
       print('payment result');
       print(result);
+
       Map res = await httpClient.purchaseDrink(result);
 
       print('===res');
@@ -71,7 +72,7 @@ class VendingCart extends StatelessWidget {
               Get.off(() => HomeWidgetVendingMachineMyOrders());
               print('Purchasing Success ---> $res');
               showSnack(
-                  'Purchasing Successful', 'Your drink will be ready shortly.',status: PopupNotificationStatus.success);
+                  'Purchasing Successful', 'You have paid for a vending machine product ${orderDetails['name']}',status: PopupNotificationStatus.success);
             } else {
               ready.value = true;
               showSnack('Purchasing Failed', res['data']['message'],status: PopupNotificationStatus.error);

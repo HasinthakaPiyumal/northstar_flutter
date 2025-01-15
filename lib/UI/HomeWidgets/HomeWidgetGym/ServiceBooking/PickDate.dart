@@ -125,7 +125,6 @@ class AddBooking extends StatelessWidget {
         return now.isAfter(startTime) || now.isBefore(endTime);
       }
     }
-
     void payWithWallet(coupon)async{
         Map res = await httpClient.confirmSchedulesForService({
           'booking_ids':bookings,
@@ -137,7 +136,7 @@ class AddBooking extends StatelessWidget {
           informUser();
           Get.offAll(() => Layout());
           showSnack('Schedule Confirmed!',
-              'Your Booking Schedule has been confirmed and paid.');
+              'You have paid for an NS Store product ${gymObj['gym_services']['name']}-${gymObj['gym_city']}');
         } else {
           print(res);
         }

@@ -75,7 +75,7 @@ class _ClientRegisterSecondState extends State<ClientRegisterSecond> {
   void signUp() async {
 
     if (_countryController.text.isEmpty ||
-        _addressController.text.isEmpty ||
+        // _addressController.text.isEmpty ||
         // _contactPersonController.text.isEmpty ||
         // _emergencyContactController.text.isEmpty ||
         _passwordController.text.isEmpty ||
@@ -285,14 +285,14 @@ class _ClientRegisterSecondState extends State<ClientRegisterSecond> {
                       borderSide: BorderSide(color: Colors.white),
                     ),
                     label: Row(children: [Text(
-                      "Shipping Address",
+                      "Address",
                       style:  TextStyle(
                         color: isDark ? Colors.white70 : Colors.black54,
                         fontWeight: FontWeight.w500,
                         fontFamily: 'Poppins',
                         fontSize: 16,
                       ),),
-                      Text(" *",style: TextStyle(color: Colors.red),)
+                      // Text(" *",style: TextStyle(color: Colors.red),)
                     ],),
                     contentPadding: EdgeInsets.only(bottom: 0),
                   ),

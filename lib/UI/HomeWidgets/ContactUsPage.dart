@@ -50,7 +50,7 @@ class ContactUsPage extends StatelessWidget {
                 style: TypographyStyles.boldText(16, Get.isDarkMode ? Themes.mainThemeColorAccent.shade300.withOpacity(0.6) : colors.Colors().darkGrey(0.6),),
               ),
               SizedBox(height: 5,),
-              Text("+960 9590888",
+              Text("+960 7588899",
                 style: TypographyStyles.boldText(18, Get.isDarkMode ? Themes.mainThemeColorAccent.shade100 : colors.Colors().lightBlack(1),),
               ),
               SizedBox(height: 30,),

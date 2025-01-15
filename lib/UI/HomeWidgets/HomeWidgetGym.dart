@@ -197,7 +197,7 @@ class HomeWidgetGym extends StatelessWidget {
                           ),
                         ),
                       ),
-                      visible: authUser.role != 'client',
+                      visible: true//authUser.role != 'client',
                     ),
                   ],
                 ),

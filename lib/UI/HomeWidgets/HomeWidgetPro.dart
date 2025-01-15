@@ -214,7 +214,7 @@ class HomeWidgetPro extends StatelessWidget {
           if (res['code'] == 200) {
             Get.to(() => Layout());
             showSnack('Successfully Subscribed',
-                'You have successfully upgraded your membership plan.');
+                'You have purchased a subscription ${plan['name']}');
           } else {
             showSnack('Error', 'Something went wrong.');
           }

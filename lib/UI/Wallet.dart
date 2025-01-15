@@ -41,6 +41,9 @@ class Wallet extends StatelessWidget {
       if (res['code'] == 200) {
         transactions.value = res['data'];
         ready.value = true;
+
+        print('Trascactions');
+        print(res['data']);
       } else {
         print(res);
         ready.value = true;

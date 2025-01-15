@@ -158,7 +158,7 @@ class SelectedPlan extends StatelessWidget {
         informMe();
         Get.offAll(() => Layout());
         showSnack(
-            'Booking Successful', 'Your booking has been successfully placed.');
+            'Booking Successful', 'You have purchased a commercial gym membership ${gymObj['gym_name']}');
       } else {
         showSnack(
             'Booking Failed', 'Something went wrong. Please try again later.');
