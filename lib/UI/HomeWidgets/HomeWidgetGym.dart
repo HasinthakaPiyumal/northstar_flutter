@@ -67,20 +67,17 @@ class HomeWidgetGym extends StatelessWidget {
       print("====");
       if (res['code'] == 200) {
         myBookings.addAll(res['data']);
-        res['data'].first.keys.forEach((k) {
-          print(k);
-        });
       }
     }
 
     void getMyServiceBookings() async {
       Map res = await httpClient.getServiceSchedules();
       print("====");
+
+      print("length services - ${res['data'].length}");
+      print(res['data']);
       if (res['code'] == 200) {
         myBookings.addAll(res['data']);
-        res['data'].first.keys.forEach((k) {
-          print(k);
-        });
       }
     }
 
@@ -280,7 +277,7 @@ class HomeWidgetGym extends StatelessWidget {
                                                       children: [
                                                         SizedBox(
                                                           width:
-                                                              Get.width - 240,
+                                                              Get.width - 140,
                                                           child: Text(
                                                             "${myBookings[index]['gym_data']['gym_name']}"
                                                                 .capitalize
@@ -409,50 +406,50 @@ class HomeWidgetGym extends StatelessWidget {
                                             //     ),
                                             //   ),
                                             // ),
-                                            InkWell(
-                                              onTap: () {
-                                                //unlockGym(myBookings[index]['gym_id']);
-                                                // Get.to(()=>DoorQRView());
-                                                Get.to(() => UnlockDoorQR(
-                                                    QR: myBookings[index]
-                                                            ['user']['qr_id']
-                                                        .toString()));
-                                              },
-                                              child: Container(
-                                                  width: 102,
-                                                  height: 108,
-                                                  padding:
-                                                      EdgeInsets.only(top: 10),
-                                                  decoration: BoxDecoration(
-                                                      color: Theme.of(context)
-                                                          .scaffoldBackgroundColor,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10)),
-                                                  child: Center(
-                                                    child: Column(
-                                                      children: [
-                                                        Image.asset(
-                                                          "assets/images/qr.png",
-                                                          fit: BoxFit.fitHeight,
-                                                          width: 36,
-                                                          height: 36,
-                                                        ),
-                                                        SizedBox(height: 10),
-                                                        Text(
-                                                          'Unlock \nDoor',
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TypographyStyles
-                                                              .textWithWeight(
-                                                                  14,
-                                                                  FontWeight
-                                                                      .w300),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  )),
-                                            ),
+                                            // InkWell(
+                                            //   onTap: () {
+                                            //     //unlockGym(myBookings[index]['gym_id']);
+                                            //     // Get.to(()=>DoorQRView());
+                                            //     Get.to(() => UnlockDoorQR(
+                                            //         QR: myBookings[index]
+                                            //                 ['user']['qr_id']
+                                            //             .toString()));
+                                            //   },
+                                            //   child: Container(
+                                            //       width: 102,
+                                            //       height: 108,
+                                            //       padding:
+                                            //           EdgeInsets.only(top: 10),
+                                            //       decoration: BoxDecoration(
+                                            //           color: Theme.of(context)
+                                            //               .scaffoldBackgroundColor,
+                                            //           borderRadius:
+                                            //               BorderRadius.circular(
+                                            //                   10)),
+                                            //       child: Center(
+                                            //         child: Column(
+                                            //           children: [
+                                            //             Image.asset(
+                                            //               "assets/images/qr.png",
+                                            //               fit: BoxFit.fitHeight,
+                                            //               width: 36,
+                                            //               height: 36,
+                                            //             ),
+                                            //             SizedBox(height: 10),
+                                            //             Text(
+                                            //               'Unlock \nDoor',
+                                            //               textAlign:
+                                            //                   TextAlign.center,
+                                            //               style: TypographyStyles
+                                            //                   .textWithWeight(
+                                            //                       14,
+                                            //                       FontWeight
+                                            //                           .w300),
+                                            //             )
+                                            //           ],
+                                            //         ),
+                                            //       )),
+                                            // ),
                                             Visibility(
                                               visible: authUser.role ==
                                                       'trainer' &&
@@ -597,7 +594,7 @@ class HomeWidgetGym extends StatelessWidget {
                                                                       myBookings[
                                                                               index]
                                                                           [
-                                                                          'start_time'])) +
+                                                                          'start_time']+'Z').toLocal()) +
                                                               ' - ' +
                                                               DateFormat(
                                                                       "MMM dd,yyyy")
@@ -605,7 +602,7 @@ class HomeWidgetGym extends StatelessWidget {
                                                                       myBookings[
                                                                               index]
                                                                           [
-                                                                          'end_time'])),
+                                                                          'end_time']+'Z').toLocal()),
                                                           style: TypographyStyles
                                                               .textWithWeight(
                                                                   14,

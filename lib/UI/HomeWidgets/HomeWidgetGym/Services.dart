@@ -253,9 +253,8 @@ class Services extends StatelessWidget {
                                         radius: 28,
                                         child: ClipOval(
                                           child: CachedNetworkImage(
-                                            imageUrl: HttpClient.s3BaseUrl +
-                                                gyms[index]['user']
-                                                    ['avatar_url'],
+                                            imageUrl: HttpClient.s3ResourcesBaseUrl +
+                                                gyms[index]["gym_services"]["image_path"],
                                             placeholder: (context, url) =>
                                                 Container(
                                               height: 28,

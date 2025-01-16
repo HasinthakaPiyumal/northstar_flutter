@@ -535,11 +535,12 @@ class HttpClient {
   }
 
   //Get Exclusive Gym Availability
-  Future<Map> getAvailableTimeSlots(gymID, DateTime dateTime) async {
+  Future<Map> getAvailableTimeSlots(gymID, DateTime dateTime,String timezone) async {
     String dt = DateFormat('yyyy-MM-dd').format(dateTime);
+    print('timezone $timezone' );
     Response response = await post(
         '/fitness/exclusive-gyms/actions/get-bookings-timeslots',
-        {"service_id": gymID, "date": dt});
+        {"service_id": gymID, "date": dt,"timezone":timezone});
     return {
       "code": response.statusCode,
       "data": response.data,

@@ -222,7 +222,14 @@ class AddBooking extends StatelessWidget {
         validateAndGo();
       }
     }
+    String _formatDuration(Duration duration) {
+      String sign = duration.isNegative ? '-' : '+';
+      int hours = duration.inHours.abs();
+      int minutes = duration.inMinutes.abs() % 60;
 
+      // Format as "+HH:MM" or "-HH:MM"
+      return '$sign${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}';
+    }
     void getAvailableTimeSlots(dateTime) async {
       ready.value = false;
 
@@ -234,7 +241,7 @@ class AddBooking extends StatelessWidget {
       print("Start Time: ${startOfDay}");
       print("End Time: ${endOfDay.toString()}");
       print("End Time: $dateTime");
-      Map res = await httpClient.getAvailableTimeSlots(gymObj['gym_services']['id'], dateTime);
+      Map res = await httpClient.getAvailableTimeSlots(gymObj['gym_services']['id'], dateTime,_formatDuration(DateTime.now().timeZoneOffset));
       print('Time slots');
       print(res);
 
@@ -600,7 +607,7 @@ class AddBooking extends StatelessWidget {
                 label: "confirm",
                 isLoading: !ready.value,
                 onPressed: () {
-                  CommonConfirmDialog.confirm('Confirm').then((value) {
+                  CommonConfirmDialog.confirm('Confirm',message: 'This service is available for 45 minutes from the start time provided. Are you sure you want to confirm?').then((value) {
                     if (value) {
                       makeASchedule();
                     }
