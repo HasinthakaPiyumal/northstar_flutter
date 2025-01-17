@@ -15,6 +15,7 @@ import 'package:north_star/components/DropDownButtonWithBorder.dart';
 import 'package:north_star/components/SessionTimePicker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:north_star/Models/AuthUser.dart';
 
 import '../../../../Styles/BoxStyles.dart';
 import '../../../../components/Buttons.dart';
@@ -108,7 +109,7 @@ class AddBooking extends StatelessWidget {
         httpClient.sendNotification(
             element,
             'You have new booking!',
-            'Your trainer has booked a service for you.',
+            authUser.role=='trainer'?'Your trainer has booked a service for you ${gymObj['gym_services']['name']}-${gymObj['gym_city']}.':'You have a gym service session ${gymObj['gym_services']['name']}-${gymObj['gym_city']}',
             NSNotificationTypes.GymAppointment, {});
       });
     }
