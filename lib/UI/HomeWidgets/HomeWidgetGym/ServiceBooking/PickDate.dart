@@ -110,11 +110,8 @@ class AddBooking extends StatelessWidget {
         httpClient.sendNotification(
             element,
             'You have new booking!',
-            authUser.role == 'trainer'
-                ? 'Your trainer has booked a service for you ${gymObj['gym_services']['name']}-${gymObj['gym_city']}.'
-                : 'You have a gym service session ${gymObj['gym_services']['name']}-${gymObj['gym_city']}',
-            NSNotificationTypes.GymAppointment,
-            {});
+            'You have a gym service session ${gymObj['gym_services']['name']}-${gymObj['gym_city']}',
+            NSNotificationTypes.GymAppointment, {});
       });
     }
 
