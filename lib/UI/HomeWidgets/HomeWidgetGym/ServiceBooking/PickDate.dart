@@ -141,7 +141,7 @@ class AddBooking extends StatelessWidget {
         informUser();
         Get.offAll(() => Layout());
         showSnack('Schedule Confirmed!',
-            'You have paid for an NS Store product ${gymObj['gym_services']['name']}-${gymObj['gym_city']}');
+            'You have paid for a NS Store product ${gymObj['gym_services']['name']}-${gymObj['gym_city']}');
       } else {
         print(res);
       }
@@ -334,13 +334,19 @@ class AddBooking extends StatelessWidget {
             print('Is Reserved: $isReserved');
             print(
                 '$isReserved $checkingTime ${DateTime.parse(item['start_time'] + 'Z').toLocal()} ${DateTime.parse(item['end_time'] + 'Z').toLocal()}');
+
             if (isReserved) {
               isBooked = true;
               break;
             }
           }
-          ;
-          availableTimes.add({'time': checkingTime, 'availability': !isBooked});
+          print('checkingTime $checkingTime');
+
+          // Only add times that are after current time
+          if (checkingTime.isAfter(DateTime.now())) {
+            availableTimes
+                .add({'time': checkingTime, 'availability': !isBooked});
+          }
         }
         ready.value = true;
       } else {

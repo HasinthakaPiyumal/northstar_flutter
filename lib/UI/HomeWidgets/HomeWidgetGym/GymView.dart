@@ -30,7 +30,9 @@ class GymView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     RxBool showMoreFacilities = false.obs;
-    gymObj.keys.forEach((k){print(k);});
+    gymObj.keys.forEach((k) {
+      print(k);
+    });
 
     void open(BuildContext context, final int index) {
       Navigator.push(
@@ -49,39 +51,38 @@ class GymView extends StatelessWidget {
       );
     }
 
-
     return Scaffold(
       appBar: AppBar(
-        // title: Padding(
-        //   padding: EdgeInsets.symmetric(vertical: 0),
-        //   child: Row(
-        //     children: [
-        //       CircleAvatar(
-        //         radius: 20,
-        //         backgroundImage: CachedNetworkImageProvider(
-        //           HttpClient.s3BaseUrl + gymObj['user']['avatar_url'],
-        //         ),
-        //       ),
-        //       SizedBox(
-        //         width: 16,
-        //       ),
-        //       Column(
-        //         crossAxisAlignment: CrossAxisAlignment.start,
-        //         children: [
-        //           Text(gymObj['gym_name'], style: TypographyStyles.title(20)),
-        //           SizedBox(
-        //             height: 2,
-        //           ),
-        //           Text(
-        //             "${gymObj['gym_city']}, ${gymObj['gym_country']}",
-        //             style: TypographyStyles.textWithWeight(13, FontWeight.w300),
-        //           ),
-        //         ],
-        //       ),
-        //     ],
-        //   ),
-        // ),
-      ),
+          // title: Padding(
+          //   padding: EdgeInsets.symmetric(vertical: 0),
+          //   child: Row(
+          //     children: [
+          //       CircleAvatar(
+          //         radius: 20,
+          //         backgroundImage: CachedNetworkImageProvider(
+          //           HttpClient.s3BaseUrl + gymObj['user']['avatar_url'],
+          //         ),
+          //       ),
+          //       SizedBox(
+          //         width: 16,
+          //       ),
+          //       Column(
+          //         crossAxisAlignment: CrossAxisAlignment.start,
+          //         children: [
+          //           Text(gymObj['gym_name'], style: TypographyStyles.title(20)),
+          //           SizedBox(
+          //             height: 2,
+          //           ),
+          //           Text(
+          //             "${gymObj['gym_city']}, ${gymObj['gym_country']}",
+          //             style: TypographyStyles.textWithWeight(13, FontWeight.w300),
+          //           ),
+          //         ],
+          //       ),
+          //     ],
+          //   ),
+          // ),
+          ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -106,7 +107,8 @@ class GymView extends StatelessWidget {
                     ),
                     Text(
                       "${gymObj['gym_city']}, ${gymObj['gym_country']}",
-                      style: TypographyStyles.textWithWeight(13, FontWeight.w300),
+                      style:
+                          TypographyStyles.textWithWeight(13, FontWeight.w300),
                     ),
                   ],
                 ),
@@ -117,13 +119,15 @@ class GymView extends StatelessWidget {
                         SizedBox(height: 20),
                         Row(
                           children: [
-                            Text('${gymObj["gym_services"]["name"].toString().capitalizeFirst}',
+                            Text(
+                                '${gymObj["gym_services"]["name"].toString().capitalizeFirst}',
                                 style: TypographyStyles.title(20)),
                           ],
                         ),
                         Row(
                           children: [
-                            Text('${gymObj["gym_services"]["description"].toString().capitalizeFirst}',
+                            Text(
+                                '${gymObj["gym_services"]["description"].toString().capitalizeFirst}',
                                 style: TypographyStyles.text(16)),
                           ],
                         ),
@@ -164,9 +168,11 @@ class GymView extends StatelessWidget {
                       //       ? Themes.mainThemeColorAccent.shade100
                       //       : colors.Colors().lightBlack(1),
                       // ),
-                      SvgPicture.asset("assets/svgs/location.svg",
+                      SvgPicture.asset(
+                        "assets/svgs/location.svg",
                         width: 30,
-                        height: 30,),
+                        height: 30,
+                      ),
                       SizedBox(width: 13),
                       Flexible(
                         child: Column(
@@ -404,14 +410,12 @@ class GymView extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar:
-      Padding(
+      bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color:
-            Get.isDarkMode ? AppColors.primary2Color : Colors.white,
+            color: Get.isDarkMode ? AppColors.primary2Color : Colors.white,
           ),
           width: Get.width,
           height: viewOnly ? 110 : 178,
@@ -425,46 +429,45 @@ class GymView extends StatelessWidget {
                   children: [
                     gymObj['gym_type'] == "exclusive"
                         ? Expanded(
-                      child: Column(
-                        children: [
-                          RichText(
-                            text: TextSpan(
-                              text: 'MVR',
-                              style: TypographyStyles.title(20),
-                              children: <TextSpan>[
-                                TextSpan(
-                                  text: ' ${gymObj['hourly_rate']}',
-                                  style: TypographyStyles.boldText(
-                                      22,
-                                      Get.isDarkMode
-                                          ? Themes
-                                          .mainThemeColorAccent
-                                          .shade100
-                                          : colors.Colors()
-                                          .lightBlack(1)),
+                            child: Column(
+                              children: [
+                                RichText(
+                                  text: TextSpan(
+                                    text: 'MVR',
+                                    style: TypographyStyles.title(20),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: ' ${gymObj['hourly_rate']}',
+                                        style: TypographyStyles.boldText(
+                                            22,
+                                            Get.isDarkMode
+                                                ? Themes.mainThemeColorAccent
+                                                    .shade100
+                                                : colors.Colors()
+                                                    .lightBlack(1)),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  "HOURLY RATE",
+                                  style: TypographyStyles.textWithWeight(
+                                      16, FontWeight.w400),
                                 ),
                               ],
                             ),
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            "HOURLY RATE",
-                            style: TypographyStyles.textWithWeight(
-                                16, FontWeight.w400),
-                          ),
-                        ],
-                      ),
-                    )
+                          )
                         : SizedBox(),
                     gymObj['gym_type'] == "exclusive"
                         ? Container(
-                      width: 2,
-                      height: 100,
-                      color: Themes.mainThemeColorAccent.shade300
-                          .withOpacity(0.2),
-                    )
+                            width: 2,
+                            height: 100,
+                            color: Themes.mainThemeColorAccent.shade300
+                                .withOpacity(0.2),
+                          )
                         : SizedBox(),
                     Expanded(
                       child: Column(
@@ -490,25 +493,25 @@ class GymView extends StatelessWidget {
               viewOnly
                   ? SizedBox()
                   : SizedBox(
-                height: 20,
-              ),
+                      height: 20,
+                    ),
               Visibility(
                 visible: !viewOnly,
                 child: Buttons.yellowFlatButton(
                     onPressed: () {
-
                       if (gymObj['gym_type'] == 'exclusive') {
                         Get.to(() => BookNow(gymObj: gymObj));
                       } else if (gymObj['gym_type'] == 'services') {
-                        if(authUser.role=='client'){
-                          Get.to(() => AddBooking(
-                            gymObj: gymObj, clientIds: [authUser.id],));
-                        }else{
-                          Get.to(() => BookNowServices(gymObj: gymObj));
-                        }
+                        // if(authUser.role=='client'){
+                        Get.to(() => AddBooking(
+                              gymObj: gymObj,
+                              clientIds: [authUser.id],
+                            ));
+                        // }else{
+                        //   Get.to(() => BookNowServices(gymObj: gymObj));
+                        // }
                       } else {
-                        Get.to(() =>
-                            PurchaseGymSubscription(gymObj: gymObj));
+                        Get.to(() => PurchaseGymSubscription(gymObj: gymObj));
                       }
                     },
                     label: "BOOK NOW",
