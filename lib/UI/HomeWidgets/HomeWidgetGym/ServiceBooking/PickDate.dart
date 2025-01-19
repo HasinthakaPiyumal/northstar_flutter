@@ -138,7 +138,7 @@ class AddBooking extends StatelessWidget {
         informUser();
         Get.offAll(() => Layout());
         showSnack('Schedule Confirmed!',
-            'You have paid for a NS Store product ${gymObj['gym_services']['name']}-${gymObj['gym_city']}');
+            'You have paid for an NS Service ${gymObj['gym_services']['name']}-${gymObj['gym_city']}');
       } else {
         print(res);
       }
